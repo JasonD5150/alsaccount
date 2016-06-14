@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+	<package name="fwp.alsaccount" namespace=""  extends="struts-default">	
+		<action name="index_*" method="{1}" class="fwp.alsaccount.action.IndexAction">
+            <result>index.jsp</result>
+            <result name="error">index.jsp</result>
+            <result name="input">index.jsp</result>
+    	</action>
+		<action name="heartBeatAct_*" method="{1}" class="fwp.alsaccount.action.GenericAction">
+            <result>heartbeat.jsp</result>
+            <result name="error">heartbeat.jsp</result>
+            <result name="input">heartbeat.jsp</result>
+        </action>
+        
+        
+        <action name="sysActivityAccountMaster_*" method="{1}" class="fwp.alsaccount.admin.action.BudgetYearSelectAction">
+            <result>admin/systemActivityAccountMaster.jsp</result>
+            <result name="error">admin/systemActivityAccountMaster.jsp</result>
+            <result name="input">admin/systemActivityAccountMaster.jsp</result>            
+      </action>
+       <action name="alsSysActivityTypeTranCdsDiv_*" method="{1}" class="fwp.alsaccount.admin.action.BudgetYearSelectAction">
+            <result>admin/include/sysActivityTypeTranCdsDiv.jsp</result>
+            <result name="error">admin/include/sysActivityTypeTranCdsDiv.jsp</result>
+            <result name="input">admin/include/sysActivityTypeTranCdsDiv.jsp</result>            
+      </action>
+      <action name="actAccLinkTabAction_*" method="{1}" class="fwp.alsaccount.admin.action.ActivityAccountLinkageDivAction">
+            <result>admin/include/activityAccountLinkageTab.jsp</result>
+            <result name="error">admin/include/activityAccountLinkageTab.jsp</result>
+            <result name="input">admin/include/activityAccountLinkageTab.jsp</result>            
+      </action>
+      <action name="accCodeControl_*" method="{1}" class="fwp.alsaccount.admin.action.BudgetYearSelectAction">
+            <result>admin/accountingCodeControl.jsp</result>
+            <result name="error">admin/accountingCodeControl.jsp</result>
+            <result name="input">admin/accountingCodeControl.jsp</result>            
+      </action>
+      <action name="accCodeControlDiv_*" method="{1}" class="fwp.alsaccount.admin.action.AccountCodeControlDivAction">
+            <result>admin/include/accountingCodeControlDiv.jsp</result>
+            <result name="error">admin/include/accountingCodeControlDiv.jsp</result>
+            <result name="input">admin/include/accountingCodeControlDiv.jsp</result>            
+      </action>
+      <action name="orgControl_*" method="{1}" class="fwp.alsaccount.admin.action.BudgetYearSelectAction">
+            <result>admin/orgControl.jsp</result>
+            <result name="error">admin/orgControl.jsp</result>
+            <result name="input">admin/orgControl.jsp</result>            
+      </action>
+      <action name="orgControlDiv_*" method="{1}" class="fwp.alsaccount.admin.action.OrgControlDivAction">
+            <result>admin/include/orgControlDiv.jsp</result>
+            <result name="error">admin/include/orgControlDiv.jsp</result>
+            <result name="input">admin/include/orgControlDiv.jsp</result>            
+      </action>
+      <action name="jlrMiscMaint_*" method="{1}" class="fwp.alsaccount.action.GenericAction">
+            <result>admin/jlrMiscMaint.jsp</result>
+            <result name="error">admin/jlrMiscMaint.jsp</result>
+            <result name="input">admin/jlrMiscMaint.jsp</result>            
+      </action>
+      <action name="alsNonAlsTemplate_*" method="{1}" class="fwp.alsaccount.admin.action.BudgetYearSelectAction">
+            <result>admin/alsNonAlsTemplate.jsp</result>
+            <result name="error">admin/alsNonAlsTemplate.jsp</result>
+            <result name="input">admin/alsNonAlsTemplate.jsp</result>            
+      </action>
+      <action name="alsNonAlsTemplateDiv_*" method="{1}" class="fwp.alsaccount.admin.action.AlsNonAlsTemplateDivAction">
+            <result>admin/include/alsNonAlsTemplateDiv.jsp</result>
+            <result name="error">admin/include/alsNonAlsTemplateDiv.jsp</result>
+            <result name="input">admin/include/alsNonAlsTemplateDiv.jsp</result>            
+      </action>
+      <action name="alsNonAlsOrgControlDiv_*" method="{1}" class="fwp.alsaccount.admin.action.AlsNonAlsOrgControlDivAction">
+            <result>admin/include/alsNonAlsOrgControlDiv.jsp</result>
+            <result name="error">admin/include/alsNonAlsOrgControlDiv.jsp</result>
+            <result name="input">admin/include/alsNonAlsOrgControlDiv.jsp</result>            
+      </action>
+      <action name="fiscalYearEnd_*" method="{1}" class="fwp.alsaccount.admin.action.FiscalYearEndAction">
+            <result>admin/fiscalYearEnd.jsp</result>
+            <result name="error">admin/fiscalYearEnd.jsp</result>
+            <result name="input">admin/fiscalYearEnd.jsp</result>            
+      </action>
+      <action name="adjParamTabAction_*" method="{1}" class="fwp.alsaccount.admin.action.AjustmentParamTabAction">
+            <result>admin/include/adjustmentParamTab.jsp</result>
+            <result name="error">admin/include/adjustmentParamTab.jsp</result>
+            <result name="input">admin/include/adjustmentParamTab.jsp</result>         
+      </action>     	
+	</package>
+ 
+ 	<package name="alsAccountGrid" namespace="/alsAccount" extends="json-default">     
+      <action name="sysActivityControlGrid_*" class="fwp.alsaccount.admin.grid.AlsSysActivityControlGridAction">
+            <result type="json" />
+        </action>       
+        <action name="sysActivityControlGridEdit_*" class="fwp.alsaccount.admin.grid.AlsSysActivityControlGridEditAction">
+			<result type="json"></result>
+            <result type="json" name="input"></result>
+            <result name="error_json" type="json" >
+               <param name="ignoreHierarchy">false</param>
+            </result>
+		</action>
+		 <action name="accountMasterGrid_*" class="fwp.alsaccount.admin.grid.AlsAccountMasterGridAction">
+            <result type="json" />
+        </action>       
+        <action name="accountMasterGridEdit_*" class="fwp.alsaccount.admin.grid.AlsAccountMasterGridEditAction">
+			<result type="json"></result>
+            <result type="json" name="input"></result>
+            <result name="error_json" type="json" >
+               <param name="ignoreHierarchy">false</param>
+            </result>
+		</action>
+		<action name="activityAccountLinkageGrid_*" class="fwp.alsaccount.admin.grid.AlsActivityAccountLinkGridAction">
+            <result type="json" />
+        </action>       
+        <action name="activityAccountLinkageGridEdit_*" class="fwp.alsaccount.admin.grid.AlsActivityAccountLinkGridEditAction">
+			<result type="json"></result>
+            <result type="json" name="input"></result>
+            <result name="error_json" type="json" >
+               <param name="ignoreHierarchy">false</param>
+            </result>
+		</action>
+		<action name="appendixM1Grid_*" class="fwp.alsaccount.admin.grid.AlsSysActivityTypeCodesGridAction">
+            <result type="json" />
+        </action>       
+        <action name="appendixM1GridEdit_*" class="fwp.alsaccount.admin.grid.AlsSysActivityTypeCodesGridEditAction">
+			<result type="json"></result>
+            <result type="json" name="input"></result>
+            <result name="error_json" type="json" >
+               <param name="ignoreHierarchy">false</param>
+            </result>
+		</action>
+		<action name="appendixM2Grid_*" class="fwp.alsaccount.admin.grid.AlsSysActivityTypeTranCdsGridAction">
+            <result type="json" />
+        </action>       
+        <action name="appendixM2GridEdit_*" class="fwp.alsaccount.admin.grid.AlsSysActivityTypeTranCdsGridEditAction">
+			<result type="json"></result>
+            <result type="json" name="input"></result>
+            <result name="error_json" type="json" >
+               <param name="ignoreHierarchy">false</param>
+            </result>
+		</action>
+		<action name="accCodeControlGrid_*" class="fwp.alsaccount.admin.grid.AlsAccCodeControlGridAction">
+            <result type="json" />
+        </action>       
+        <action name="accCodeControlGridEdit_*" class="fwp.alsaccount.admin.grid.AlsAccCodeControlGridEditAction">
+			<result type="json"></result>
+            <result type="json" name="input"></result>
+            <result name="error_json" type="json" >
+               <param name="ignoreHierarchy">false</param>
+            </result>
+		</action>
+		<action name="orgControlGrid_*" class="fwp.alsaccount.admin.grid.AlsOrgControlGridAction">
+            <result type="json" />
+        </action>       
+        <action name="orgControlGridEdit_*" class="fwp.alsaccount.admin.grid.AlsOrgControlGridEditAction">
+			<result type="json"></result>
+            <result type="json" name="input"></result>
+            <result name="error_json" type="json" >
+               <param name="ignoreHierarchy">false</param>
+            </result>
+		</action>
+		<action name="jlrMiscMaintGrid_*" class="fwp.alsaccount.admin.grid.AlsJLRMiscMaintGridAction">
+            <result type="json" />
+        </action>       
+        <action name="jlrMiscMaintGridEdit_*" class="fwp.alsaccount.admin.grid.AlsJLRMiscMaintGridEditAction">
+			<result type="json"></result>
+            <result type="json" name="input"></result>
+            <result name="error_json" type="json" >
+               <param name="ignoreHierarchy">false</param>
+            </result>
+		</action>
+		<action name="alsNonAlsTemplateGrid_*" class="fwp.alsaccount.admin.grid.AlsNonAlsTemplateGridAction">
+            <result type="json" />
+        </action>       
+        <action name="alsNonAlsTemplateGridEdit_*" class="fwp.alsaccount.admin.grid.AlsNonAlsTemplateGridEditAction">
+			<result type="json"></result>
+            <result type="json" name="input"></result>
+            <result name="error_json" type="json" >
+               <param name="ignoreHierarchy">false</param>
+            </result>
+		</action>
+		<action name="alsNonAlsOrgControlGrid_*" class="fwp.alsaccount.admin.grid.AlsNonAlsOrgControlGridAction">
+            <result type="json" />
+        </action>       
+        <action name="alsNonAlsOrgControlGridEdit_*" class="fwp.alsaccount.admin.grid.AlsNonAlsOrgControlGridEditAction">
+			<result type="json"></result>
+            <result type="json" name="input"></result>
+            <result name="error_json" type="json" >
+               <param name="ignoreHierarchy">false</param>
+            </result>
+		</action>
+		<action name="alsSabhrsFyeAdjstDtlGrid_*" class="fwp.alsaccount.admin.grid.AlsSabhrsFyeAdjstDtlGridAction">
+            <result type="json" />
+        </action>       
+        <action name="alsSabhrsFyeAdjstDtlGridEdit_*" class="fwp.alsaccount.admin.grid.AlsSabhrsFyeAdjstDtlGridEditAction">
+			<result type="json"></result>
+            <result type="json" name="input"></result>
+            <result name="error_json" type="json" >
+               <param name="ignoreHierarchy">false</param>
+            </result>
+		</action>
+   </package>
+
+	<package name="alsAccountJsonData" extends="json-default" >
+		<action name="getItemTypeList_*" method="{1}" class="fwp.alsaccount.admin.json.ItemTypeListJson">
+			<result name="success" type="json"></result>
+		</action>
+		<action  name="fiscalYearEndJson" class="fwp.alsaccount.admin.json.FiscalYearEndJson" >
+            <result name="success" type="json" />
+            <result name="input" type="json"></result>
+            <result name="error_json" type="json" >
+               <param name="ignoreHierarchy">false</param>
+            </result>
+        </action>
+    </package>
+</struts>    

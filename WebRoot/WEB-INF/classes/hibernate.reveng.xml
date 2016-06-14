@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-reverse-engineering-3.0.dtd" >
+
+<hibernate-reverse-engineering>
+	<table name="ALS_SABHRS_FYE_ADJST" schema="ALS" class="fwp.alsaccount.hibernate.dao.AlsSabhrsFyeAdjst"> 
+     <primary-key>  
+       <column name="ASFA_BUDGET_YEAR" jdbc-type="NUMERIC" type="Integer"></column>
+     </primary-key>
+     <column name="ASFA_FYE_GROUP_IDENTIFIER" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ASFA_NFY_GROUP_IDENTIFIER" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ASFA_FY_END_DT" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="ASFA_FY_BEG_DT" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="ASFA_BILL_PRD_END_DT" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+   </table>
+	<table name="ALS_SABHRS_FYE_ADJST_DTL" schema="ALS" class="fwp.alsaccount.hibernate.dao.AlsSabhrsFyeAdjstDtl"> 
+     <primary-key id-class="fwp.alsaccount.hibernate.dao.AlsSabhrsFyeAdjstDtlIdPk" property="idPk">
+       <column name="ASFA_BUDGET_YEAR" jdbc-type="NUMERIC" type="Integer"></column>
+       <column name="ASFAD_ADJST_DT" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     </primary-key>
+   </table>
+	
+	<table name="ALS_NON_ALS_ORG_CONTROL" schema="ALS" class="fwp.als.hibernate.admin.dao.AlsNonAlsOrgControl"> 
+     <primary-key>
+       <key-column name="ANAOC_ID" jdbc-type="NUMERIC" type="Integer" />
+     </primary-key>
+     <column name="API_PROVIDER_NO" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="ANAOC_WHEN_LOG" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="ANAT_BUDGET_YEAR" jdbc-type="NUMERIC" type="Integer"></column>
+   </table>
+   <table name="ALS_NON_ALS_TEMPLATE" schema="ALS" class="fwp.als.hibernate.admin.dao.AlsNonAlsTemplate"> 
+     <primary-key id-class="fwp.als.hibernate.admin.dao.AlsNonAlsTemplateIdPk" property="idPk">
+       <column name="ANAT_BUDGET_YEAR" jdbc-type="NUMERIC" type="Integer"></column>
+       <column name="ANAT_CD" jdbc-type="VARCHAR" type="String"></column>
+     </primary-key>
+     <column name="ANAT_BUSINESS_UNIT" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ANAT_DR_ACCOUNT" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ANAT_CR_ACCOUNT" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ANAT_FUND" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ANAT_DR_ORG" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ANAT_CR_ORG" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ANAT_DR_SUBCLASS" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ANAT_CR_SUBCLASS" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ANAT_PROGRAM_YEAR" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="ANAT_DR_PROJECT_GRANT" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ANAT_CR_PROJECT_GRANT" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ANAT_DR_JOURNAL_LINE_REFR" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="ANAT_CR_JOURNAL_LINE_REFR" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="ANAT_DR_LINE_DESC" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ANAT_CR_LINE_DESC" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ANAT_WHO_LOG" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ANAT_WHEN_LOG" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+   </table>
+   <table name="ALS_ORG_CONTROL" schema="ALS" class="fwp.als.hibernate.admin.dao.AlsOrgControl"> 
+     <primary-key id-class="fwp.als.hibernate.admin.dao.AlsOrgControlIdPk" property="idPk">
+       <column name="ASAC_BUDGET_YEAR" jdbc-type="NUMERIC" type="Integer"></column>
+       <column name="AACC_ACC_CD" jdbc-type="VARCHAR" type="String"></column>
+       <column name="API_PROVIDER_NO" jdbc-type="NUMERIC" type="Integer"></column>
+     </primary-key>
+     <column name="AOC_ORG" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AOC_WHO_LOG" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AOC_WHEN_LOG" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+   </table>
+   <table name="ALS_SYS_ACTIVITY_TYPE_CODES" schema="ALS" class="fwp.als.hibernate.admin.dao.AlsSysActivityTypeCodes"> 
+     <primary-key>
+         <generator class="sequence"> 
+           <param name="sequence">pub_rid</param> 
+         </generator>  
+       <column name="ASAC_SYSTEM_ACTIVITY_TYPE_CD" jdbc-type="VARCHAR" type="String"></column>
+     </primary-key>
+     <column name="ASATC_DESC" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ASATC_WHO_LOG" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ASATC_WHEN_LOG" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="ASATC_WHO_MODI" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ASATC_WHEN_MODI" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+   </table>
+   <table name="ALS_SYS_ACTIVITY_TYPE_TRAN_CDS" schema="ALS" class="fwp.als.hibernate.admin.dao.AlsSysActivityTypeTranCds"> 
+     <primary-key id-class="fwp.als.hibernate.admin.dao.AlsSysActivityTypeTranCdsIdPk" property="idPk">
+       <column name="ASAC_SYSTEM_ACTIVITY_TYPE_CD" jdbc-type="VARCHAR" type="String"></column>
+       <column name="ASAC_TXN_CD" jdbc-type="VARCHAR" type="String"></column>
+     </primary-key>
+     <column name="ASATTC_DESC" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ASATTC_WHO_LOG" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ASATTC_WHEN_LOG" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="ASATTC_WHO_MODI" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ASATTC_WHEN_MODI" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+   </table>
+   <table name="ALS_ACTIVITY_ACCOUNT_LINKAGE" schema="ALS" class="fwp.als.hibernate.admin.dao.AlsActivityAccountLinkage"> 
+     <primary-key id-class="fwp.als.hibernate.admin.dao.AlsActivityAccountLinkageIdPk" property="idPk">
+       <column name="ASAC_BUDGET_YEAR" jdbc-type="NUMERIC" type="Integer"></column>
+       <column name="ASAC_SYSTEM_ACTIVITY_TYPE_CD" jdbc-type="VARCHAR" type="String"></column>
+       <column name="ASAC_TXN_CD" jdbc-type="VARCHAR" type="String"></column>
+       <column name="AAAL_DR_CR_CD" jdbc-type="VARCHAR" type="String"></column>
+     </primary-key>
+     <column name="AAM_ACCOUNT" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AAAL_ACCOUNTING_CD_FLAG" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AAAL_REFERENCE" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="AAM_FUND" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AOC_ORG" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ASAC_SUBCLASS" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AAAL_WHO_LOG" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AAAL_WHEN_LOG" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+   </table>    
+</hibernate-reverse-engineering>

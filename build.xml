@@ -1,0 +1,183 @@
+<project default="build">
+    <!--Project specific settings. The rest of this build file is generic and can be used as-is.-->
+    <property name="project.output.jar.name" value="build/jar/alsaccount.war" />
+    
+    <!--End project specific settings.-->
+    
+	
+    <path id="project.class.path">
+    	
+      <fileset dir="WebRoot/WEB-INF/lib/" id="id">
+        <include name="*.jar"/>
+      </fileset>
+  	  <fileset dir="${jboss.server.root}/server/default/deployers/ejb3.deployer" id="id">
+        <include name="*.jar"/>
+      </fileset>
+      <fileset dir="${jboss.server.root}/server/default/deployers/jbossweb.deployer" id="id">
+        <include name="*.jar"/>
+      </fileset>
+      <fileset dir="${jboss.server.root}/server/default/deploy/jbossweb.sar" id="id">
+        <include name="*.jar"/>
+      </fileset>
+      <fileset dir="${jboss.server.root}/server/default/lib" id="id">
+        <include name="*.jar" />
+      </fileset>
+      <fileset dir="${jboss.server.root}/client" id="id">
+        <include name="*.jar" />
+      </fileset>
+      <fileset dir="${jboss.server.root}/lib/endorsed" id="id">
+        <include name="*.jar" />
+      </fileset>
+	  <fileset dir="${jboss.server.root}/lib" id="id">
+	    <include name="*.jar" />
+	  </fileset>
+	  
+		
+		<fileset dir="${fwp.openofficelib1}">
+			<include name="*"/>
+		</fileset>
+		<fileset dir="${fwp.openofficelib2}">
+			<include name="*"/>
+		</fileset>
+
+		<dirset dir="${fwp.openofficebindir}"></dirset>	  
+    </path>  
+
+    <target name="clean">
+        <delete dir="build" />
+        <delete dir="WebRoot/WEB-INF/classes" />
+    </target>
+
+    <target name="compile" depends="deptest">
+        <echo message="building classes..." />
+        <mkdir dir="build/classes/" />
+        <mkdir dir="build/tests/" />
+
+        <javac debug="true" srcdir="src" destdir="build/classes" classpathref="project.class.path" excludes="deptests/**" />
+        <move failonerror="false" file="build/classes/tests" todir="build/tests" />
+        <copydir dest="WebRoot/WEB-INF/classes" src="build/classes" />
+    </target>
+	
+	  <target name="copy-struts-xml" depends="compile">
+	    <copy verbose="true" preservelastmodified="yes" todir="WebRoot/WEB-INF/classes">
+	    	<fileset  dir="src/" includes="**/*.xml" />
+	  	</copy>
+	  </target>
+	
+
+    <target name="compiledeptests">
+        <echo message="building dependency test classes..." />
+        <mkdir dir="build/deptests/" />
+
+        <javac debug="true" srcdir="src" destdir="build/deptests" classpathref="project.class.path" includes="deptests/**" />
+    </target>
+
+    <target name="build" depends="copy-struts-xml">
+        <echo message="jarring classes..." />
+        <mkdir dir="build/jar" />
+        <jar destfile="${project.output.jar.name}" basedir="WebRoot">
+        </jar>
+        <!--<delete dir="build/classes" />-->
+    </target>
+
+    <target name="rebuild" depends="clean,build">
+    </target>
+
+    <target name="run" depends="build">
+        <java jar="${project.output.jar.name}" fork="true" />
+    </target>
+	<!--
+    <target name="deploy" depends="test">
+	-->
+	<target name="deploy" depends="build">
+	
+        <fail unless="jboss.server.root">Must set the fwp.jboss.deploy.dir ant property to deploy.</fail>
+        <copy file="${project.output.jar.name}"  todir="${jboss.server.root}/server/default/deploy"/>
+    </target>
+
+    <target name="run-deptests" depends="compiledeptests" description="run your test suite on your dependencies">
+        <delete dir="build/deptestreports" />
+        <mkdir dir="build/deptestreports/" />
+        <junit printsummary="yes" haltonfailure="false" showoutput="yes">
+
+            <classpath>
+                <path refid="project.class.path" />
+                <pathelement path="${project.output.jar.name}" />
+                <pathelement path="build/deptests/" />
+            </classpath>
+        	
+            <!--Need this here otherwise no summary file output will be generated-->
+            <formatter type="xml" />
+
+            <batchtest fork="false" haltonerror="false" todir="build/deptestreports">
+                <!--
+                    if you are not jarring up the files.
+                    -->
+                <fileset dir="build/deptests" casesensitive="yes">
+                    <!--Only included classes whose name starts with Test-->
+                    <include name="**/Test*.class" />
+                    <!--exclude inner classes-->
+                    <exclude name="**/*$$*" />
+                </fileset>
+            </batchtest>
+        </junit>
+    </target>
+
+    <target name='deptest' depends="run-deptests">
+        <junitreport todir="build/deptestreports">
+            <fileset dir="build/deptestreports">
+                <include name="TEST-*.xml" />
+            </fileset>
+            <report format="frames" todir="build/deptestreports" />
+        </junitreport>
+    </target>
+
+
+    <target name="run-tests" depends="build" description="run your test suite">
+        <delete dir="build/testreports" />
+        <mkdir dir="build/testreports/" />
+
+        <junit printsummary="yes" haltonfailure="no" showoutput="yes">
+
+            <classpath>
+                <path refid="project.class.path" />
+                <!--Won't work in the case of a war file...-->
+                <pathelement path="${project.output.jar.name}" />
+                <!--So we add the classes that went into the war file-->
+                <pathelement path="build/classes/" />
+                <pathelement path="build/tests/" />
+            </classpath>
+
+
+            <!--Need this here otherwise no summary file output will be generated-->
+            <formatter type="xml" />
+
+            <!--Change fork from false to true if the build is having problems. It is set to false here so that the classpath is retained in eclipse. Using the CLASSPATH environment variable to define the jboss runtime would allow the tests to work in either fork or nonfork mode.
+            -->
+            <batchtest fork="false" haltonerror="false" todir="build/testreports">
+                <!--
+                if you are not jarring up the files.
+                -->
+                <fileset dir="build/tests" casesensitive="yes">
+                    <!--Only included classes whose name starts with Test-->
+                    <include name="**/Test*.class" />
+                    <!--exclude inner classes-->
+                    <exclude name="**/*$$*" />
+                </fileset>
+            </batchtest>
+        </junit>
+
+    </target>
+
+
+    <target name="test" depends="run-tests">
+        <junitreport todir="build/testreports">
+            <fileset dir="build/testreports">
+                <include name="TEST-*.xml" />
+            </fileset>
+            <report format="frames" todir="build/testreports" />
+        </junitreport>
+    </target>
+
+</project>
+

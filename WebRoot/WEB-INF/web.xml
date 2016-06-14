@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
+  <display-name>ALSACCOUNT</display-name>
+  <context-param>
+    <param-name>app_id</param-name>
+    <param-value>ALSACCOUNT</param-value>
+  </context-param>
+  <context-param>
+    <param-name>app_menu</param-name>
+    <param-value>D</param-value> 
+    <!-- D:database; L:legacy; B:both  -->
+  </context-param>
+
+    <listener>
+        <listener-class>org.apache.shiro.web.env.EnvironmentLoaderListener</listener-class>
+    </listener>
+
+    <filter>
+        <filter-name>ShiroFilter</filter-name>
+        <filter-class>org.apache.shiro.web.servlet.ShiroFilter</filter-class>
+      </filter>
+
+    <filter-mapping>
+        <filter-name>ShiroFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>INCLUDE</dispatcher>
+        <dispatcher>ERROR</dispatcher>     
+    </filter-mapping>
+    
+ <!--  servlets -->
+  <servlet>
+        <servlet-name>GenDocCreate</servlet-name>
+        <servlet-class>fwp.alsaccount.servlet.GenDocCreate</servlet-class>
+ </servlet>  
+ <servlet-mapping>
+  <servlet-name>GenDocCreate</servlet-name>
+  <url-pattern>/genDocCreate</url-pattern>
+ </servlet-mapping> 
+ 
+ <!-- Struts config -->
+ <filter>
+  <filter-name>struts2</filter-name>
+  <filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
+ </filter>
+ <filter-mapping>
+  <filter-name>struts2</filter-name>
+  <url-pattern>*.action</url-pattern>
+  <dispatcher>FORWARD</dispatcher>
+  <dispatcher>REQUEST</dispatcher>
+ </filter-mapping>
+ <filter-mapping>
+  <filter-name>struts2</filter-name>
+  <url-pattern>/struts/*</url-pattern>
+ </filter-mapping>
+ <!-- END Struts config -->
+ 
+   <welcome-file-list>
+    <welcome-file>main.jsp</welcome-file>
+  </welcome-file-list>
+
+</web-app>
