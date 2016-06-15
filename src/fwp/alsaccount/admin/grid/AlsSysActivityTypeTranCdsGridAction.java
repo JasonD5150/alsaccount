@@ -35,7 +35,7 @@ public class AlsSysActivityTypeTranCdsGridAction extends ActionSupport{
     	String srchStr = " where idPk.asacSystemActivityTypeCd = '"+activityType+"'";
     	String orderStr = " order by cast(idPk.asacTxnCd as int) asc";
     	
-    	if(filters != null){
+    	if(filters != null && !"".equals(filters)){
     		//srchStr = buildStr(srchStr);
     		srchStr = Utils.buildStr(srchStr, filters);
     		if(srchStr.contains("Build String Error:")){

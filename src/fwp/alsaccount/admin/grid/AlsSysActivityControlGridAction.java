@@ -37,7 +37,7 @@ public class AlsSysActivityControlGridAction extends ActionSupport{
     	String orderStr = " order by idPk.asacBudgetYear desc,idPk.asacSystemActivityTypeCd,cast(idPk.asacTxnCd as int) asc";
 
     	
-    	if(filters != null){
+    	if(filters != null && !"".equals(filters)){
     		//srchStr = buildStr(srchStr);
     		srchStr = Utils.buildStr(srchStr, filters);
     		if(srchStr.contains("Build String Error:")){

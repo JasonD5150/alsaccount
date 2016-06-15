@@ -37,7 +37,7 @@ public class AlsOrgControlGridAction extends ActionSupport{
     	String srchStr = " where idPk.asacBudgetYear = "+budgYear;
     	String orderStr = " order by idPk.aaccAccCd asc, idPk.apiProviderNo asc";
     	
-    	if(filters != null){
+    	if(filters != null && !"".equals(filters)){
     		//srchStr = buildStr(srchStr);
     		srchStr = Utils.buildStr(srchStr, filters);
     		if(srchStr.contains("Build String Error:")){

@@ -36,7 +36,7 @@ public class AlsSabhrsFyeAdjstDtlGridAction extends ActionSupport{
     	String srchStr = " where idPk.asfaBudgetYear = "+budgYear;
     	String orderStr = " order by idPk.asfadAdjstDt";
     	
-    	if(filters != null){
+    	if(filters != null && !"".equals(filters)){
     		//srchStr = buildStr(srchStr);
     		srchStr = Utils.buildStr(srchStr, filters);
     		if(srchStr.contains("Build String Error:")){

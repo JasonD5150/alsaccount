@@ -41,7 +41,7 @@ public class AlsNonAlsOrgControlGridAction extends ActionSupport{
 				 		 " AND anatCd = '"+tempCd+"'";
 		String orderStr = " order by anaocOrg";
 		
-		if(filters != null){
+		if(filters != null && !"".equals(filters)){
 			//srchStr = buildStr(srchStr);
     		srchStr = Utils.buildStr(srchStr, filters);
     		if(srchStr.contains("Build String Error:")){

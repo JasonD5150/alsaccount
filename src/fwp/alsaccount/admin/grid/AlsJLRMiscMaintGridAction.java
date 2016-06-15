@@ -33,7 +33,7 @@ public class AlsJLRMiscMaintGridAction extends ActionSupport{
     				   + " and amKey2 like 'NON ALS%'";
     	String orderStr = " order by amKey1, amKey2, amKey3, amKey4, amKey5";
     	
-    	if(filters != null){
+    	if(filters != null && !"".equals(filters)){
     		//srchStr = buildStr(srchStr);
     		srchStr = Utils.buildStr(srchStr, filters);
     		if(srchStr.contains("Build String Error:")){

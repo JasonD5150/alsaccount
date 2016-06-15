@@ -35,7 +35,7 @@ public class AlsActivityAccountLinkGridAction extends ActionSupport{
     	String srchStr = " where idPk.asacBudgetYear = "+budgYear;
     	String orderStr = " order by idPk.asacSystemActivityTypeCd,cast(idPk.asacTxnCd as int) ASC, idPk.aaalDrCrCd DESC";
     	
-    	if(filters != null){
+    	if(filters != null && !"".equals(filters)){
     		srchStr = buildStr(srchStr);
     	}
     	

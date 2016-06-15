@@ -34,7 +34,7 @@ public class AlsAccountMasterGridAction extends ActionSupport{
     	String srchStr = " where idPk.asacBudgetYear = "+budgYear;
     	String orderStr = " order by idPk.asacBudgetYear desc, idPk.aamAccount";
     	
-    	if(filters != null){
+    	if(filters != null && !"".equals(filters)){
     		//srchStr = buildStr(srchStr);
     		srchStr = Utils.buildStr(srchStr, filters);
     		if(srchStr.contains("Build String Error:")){

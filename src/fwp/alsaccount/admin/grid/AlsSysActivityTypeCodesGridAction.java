@@ -32,7 +32,7 @@ public class AlsSysActivityTypeCodesGridAction extends ActionSupport{
     	String srchStr = " where 1=1 ";
     	String orderStr = " order by asacSystemActivityTypeCd";
     	
-    	if(filters != null){
+    	if(filters != null && !"".equals(filters)){
     		//srchStr = buildStr(srchStr);
     		srchStr = Utils.buildStr(srchStr, filters);
     		if(srchStr.contains("Build String Error:")){

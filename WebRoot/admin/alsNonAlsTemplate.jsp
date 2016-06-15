@@ -13,7 +13,7 @@
 	   	<script type="text/javascript" src= "/alsaccount/admin/scripts/fwp.alsNonAlsTemplate.js"></script>    
     </fwp:head>
     <form id='gridFrm'>
-			<s:hidden id="frmBudgYear" name="budgYear"/>
+			<s:hidden id="frmBudgYear" name="budgYear" />
 	</form>
 	
 	<form id='drGridFrm'>
