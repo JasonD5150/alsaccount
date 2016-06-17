@@ -10,9 +10,9 @@ import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionSupport;
 
-import fwp.alsaccount.admin.appservice.AlsSabhrsFyeAdjstDtlAS;
-import fwp.alsaccount.admin.dto.AlsSabhrsFyeAdjstDtlDTO;
-import fwp.alsaccount.hibernate.dao.AlsSabhrsFyeAdjstDtl;
+import fwp.alsaccount.appservice.admin.AlsSabhrsFyeAdjstDtlAS;
+import fwp.alsaccount.dao.admin.AlsSabhrsFyeAdjstDtl;
+import fwp.alsaccount.dto.admin.AlsSabhrsFyeAdjstDtlDTO;
 import fwp.alsaccount.utils.Utils;
 
 public class AlsSabhrsFyeAdjstDtlGridAction extends ActionSupport{

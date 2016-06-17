@@ -7,11 +7,11 @@ import org.hibernate.HibernateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.opensymphony.xwork2.ActionSupport;
+import com.opensymphony.xwork2.ActionSupport; 
 
-import fwp.alsaccount.admin.appservice.AlsAccountMasterAS;
-import fwp.alsaccount.admin.dto.AlsAccountMasterDTO;
-import fwp.alsaccount.hibernate.dao.AlsAccountMaster;
+import fwp.alsaccount.appservice.admin.AlsAccountMasterAS;
+import fwp.alsaccount.dao.admin.AlsAccountMaster;
+import fwp.alsaccount.dto.admin.AlsAccountMasterDTO;
 import fwp.alsaccount.utils.Utils;
 
 public class AlsAccountMasterGridAction extends ActionSupport{

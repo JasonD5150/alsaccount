@@ -9,9 +9,13 @@ import org.apache.struts2.interceptor.ServletRequestAware;
 
 import com.opensymphony.xwork2.ActionSupport;
 
-import fwp.alsaccount.admin.appservice.AlsSysActivityTypeTranCdsAS;
-import fwp.alsaccount.hibernate.dao.AlsSysActivityTypeTranCds;
-import fwp.alsaccount.hibernate.dao.AlsSysActivityTypeTranCdsIdPk;
+
+
+
+
+import fwp.alsaccount.appservice.admin.AlsSysActivityTypeTranCdsAS;
+import fwp.alsaccount.dao.admin.AlsSysActivityTypeTranCds;
+import fwp.alsaccount.dao.admin.AlsSysActivityTypeTranCdsIdPk;
 import fwp.security.user.UserDTO;
 
 
@@ -70,11 +74,11 @@ public class AlsSysActivityTypeTranCdsGridEditAction extends ActionSupport imple
 			}
 		}  catch(Exception ex) {
 			 if (ex.toString().contains("ORA-02292")){
-				  errMsg += "Grid has child record(s) which would need to be deleted first!";
+				  errMsg += "Grid has child record(s) which would need to be deleted first.";
 			  } else if (ex.toString().contains("ORA-02291")){
-				  errMsg += "Cannot save the record without Program being defined first!";
+				  errMsg += "Parent record not found.";
 			  } else if (ex.toString().contains("ORA-00001")){
-				  errMsg += "Unable to add this record due to duplicate";
+				  errMsg += "Unable to add this record due to duplicate.";
 			  }	else {
 				  errMsg += " " + ex.toString();
 			  }

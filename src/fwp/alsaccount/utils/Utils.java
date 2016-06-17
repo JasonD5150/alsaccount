@@ -182,6 +182,7 @@ public class Utils {
        else return in;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static String buildStr(String where, String filters){
     	try {
             Hashtable<String,Object> jsonFilter = (Hashtable<String, Object>) (new gov.fwp.mt.RPC.FWPJsonRpc().new JsonParser(filters)).FromJson();

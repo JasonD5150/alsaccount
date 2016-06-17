@@ -1,12 +1,12 @@
 package fwp.alsaccount.utils;
 
-import fwp.alsaccount.admin.appservice.AlsAccCdControlAS;
-import fwp.alsaccount.admin.appservice.AlsAccountMasterAS;
-import fwp.alsaccount.admin.appservice.AlsSysActivityControlAS;
+import fwp.alsaccount.appservice.admin.AlsAccCdControlAS;
+import fwp.alsaccount.appservice.admin.AlsAccountMasterAS;
+import fwp.alsaccount.appservice.admin.AlsSysActivityControlAS;
+import fwp.alsaccount.dao.admin.AlsAccCdControl;
+import fwp.alsaccount.dao.admin.AlsAccountMaster;
+import fwp.alsaccount.dao.admin.AlsSysActivityControl;
 import fwp.alsaccount.hibernate.HibernateSessionFactory;
-import fwp.alsaccount.hibernate.dao.AlsAccCdControl;
-import fwp.alsaccount.hibernate.dao.AlsAccountMaster;
-import fwp.alsaccount.hibernate.dao.AlsSysActivityControl;
 import fwp.alsaccount.hibernate.utils.ListComp;
 
 import java.util.ArrayList;
@@ -205,7 +205,7 @@ public class ListUtils {
 	}
 
 	/**
-	 * This method retrieves all provider numbers from the database as formatted
+	 * This method retrieves all org numbers from the database as formatted
 	 * text for a jqgrid column select list.
 	 */
 	@SuppressWarnings("unchecked")
@@ -258,7 +258,7 @@ public class ListUtils {
 	}
 
 	/**
-	 * This method retrieves fund codes from the database as formatted text for
+	 * This method retrieves subclass codes from the database as formatted text for
 	 * a jqgrid column select list.
 	 */
 	@SuppressWarnings("unchecked")
@@ -283,7 +283,7 @@ public class ListUtils {
 	}
 
 	/**
-	 * This method retrieves fund codes from the database as formatted text for
+	 * This method retrieves Journal Line Reference codes from the database as formatted text for
 	 * a jqgrid column select list.
 	 */
 	@SuppressWarnings("unchecked")
@@ -311,7 +311,7 @@ public class ListUtils {
 	}
 
 	/**
-	 * This method retrieves fund codes from the database as formatted text for
+	 * This method retrieves Project Grants from the database as formatted text for
 	 * a jqgrid column select list.
 	 */
 	@SuppressWarnings("unchecked")

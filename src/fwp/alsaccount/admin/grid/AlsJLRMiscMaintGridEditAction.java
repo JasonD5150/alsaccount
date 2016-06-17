@@ -9,8 +9,8 @@ import org.apache.struts2.interceptor.ServletRequestAware;
 
 import com.opensymphony.xwork2.ActionSupport;
 
-import fwp.alsaccount.admin.appservice.AlsMiscAS;
-import fwp.alsaccount.hibernate.dao.AlsMisc;
+import fwp.alsaccount.appservice.admin.AlsMiscAS;
+import fwp.alsaccount.dao.admin.AlsMisc;
 import fwp.security.user.UserDTO;
 
 
@@ -70,14 +70,12 @@ public class AlsJLRMiscMaintGridEditAction extends ActionSupport implements Serv
 			}
 		}  catch(Exception ex) {
 			 if (ex.toString().contains("ORA-02292")){
-				  errMsg += "Grid has child record(s) which would need to be deleted first!";
+				  errMsg += "Grid has child record(s) which would need to be deleted first.";
 			  } else if (ex.toString().contains("ORA-02291")){
-				  errMsg += "Cannot save the record without Account being set up in Account Master first.";
+				  errMsg += "Parent record not found.";
 			  } else if (ex.toString().contains("ORA-00001")){
 				  errMsg += "Unable to add this record due to duplicate.";
-			  }	else if (ex.toString().contains("ORA-12899")){
-				  errMsg += "A value entered is too large for the database column.";
-			  } else {
+			  }	else {
 				  errMsg += " " + ex.toString();
 			  }
 			  

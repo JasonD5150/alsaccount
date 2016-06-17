@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+<constant name="struts.devMode" value="false" />
+
+	<package name="fwp.alsaccount.sabhrs" namespace="" extends="struts-default">
+      <action name="transGroupMaint_*" method="{1}" class="fwp.alsaccount.action.GenericAction">
+            <result>sabhrs/transactionGroupMaint.jsp</result>
+            <result name="error">sabhrs/transactionGroupMaint.jsp</result>
+            <result name="input">sabhrs/transactionGroupMaint.jsp</result>         
+      </action>
+      <action name="uploadSabhrsToSum_*" method="{1}" class="fwp.alsaccount.action.GenericAction">
+            <result>sabhrs/uploadSabhrsToSummary.jsp</result>
+            <result name="error">sabhrs/uploadSabhrsToSummary.jsp</result>
+            <result name="input">sabhrs/uploadSabhrsToSummary.jsp</result>         
+      </action>    	
+	</package>
+ 
+ 	<package name="fwp.alsaccount.sabhrs.grid" namespace="/alsAccount" extends="json-default">     
+		<action name="transGroupMaintGrid_*" class="fwp.alsaccount.sabhrs.grid.AlsTransactionGroupGridAction">
+            <result type="json" />
+        </action>       
+        <action name="transGroupMaintGridEdit_*" class="fwp.alsaccount.sabhrs.grid.AlsTransactionGroupGridEditAction">
+			<result type="json"></result>
+            <result type="json" name="input"></result>
+            <result name="error_json" type="json" >
+               <param name="ignoreHierarchy">false</param>
+            </result>
+		</action>
+   </package>
+
+	<package name="fwp.alsaccount.sabhrs.json" extends="json-default" >
+		<action  name="uploadSabhrsToSumJson" class="fwp.alsaccount.sabhrs.json.UploadSabhrsEntriesToSumJson" >
+            <result name="success" type="json" />
+            <result name="input" type="json"></result>
+            <result name="error_json" type="json" >
+               <param name="ignoreHierarchy">false</param>
+            </result>
+        </action>
+    </package>
+
+</struts>    

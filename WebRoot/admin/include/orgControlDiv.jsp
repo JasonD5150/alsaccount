@@ -69,7 +69,8 @@
 		rowNum="500" 
 		formIds="gridFrm"
 		reloadTopics="reloadGrids"
-		onBeforeTopics="orgControlComplete">
+		onBeforeTopics="orgControlComplete"
+		resizable="true">
 
 			<sjg:gridColumn name="gridKey" title ="id" width="55" hidden="true" key="true"/>
 			<sjg:gridColumn name="idPk.aaccAccCd" index="idPk.aaccAccCd" title ="Account Code" width="10" sortable="false" hidden="false" editable="true" edittype="select" formatter="select" editoptions="{value:','}" editrules="{required:true}"/>

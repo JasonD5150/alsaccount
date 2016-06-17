@@ -8,8 +8,8 @@ import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionSupport;
 
-import fwp.alsaccount.admin.appservice.AlsSysActivityTypeCodesAS;
-import fwp.alsaccount.hibernate.dao.AlsSysActivityTypeCodes;
+import fwp.alsaccount.appservice.admin.AlsSysActivityTypeCodesAS;
+import fwp.alsaccount.dao.admin.AlsSysActivityTypeCodes;
 import fwp.alsaccount.utils.Utils;
 
 public class AlsSysActivityTypeCodesGridAction extends ActionSupport{

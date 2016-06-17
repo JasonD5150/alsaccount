@@ -20,23 +20,39 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import fwp.alsaccount.admin.appservice.AlsAccCdControlAS;
-import fwp.alsaccount.admin.appservice.AlsAccountMasterAS;
-import fwp.alsaccount.admin.appservice.AlsActivityAccountLinkageAS;
-import fwp.alsaccount.admin.appservice.AlsNonAlsTemplateAS;
-import fwp.alsaccount.admin.appservice.AlsOrgControlAS;
-import fwp.alsaccount.admin.appservice.AlsSysActivityControlAS;
-import fwp.alsaccount.admin.appservice.AlsSysActivityTypeCodesAS;
-import fwp.alsaccount.admin.appservice.AlsSysActivityTypeTranCdsAS;
-import fwp.alsaccount.admin.dto.AlsOrgControlDTO;
-import fwp.alsaccount.hibernate.dao.AlsAccCdControl;
-import fwp.alsaccount.hibernate.dao.AlsAccountMaster;
-import fwp.alsaccount.hibernate.dao.AlsActivityAccountLinkage;
-import fwp.alsaccount.hibernate.dao.AlsOrgControl;
-import fwp.alsaccount.hibernate.dao.AlsProviderInfo;
-import fwp.alsaccount.hibernate.dao.AlsSysActivityControl;
-import fwp.alsaccount.hibernate.dao.AlsSysActivityTypeCodes;
-import fwp.alsaccount.hibernate.dao.AlsSysActivityTypeTranCds;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import fwp.alsaccount.appservice.admin.AlsAccCdControlAS;
+import fwp.alsaccount.appservice.admin.AlsAccountMasterAS;
+import fwp.alsaccount.appservice.admin.AlsActivityAccountLinkageAS;
+import fwp.alsaccount.appservice.admin.AlsNonAlsTemplateAS;
+import fwp.alsaccount.appservice.admin.AlsOrgControlAS;
+import fwp.alsaccount.appservice.admin.AlsSysActivityControlAS;
+import fwp.alsaccount.appservice.admin.AlsSysActivityTypeCodesAS;
+import fwp.alsaccount.appservice.admin.AlsSysActivityTypeTranCdsAS;
+import fwp.alsaccount.dao.admin.AlsAccCdControl;
+import fwp.alsaccount.dao.admin.AlsAccountMaster;
+import fwp.alsaccount.dao.admin.AlsActivityAccountLinkage;
+import fwp.alsaccount.dao.admin.AlsOrgControl;
+import fwp.alsaccount.dao.admin.AlsProviderInfo;
+import fwp.alsaccount.dao.admin.AlsSysActivityControl;
+import fwp.alsaccount.dao.admin.AlsSysActivityTypeCodes;
+import fwp.alsaccount.dao.admin.AlsSysActivityTypeTranCds;
 import fwp.alsaccount.utils.HibHelpers;
 import fwp.alsaccount.utils.Utils;
 import gov.fwp.mt.RPC.FWPJsonRpc.JsonParser;

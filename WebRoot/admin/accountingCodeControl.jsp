@@ -63,7 +63,6 @@
 			}
 			
 			function getGenRpt() {
-		 		
 	 			var postFilters = $("#accCodeControlTable").jqGrid('getGridParam', 'postData').filters;
 	 			$('#frmRptType').val("accCodeControl");
 		 		
@@ -86,7 +85,6 @@
 						rtrnMsg = 'Org cannot be entered if Multiple Orgs selected as Yes';
 		  			}
 				}
-				
 				if(postData.aaccBalancingAmtFlag == 'Y'){
 					if(postData.aaccAllocatedAmt != ''){
 						rtrnstate = false;
@@ -99,14 +97,12 @@
 						rtrnMsg = 'Allocated Amount must be greater than zero, if Balancing Amount Flag is  selected as No';
 					}
 				}
-				
 				if(postData.aamAccount == '002504' || postData.aamAccount == '002505'){
 					if(postData.aaccJlrRequired == 'N'){
 						rtrnstate = false;
 						rtrnMsg = 'Account Codes 002504 and 002505 require a Open Item Key of Yes.'; 
 					}
 				}
-				
 				return [rtrnstate,rtrnMsg]; 
 		    } 
 		</script>

@@ -36,7 +36,7 @@
    
   <br>
   <br>
-	
+
 	<s:url id="alsNonAlsTemplateDivUrl" action="alsNonAlsTemplateDiv_input.action"/>
    	<sj:div id="alsNonAlsTemplateDiv" style='width:800px;'
 	  		href="%{alsNonAlsTemplateDivUrl}" 
@@ -50,6 +50,7 @@
 	  		reloadTopics="reloadAlsNonAlsOrgcontrolDiv" 
 	  		formIds="gridFrm">
 	</sj:div>
+
 	<br>
 	<input id="getRptDialog" 
 			   type="button"

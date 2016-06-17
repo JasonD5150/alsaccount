@@ -9,9 +9,9 @@ import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionSupport;
 
-import fwp.alsaccount.admin.appservice.AlsSysActivityTypeTranCdsAS;
-import fwp.alsaccount.admin.dto.AlsSysActivityTypeTranCdsDTO;
-import fwp.alsaccount.hibernate.dao.AlsSysActivityTypeTranCds;
+import fwp.alsaccount.appservice.admin.AlsSysActivityTypeTranCdsAS;
+import fwp.alsaccount.dao.admin.AlsSysActivityTypeTranCds;
+import fwp.alsaccount.dto.admin.AlsSysActivityTypeTranCdsDTO;
 import fwp.alsaccount.utils.Utils;
 
 public class AlsSysActivityTypeTranCdsGridAction extends ActionSupport{

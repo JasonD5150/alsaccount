@@ -53,7 +53,8 @@
 		rowNum="1000"
 		formIds="gridFrm"
 		reloadTopics="reloadGrids"
-		onBeforeTopics="accCodeControlComplete">
+		onBeforeTopics="accCodeControlComplete"
+		resizable="true">
 
 			<sjg:gridColumn name="gridKey" title ="id" width="55" hidden="true" key="true"/>
 			<sjg:gridColumn name="idPk.asacBudgetYear" index="idPk.asacBudgetYear" title =" Budget Year" width="25" sortable="false" hidden="true"/>

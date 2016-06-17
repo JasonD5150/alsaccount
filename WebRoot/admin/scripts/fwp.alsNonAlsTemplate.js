@@ -191,3 +191,13 @@ function copyTemplates(){
     	$('#copyTemplateFrm').trigger('submit');
     } 
 }
+
+function widthFunction() {
+  	$.each($('.ui-jqgrid'), function(index, value) {
+      	newWidth = $(this).closest(".ui-jqgrid").parent().width(); //grabs the main grid div gets parent div width
+      	tmpId = $(this).prop('id').replace('gbox_',''); // remove the prefix so that have actual grid id
+      
+      	$('#'+tmpId).jqGrid("setGridWidth", newWidth, true); // set grid to width now
+  	});
+
+};

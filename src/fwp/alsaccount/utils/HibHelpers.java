@@ -1,11 +1,10 @@
 package fwp.alsaccount.utils;
 
-import fwp.alsaccount.admin.appservice.AlsMiscAS;
-import fwp.alsaccount.admin.appservice.AlsSysActivityControlAS;
+
+import fwp.alsaccount.appservice.admin.AlsMiscAS;
+import fwp.alsaccount.dao.admin.AlsMisc;
+import fwp.alsaccount.dao.admin.AlsProviderInfo;
 import fwp.alsaccount.hibernate.HibernateSessionFactory;
-import fwp.alsaccount.hibernate.dao.AlsMisc;
-import fwp.alsaccount.hibernate.dao.AlsProviderInfo;
-import fwp.alsaccount.hibernate.dao.AlsSysActivityControl;
 import fwp.security.user.UserDTO;
 
 import java.sql.CallableStatement;
@@ -33,6 +32,9 @@ public class HibHelpers {
 		return HibernateSessionFactory.getSession();
 	}
 	
+	/*
+	 * FISCAL YEAR END PROCESS
+	 */
 	public Boolean accountingTableCopyCompleted() {
 		Boolean rtn = false;
 		Integer tmp = 0;
@@ -82,10 +84,8 @@ public class HibHelpers {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-
 			getSession().close();
 		}
-
 		return rtnCd;
 	}
 	
@@ -109,16 +109,12 @@ public class HibHelpers {
 			
 			tmpClob = cs.getClob(5);
 			
-
 			if (tmpClob != null && tmpClob.length() > 10)
 				outString = tmpClob.getSubString(1, (int) tmpClob.length());
 			else {
 				outString = null;
 			}
-
-			
 			conn.close();
-
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -176,10 +172,8 @@ public class HibHelpers {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-
 			getSession().close();
 		}
-
 		return rtnCd;
 	}
 	
@@ -202,7 +196,6 @@ public class HibHelpers {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-
 			getSession().close();
 		}
 	}
@@ -229,16 +222,39 @@ public class HibHelpers {
 		} catch (RuntimeException re) {
 			System.out.println(re.toString());
 		}
-
 		finally {
 			getSession().close();
 		}
-
 		return rtn.get(0);
 	}
 	
+	@SuppressWarnings("unchecked")
+	public Date getBillPeriodEndDate(Integer year) {
+		Date rtn = null;
+
+		String queryString = "SELECT MAX(APR_BILLING_TO) maxBillingTo "
+						   + "FROM ALS.ALS_PROVIDER_REMITTANCE "
+						   + "WHERE APR_BILLING_TO  <= To_Date('30-JUN-"+year+"')";
+
+		try {
+			Query query = getSession()
+					.createSQLQuery(queryString)
+					.addScalar("maxBillingTo", DateType.INSTANCE);
+
+			rtn = (Date) query.uniqueResult();
+		} catch (RuntimeException re) {
+			System.out.println(re.toString());
+		}
+		finally {
+			getSession().close();
+		}
+		return rtn;
+	}
 	
 	
+	/*
+	 * MISCELLANEOUS
+	 */
 	public String getCurrentBudgetYear() {
 		String curBudgYear = null;
 		
@@ -262,32 +278,32 @@ public class HibHelpers {
 		return curBudgYear;
 	}
 	
-	@SuppressWarnings("unchecked")
-	public Date getBillPeriodEndDate(Integer year) {
-		Date rtn = null;
+	//Upload SABHRS entries into the Summary
+	public Integer uploadSabhrsToSum() {
+		Integer rtnCd = 0;
 
-		String queryString = "SELECT MAX(APR_BILLING_TO) maxBillingTo "
-						   + "FROM ALS.ALS_PROVIDER_REMITTANCE "
-						   + "WHERE APR_BILLING_TO  <= To_Date('30-JUN-"+year+"')";
-
+		Connection conn = ((SessionImpl) getSession()).connection();
 		try {
-			Query query = getSession()
-					.createSQLQuery(queryString)
-					.addScalar("maxBillingTo", DateType.INSTANCE);
+			CallableStatement cs = conn
+					.prepareCall("{call ALS.ALSU0290(?,?)}");
 
-			rtn = (Date) query.uniqueResult();
-		} catch (RuntimeException re) {
-			System.out.println(re.toString());
-		}
+			cs.setDouble(1, rtnCd);
+			cs.registerOutParameter(1, OracleTypes.INTEGER);
+			cs.registerOutParameter(2, OracleTypes.DATE);
+			cs.execute();
 
-		finally {
+			rtnCd = cs.getInt(1);
+
+			conn.close();
+			getSession().close();
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
 			getSession().close();
 		}
-
-		return rtn;
+		return rtnCd;
 	}
-	
-	
-	
 	
 }

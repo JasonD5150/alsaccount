@@ -32,8 +32,6 @@
 				setGridFrm();
 				$.publish('reloadGrids');
 			}
-			
-			
 		</script>
     </fwp:head>
 	
@@ -84,7 +82,7 @@
 		height="400"
 		width="950"
 		rowNum="500" 
->
+		resizable="true">
 
 			<sjg:gridColumn name="amSeqNo" title ="amSeqNo" width="55" hidden="true" key="true"/>
 			<sjg:gridColumn name="amValDesc" index="amValDesc" title ="JLR ID" width="10" sortable="false" hidden="false" editable="true" editrules="{required:true}"/>

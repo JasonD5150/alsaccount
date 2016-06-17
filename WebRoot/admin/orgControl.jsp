@@ -40,7 +40,6 @@
 			}
 			
 			function getGenRpt(id) {
-		 		
 	 			var postFilters = $("#orgControlTable").jqGrid('getGridParam', 'postData').filters;
 	 			$('#frmRptType').val("orgControl");
 		 		

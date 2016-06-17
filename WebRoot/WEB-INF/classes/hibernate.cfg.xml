@@ -16,26 +16,27 @@
 			after_transaction
 		</property>
 
-		<!--  als accounting -->
-		<mapping class="fwp.alsaccount.hibernate.dao.AlsAccountMaster" />
-		<mapping class="fwp.alsaccount.hibernate.dao.AlsAccCdControl" />
-		<mapping class="fwp.alsaccount.hibernate.dao.AlsOrgControl" />
-		<mapping class="fwp.alsaccount.hibernate.dao.AlsNonAlsTemplate" />
+		<!-- ADMIN -->
+		<mapping class="fwp.alsaccount.dao.admin.AlsAccountMaster" />
+		<mapping class="fwp.alsaccount.dao.admin.AlsAccCdControl" />
+		<mapping class="fwp.alsaccount.dao.admin.AlsOrgControl" />
+		<mapping class="fwp.alsaccount.dao.admin.AlsNonAlsTemplate" />
+		<mapping class="fwp.alsaccount.dao.admin.AlsNonAlsOrgControl" />
+		<mapping class="fwp.alsaccount.dao.admin.AlsSysActivityControl" />
 		<mapping
-			class="fwp.alsaccount.hibernate.dao.AlsNonAlsOrgControl" />
+			class="fwp.alsaccount.dao.admin.AlsActivityAccountLinkage" />
 		<mapping
-			class="fwp.alsaccount.hibernate.dao.AlsSysActivityControl" />
+			class="fwp.alsaccount.dao.admin.AlsSysActivityTypeCodes" />
 		<mapping
-			class="fwp.alsaccount.hibernate.dao.AlsActivityAccountLinkage" />
-		<mapping
-			class="fwp.alsaccount.hibernate.dao.AlsSysActivityTypeCodes" />
-		<mapping
-			class="fwp.alsaccount.hibernate.dao.AlsSysActivityTypeTranCds" />
-		<mapping class="fwp.alsaccount.hibernate.dao.AlsMisc" />
-		<mapping
-			class="fwp.alsaccount.hibernate.dao.AlsSabhrsFyeAdjstDtl" />
-		<mapping class="fwp.alsaccount.hibernate.dao.AlsSabhrsFyeAdjst" />
-		<mapping class="fwp.alsaccount.hibernate.dao.AlsProviderInfo" />
+			class="fwp.alsaccount.dao.admin.AlsSysActivityTypeTranCds" />
+		<mapping class="fwp.alsaccount.dao.admin.AlsMisc" />
+		<mapping class="fwp.alsaccount.dao.admin.AlsSabhrsFyeAdjstDtl" />
+		<mapping class="fwp.alsaccount.dao.admin.AlsSabhrsFyeAdjst" />
+		<mapping class="fwp.alsaccount.dao.admin.AlsProviderInfo" />
+
+		<!-- SABHRS -->
+		<mapping class="fwp.alsaccount.dao.sabhrs.AlsTransactionGroup" />
+		<mapping class="fwp.alsaccount.dao.sabhrs.AlsTransactionGrpStatus" />
 
 
 	</session-factory>

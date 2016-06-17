@@ -15,9 +15,7 @@
 	<s:hidden id="frmProviderLst" name="providerLst"/>			
 </form>
 	
-<table>
-	<tr>
-		<td>
+<div style="display: inline-block">
 			<sjg:grid
 				id="alsNonOrgControlDrTable"
 				caption="Debit"
@@ -68,7 +66,8 @@
 				rowNum="1000"
 				formIds="drGridFrm"
 				reloadTopics="reloadGrids"
-				onBeforeTopics="alsNonOrgControlDrComplete">
+				onBeforeTopics="alsNonOrgControlDrComplete"
+				cssStyle="display: inline-block">
 		
 					<sjg:gridColumn name="anaocId" title ="id" width="55" hidden="true" key="true"/>
 					<sjg:gridColumn name="anaocOrg" index="anaocOrg" title =" Org" width="25" sortable="false" hidden="false" editable="true" edittype="select" formatter="select" editoptions="{value:','}" editrules="{required:true}"/>
@@ -79,8 +78,8 @@
 					<sjg:gridColumn name="tempCd" index="tempCd" title ="" width="25" sortable="false" hidden="true"/>
 					
 			</sjg:grid>
-		</td>
-		<td>
+</div>
+<div style="display: inline-block">
 			<sjg:grid
 				id="alsNonOrgControlCrTable"
 				caption="Credit"
@@ -131,7 +130,8 @@
 				rowNum="1000"
 				formIds="crGridFrm"
 				reloadTopics="reloadGrids"
-				onBeforeTopics="alsNonOrgControlCrComplete">
+				onBeforeTopics="alsNonOrgControlCrComplete"
+				cssStyle="display: inline-block">
 		
 					<sjg:gridColumn name="anaocId" title ="id" width="55" hidden="true" key="true"/>
 					<sjg:gridColumn name="anaocOrg" index="anaocOrg" title =" Org" width="25" sortable="false" hidden="false" editable="true" edittype="select" formatter="select" editoptions="{value:','}" editrules="{required:true}"/>
@@ -139,7 +139,5 @@
 					<sjg:gridColumn name="apiProviderName" index="apiProviderName" title =" Provider Name" width="25" sortable="false" hidden="false" editable="false" />
 					
 			</sjg:grid>
-		</td>
-	</tr>
-</table>
-	
+
+	</div>

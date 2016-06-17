@@ -7,11 +7,11 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.shiro.SecurityUtils;
 import org.apache.struts2.interceptor.ServletRequestAware;
 
-import com.opensymphony.xwork2.ActionSupport;
+import com.opensymphony.xwork2.ActionSupport; 
 
-import fwp.alsaccount.admin.appservice.AlsActivityAccountLinkageAS;
-import fwp.alsaccount.hibernate.dao.AlsActivityAccountLinkage;
-import fwp.alsaccount.hibernate.dao.AlsActivityAccountLinkageIdPk;
+import fwp.alsaccount.appservice.admin.AlsActivityAccountLinkageAS;
+import fwp.alsaccount.dao.admin.AlsActivityAccountLinkage;
+import fwp.alsaccount.dao.admin.AlsActivityAccountLinkageIdPk;
 import fwp.security.user.UserDTO;
 
 
@@ -84,11 +84,11 @@ public class AlsActivityAccountLinkGridEditAction extends ActionSupport implemen
 			}
 		}  catch(Exception ex) {
 			 if (ex.toString().contains("ORA-02292")){
-				  errMsg += "Grid has child record(s) which would need to be deleted first!";
+				  errMsg += "Grid has child record(s) which would need to be deleted first.";
 			  } else if (ex.toString().contains("ORA-02291")){
 				  errMsg += "Cannot save the record without System Activity Code being set up first.";
 			  } else if (ex.toString().contains("ORA-00001")){
-				  errMsg += "Unable to add this record due to duplicate";
+				  errMsg += "Unable to add this record due to duplicate.";
 			  }	else {
 				  errMsg += " " + ex.toString();
 			  }

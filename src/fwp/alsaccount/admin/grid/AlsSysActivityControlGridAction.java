@@ -9,11 +9,11 @@ import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionSupport;
 
-import fwp.alsaccount.admin.appservice.AlsSysActivityControlAS;
-import fwp.alsaccount.admin.appservice.AlsSysActivityTypeCodesAS;
-import fwp.alsaccount.admin.appservice.AlsSysActivityTypeTranCdsAS;
-import fwp.alsaccount.admin.dto.AlsSysActivityControlDTO;
-import fwp.alsaccount.hibernate.dao.AlsSysActivityControl;
+import fwp.alsaccount.appservice.admin.AlsSysActivityControlAS;
+import fwp.alsaccount.appservice.admin.AlsSysActivityTypeCodesAS;
+import fwp.alsaccount.appservice.admin.AlsSysActivityTypeTranCdsAS;
+import fwp.alsaccount.dao.admin.AlsSysActivityControl;
+import fwp.alsaccount.dto.admin.AlsSysActivityControlDTO;
 import fwp.alsaccount.utils.Utils;
 
 public class AlsSysActivityControlGridAction extends ActionSupport{

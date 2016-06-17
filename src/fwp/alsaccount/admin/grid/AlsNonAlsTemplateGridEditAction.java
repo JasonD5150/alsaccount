@@ -9,9 +9,9 @@ import org.apache.struts2.interceptor.ServletRequestAware;
 
 import com.opensymphony.xwork2.ActionSupport;
 
-import fwp.alsaccount.admin.appservice.AlsNonAlsTemplateAS;
-import fwp.alsaccount.hibernate.dao.AlsNonAlsTemplate;
-import fwp.alsaccount.hibernate.dao.AlsNonAlsTemplateIdPk;
+import fwp.alsaccount.appservice.admin.AlsNonAlsTemplateAS;
+import fwp.alsaccount.dao.admin.AlsNonAlsTemplate;
+import fwp.alsaccount.dao.admin.AlsNonAlsTemplateIdPk;
 import fwp.alsaccount.utils.HibHelpers;
 import fwp.security.user.UserDTO;
 
@@ -111,11 +111,11 @@ public class AlsNonAlsTemplateGridEditAction extends ActionSupport implements Se
 			}
 		}  catch(Exception ex) {
 			 if (ex.toString().contains("ORA-02292")){
-				  errMsg += "Grid has child record(s) which would need to be deleted first!";
+				  errMsg += "Grid has child record(s) which would need to be deleted first.";
 			  } else if (ex.toString().contains("ORA-02291")){
-				  errMsg += "Cannot save the record without Account being set up in Account Master first.";
+				  errMsg += "Parent record not found.";
 			  } else if (ex.toString().contains("ORA-00001")){
-				  errMsg += "Unable to add this record due to duplicate";
+				  errMsg += "Unable to add this record due to duplicate.";
 			  }	else {
 				  errMsg += " " + ex.toString();
 			  }

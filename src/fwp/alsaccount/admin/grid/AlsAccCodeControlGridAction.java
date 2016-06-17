@@ -8,9 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionSupport;
-import fwp.alsaccount.admin.appservice.AlsAccCdControlAS;
-import fwp.alsaccount.admin.dto.AlsAccCdControlDTO;
-import fwp.alsaccount.hibernate.dao.AlsAccCdControl;
+
+import fwp.alsaccount.appservice.admin.AlsAccCdControlAS;
+import fwp.alsaccount.dao.admin.AlsAccCdControl;
+import fwp.alsaccount.dto.admin.AlsAccCdControlDTO;
 import fwp.alsaccount.utils.Utils;
 
 public class AlsAccCodeControlGridAction extends ActionSupport{

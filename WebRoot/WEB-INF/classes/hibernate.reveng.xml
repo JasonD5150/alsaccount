@@ -2,6 +2,48 @@
 <!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-reverse-engineering-3.0.dtd" >
 
 <hibernate-reverse-engineering>
+	<table name="ALS_TRANSACTION_GRP_STATUS" schema="ALS" class="fwp.alsaccount.dao.sabhrsAlsTransactionGrpStatus"> 
+     <primary-key id-class="fwp.alsaccount.dao.sabhrsAlsTransactionGrpStatusIdPk" property="idPk">
+       <column name="ATG_TRANSACTION_CD" jdbc-type="NUMERIC" type="Integer"></column>
+       <column name="ATGS_GROUP_IDENTIFIER" jdbc-type="VARCHAR" type="String"></column>
+     </primary-key>
+     <column name="ATGS_SUMMARY_STATUS" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ATGS_INTERFACE_STATUS" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ATGS_SUMMARY_DT" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="ATGS_INTERFACE_DT" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="ATGS_SUMMARY_APPROVED_BY" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ATGS_INTERFACE_APPROVED_BY" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ATGS_WHEN_UPLOAD_TO_SUMMARY" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="ATGS_FILE_NAME" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ATGS_REMARKS" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ABC_BANK_CD" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ATGS_ACCOUNTING_DT" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="ATGS_NET_DR_CR" jdbc-type="NUMERIC" type="Double"></column>
+     <column name="ATGS_NON_ALS_FLAG" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ATGS_WHEN_UPLOADED_TO_SABHRS" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="ATGS_DEPOSIT_ID" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ATGS_WHEN_CREATED" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="ATGS_WHO_CREATED" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ATGS_WHEN_MODI" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="ATGS_WHO_MODI" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ATGS_AR_GL_FLAG" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ATGS_FILE_CREATION_DT" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="ATGS_BANK_REFERENCE_NO" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ATGS_FYE_PRIOR_PROGRAM" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="ATGS_FYE_OVERRIDE_PROGRAM" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="ATGS_FYE_OVERRIDE_ACCT_DT" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+   </table>
+	<table name="ALS_TRANSACTION_GROUP" schema="ALS" class="fwp.alsaccount.dao.sabhrsAlsTransactionGroup"> 
+     <primary-key>
+       <column name="ATG_TRANSACTION_CD" jdbc-type="NUMERIC" type="Integer"></column>
+     </primary-key>
+     <column name="ATG_TRANSACTION_CD" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="ATG_TRANSACTION_DESC" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ATG_IDENTIFIER_STRING" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ATG_INTERFACE_FILE" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ATG_WHO_LOG" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ATG_WHEN_LOG" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+   </table>
 	<table name="ALS_SABHRS_FYE_ADJST" schema="ALS" class="fwp.alsaccount.hibernate.dao.AlsSabhrsFyeAdjst"> 
      <primary-key>  
        <column name="ASFA_BUDGET_YEAR" jdbc-type="NUMERIC" type="Integer"></column>

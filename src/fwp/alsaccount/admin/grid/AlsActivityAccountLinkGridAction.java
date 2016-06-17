@@ -10,9 +10,9 @@ import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionSupport;
 
-import fwp.alsaccount.admin.appservice.AlsActivityAccountLinkageAS;
-import fwp.alsaccount.admin.dto.AlsActivityAccountLinkageDTO;
-import fwp.alsaccount.hibernate.dao.AlsActivityAccountLinkage;
+import fwp.alsaccount.appservice.admin.AlsActivityAccountLinkageAS;
+import fwp.alsaccount.dao.admin.AlsActivityAccountLinkage;
+import fwp.alsaccount.dto.admin.AlsActivityAccountLinkageDTO;
 import fwp.alsaccount.utils.Utils;
 
 public class AlsActivityAccountLinkGridAction extends ActionSupport{

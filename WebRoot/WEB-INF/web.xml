@@ -18,7 +18,7 @@
     <filter>
         <filter-name>ShiroFilter</filter-name>
         <filter-class>org.apache.shiro.web.servlet.ShiroFilter</filter-class>
-      </filter>
+    </filter>
 
     <filter-mapping>
         <filter-name>ShiroFilter</filter-name>
@@ -29,16 +29,6 @@
         <dispatcher>ERROR</dispatcher>     
     </filter-mapping>
     
- <!--  servlets -->
-  <servlet>
-        <servlet-name>GenDocCreate</servlet-name>
-        <servlet-class>fwp.alsaccount.servlet.GenDocCreate</servlet-class>
- </servlet>  
- <servlet-mapping>
-  <servlet-name>GenDocCreate</servlet-name>
-  <url-pattern>/genDocCreate</url-pattern>
- </servlet-mapping> 
- 
  <!-- Struts config -->
  <filter>
   <filter-name>struts2</filter-name>
@@ -56,7 +46,18 @@
  </filter-mapping>
  <!-- END Struts config -->
  
-   <welcome-file-list>
+ <!--  SERVLETS -->
+  <servlet>
+        <servlet-name>GenDocCreate</servlet-name>
+        <servlet-class>fwp.alsaccount.servlet.GenDocCreate</servlet-class>
+ </servlet>  
+ <servlet-mapping>
+  <servlet-name>GenDocCreate</servlet-name>
+  <url-pattern>/genDocCreate</url-pattern>
+ </servlet-mapping> 
+ <!-- END SERVLETS -->
+ 
+  <welcome-file-list>
     <welcome-file>main.jsp</welcome-file>
   </welcome-file-list>
 

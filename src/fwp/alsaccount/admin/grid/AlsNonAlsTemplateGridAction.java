@@ -9,9 +9,9 @@ import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionSupport;
 
-import fwp.alsaccount.admin.appservice.AlsNonAlsTemplateAS;
-import fwp.alsaccount.admin.dto.AlsNonAlsTemplateDTO;
-import fwp.alsaccount.hibernate.dao.AlsNonAlsTemplate;
+import fwp.alsaccount.appservice.admin.AlsNonAlsTemplateAS;
+import fwp.alsaccount.dao.admin.AlsNonAlsTemplate;
+import fwp.alsaccount.dto.admin.AlsNonAlsTemplateDTO;
 import fwp.alsaccount.utils.Utils;
 
 public class AlsNonAlsTemplateGridAction extends ActionSupport{
