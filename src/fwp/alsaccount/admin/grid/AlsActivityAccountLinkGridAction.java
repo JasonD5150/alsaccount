@@ -121,7 +121,7 @@ public class AlsActivityAccountLinkGridAction extends ActionSupport{
     	        		    	transCd += dataSplit[g];
     	        		    }
     	        		} 
-    	        		if(transCd != null){
+    	        		if(transCd != null && !"".equals(transCd)){
     	        			where = where + " and (asac_txn_cd = "+transCd;
     	        		}
     	        	}else{
