@@ -37,6 +37,7 @@
 		<!-- SABHRS -->
 		<mapping class="fwp.alsaccount.dao.sabhrs.AlsTransactionGroup" />
 		<mapping class="fwp.alsaccount.dao.sabhrs.AlsTransactionGrpStatus" />
+		<mapping class="fwp.alsaccount.dao.sabhrs.AlsSabhrsEntries" />
 
 
 	</session-factory>

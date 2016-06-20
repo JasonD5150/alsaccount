@@ -13,7 +13,6 @@ import com.opensymphony.xwork2.ActionSupport;
 import fwp.alsaccount.appservice.admin.AlsActivityAccountLinkageAS;
 import fwp.alsaccount.dao.admin.AlsActivityAccountLinkage;
 import fwp.alsaccount.dto.admin.AlsActivityAccountLinkageDTO;
-import fwp.alsaccount.utils.Utils;
 
 public class AlsActivityAccountLinkGridAction extends ActionSupport{
     private static final long   serialVersionUID = 5078264277068533593L;
@@ -76,7 +75,8 @@ public class AlsActivityAccountLinkGridAction extends ActionSupport{
 	    return SUCCESS;
     }
 
-    public String buildStr(String where){
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public String buildStr(String where){
     	try {
             Hashtable<String,Object> jsonFilter = (Hashtable<String, Object>) (new gov.fwp.mt.RPC.FWPJsonRpc().new JsonParser(filters)).FromJson();
             String groupOp = (String) jsonFilter.get("groupOp");

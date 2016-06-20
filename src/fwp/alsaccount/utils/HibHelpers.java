@@ -1,24 +1,16 @@
 package fwp.alsaccount.utils;
 
 
-import fwp.alsaccount.appservice.admin.AlsMiscAS;
-import fwp.alsaccount.dao.admin.AlsMisc;
-import fwp.alsaccount.dao.admin.AlsProviderInfo;
-import fwp.alsaccount.hibernate.HibernateSessionFactory;
-import fwp.security.user.UserDTO;
-
 import java.sql.CallableStatement;
 import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 import oracle.jdbc.internal.OracleTypes;
 
-import org.apache.shiro.SecurityUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.internal.SessionImpl;
@@ -26,6 +18,11 @@ import org.hibernate.transform.Transformers;
 import org.hibernate.type.DateType;
 import org.hibernate.type.IntegerType;
 import org.hibernate.type.StringType;
+
+import fwp.alsaccount.appservice.admin.AlsMiscAS;
+import fwp.alsaccount.dao.admin.AlsMisc;
+import fwp.alsaccount.dao.admin.AlsProviderInfo;
+import fwp.alsaccount.hibernate.HibernateSessionFactory;
 
 public class HibHelpers {
 	public Session getSession() {
@@ -179,8 +176,6 @@ public class HibHelpers {
 	
 	//Fiscal Year End Step Four
 	public void createTransactionGroup(String budgYear) {
-		Integer rtnCd = 0;
-
 		Connection conn = ((SessionImpl) getSession()).connection();
 		try {
 			CallableStatement cs = conn
@@ -228,7 +223,6 @@ public class HibHelpers {
 		return rtn.get(0);
 	}
 	
-	@SuppressWarnings("unchecked")
 	public Date getBillPeriodEndDate(Integer year) {
 		Date rtn = null;
 

@@ -7,7 +7,7 @@ import org.hibernate.HibernateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.opensymphony.xwork2.ActionSupport; 
+import com.opensymphony.xwork2.ActionSupport;
 
 import fwp.alsaccount.appservice.admin.AlsAccountMasterAS;
 import fwp.alsaccount.dao.admin.AlsAccountMaster;

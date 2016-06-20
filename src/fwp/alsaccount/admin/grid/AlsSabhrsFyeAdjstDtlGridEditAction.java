@@ -3,10 +3,6 @@ package fwp.alsaccount.admin.grid;
 import java.util.Calendar;
 import java.util.Date;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.struts2.interceptor.ServletRequestAware;
-
 import com.opensymphony.xwork2.ActionSupport;
 
 import fwp.alsaccount.appservice.admin.AlsSabhrsFyeAdjstDtlAS;
@@ -15,10 +11,9 @@ import fwp.alsaccount.dao.admin.AlsSabhrsFyeAdjstDtlIdPk;
 import fwp.alsaccount.utils.Utils;
 
 
-public class AlsSabhrsFyeAdjstDtlGridEditAction extends ActionSupport implements ServletRequestAware {
+public class AlsSabhrsFyeAdjstDtlGridEditAction extends ActionSupport{
 	private static final long serialVersionUID = 1L;
 	private String oper;
-	private HttpServletRequest request;	
 	private AlsSabhrsFyeAdjstDtlIdPk idPk;
 	private String id;
 	private Integer budgYear;
@@ -87,11 +82,6 @@ public class AlsSabhrsFyeAdjstDtlGridEditAction extends ActionSupport implements
 		return SUCCESS;
 	}
 	
-
-	public void setServletRequest(HttpServletRequest arg0) {
-		request = arg0;		
-	}
-
 	public String getOper() {
 		return oper;
 	}

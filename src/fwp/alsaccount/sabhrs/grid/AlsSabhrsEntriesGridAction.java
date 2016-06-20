@@ -1,6 +1,5 @@
-package fwp.alsaccount.admin.grid;
+package fwp.alsaccount.sabhrs.grid;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,30 +9,38 @@ import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionSupport;
 
-import fwp.alsaccount.appservice.admin.AlsSabhrsFyeAdjstDtlAS;
-import fwp.alsaccount.dao.admin.AlsSabhrsFyeAdjstDtl;
-import fwp.alsaccount.dto.admin.AlsSabhrsFyeAdjstDtlDTO;
+import fwp.alsaccount.appservice.sabhrs.AlsSabhrsEntriesAS;
+import fwp.alsaccount.dao.sabhrs.AlsSabhrsEntries;
+import fwp.alsaccount.dto.sabhrs.AlsSabhrsEntriesDTO;
+import fwp.alsaccount.utils.HibHelpers;
 import fwp.alsaccount.utils.Utils;
 
-public class AlsSabhrsFyeAdjstDtlGridAction extends ActionSupport{
+public class AlsSabhrsEntriesGridAction extends ActionSupport{
     private static final long   serialVersionUID = 5078264277068533593L;
-    private static final Logger    log              = LoggerFactory.getLogger(AlsSabhrsFyeAdjstDtlGridAction.class);
+    private static final Logger    log              = LoggerFactory.getLogger(AlsSabhrsEntriesGridAction.class);
 
-    private List<AlsSabhrsFyeAdjstDtlDTO>    model;
+    private List<AlsSabhrsEntriesDTO>    model;
     private Integer             rows             = 0;
     private Integer             page             = 0;
-	private Integer             total            = 0;
+    private Integer             total            = 0;
     private Integer             records           = 0;
     private String              sord;
     private String              sidx;
     private String              filters;
     private boolean             loadonce         = false;
     private Integer budgYear;
+    private Integer transGrp;
+    private String transIdentifier;
 
-	public String buildgrid(){  
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-    	String srchStr = " where idPk.asfaBudgetYear = "+budgYear;
-    	String orderStr = " order by idPk.asfadAdjstDt";
+	@SuppressWarnings("unchecked")
+	public String buildgrid(){ 
+		HibHelpers hh = new HibHelpers();
+		Integer curBudgYear = Integer.parseInt(hh.getCurrentBudgetYear());
+		
+    	String srchStr = "WHERE asacBudgetYear ="+curBudgYear+" "+
+    					 "AND atgsGroupIdentifier ='"+transIdentifier+"'"+
+    					 "AND atgTransactionCd ="+transGrp;
+    	String orderStr = "";
     	
     	if(filters != null && !"".equals(filters)){
     		//srchStr = buildStr(srchStr);
@@ -43,25 +50,41 @@ public class AlsSabhrsFyeAdjstDtlGridAction extends ActionSupport{
     		}
     	}
     	
-    	AlsSabhrsFyeAdjstDtlAS aaccAS = new AlsSabhrsFyeAdjstDtlAS();
-    	List<AlsSabhrsFyeAdjstDtl> aacc;
+    	AlsSabhrsEntriesAS aaccAS = new AlsSabhrsEntriesAS();
+    	List<AlsSabhrsEntries> aacc;
     	
         try{
         	aacc = aaccAS.findAllByWhere(srchStr+orderStr);
         	
-			setModel(new ArrayList<AlsSabhrsFyeAdjstDtlDTO>());
-			AlsSabhrsFyeAdjstDtlDTO tmp;
+			setModel(new ArrayList<AlsSabhrsEntriesDTO>());
+			AlsSabhrsEntriesDTO tmp;
+
 			
-        	for(AlsSabhrsFyeAdjstDtl aa : aacc){
-				tmp = new AlsSabhrsFyeAdjstDtlDTO();
-				tmp.setGridKey(sdf.format(aa.getIdPk().getAsfadAdjstDt()));
+        	for(AlsSabhrsEntries aa : aacc){
+				tmp = new AlsSabhrsEntriesDTO();
+
+				tmp.setGridKey(aa.getIdPk().getAseWhenEntryPosted()+"_"+aa.getIdPk().getAseSeqNo()+"_"+aa.getIdPk().getAseDrCrCd()+"_"+aa.getIdPk().getAseTxnCdSeqNo());
 				tmp.setIdPk(aa.getIdPk());
+				tmp.setAsacBudgetYear(aa.getAsacBudgetYear());
+				tmp.setAsacReference(aa.getAsacReference());
+				tmp.setAamAccount(aa.getAamAccount());
+				tmp.setAamFund(aa.getAamFund());
+				tmp.setAocOrg(aa.getAocOrg());
+				tmp.setAsacProgram(aa.getAsacProgram());
+				tmp.setAsacSubclass(aa.getAsacSubclass());
+				tmp.setAamBusinessUnit(aa.getAamBusinessUnit());
+				tmp.setAsacProjectGrant(aa.getAsacProjectGrant());
+				tmp.setAseAmt(aa.getAseAmt());
+				tmp.setAsacSystemActivityTypeCd(aa.getAsacSystemActivityTypeCd());
+				tmp.setAsacTxnCd(aa.getAsacTxnCd());
+				tmp.setAseLineDescription(aa.getAseLineDescription());
+				
 				model.add(tmp);
 			}
         }
         catch (HibernateException re) {
         	//System.out.println(re.toString());
-            log.debug("AlsSabhrsFyeAdjstDtl did not load " + re.getMessage());
+            log.debug("AlsSabhrsEntries did not load " + re.getMessage());
         }
         setRows(model.size());
         setRecords(model.size());
@@ -175,6 +198,15 @@ public class AlsSabhrsFyeAdjstDtlGridAction extends ActionSupport{
         this.loadonce = loadonce;
     }
 
+	public List<AlsSabhrsEntriesDTO> getModel() {
+		return model;
+	}
+
+	public void setModel(List<AlsSabhrsEntriesDTO> model) {
+		this.model = model;
+	}
+    
+
     public Integer getBudgYear() {
 		return budgYear;
 	}
@@ -183,21 +215,32 @@ public class AlsSabhrsFyeAdjstDtlGridAction extends ActionSupport{
 		this.budgYear = budgYear;
 	}
 
-
 	/**
-	 * @return the model
+	 * @return the transGrp
 	 */
-	public List<AlsSabhrsFyeAdjstDtlDTO> getModel() {
-		return model;
+	public Integer getTransGrp() {
+		return transGrp;
 	}
 
-
 	/**
-	 * @param model the model to set
+	 * @param transGrp the transGrp to set
 	 */
-	public void setModel(List<AlsSabhrsFyeAdjstDtlDTO> model) {
-		this.model = model;
+	public void setTransGrp(Integer transGrp) {
+		this.transGrp = transGrp;
 	}
 	
+	/**
+	 * @return the transIndetifier
+	 */
+	public String getTransIdentifier() {
+		return transIdentifier;
+	}
+
+	/**
+	 * @param transIndetifier the transIndetifier to set
+	 */
+	public void setTransIdentifier(String transIndetifier) {
+		this.transIdentifier = transIndetifier;
+	}
 
 }

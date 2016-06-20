@@ -11,10 +11,10 @@ import fwp.alsaccount.dao.sabhrs.AlsTransactionGroup;
 import fwp.security.user.UserDTO;
 
 
-public class AlsTransactionGroupGridEditAction extends ActionSupport{
+public class AlsSabhrsEntriesGridEditAction extends ActionSupport{
 	private static final long serialVersionUID = 1L;
 	private String oper;
-	
+
 	private String id;
 	private Integer atgTransactionCd;
 	private String atgBusinessProcessType;

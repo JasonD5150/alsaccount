@@ -6,8 +6,6 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -18,24 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONException;
-import org.json.JSONObject;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 import fwp.alsaccount.appservice.admin.AlsAccCdControlAS;
 import fwp.alsaccount.appservice.admin.AlsAccountMasterAS;
@@ -55,7 +35,6 @@ import fwp.alsaccount.dao.admin.AlsSysActivityTypeCodes;
 import fwp.alsaccount.dao.admin.AlsSysActivityTypeTranCds;
 import fwp.alsaccount.utils.HibHelpers;
 import fwp.alsaccount.utils.Utils;
-import gov.fwp.mt.RPC.FWPJsonRpc.JsonParser;
 
 
 
@@ -68,9 +47,9 @@ public class GenDocCreate extends HttpServlet {
      try {
        	 
        	String rptType = request.getParameter("rptType");
-       	String genToOpt = request.getParameter("genToOpt");
+       	/*String genToOpt = request.getParameter("genToOpt");
        	String rptBody = request.getParameter("rptBody");
-       	String fileName = request.getParameter("reportName");
+       	String fileName = request.getParameter("reportName");*/
        	
        	if (rptType.equals("sysActivityControl")){
        		sysActivityControlCSV(request, response);
@@ -98,6 +77,7 @@ public class GenDocCreate extends HttpServlet {
 
 	
 	
+	@SuppressWarnings("unchecked")
 	public void sysActivityControlCSV(HttpServletRequest request,HttpServletResponse htmlResp) throws ParseException, IOException, JSONException {	
 
 		AlsSysActivityControlAS asacAS = new AlsSysActivityControlAS();
@@ -131,12 +111,11 @@ public class GenDocCreate extends HttpServlet {
 						tmp.getAsacProgram());
 		}	
 
-		String genToOpt = request.getParameter("genToOpt");
-
 		genCSVCreate("sysActivityControlCSV", hold, htmlResp);	
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void accountMasterCSV(HttpServletRequest request,HttpServletResponse htmlResp) throws ParseException, IOException, JSONException {	
 
 		AlsAccountMasterAS aamAS = new AlsAccountMasterAS();
@@ -168,12 +147,11 @@ public class GenDocCreate extends HttpServlet {
 						tmp.getAamAccountDesc().replace(",",""));
 		}	
 
-		String genToOpt = request.getParameter("genToOpt");
-
 		genCSVCreate("accountMasterCSV", hold, htmlResp);	
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void activityAccountLinkageCSV(HttpServletRequest request,HttpServletResponse htmlResp) throws ParseException, IOException, JSONException {	
 
 		AlsActivityAccountLinkageAS appSer = new AlsActivityAccountLinkageAS();
@@ -217,12 +195,11 @@ public class GenDocCreate extends HttpServlet {
 						Utils.nullFix(tmp.getAaalAccountingCdFlag()));
 		}	
 
-		String genToOpt = request.getParameter("genToOpt");
-
 		genCSVCreate("accountMasterCSV", hold, htmlResp);	
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void appendixMCSV(HttpServletRequest request,HttpServletResponse htmlResp) throws ParseException, IOException, JSONException {	
 		SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm");
 		
@@ -275,12 +252,11 @@ public class GenDocCreate extends HttpServlet {
 			hold.append(tmp.getAsattcWhenModi() != null ? formatter.format(tmp.getAsattcWhenModi()) : "");
 		}
 
-		String genToOpt = request.getParameter("genToOpt");
-
 		genCSVCreate("appendixMCSV", hold, htmlResp);	
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void accCodeControlCSV(HttpServletRequest request,HttpServletResponse htmlResp) throws ParseException, IOException, JSONException {	
 
 		AlsAccCdControlAS appSer = new AlsAccCdControlAS();
@@ -326,12 +302,11 @@ public class GenDocCreate extends HttpServlet {
 						Utils.nullFix(tmp.getAaccRemarks()));
 		}	
 
-		String genToOpt = request.getParameter("genToOpt");
-
 		genCSVCreate("accCodeControlCSV", hold, htmlResp);	
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void orgControlCSV(HttpServletRequest request,HttpServletResponse htmlResp) throws ParseException, IOException, JSONException {	
 
 		AlsOrgControlAS appSer = new AlsOrgControlAS();
@@ -369,8 +344,6 @@ public class GenDocCreate extends HttpServlet {
 						api.getArBusinessRegion()+","+
 						api.getApiBusinessNm());
 		}	
-
-		String genToOpt = request.getParameter("genToOpt");
 
 		genCSVCreate("orgControlCSV", hold, htmlResp);	
 		
@@ -532,6 +505,7 @@ public class GenDocCreate extends HttpServlet {
 		}
 	}
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public String buildStr(String where,String filters){
     	try {
             Hashtable<String,Object> jsonFilter = (Hashtable<String, Object>) (new gov.fwp.mt.RPC.FWPJsonRpc().new JsonParser(filters)).FromJson();

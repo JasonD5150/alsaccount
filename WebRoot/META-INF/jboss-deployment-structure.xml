@@ -12,6 +12,7 @@
 		<module name="fwp.dal.alsaccount"/>
  		<module name="org.apache.commons.lang"/>
  		<module name="fwp.common.jsonOrg"/>
+ 		<module name="fwp.custom.JsonRpc"/>
      </dependencies>
      <exclude-subsystems>
         <subsystem name="logging" />

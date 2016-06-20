@@ -11,7 +11,7 @@ import fwp.alsaccount.dao.sabhrs.AlsTransactionGroup;
 import fwp.security.user.UserDTO;
 
 
-public class AlsTransactionGroupGridEditAction extends ActionSupport{
+public class AlsTransactionGrpStatusGridEditAction extends ActionSupport{
 	private static final long serialVersionUID = 1L;
 	private String oper;
 	

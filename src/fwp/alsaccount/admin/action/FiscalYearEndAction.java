@@ -28,12 +28,15 @@ public class FiscalYearEndAction extends ActionSupport{
 	public String input(){
 		HibHelpers hh = new HibHelpers();
 		ListUtils lu = new ListUtils();
-		
-		setCopyAccTablesCompleted(hh.accountingTableCopyCompleted());
-		setCopyAlsNonAlsTemplatesCompleted(hh.alsNonAlsTemplateCopyCompleted());
-		setCurBudgetYear(hh.getCurrentBudgetYear());
-		budgetYearSel = lu.getBudgetYearList();
-		
+		try {
+			setCopyAccTablesCompleted(hh.accountingTableCopyCompleted());
+			setCopyAlsNonAlsTemplatesCompleted(hh.alsNonAlsTemplateCopyCompleted());
+			setCurBudgetYear(hh.getCurrentBudgetYear());
+			budgetYearSel = lu.getBudgetYearList();
+		} catch (Exception e) {
+			//System.out.println(e.getMessage());
+			log.debug(e.getMessage());
+		}		
 		return SUCCESS;
 	}
 	

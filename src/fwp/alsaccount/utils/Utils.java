@@ -1,12 +1,5 @@
 package fwp.alsaccount.utils;
 
-import fwp.security.user.UserDTO;
-
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
-
-import javax.servlet.http.HttpServletRequest;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -17,11 +10,26 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
+
+import fwp.security.user.UserDTO;
+
 
 public class Utils {
+	
+	public static Integer YearFromTimestamp(Timestamp inDate){
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(inDate.getTime());
+		Integer rtn = cal.get(Calendar.YEAR);
+		return rtn;
+	}
 
 	public static Timestamp StrToTimestamp(String inDate){
 		DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
@@ -182,7 +190,7 @@ public class Utils {
        else return in;
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static String buildStr(String where, String filters){
     	try {
             Hashtable<String,Object> jsonFilter = (Hashtable<String, Object>) (new gov.fwp.mt.RPC.FWPJsonRpc().new JsonParser(filters)).FromJson();

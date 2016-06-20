@@ -14,6 +14,16 @@
             <result name="error">sabhrs/uploadSabhrsToSummary.jsp</result>
             <result name="input">sabhrs/uploadSabhrsToSummary.jsp</result>         
       </action>    	
+      <action name="genNonAlsEntries_*" method="{1}" class="fwp.alsaccount.action.GenericAction">
+            <result>sabhrs/genNonAlsEntries.jsp</result>
+            <result name="error">sabhrs/genNonAlsEntries.jsp</result>
+            <result name="input">sabhrs/genNonAlsEntries.jsp</result>         
+      </action>
+      <action name="accMasterDialog_*" method="{1}" class="fwp.alsaccount.action.GenericAction">
+            <result>sabhrs/include/nonAlsMasterDialog.jsp</result>
+            <result name="error">sabhrs/include/nonAlsMasterDialog.jsp</result>
+            <result name="input">sabhrs/include/nonAlsMasterDialog.jsp</result>         
+      </action>
 	</package>
  
  	<package name="fwp.alsaccount.sabhrs.grid" namespace="/alsAccount" extends="json-default">     
@@ -21,6 +31,26 @@
             <result type="json" />
         </action>       
         <action name="transGroupMaintGridEdit_*" class="fwp.alsaccount.sabhrs.grid.AlsTransactionGroupGridEditAction">
+			<result type="json"></result>
+            <result type="json" name="input"></result>
+            <result name="error_json" type="json" >
+               <param name="ignoreHierarchy">false</param>
+            </result>
+		</action>
+		<action name="transGroupDtlsGrid_*" class="fwp.alsaccount.sabhrs.grid.AlsTransactionGrpStatusGridAction">
+            <result type="json" />
+        </action>       
+        <action name="transGroupDtlsGridEdit_*" class="fwp.alsaccount.sabhrs.grid.AlsTransactionGrpStatusGridEditAction">
+			<result type="json"></result>
+            <result type="json" name="input"></result>
+            <result name="error_json" type="json" >
+               <param name="ignoreHierarchy">false</param>
+            </result>
+		</action>
+		<action name="alsSabhrsEntriesGrid_*" class="fwp.alsaccount.sabhrs.grid.AlsSabhrsEntriesGridAction">
+            <result type="json" />
+        </action>       
+        <action name="alsSabhrsEntriesGridEdit_*" class="fwp.alsaccount.sabhrs.grid.AlsSabhrsEntriesGridEditAction">
 			<result type="json"></result>
             <result type="json" name="input"></result>
             <result name="error_json" type="json" >

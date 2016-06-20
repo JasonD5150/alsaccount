@@ -12,6 +12,7 @@ import com.opensymphony.xwork2.ActionSupport;
 import fwp.alsaccount.appservice.admin.AlsNonAlsTemplateAS;
 import fwp.alsaccount.dao.admin.AlsNonAlsTemplate;
 import fwp.alsaccount.dto.admin.AlsNonAlsTemplateDTO;
+import fwp.alsaccount.utils.HibHelpers;
 import fwp.alsaccount.utils.Utils;
 
 public class AlsNonAlsTemplateGridAction extends ActionSupport{
@@ -30,7 +31,11 @@ public class AlsNonAlsTemplateGridAction extends ActionSupport{
     private Integer budgYear;
 
 	@SuppressWarnings("unchecked")
-	public String buildgrid(){    	
+	public String buildgrid(){  
+		if(budgYear == null){
+			HibHelpers hh = new HibHelpers();
+			budgYear = Integer.parseInt(hh.getCurrentBudgetYear());
+		}
     	String srchStr = " where idPk.anatBudgetYear = "+budgYear;
     	String orderStr = " order by idPk.anatCd";
     	

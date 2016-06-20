@@ -2,12 +2,9 @@ package fwp.alsaccount.admin.grid;
 
 import java.sql.Timestamp;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.shiro.SecurityUtils;
-import org.apache.struts2.interceptor.ServletRequestAware;
 
-import com.opensymphony.xwork2.ActionSupport; 
+import com.opensymphony.xwork2.ActionSupport;
 
 import fwp.alsaccount.appservice.admin.AlsAccCdControlAS;
 import fwp.alsaccount.dao.admin.AlsAccCdControl;
@@ -15,10 +12,9 @@ import fwp.alsaccount.dao.admin.AlsAccCdControlIdPk;
 import fwp.security.user.UserDTO;
 
 
-public class AlsAccCodeControlGridEditAction extends ActionSupport implements ServletRequestAware {
+public class AlsAccCodeControlGridEditAction extends ActionSupport{
 	private static final long serialVersionUID = 1L;
 	private String oper;
-	private HttpServletRequest request;	
 	
 	private AlsAccCdControlIdPk idPk = new AlsAccCdControlIdPk();
 	private String id;
@@ -119,11 +115,6 @@ public class AlsAccCodeControlGridEditAction extends ActionSupport implements Se
 		return SUCCESS;
 	}
 	
-
-	public void setServletRequest(HttpServletRequest arg0) {
-		request = arg0;		
-	}
-
 	public String getOper() {
 		return oper;
 	}

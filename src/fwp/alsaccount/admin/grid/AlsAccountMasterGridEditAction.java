@@ -1,27 +1,20 @@
 package fwp.alsaccount.admin.grid;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.struts2.interceptor.ServletRequestAware;
 
 import com.opensymphony.xwork2.ActionSupport;
 
 import fwp.alsaccount.appservice.admin.AlsAccountMasterAS;
 import fwp.alsaccount.dao.admin.AlsAccountMaster;
 import fwp.alsaccount.dao.admin.AlsAccountMasterIdPk;
-import fwp.alsaccount.utils.HibHelpers;
 import fwp.security.user.UserDTO;
 
 
-public class AlsAccountMasterGridEditAction extends ActionSupport implements ServletRequestAware {
+public class AlsAccountMasterGridEditAction extends ActionSupport{
 	private static final long serialVersionUID = 1L;
-	private String oper;
-	private HttpServletRequest request;	
+	private String oper;	
 	
 	private AlsAccountMasterIdPk idPk = new AlsAccountMasterIdPk();
 	private String aamAccountDesc;
@@ -91,11 +84,6 @@ public class AlsAccountMasterGridEditAction extends ActionSupport implements Ser
 		return SUCCESS;
 	}
 	
-	
-	public void setServletRequest(HttpServletRequest arg0) {
-		request = arg0;		
-	}
-
 	public String getOper() {
 		return oper;
 	}

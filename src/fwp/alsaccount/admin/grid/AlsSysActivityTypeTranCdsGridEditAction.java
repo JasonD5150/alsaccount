@@ -2,16 +2,9 @@ package fwp.alsaccount.admin.grid;
 
 import java.sql.Timestamp;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.shiro.SecurityUtils;
-import org.apache.struts2.interceptor.ServletRequestAware;
 
 import com.opensymphony.xwork2.ActionSupport;
-
-
-
-
 
 import fwp.alsaccount.appservice.admin.AlsSysActivityTypeTranCdsAS;
 import fwp.alsaccount.dao.admin.AlsSysActivityTypeTranCds;
@@ -19,10 +12,9 @@ import fwp.alsaccount.dao.admin.AlsSysActivityTypeTranCdsIdPk;
 import fwp.security.user.UserDTO;
 
 
-public class AlsSysActivityTypeTranCdsGridEditAction extends ActionSupport implements ServletRequestAware {
+public class AlsSysActivityTypeTranCdsGridEditAction extends ActionSupport{
 	private static final long serialVersionUID = 1L;
 	private String oper;
-	private HttpServletRequest request;	
 	
 	private AlsSysActivityTypeTranCdsIdPk idPk = new AlsSysActivityTypeTranCdsIdPk();
 	private String id;
@@ -89,11 +81,6 @@ public class AlsSysActivityTypeTranCdsGridEditAction extends ActionSupport imple
 		return SUCCESS;
 	}
 	
-	
-	public void setServletRequest(HttpServletRequest arg0) {
-		request = arg0;		
-	}
-
 	public String getOper() {
 		return oper;
 	}

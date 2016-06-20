@@ -6,12 +6,10 @@ import com.opensymphony.xwork2.ActionSupport;
 
 import fwp.alsaccount.hibernate.utils.ProcRtrn;
 import fwp.alsaccount.utils.HibHelpers;
-import javax.servlet.http.HttpServletRequest;
 
 public class FiscalYearEndJson extends ActionSupport {
 
 	private static final long serialVersionUID = 1L;
-	private HttpServletRequest request;
 
 	private String yearEndStep;
 	private ProcRtrn rtrn;
@@ -103,10 +101,6 @@ public class FiscalYearEndJson extends ActionSupport {
 
 	public String getJSON() {
 		return input();
-	}
-
-	public void setServletRequest(HttpServletRequest arg0) {
-		request = arg0;
 	}
 
 	/**
