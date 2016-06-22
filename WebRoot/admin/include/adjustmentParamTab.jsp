@@ -6,17 +6,18 @@
 <%@ taglib prefix="sjg" uri="/struts-jquery-grid-tags" %>
 
 
-<h5>
+<h5> Note: Run after July 1st and/or after BPE that includes July 1st.
 </h5>
 <s:actionerror theme="jquery"/>
 <table>
 	<tr>
-		<td class="label">Budget Year:</td>
+		<td class="label">Prior Budget Year:</td>
 		<td><s:textfield id="budgYear" name="budgYear" theme="simple" size='4' maxlength='4' title="Budget Year" placeholder='YYYY' onblur="saveFyeAdjst()"/></td>
 	</tr>
 	<tr>
 		<td class="label">Bill Period End Date:</td>
 		<td><s:textfield id="billPeriodEnd" name="billPeriodEnd" theme="simple" size='12' maxlength='10' title="Bill Period End Date" placeholder='MM/DD/YYYY'/></td>
+		<td>Last BPE in June(06/25/2015)</td>
 	</tr>
 	<tr>
 		<td class="label">Fiscal Year End:</td>
@@ -33,8 +34,9 @@
 	<s:textfield id="tranGrpNmNewFY" name="tranGrpNmNewFY" title="New Fiscal Year" label="New Fiscal Year" disabled="true"/>
 </fieldset>
 <br>
-<h5> Note: If necessary to rerun for same budget year check with support staff prior to running, to ensure duplicates aren't created.<br>
-The ALSs sales for the following days will be included in the FYE interface file.
+<h5> Note: Add dates after last BPE that are still in June(6/26-6/30 2015)<br>
+	 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If necessary to rerun for same budget year check with support staff prior to running, to ensure duplicates aren't created.<br>
+	 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The ALSs sales for the following days will be included in the FYE interface file.
 </h5>
 	<s:url id="alsSabhrsFyeAdjstDtlGrid" action="alsAccount/alsSabhrsFyeAdjstDtlGrid_buildgrid" />
 	<s:url id="alsSabhrsFyeAdjstDtlGridEdit" action="alsAccount/alsSabhrsFyeAdjstDtlGridEdit_execute" />    

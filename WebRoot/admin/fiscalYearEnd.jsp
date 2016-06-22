@@ -88,8 +88,21 @@
 			</h5>
 			<table>
 				<tr>
+					<td class="label">Usage From</td>
+					<td class="label">Usage To</td>
+					<td class="label">Item Type</td>
+					<td></td>
+					<td class="label">Current Budget Year</td>
+				<tr>
+					<td><input type='text' id='updateAccCdFrom' placeholder='MM/DD/YYYY' size='12' maxlength='10' onchange="testDate(this)"/></td>	
+					<td><input type='text' id='updateAccCdTo' placeholder='MM/DD/YYYY' size='12' maxlength='10' onchange="testDate(this)"/></td>
+					<td><input type='text' id='updateItemType' size='12' maxlength='10' /></td>
+					<td><input type='text' id='updateItemTypeDesc' disabled/></td>
+					<td><input type='text' id='updateBudgetYear' size='5' maxlength='4' /></td>				
+				</tr>
+				<tr>
 					<td class="label">Item Type List:</td>
-					<td><s:url id="itemTypeListUrl" action="getItemTypeList" /> 
+					<td colspan="4"><s:url id="itemTypeListUrl" action="getItemTypeList" /> 
 						<sj:select id="itemTypeList"
 							   name="itemTypeList"
 							   href="%{itemTypeListUrl}"
@@ -102,22 +115,6 @@
 							   formIds="itemTypeFrm"
 							   reloadTopics="reloadItemTypes"
 							   onChangeTopics="itemTypeSelected"/></td>
-				</tr>
-			</table>
-			<br>
-			<table>
-				<tr>
-					<td class="label">Usage From</td>
-					<td class="label">Usage To</td>
-					<td class="label">Item Type</td>
-					<td></td>
-					<td class="label">Current Budget Year</td>
-				<tr>
-					<td><input type='text' id='updateAccCdFrom' placeholder='MM/DD/YYYY' size='12' maxlength='10' onchange="testDate(this)"/></td>	
-					<td><input type='text' id='updateAccCdTo' placeholder='MM/DD/YYYY' size='12' maxlength='10' onchange="testDate(this)"/></td>
-					<td><input type='text' id='updateItemType' size='12' maxlength='10' /></td>
-					<td><input type='text' id='updateItemTypeDesc' disabled/></td>
-					<td><input type='text' id='updateBudgetYear' size='5' maxlength='4' /></td>				
 				</tr>
 				<tr><td><br/></td></tr>
 				<tr>
