@@ -2,6 +2,42 @@
 <!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-reverse-engineering-3.0.dtd" >
 
 <hibernate-reverse-engineering>
+	<table name="ALS_SABHRS_ENTRIES" schema="ALS" class="fwp.alsaccount.dao.sabhrsAlsSabhrsEntries"> 
+     <primary-key id-class="fwp.alsaccount.dao.sabhrsAlsSabhrsEntriesIdPk" property="idPk">
+       <column name="ASE_WHEN_ENTRY_POSTED" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+       <column name="ASE_SEQ_NO" jdbc-type="NUMERIC" type="Integer"></column>
+       <column name="ASE_DR_CR_CD" jdbc-type="VARCHAR" type="String"></column>
+       <column name="ASE_TXN_CD_SEQ_NO" jdbc-type="NUMERIC" type="Integer"></column>
+     </primary-key>
+     <column name="ASAC_BUDGET_YEAR" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="ASAC_SYSTEM_ACTIVITY_TYPE_CD" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ASAC_TXN_CD" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AAM_ACCOUNT" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AAM_BUSINESS_UNIT" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AAM_FUND" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AOC_ORG" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ASAC_PROGRAM" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="ASAC_SUBCLASS" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ASAC_PROJECT_GRANT" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ASAC_REFERENCE" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="ASE_AMT" jdbc-type="NUMERIC" type="Double"></column>
+     <column name="ASE_ALLOW_UPLOAD_TO_SUMMARY" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ASE_WHEN_UPLOADED_TO_SUMMARY" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="ASES_SEQ_NO" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="API_PROVIDER_NO" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="APR_BILLING_FROM" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="APR_BILLING_TO" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="AIAFA_SEQ_NO" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="ASE_WHO_LOG" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ASE_WHEN_LOG" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="ASE_WHEN_UPLOADED_TO_SUMM" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="ATG_TRANSACTION_CD" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="ATGS_GROUP_IDENTIFIER" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ASE_NON_ALS_FLAG" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ASE_LINE_DESCRIPTION" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ATI_TRIBE_CD" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ANAT_CD" jdbc-type="VARCHAR" type="String"></column>
+    </table>
 	<table name="ALS_TRANSACTION_GRP_STATUS" schema="ALS" class="fwp.alsaccount.dao.sabhrsAlsTransactionGrpStatus"> 
      <primary-key id-class="fwp.alsaccount.dao.sabhrsAlsTransactionGrpStatusIdPk" property="idPk">
        <column name="ATG_TRANSACTION_CD" jdbc-type="NUMERIC" type="Integer"></column>

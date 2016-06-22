@@ -25,6 +25,9 @@ public class UploadSabhrsEntriesToSumJson extends ActionSupport {
 			if (returnCode == -1) {
 				rtrn.setProcStatus("ERROR");
 				rtrn.setProcMsg("There were some errors while uploading SABHRS Entries, Please check the Error Log.");
+			} else if (returnCode == -2){
+				rtrn.setProcStatus("ERROR");
+				rtrn.setProcMsg("No data found to upload.");
 			} else {
 				rtrn.setProcStatus("SUCCESS");
 				rtrn.setProcMsg("SABHRS Entries uploaded successfully.");

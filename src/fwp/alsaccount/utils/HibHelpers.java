@@ -121,6 +121,36 @@ public class HibHelpers {
 		return outString;
 	}
 	
+	public String updateAccountingCodesAll() {
+		String outString = "";
+		Clob tmpClob = null;
+		Connection conn = ((SessionImpl) getSession()).connection();
+		try {
+			CallableStatement cs = conn
+					.prepareCall("{call als.als_accounting.als_update_account_codes_all(?)}");
+
+			cs.setClob(1, tmpClob);
+
+			cs.registerOutParameter(1, OracleTypes.CLOB);
+			cs.execute();
+			
+			tmpClob = cs.getClob(1);
+			
+			if (tmpClob != null && tmpClob.length() > 10)
+				outString = tmpClob.getSubString(1, (int) tmpClob.length());
+			else {
+				outString = null;
+			}
+			conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			getSession().close();
+		}
+		return outString;
+	}
+	
 	public Boolean alsNonAlsTemplateCopyCompleted() {
 		Boolean rtn = false;
 		Integer tmp = 0;
@@ -270,6 +300,29 @@ public class HibHelpers {
 			getSession().close();
 		}
 		return curBudgYear;
+	}
+	
+	public String getCurrentBudgetYearChangeDt() {
+		String curBudgYearChangeDt = null;
+		
+		AlsMiscAS appSer = new AlsMiscAS();
+		List<AlsMisc> tmpLst = new ArrayList<AlsMisc>();
+		AlsMisc tmp = new AlsMisc();
+		
+		try {
+			String queryString =  " WHERE amKey1 = 'BUDGET YEAR CHANGE DATE'";
+			tmpLst = appSer.findAllByWhere(queryString);
+			if(!tmpLst.isEmpty()){
+				tmp = tmpLst.get(0);
+				curBudgYearChangeDt = tmp.getAmParVal();			
+			}
+		} catch (RuntimeException re) {
+			System.out.println(re.toString());
+		}
+		finally {
+			getSession().close();
+		}
+		return curBudgYearChangeDt;
 	}
 	
 	//Upload SABHRS entries into the Summary

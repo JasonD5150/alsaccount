@@ -10,6 +10,7 @@ $(document).ready(function() {
 	$('#updateAccCdFrom').datepicker();
 	$('#updateAccCdTo').datepicker();
 	$('#updateBudgetYear').val($('#curBudgetYear').val());
+	$('#updateBudgetYearChangeDt').val($('#curBudgetYearChangeDt').val());
 	$('#adjParamFrmYear').val($('#budgYear').val());
 	
 
@@ -60,6 +61,7 @@ function fiscalYearEndAction(id) {
 	$('#upfStep').val($('#updateAccCdFrom').val());
 	$('#uptStep').val($('#updateAccCdTo').val());
 	$('#itcStep').val($('#updateItemType').val());
+	$('#budgYearChngDtStep').val($('#updateBudgetYearChangeDt').val());
 
 	if (id == 'updateAccCd') {
 		$('#budgYearStep').val($('#updateBudgetYear').val());
@@ -99,6 +101,7 @@ function fiscalYearEndAction(id) {
 					$('#frmRptBody').val(data.rtrn.procMsg)
 
 					$('#rptFrm').attr('action', 'genDocCreate');
+					$('#rptFrm').attr('method', 'post');
 					$('#rptFrm').submit();
 				}
 			} else {
@@ -189,6 +192,15 @@ function resetAdjstParamTab(){
 	$.publish('reloadAdjParam');
 }
 
-
+function stepTwoToggle(id){
+	if(id = 'indvDiv'){
+		$('#stepTwoAllDiv').toggle("false");
+		$('#stepTwoIndvDiv').toggle("true");
+	}else{
+		$('#stepTwoIndvDiv').toggle("false");
+		$('#stepTwoAllDiv').toggle("true");
+	}
+	
+}
 
 

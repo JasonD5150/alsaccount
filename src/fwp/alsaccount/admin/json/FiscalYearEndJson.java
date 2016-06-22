@@ -1,9 +1,13 @@
 package fwp.alsaccount.admin.json;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.opensymphony.xwork2.ActionSupport;
 
+import fwp.alsaccount.appservice.admin.AlsMiscAS;
+import fwp.alsaccount.dao.admin.AlsMisc;
 import fwp.alsaccount.hibernate.utils.ProcRtrn;
 import fwp.alsaccount.utils.HibHelpers;
 
@@ -17,6 +21,7 @@ public class FiscalYearEndJson extends ActionSupport {
 	private Date upt;
 	private String itc;
 	private String budgYear;
+	private String budgYearChangeDt;
 
 	public FiscalYearEndJson() {
 
@@ -38,7 +43,7 @@ public class FiscalYearEndJson extends ActionSupport {
 					rtrn.setProcMsg("Copy Accounting Tables finished successfully.");
 					rtrn.setFieldName("HTML");
 				}					
-			} else if ("updateAccCd".equals(yearEndStep)) {//STEP TWO Update Usage Period
+			} else if ("updateAccCd".equals(yearEndStep)) {//STEP TWO Update Item Accounting Codes
 				if("0".equals(itc)) {
 					itc = null;
 				}
@@ -48,17 +53,14 @@ public class FiscalYearEndJson extends ActionSupport {
 					rtrn.setProcMsg(rtn);
 					rtrn.setFieldName("REPORT");
 				}
-			} else if ("copyAlsNonAlsTemplates".equals(yearEndStep)) {//STEP THREE Copy Templates
-				returnCode = hh.alsNonAlsTemplateCopy();
-				if (returnCode == -1) {
-					rtrn.setProcStatus("ERROR");
-					rtrn.setProcMsg("Copy Als Non Als Templates did not finish successfully.");
-				} else {
+			} else if ("updateAccCdAll".equals(yearEndStep)) {//STEP TWO Update Item Accounting Codes ALL
+				String rtn = hh.updateAccountingCodesAll();
+				if (rtn != null) {
 					rtrn.setProcStatus("SUCCESS");
-					rtrn.setProcMsg("Copy Als Non Als Templates finished successfully.");
-					rtrn.setFieldName("HTML");
+					rtrn.setProcMsg(rtn);
+					rtrn.setFieldName("REPORT");
 				}
-			} else if ("createTransGroup".equals(yearEndStep)) {//STEP FOUR Adjustment Parameters
+			} else if ("createTransGroup".equals(yearEndStep)) {//STEP THREE Generate FY Adjusted Entries
 				if("".equals(budgYear) || budgYear == null){
 					rtrn.setProcStatus("ERROR");
 					rtrn.setProcMsg("Budget Year is required.");
@@ -68,7 +70,34 @@ public class FiscalYearEndJson extends ActionSupport {
 					rtrn.setProcMsg("Transaction group created successfully.");
 					rtrn.setFieldName("HTML");
 				}
-			}
+			} else if ("updateBudgYrChngDt".equals(yearEndStep)) {//STEP FOUR Update Budget Year Change Date in als_misc
+				if("".equals(budgYearChangeDt) || budgYearChangeDt == null){
+					rtrn.setProcStatus("ERROR");
+					rtrn.setProcMsg("Budget Year Change Date is required.");
+				}else{
+					String where = " WHERE amKey1 = 'BUDGET YEAR CHANGE DATE'";
+					AlsMiscAS amAS = new AlsMiscAS();
+					List<AlsMisc> amList  = new ArrayList<AlsMisc>();
+					AlsMisc tmp  = new AlsMisc();
+					amList = amAS.findAllByWhere(where);
+					tmp = amList.get(0);
+					tmp.setAmParVal(budgYearChangeDt);
+					amAS.save(tmp);
+					rtrn.setProcStatus("SUCCESS");
+					rtrn.setProcMsg("Budget Year Change Date successfully updated.");
+					rtrn.setFieldName("HTML");
+				}
+			} else if ("copyAlsNonAlsTemplates".equals(yearEndStep)) {//STEP FIVE Copy Templates
+				returnCode = hh.alsNonAlsTemplateCopy();
+				if (returnCode == -1) {
+					rtrn.setProcStatus("ERROR");
+					rtrn.setProcMsg("Copy Als Non Als Templates did not finish successfully.");
+				} else {
+					rtrn.setProcStatus("SUCCESS");
+					rtrn.setProcMsg("Copy Als Non Als Templates finished successfully.");
+					rtrn.setFieldName("HTML");
+				}
+			} 
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -176,5 +205,19 @@ public class FiscalYearEndJson extends ActionSupport {
 	 */
 	public void setItc(String itc) {
 		this.itc = itc;
+	}
+
+	/**
+	 * @return the budgYearChangeDt
+	 */
+	public String getBudgYearChangeDt() {
+		return budgYearChangeDt;
+	}
+
+	/**
+	 * @param budgYearChangeDt the budgYearChangeDt to set
+	 */
+	public void setBudgYearChangeDt(String budgYearChangeDt) {
+		this.budgYearChangeDt = budgYearChangeDt;
 	}
 }
