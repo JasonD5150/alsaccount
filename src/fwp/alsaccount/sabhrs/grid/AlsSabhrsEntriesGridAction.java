@@ -12,7 +12,6 @@ import com.opensymphony.xwork2.ActionSupport;
 import fwp.alsaccount.appservice.sabhrs.AlsSabhrsEntriesAS;
 import fwp.alsaccount.dao.sabhrs.AlsSabhrsEntries;
 import fwp.alsaccount.dto.sabhrs.AlsSabhrsEntriesDTO;
-import fwp.alsaccount.utils.HibHelpers;
 import fwp.alsaccount.utils.Utils;
 
 public class AlsSabhrsEntriesGridAction extends ActionSupport{
@@ -28,18 +27,16 @@ public class AlsSabhrsEntriesGridAction extends ActionSupport{
     private String              sidx;
     private String              filters;
     private boolean             loadonce         = false;
-    private Integer budgYear;
+	private Integer budgYear;
     private Integer transGrp;
     private String transIdentifier;
+    private String				nonAlsEntries;
 
 	@SuppressWarnings("unchecked")
-	public String buildgrid(){ 
-		HibHelpers hh = new HibHelpers();
-		Integer curBudgYear = Integer.parseInt(hh.getCurrentBudgetYear());
-		
-    	String srchStr = "WHERE asacBudgetYear ="+curBudgYear+" "+
-    					 "AND atgsGroupIdentifier ='"+transIdentifier+"'"+
-    					 "AND atgTransactionCd ="+transGrp;
+	public String buildgrid(){ 		
+    	String srchStr = "WHERE atgsGroupIdentifier ='"+transIdentifier+"'"+
+    					 "AND atgTransactionCd ="+transGrp+" "+
+    					 "AND NVL(ase_non_als_flag,'N')='Y'";
     	String orderStr = "";
     	
     	if(filters != null && !"".equals(filters)){
@@ -59,7 +56,6 @@ public class AlsSabhrsEntriesGridAction extends ActionSupport{
 			setModel(new ArrayList<AlsSabhrsEntriesDTO>());
 			AlsSabhrsEntriesDTO tmp;
 
-			
         	for(AlsSabhrsEntries aa : aacc){
 				tmp = new AlsSabhrsEntriesDTO();
 
@@ -100,100 +96,66 @@ public class AlsSabhrsEntriesGridAction extends ActionSupport{
 		return buildgrid();
 	}
 
-
-    /**
-     * @return the rows
-     */
     public Integer getRows() {
         return rows;
     }
-    /**
-     * @param rows the rows to set
-     */
+
     public void setRows(Integer rows) {
         this.rows = rows;
     }
-    /**
-     * @return the page
-     */
+
     public Integer getPage() {
         return page;
     }
-    /**
-     * @param page the page to set
-     */
+
     public void setPage(Integer page) {
         this.page = page;
     }
-    /**
-     * @return the total
-     */
+
     public Integer getTotal() {
         return total;
     }
-    /**
-     * @param total the total to set
-     */
+
     public void setTotal(Integer total) {
         this.total = total;
     }
-    /**
-     * @return the records
-     */
+
     public Integer getRecords() {
         return records;
     }
-    /**
-     * @param records the records to set
-     */
+
     public void setRecords(Integer records) {
         this.records = records;
     }
-    /**
-     * @return the sord
-     */
+
     public String getSord() {
         return sord;
     }
-    /**
-     * @param sord the sord to set
-     */
+
     public void setSord(String sord) {
         this.sord = sord;
     }
-    /**
-     * @return the sidx
-     */
+
     public String getSidx() {
         return sidx;
     }
-    /**
-     * @param sidx the sidx to set
-     */
+
     public void setSidx(String sidx) {
         this.sidx = sidx;
     }
-    /**
-     * @return the filters
-     */
+
     public String getFilters() {
         return filters;
     }
-    /**
-     * @param filters the filters to set
-     */
+
     public void setFilters(String filters) {
         this.filters = filters;
     }
-    /**
-     * @return the loadonce
-     */
+
     public boolean isLoadonce() {
         return loadonce;
     }
-    /**
-     * @param loadonce the loadonce to set
-     */
+
     public void setLoadonce(boolean loadonce) {
         this.loadonce = loadonce;
     }
@@ -215,32 +177,27 @@ public class AlsSabhrsEntriesGridAction extends ActionSupport{
 		this.budgYear = budgYear;
 	}
 
-	/**
-	 * @return the transGrp
-	 */
 	public Integer getTransGrp() {
 		return transGrp;
 	}
 
-	/**
-	 * @param transGrp the transGrp to set
-	 */
 	public void setTransGrp(Integer transGrp) {
 		this.transGrp = transGrp;
 	}
-	
-	/**
-	 * @return the transIndetifier
-	 */
+
 	public String getTransIdentifier() {
 		return transIdentifier;
 	}
 
-	/**
-	 * @param transIndetifier the transIndetifier to set
-	 */
 	public void setTransIdentifier(String transIndetifier) {
 		this.transIdentifier = transIndetifier;
 	}
 
+	public String getNonAlsEntries() {
+		return nonAlsEntries;
+	}
+
+	public void setNonAlsEntries(String nonAlsEntries) {
+		this.nonAlsEntries = nonAlsEntries;
+	}
 }

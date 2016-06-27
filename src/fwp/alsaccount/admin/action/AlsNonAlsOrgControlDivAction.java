@@ -22,7 +22,7 @@ public class AlsNonAlsOrgControlDivAction extends ActionSupport{
 	public String input(){
 		try {
 			ListUtils lu = new ListUtils();
-			setOrgLst(lu.getOrgListTxt(false));
+			setOrgLst(lu.getOrgListTxt(null,false));
 			setProviderLst(lu.getProviderListTxt(false));
 		} catch (Exception e) {
 			//System.out.println(e.getMessage());

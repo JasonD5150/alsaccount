@@ -353,4 +353,26 @@ public class HibHelpers {
 		return rtnCd;
 	}
 	
+	public String getBusinessUnit() {
+		String curBudgYear = null;
+		
+		AlsMiscAS appSer = new AlsMiscAS();
+		List<AlsMisc> tmpLst = new ArrayList<AlsMisc>();
+		AlsMisc tmp = new AlsMisc();
+		
+		try {
+			String queryString =  " WHERE amKey1 = 'BUSINESS UNIT'";
+			tmpLst = appSer.findAllByWhere(queryString);
+			if(!tmpLst.isEmpty()){
+				tmp = tmpLst.get(0);
+				curBudgYear = tmp.getAmParVal();			
+			}
+		} catch (RuntimeException re) {
+			System.out.println(re.toString());
+		}
+		finally {
+			getSession().close();
+		}
+		return curBudgYear;
+	}
 }

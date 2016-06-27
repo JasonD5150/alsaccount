@@ -1,4 +1,4 @@
-package fwp.alsaccount.admin.action;
+package fwp.alsaccount.sabhrs.action;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,29 +7,30 @@ import com.opensymphony.xwork2.ActionSupport;
 
 import fwp.alsaccount.utils.ListUtils;
 
-public class AlsNonAlsTemplateDivAction extends ActionSupport{
+public class GenNonAlsEntriesAction extends ActionSupport{
 	
 	private static final long serialVersionUID = 5217638596755074369L;
-	private static final Logger log = LoggerFactory.getLogger(AlsNonAlsTemplateDivAction.class);
+	private static final Logger log = LoggerFactory.getLogger(GenNonAlsEntriesAction.class);
 
-	private String budgYear;
-	private String accountLst;
 	private String fundLst;
 	private String subClassLst;
 	private String jlrLst;
 	private String projectGrantLst;
+	private String orgLst;
+	private String accountLst;
 
-	public AlsNonAlsTemplateDivAction(){
+	public GenNonAlsEntriesAction(){
 	}
 	
 	public String input(){
 		try {
 			ListUtils lu = new ListUtils();
-			setAccountLst(lu.getAccountListTxt(budgYear, false));
 			setFundLst(lu.getFundListTxt(null,false));
 			setSubClassLst(lu.getSubclassListTxt(null,false));
 			setJlrLst(lu.getJLRListTxt(false));
 			setProjectGrantLst(lu.getProjectGrantsListTxt(null,false));
+			setOrgLst(lu.getOrgListTxt(null,false));
+			setAccountLst(lu.getAccountListTxt(null,false));
 		} catch (Exception e) {
 			//System.out.println(e.getMessage());
 			log.debug(e.getMessage());
@@ -39,23 +40,6 @@ public class AlsNonAlsTemplateDivAction extends ActionSupport{
 	
 	public String execute(){
 		return SUCCESS;
-	}
-	
-	
-	public String getBudgYear() {
-		return budgYear;
-	}
-
-	public void setBudgYear(String budgYear) {
-		this.budgYear = budgYear;
-	}
-
-	public String getAccountLst() {
-		return accountLst;
-	}
-
-	public void setAccountLst(String accountLst) {
-		this.accountLst = accountLst;
 	}
 
 	public String getFundLst() {
@@ -88,6 +72,34 @@ public class AlsNonAlsTemplateDivAction extends ActionSupport{
 
 	public void setProjectGrantLst(String projectGrantLst) {
 		this.projectGrantLst = projectGrantLst;
+	}
+
+	/**
+	 * @return the orgLst
+	 */
+	public String getOrgLst() {
+		return orgLst;
+	}
+
+	/**
+	 * @param orgLst the orgLst to set
+	 */
+	public void setOrgLst(String orgLst) {
+		this.orgLst = orgLst;
+	}
+
+	/**
+	 * @return the accountLst
+	 */
+	public String getAccountLst() {
+		return accountLst;
+	}
+
+	/**
+	 * @param accountLst the accountLst to set
+	 */
+	public void setAccountLst(String accountLst) {
+		this.accountLst = accountLst;
 	}
 
 }

@@ -63,7 +63,7 @@
 			 Account Master<br/>
 			 Activity Account Linkage<br/>
 			 Appendix M(Notation Only)<br/><br/>
-			 If button is disable, the proccess has already been run for this year.
+			 If button is disable, the process has already been run for this year.
 			</h5>
 			<input id='copyAccTables' type='button' value='Copy Accounting Tables' onclick='fiscalYearEndAction(id)'> 
 		</div>
@@ -147,7 +147,7 @@
 		<div id="tfive">
 	   		<h5>This process will copy all current year Non-ALS SABHRS Template Codes into the next year.<br />
 			 Only the budget year will change all other attributes of the code will remain the same.<br/>
-			 If button is disable, the proccess has already been run for this year.<br/><br/>
+			 If button is disable, the process has already been run for this year.<br/><br/>
 			 Note: Do not run until cashier is done with Internal Provider Remittance for current budget year(usually mid July).
 			</h5>
 			<input id='copyAlsNonAlsTemplates' type='button' value='Copy Templates to Next Budget Year' onclick='fiscalYearEndAction(id)'>

@@ -40,7 +40,7 @@
 			<s:hidden id="frmFilters" name="filters" />
 	</form>
 	
-    <div style="width:800px" align="center">
+    <div style="width:800px; text-align:center">
     	<h2 class="title">Miscellaneous Maintenance: Non-ALS Journal Line Reference</h2>
    	</div>
    

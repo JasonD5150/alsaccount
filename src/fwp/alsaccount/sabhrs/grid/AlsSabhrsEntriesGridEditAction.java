@@ -1,66 +1,157 @@
 package fwp.alsaccount.sabhrs.grid;
 
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.apache.shiro.SecurityUtils;
 
 import com.opensymphony.xwork2.ActionSupport;
 
-import fwp.alsaccount.appservice.sabhrs.AlsTransactionGroupAS;
-import fwp.alsaccount.dao.sabhrs.AlsTransactionGroup;
+import fwp.alsaccount.appservice.admin.AlsNonAlsTemplateAS;
+import fwp.alsaccount.appservice.sabhrs.AlsSabhrsEntriesAS;
+import fwp.alsaccount.dao.admin.AlsNonAlsTemplate;
+import fwp.alsaccount.dao.admin.AlsNonAlsTemplateIdPk;
+import fwp.alsaccount.dao.sabhrs.AlsSabhrsEntries;
+import fwp.alsaccount.dao.sabhrs.AlsSabhrsEntriesIdPk;
+import fwp.alsaccount.utils.HibHelpers;
 import fwp.security.user.UserDTO;
 
 
 public class AlsSabhrsEntriesGridEditAction extends ActionSupport{
 	private static final long serialVersionUID = 1L;
 	private String oper;
-
-	private String id;
-	private Integer atgTransactionCd;
-	private String atgBusinessProcessType;
-	private String atgTransactionDesc;
-	private String atgIdentifierString;
-	private String atgInterfaceFile;
 	
-
+	private String id;
+	private AlsSabhrsEntriesIdPk idPk = new AlsSabhrsEntriesIdPk();
+	private Integer asacBudgetYear;
+	private String asacReference;
+	private String aamAccount;
+	private String aamFund;
+	private String aocOrg;
+	private Integer asacProgram;
+	private String asacSubclass;
+	private String aamBusinessUnit;
+	private String asacProjectGrant;
+	private Double aseAmt;
+	private String asacSystemActivityTypeCd;
+	private Integer asacTxnCd;
+	private String aseDrCrCd;
+	private Integer aseSeqNo;
+	private String aseLineDescription;
+	
+	private String templates;
+	private Integer transGrp;
+	private String transIdentifier;
+	
+	
+	
 	public String execute() throws Exception{
+		AlsNonAlsTemplateAS anatAS = new AlsNonAlsTemplateAS();
+		AlsNonAlsTemplateIdPk anatIdPk = null;
+		AlsNonAlsTemplate anat = new AlsNonAlsTemplate();
+		
+		AlsSabhrsEntriesAS aseAS = new AlsSabhrsEntriesAS();
+		AlsSabhrsEntriesIdPk aseIdPk = new AlsSabhrsEntriesIdPk();
+		AlsSabhrsEntries ase = null;
+		
+		HibHelpers hh = new HibHelpers();
 		UserDTO userInfo = (UserDTO)SecurityUtils.getSubject().getSession().getAttribute("userInfo");
 		Timestamp date = new Timestamp(System.currentTimeMillis());
-		String errMsg="";			
+		Integer curBudgYear = Integer.parseInt(hh.getCurrentBudgetYear());
 		
+		String errMsg="";	
+		
+		String tmpCd = "";
+		Double tmpAmt = 0.0;
 		try{
-			AlsTransactionGroupAS appSer = new AlsTransactionGroupAS();
-			AlsTransactionGroup tmp = null;
-
-			if("0".equals(atgBusinessProcessType)){
-				addActionError("Business Process Type: Field is required");
-			}else if ("0".equals(atgInterfaceFile)){
-				addActionError("Interface File: Field is required");
-			}
-			if (this.hasActionErrors()) {
-				return "error_json";
-			}
-			
-			if (oper.equalsIgnoreCase("add")) {
-				tmp = new AlsTransactionGroup();
-				tmp.setAtgTransactionCd(appSer.getNextSeqNo());
-			} else {				
-				tmp = appSer.findById(Integer.parseInt(id));
-			}
-			
 			if(oper.equalsIgnoreCase("add") || oper.equalsIgnoreCase("edit")){
-				tmp.setAtgBusinessProcessType(atgBusinessProcessType);
-				tmp.setAtgIdentifierString(atgIdentifierString);
-				tmp.setAtgInterfaceFile(atgInterfaceFile);
-				tmp.setAtgTransactionDesc(atgTransactionDesc);
-				//TODO need to remove this logic when the triggers and correct audit columns are added to the db	
-				tmp.setAtgWhoLog(userInfo.getStateId().toString());
-				tmp.setAtgWhenLog(date);
-				//********************************************************************
-				appSer.save(tmp);
+				if (oper.equalsIgnoreCase("add")) {
+					String[] templates = this.templates.split(",");
+					for(int i=0;i<templates.length;i++){
+				    	String[] values = templates[i].split("-");
+				    	tmpCd = values[0];
+				    	tmpAmt = Double.valueOf(values[1]);
+				    	
+				    	anatIdPk = new AlsNonAlsTemplateIdPk();
+				    	anatIdPk.setAnatBudgetYear(curBudgYear);
+				    	anatIdPk.setAnatCd(tmpCd);
+				    	anat = anatAS.findById(anatIdPk);
+				    	
+				    	ase = new AlsSabhrsEntries();
+				    	aseIdPk = new AlsSabhrsEntriesIdPk();
+				    	aseIdPk.setAseWhenEntryPosted(date);
+				    	aseIdPk.setAseDrCrCd("C");
+				    	aseIdPk.setAseSeqNo(aseAS.getNextSeqNo());
+				    	aseIdPk.setAseTxnCdSeqNo(1);
+				    	ase.setIdPk(aseIdPk);
+				    	ase.setAseAmt(tmpAmt);
+				    	ase.setAseAllowUploadToSummary("Y");
+				    	ase.setAamAccount(anat.getAnatCrAccount());
+				    	ase.setAamFund(anat.getAnatFund());
+				    	ase.setAocOrg(anat.getAnatCrOrg());
+				    	ase.setAsacSubclass(anat.getAnatCrSubclass());
+				    	ase.setAsacProjectGrant(anat.getAnatCrProjectGrant());
+				    	ase.setAseLineDescription(anat.getAnatCrLineDesc());
+				    	ase.setAsacSystemActivityTypeCd("Z");
+				    	ase.setAsacTxnCd("9");
+				    	ase.setAsacBudgetYear(curBudgYear);
+				    	ase.setAsacProgram(curBudgYear);
+				    	ase.setAamBusinessUnit(hh.getBusinessUnit());
+				    	ase.setAseWhenUploadedToSumm(getUploadedToSumDt());
+				    	ase.setAnatCd(tmpCd);
+				    	ase.setAtgsGroupIdentifier(transIdentifier);
+				    	ase.setAtgTransactionCd(transGrp);
+				    	ase.setAseNonAlsFlag("Y");
+				    	//TODO need to remove this logic when the triggers and correct audit columns are added to the db	
+						ase.setAseWhoLog(userInfo.getStateId().toString());
+						ase.setAseWhenLog(date);
+						//********************************************************************
+						aseAS.save(ase);
+
+				    	aseIdPk.setAseDrCrCd("D");
+				    	aseIdPk.setAseSeqNo(aseAS.getNextSeqNo());
+				    	ase.setIdPk(aseIdPk);
+				    	ase.setAamAccount(anat.getAnatDrAccount());
+				    	ase.setAocOrg(anat.getAnatDrOrg());
+				    	ase.setAsacSubclass(anat.getAnatDrSubclass());
+				    	ase.setAsacProjectGrant(anat.getAnatDrProjectGrant());
+				    	ase.setAseLineDescription(anat.getAnatDrLineDesc());
+
+						aseAS.save(ase);
+					}
+				} else {
+					DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+					String[] keys = this.id.split("_");
+					aseIdPk.setAseWhenEntryPosted(new Timestamp(formatter.parse(keys[0]).getTime()));
+					aseIdPk.setAseSeqNo(Integer.parseInt(keys[1]));
+					aseIdPk.setAseDrCrCd(keys[2]);
+					aseIdPk.setAseTxnCdSeqNo(Integer.parseInt(keys[3]));
+	
+					ase = aseAS.findById(aseIdPk);
 				
+					ase.setAamAccount(aamAccount);
+					ase.setAamFund(aamFund);
+					ase.setAocOrg(aocOrg);
+					ase.setAsacBudgetYear(asacBudgetYear);
+					ase.setAsacProgram(asacProgram);
+					ase.setAsacSubclass(asacSubclass);
+
+					ase.setAsacProjectGrant(asacProjectGrant);
+					ase.setAseAmt(aseAmt);
+					
+					ase.setAseLineDescription(aseLineDescription);
+					
+					//TODO need to remove this logic when the triggers and correct audit columns are added to the db	
+					ase.setAseWhoLog(userInfo.getStateId().toString());
+					ase.setAseWhenLog(date);
+					//********************************************************************
+					aseAS.save(ase);
+				}
 			}else if(oper.equalsIgnoreCase("del")){
-				appSer.delete(tmp);
+
 			}
 		}  catch(Exception ex) {
 			 if (ex.toString().contains("ORA-02292")){
@@ -72,15 +163,18 @@ public class AlsSabhrsEntriesGridEditAction extends ActionSupport{
 			  }	else {
 				  errMsg += " " + ex.toString();
 			  }
-			  
 		    addActionError(errMsg);
-	        return "error_json";
+		   return "error_json";
 		}	
 		return SUCCESS;
 	}
 	
-	public void validate(){
-		
+	public Timestamp getUploadedToSumDt() throws ParseException{
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		Date tmpDate = dateFormat.parse("01/01/1900 00:00:00");
+		long time = tmpDate.getTime();
+		Timestamp rtn = new Timestamp(time);
+		return rtn;
 	}
 
 	public String getOper() {
@@ -99,85 +193,155 @@ public class AlsSabhrsEntriesGridEditAction extends ActionSupport{
 		this.id = id;
 	}
 
-
-	/**
-	 * @return the atgTransactionCd
-	 */
-	public Integer getAtgTransactionCd() {
-		return atgTransactionCd;
+	public Integer getAsacBudgetYear() {
+		return asacBudgetYear;
 	}
 
-
-	/**
-	 * @param atgTransactionCd the atgTransactionCd to set
-	 */
-	public void setAtgTransactionCd(Integer atgTransactionCd) {
-		this.atgTransactionCd = atgTransactionCd;
+	public void setAsacBudgetYear(Integer asacBudgetYear) {
+		this.asacBudgetYear = asacBudgetYear;
 	}
 
-
-	/**
-	 * @return the atgBusinessProcessType
-	 */
-	public String getAtgBusinessProcessType() {
-		return atgBusinessProcessType;
+	public String getAsacReference() {
+		return asacReference;
 	}
 
-
-	/**
-	 * @param atgBusinessProcessType the atgBusinessProcessType to set
-	 */
-	public void setAtgBusinessProcessType(String atgBusinessProcessType) {
-		this.atgBusinessProcessType = atgBusinessProcessType;
+	public void setAsacReference(String asacReference) {
+		this.asacReference = asacReference;
 	}
 
-
-	/**
-	 * @return the atgTransactionDesc
-	 */
-	public String getAtgTransactionDesc() {
-		return atgTransactionDesc;
+	public String getAamAccount() {
+		return aamAccount;
 	}
 
-
-	/**
-	 * @param atgTransactionDesc the atgTransactionDesc to set
-	 */
-	public void setAtgTransactionDesc(String atgTransactionDesc) {
-		this.atgTransactionDesc = atgTransactionDesc;
+	public void setAamAccount(String aamAccount) {
+		this.aamAccount = aamAccount;
 	}
 
-
-	/**
-	 * @return the atgIdentifierString
-	 */
-	public String getAtgIdentifierString() {
-		return atgIdentifierString;
+	public String getAamFund() {
+		return aamFund;
 	}
 
-
-	/**
-	 * @param atgIdentifierString the atgIdentifierString to set
-	 */
-	public void setAtgIdentifierString(String atgIdentifierString) {
-		this.atgIdentifierString = atgIdentifierString;
+	public void setAamFund(String aamFund) {
+		this.aamFund = aamFund;
 	}
 
-
-	/**
-	 * @return the atgInterfaceFile
-	 */
-	public String getAtgInterfaceFile() {
-		return atgInterfaceFile;
+	public String getAocOrg() {
+		return aocOrg;
 	}
 
-
-	/**
-	 * @param atgInterfaceFile the atgInterfaceFile to set
-	 */
-	public void setAtgInterfaceFile(String atgInterfaceFile) {
-		this.atgInterfaceFile = atgInterfaceFile;
+	public void setAocOrg(String aocOrg) {
+		this.aocOrg = aocOrg;
 	}
 
+	public Integer getAsacProgram() {
+		return asacProgram;
+	}
 
+	public void setAsacProgram(Integer asacProgram) {
+		this.asacProgram = asacProgram;
+	}
+
+	public String getAsacSubclass() {
+		return asacSubclass;
+	}
+
+	public void setAsacSubclass(String asacSubclass) {
+		this.asacSubclass = asacSubclass;
+	}
+
+	public String getAamBusinessUnit() {
+		return aamBusinessUnit;
+	}
+
+	public void setAamBusinessUnit(String aamBusinessUnit) {
+		this.aamBusinessUnit = aamBusinessUnit;
+	}
+
+	public String getAsacProjectGrant() {
+		return asacProjectGrant;
+	}
+
+	public void setAsacProjectGrant(String asacProjectGrant) {
+		this.asacProjectGrant = asacProjectGrant;
+	}
+
+	public Double getAseAmt() {
+		return aseAmt;
+	}
+
+	public void setAseAmt(Double aseAmt) {
+		this.aseAmt = aseAmt;
+	}
+
+	public String getAsacSystemActivityTypeCd() {
+		return asacSystemActivityTypeCd;
+	}
+
+	public void setAsacSystemActivityTypeCd(String asacSystemActivityTypeCd) {
+		this.asacSystemActivityTypeCd = asacSystemActivityTypeCd;
+	}
+
+	public Integer getAsacTxnCd() {
+		return asacTxnCd;
+	}
+
+	public void setAsacTxnCd(Integer asacTxnCd) {
+		this.asacTxnCd = asacTxnCd;
+	}
+
+	public String getAseDrCrCd() {
+		return aseDrCrCd;
+	}
+
+	public void setAseDrCrCd(String aseDrCrCd) {
+		this.aseDrCrCd = aseDrCrCd;
+	}
+
+	public Integer getAseSeqNo() {
+		return aseSeqNo;
+	}
+
+	public void setAseSeqNo(Integer aseSeqNo) {
+		this.aseSeqNo = aseSeqNo;
+	}
+
+	public String getAseLineDescription() {
+		return aseLineDescription;
+	}
+
+	public void setAseLineDescription(String aseLineDescription) {
+		this.aseLineDescription = aseLineDescription;
+	}
+
+	public AlsSabhrsEntriesIdPk getIdPk() {
+		return idPk;
+	}
+
+	public void setIdPk(AlsSabhrsEntriesIdPk idPk) {
+		this.idPk = idPk;
+	}
+	
+	public String getTemplates() {
+		return templates;
+	}
+
+	public void setTemplates(String templates) {
+		this.templates = templates;
+	}
+
+	public Integer getTransGrp() {
+		return transGrp;
+	}
+
+	public void setTransGrp(Integer transGrp) {
+		this.transGrp = transGrp;
+	}
+
+	public String getTransIdentifier() {
+		return transIdentifier;
+	}
+
+	public void setTransIdentifier(String transIdentifier) {
+		this.transIdentifier = transIdentifier;
+	}
 }

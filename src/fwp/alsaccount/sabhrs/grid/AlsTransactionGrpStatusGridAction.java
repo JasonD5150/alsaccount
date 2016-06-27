@@ -1,6 +1,7 @@
 package fwp.alsaccount.sabhrs.grid;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 import org.hibernate.HibernateException;
@@ -13,7 +14,6 @@ import fwp.alsaccount.appservice.sabhrs.AlsTransactionGrpStatusAS;
 import fwp.alsaccount.dao.sabhrs.AlsTransactionGrpStatus;
 import fwp.alsaccount.dto.sabhrs.AlsTransactionGrpStatusDTO;
 import fwp.alsaccount.utils.HibHelpers;
-import fwp.alsaccount.utils.Utils;
 
 public class AlsTransactionGrpStatusGridAction extends ActionSupport{
     private static final long   serialVersionUID = 5078264277068533593L;
@@ -34,19 +34,15 @@ public class AlsTransactionGrpStatusGridAction extends ActionSupport{
 	public String buildgrid(){  
 		HibHelpers hh = new HibHelpers();
 		Integer curBudgYear = Integer.parseInt(hh.getCurrentBudgetYear());
-    	String srchStr = " WHERE ATGS_FILE_CREATION_DT IS NULL"
-    				   + " AND  NVL(ATGS_SUMMARY_STATUS,'X')<>'N'"
-    				   + "AND ((TO_CHAR(ATGS_WHEN_CREATED,'YYYY')= "+curBudgYear+") "
-    				   + "  or (TO_CHAR(ATGS_WHEN_CREATED,'YYYY')= "+(curBudgYear+1)+")"
-    				   + "  or (TO_CHAR(ATGS_WHEN_CREATED,'YYYY')= "+(curBudgYear-1)+"))";
-    	String orderStr = " ORDER BY ATG_TRANSACTION_CD,ATGS_GROUP_IDENTIFIER";
+    	String srchStr = " WHERE atgsFileCreationDt IS NULL"
+    				   + " AND  NVL(atgsSummaryStatus,'X')<>'N'"
+    				   + "AND ((TO_CHAR(atgsWhenCreated,'YYYY')= "+curBudgYear+") "
+    				   + "  or (TO_CHAR(atgsWhenCreated,'YYYY')= "+(curBudgYear+1)+")"
+    				   + "  or (TO_CHAR(atgsWhenCreated,'YYYY')= "+(curBudgYear-1)+"))";
+    	String orderStr = " ORDER BY idPk.atgTransactionCd,idPk.atgsGroupIdentifier";
     	
     	if(filters != null && !"".equals(filters)){
-    		//srchStr = buildStr(srchStr);
-    		srchStr = Utils.buildStr(srchStr, filters);
-    		if(srchStr.contains("Build String Error:")){
-    			addActionError(srchStr);
-    		}
+    		srchStr = buildStr(srchStr);
     	}
     	
     	AlsTransactionGrpStatusAS atgsAS = new AlsTransactionGrpStatusAS();
@@ -63,7 +59,7 @@ public class AlsTransactionGrpStatusGridAction extends ActionSupport{
         		tmp.setGridKey(a.getIdPk().getAtgTransactionCd()+"_"+a.getIdPk().getAtgsGroupIdentifier());
         		tmp.setIdPk(a.getIdPk());
         		tmp.setDesc(atgsAS.getTransDesc(a.getIdPk().getAtgTransactionCd()));
-        		tmp.setCreateYear(Utils.YearFromTimestamp(a.getAtgsWhenCreated()));
+        		tmp.setAtgsWhenCreated(a.getAtgsWhenCreated());
         		tmp.setAtgsNetDrCr(a.getAtgsNetDrCr());
         		model.add(tmp);
         	}
@@ -85,6 +81,57 @@ public class AlsTransactionGrpStatusGridAction extends ActionSupport{
 	{
 		return buildgrid();
 	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public String buildStr(String where){
+    	try {
+            Hashtable<String,Object> jsonFilter = (Hashtable<String, Object>) (new gov.fwp.mt.RPC.FWPJsonRpc().new JsonParser(filters)).FromJson();
+            String groupOp = (String) jsonFilter.get("groupOp");
+            ArrayList rules = (ArrayList) jsonFilter.get("rules");
+
+            int rulesCount = rules.size();
+            String tmpCond = "";
+            
+    		for (int i = 0; i < rulesCount; i++) {
+    			Hashtable<String,String> rule = (Hashtable<String, String>) rules.get(i);
+    			
+    			String tmp = rule.get("field");
+    			
+    			if (i == 0) {
+    				tmpCond = "and (";
+    			} else {
+    				tmpCond = groupOp;
+    			}
+    			
+    			if("atgsWhenCreated".equals(tmp)){
+	        		tmp = "TO_CHAR("+tmp+",'YYYY')";
+    			}
+    			
+    			
+    	        if (rule.get("op").equalsIgnoreCase("eq")) {		    	  
+    	        	where = where + " " +tmpCond+" " + tmp + " = '" + rule.get("data")+"'";
+    	        } else if (rule.get("op").equalsIgnoreCase("ne")) {
+    	        	where = where + " " +tmpCond+" " + tmp + " <> '" + rule.get("data")+"'";
+    	        } else if (rule.get("op").equalsIgnoreCase("lt")) {
+    	        	where = where + " " +tmpCond+" " + tmp + " < '" + rule.get("data")+"'";
+    	        } else if (rule.get("op").equalsIgnoreCase("gt")) {
+    	        	where = where + " " +tmpCond+" " + tmp + " > '" + rule.get("data")+"'";
+    	        } else if (rule.get("op").equalsIgnoreCase("cn")) {
+    	        	where = where + " " +tmpCond+ " upper(" + tmp + ") like upper('%" + rule.get("data")+"%')";
+    		    } else if (rule.get("op").equalsIgnoreCase("bw")) {
+    		    	where = where + " " +tmpCond+ " upper(" + tmp + ") like upper('" + rule.get("data")+"%')";
+    	        } else if (rule.get("op").equalsIgnoreCase("ew")) {
+    	        	where = where + " " +tmpCond+ " upper(" + tmp + ") like upper('%" + rule.get("data")+"')";
+    	        }			
+    		}
+    		 where = where + ")";	
+     
+    		  }
+    		  catch(Exception ex) {
+    			  where = "Build String Error: " + ex;  
+    	  }
+          return where;
+    }
 
 
     /**

@@ -92,8 +92,9 @@ public class ListUtils {
 	 * formatted text for a jqgrid column select list.
 	 */
 	@SuppressWarnings("unchecked")
-	public String getAccountListTxt(String year, boolean addSelectOne)
-			throws Exception {
+	public String getAccountListTxt(String budgetYear, boolean addSelectOne) throws Exception {
+		HibHelpers hh = new HibHelpers();
+		String year = (budgetYear == null) ? hh.getCurrentBudgetYear() : budgetYear;
 		String retVal = ": ";
 
 		if (addSelectOne) {
@@ -207,7 +208,9 @@ public class ListUtils {
 	 * text for a jqgrid column select list.
 	 */
 	@SuppressWarnings("unchecked")
-	public String getOrgListTxt(boolean addSelectOne) throws Exception {
+	public String getOrgListTxt(String budgetYear, boolean addSelectOne) throws Exception {
+		HibHelpers hh = new HibHelpers();
+		String year = (budgetYear == null) ? hh.getCurrentBudgetYear() : budgetYear;
 		List<String> tmpLst = null;
 		String retVal = ": ";
 
@@ -216,14 +219,21 @@ public class ListUtils {
 		}
 
 		String queryString = "SELECT aoc_org FROM als.als_activity_account_linkage "
-				+ "UNION "
-				+ "SELECT aoc_org FROM als.als_org_control "
-				+ "ORDER BY 1";
+						   + "WHERE aoc_org IS NOT NULL "
+						   + "AND asac_budget_year ="+year+" "
+						   + "UNION "
+						   + "SELECT aoc_org FROM als.als_org_control "
+						   + "WHERE aoc_org IS NOT NULL "
+						   + "AND asac_budget_year ="+year+" "
+						   + "ORDER BY 1";
 		Query query = getSession().createSQLQuery(queryString);
 		tmpLst = query.list();
 
 		for (String i : tmpLst) {
-			retVal += ";" + i + ":" + i;
+			if(!"".equals(i) && i != null){
+				retVal += ";" + i + ":" + i;
+			}
+			
 		}
 		getSession().close();
 
@@ -235,7 +245,9 @@ public class ListUtils {
 	 * a jqgrid column select list.
 	 */
 	@SuppressWarnings("unchecked")
-	public String getFundListTxt(boolean addSelectOne) throws Exception {
+	public String getFundListTxt(String budgetYear, boolean addSelectOne) throws Exception {
+		HibHelpers hh = new HibHelpers();
+		String year = (budgetYear == null) ? hh.getCurrentBudgetYear() : budgetYear;
 		List<String> tmpLst = null;
 		String retVal = ": ";
 
@@ -243,7 +255,17 @@ public class ListUtils {
 			retVal = ":-- Select One --";
 		}
 
-		String queryString = "SELECT DISTINCT AAM_FUND FROM ALS.ALS_ACTIVITY_ACCOUNT_LINKAGE WHERE aam_fund IS NOT NULL ORDER BY aam_fund";
+		String queryString = "SELECT DISTINCT AAM_FUND "
+						   + "FROM ALS.ALS_ACTIVITY_ACCOUNT_LINKAGE "
+						   + "WHERE aam_fund IS NOT NULL "
+						   + "AND asac_budget_year ="+year+" "
+						   + "UNION "
+						   + "SELECT DISTINCT AACC_FUND "
+						   + "FROM ALS.ALS_ACC_CD_CONTROL "
+						   + "WHERE aacc_fund IS NOT NULL "
+						   + "AND asac_budget_year ="+year+" "
+						   + "ORDER BY aam_fund";
+						   
 		Query query = getSession().createSQLQuery(queryString);
 		tmpLst = query.list();
 
@@ -260,7 +282,9 @@ public class ListUtils {
 	 * a jqgrid column select list.
 	 */
 	@SuppressWarnings("unchecked")
-	public String getSubclassListTxt(boolean addSelectOne) throws Exception {
+	public String getSubclassListTxt(String budgetYear, boolean addSelectOne) throws Exception {
+		HibHelpers hh = new HibHelpers();
+		String year = (budgetYear == null) ? hh.getCurrentBudgetYear() : budgetYear;
 		List<String> tmpLst = null;
 		String retVal = ": ";
 
@@ -268,7 +292,17 @@ public class ListUtils {
 			retVal = ":-- Select One --";
 		}
 
-		String queryString = "SELECT distinct ASAC_SUBCLASS  FROM ALS.ALS_ACTIVITY_ACCOUNT_LINKAGE WHERE asac_subclass IS NOT NULL ORDER BY asac_subclass";
+		String queryString = "SELECT distinct ASAC_SUBCLASS  "
+						   + "FROM ALS.ALS_ACTIVITY_ACCOUNT_LINKAGE "
+						   + "WHERE ASAC_SUBCLASS IS NOT NULL "
+						   + "AND ASAC_BUDGET_YEAR="+year+" "
+						   + "UNION "
+						   + "SELECT distinct ASAC_SUBCLASS  "
+						   + "FROM ALS.ALS_ACC_CD_CONTROL "
+						   + "WHERE ASAC_SUBCLASS IS NOT NULL "
+						   + "AND ASAC_BUDGET_YEAR="+year+" "
+						   + "ORDER BY asac_subclass";
+		
 		Query query = getSession().createSQLQuery(queryString);
 		tmpLst = query.list();
 
@@ -313,8 +347,10 @@ public class ListUtils {
 	 * a jqgrid column select list.
 	 */
 	@SuppressWarnings("unchecked")
-	public String getProjectGrantsListTxt(boolean addSelectOne)
+	public String getProjectGrantsListTxt(String budgetYear, boolean addSelectOne)
 			throws Exception {
+		HibHelpers hh = new HibHelpers();
+		String year = (budgetYear == null) ? hh.getCurrentBudgetYear() : budgetYear;
 		List<String> tmpLst = null;
 		String retVal = ": ";
 
@@ -322,7 +358,12 @@ public class ListUtils {
 			retVal = ":-- Select One --";
 		}
 
-		String queryString = "SELECT distinct ASAC_PROJECT_GRANT FROM ALS.ALS_SYS_ACTIVITY_CONTROL";
+		String queryString = "SELECT distinct ASAC_PROJECT_GRANT "
+						   + "FROM ALS.ALS_SYS_ACTIVITY_CONTROL "
+						   + "WHERE ASAC_PROJECT_GRANT IS NOT NULL "
+						   + "AND ASAC_BUDGET_YEAR ="+year+" "
+						   + "ORDER BY ASAC_PROJECT_GRANT ";
+
 		Query query = getSession().createSQLQuery(queryString);
 		tmpLst = query.list();
 		if (tmpLst.size() == 1) {

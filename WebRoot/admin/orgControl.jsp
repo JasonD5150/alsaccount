@@ -90,7 +90,7 @@
 			<s:hidden id="frmRptBudgYear" name="budgYear" />
 	</form>
 	
-    <div style="width:800px" align="center">
+    <div style="width:800px; text-align:center">
     	<h2 class="title">Org Control Table Maintenance</h2>
    	</div>
    
