@@ -125,8 +125,9 @@
 			</div>
 		</div>
 		<div id="tthree">
-	   		<h5>Note: Set prior to July 1st of the current year.<br/>
-	   		This updates when job ALSU1030 runs, which will update Budget Year, SABHRS Refund File Budget Year, and SABHRS Refund File Program in the ALS_MISC table.
+	   		<h5>Note: Set prior to July 1st of the current year.<br/><br>
+	   		This updates when job ALSU1030 runs which updates<br/>
+	   		Budget Year, SABHRS Refund File Budget Year, and SABHRS Refund File Program in the ALS_MISC table.
 			</h5>
 			<table>
 				<tr>
