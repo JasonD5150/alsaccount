@@ -55,6 +55,7 @@
  		$('#frmRptBudgYear').val($('#budgetYearSel').val());
  		$('#frmFilters').val(postFilters);
  		
+ 		$('#rptFrm').attr('method', 'post');
 		$('#rptFrm').attr('action', 'genDocCreate');
 		$('#rptFrm').submit();	 
     } 
