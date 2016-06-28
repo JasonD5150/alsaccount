@@ -50,8 +50,9 @@
 	<sj:tabbedpanel id="ictTabs" selectedTab="0" useSelectedTabCookie="false"  cssStyle="width:995px;position:inherit" onChangeTopics="tabChanged">
 		<sj:tab id="tab1" target="tone" title="Copy Accounting Table" label="Copy Accounting Table" tabindex="1" />
 		<sj:tab id="tab2" target="ttwo" title="Update Item Accounting Codes" label="Update Item Accounting Codes" tabindex="2" />
-		<sj:tab id="tab3" target="tthree" title="Generate FY ADjusting Entries" label="Gen FY Adjusting Entries" tabindex="3" />
-		<sj:tab id="tab4" target="tfour" title="Update Budget Year Change Date" label="Update Change Date" tabindex="4" />
+		<sj:tab id="tab3" target="tthree" title="Update Budget Year Change Date" label="Update Change Date" tabindex="3" />
+		<sj:tab id="tab4" target="tfour" title="Generate FY ADjusting Entries" label="Gen FY Adjusting Entries" tabindex="4" />
+		
 		<sj:tab id="tab5" target="tfive" title="Copy Templates" label="Copy Templates" tabindex="5" />
 		
 		
@@ -123,15 +124,9 @@
 			</table>
 			</div>
 		</div>
-		<s:url id="adjParamTabUrl" action="adjParamTabAction_input.action"/>
-		<sj:div id="tthree" style='width:800px;'
-		    		href="%{adjParamTabUrl}" 
-		    		reloadTopics="reloadAdjParam" 
-		    		formIds="adjParamFrm"
-		    		onCompleteTopics="adjParamFrmComplete">
-		</sj:div> 
-		<div id="tfour">
-	   		<h5>Note: This updates when job ALSU1030 runs.
+		<div id="tthree">
+	   		<h5>Note: Set prior to July 1st of the current year.<br/>
+	   		This updates when job ALSU1030 runs, which will update Budget Year, SABHRS Refund File Budget Year, and SABHRS Refund File Program in the ALS_MISC table.
 			</h5>
 			<table>
 				<tr>
@@ -144,6 +139,13 @@
 				</tr>
 			</table>	
 		</div> 
+		<s:url id="adjParamTabUrl" action="adjParamTabAction_input.action"/>
+		<sj:div id="tfour" style='width:800px;'
+		    		href="%{adjParamTabUrl}" 
+		    		reloadTopics="reloadAdjParam" 
+		    		formIds="adjParamFrm"
+		    		onCompleteTopics="adjParamFrmComplete">
+		</sj:div> 
 		<div id="tfive">
 	   		<h5>This process will copy all current year Non-ALS SABHRS Template Codes into the next year.<br />
 			 Only the budget year will change all other attributes of the code will remain the same.<br/>
