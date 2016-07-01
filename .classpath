@@ -2,10 +2,9 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/strutsXwork"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/alsaccount_Dal"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/slf4jLogger"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/hibernate"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/commonLang"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/CommonLang"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/shiro"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/fwpSecurity"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jdbc"/>
@@ -15,15 +14,17 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/strutsJquery"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Core"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/alsaccount_dal"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/commonLang3"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/fwpCommonLang3"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/commonLogging"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jsonOrg"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jstl"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/servletApi"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/ServletApi"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
 		<attributes>
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/alsaccount_dal"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/alsadmin_dal"/>
 	<classpathentry kind="output" path="WebRoot/WEB-INF/classes"/>
 </classpath>

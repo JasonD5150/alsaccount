@@ -8,6 +8,8 @@ import org.hibernate.Session;
 import org.hibernate.transform.Transformers;
 import org.hibernate.type.StringType;
 
+import fwp.als.appservice.generic.AlsWebGenCodesAS;
+import fwp.als.hibernate.generic.dao.AlsWebGenCodes;
 import fwp.alsaccount.appservice.admin.AlsAccCdControlAS;
 import fwp.alsaccount.appservice.admin.AlsAccountMasterAS;
 import fwp.alsaccount.appservice.admin.AlsSysActivityControlAS;
@@ -378,4 +380,27 @@ public class ListUtils {
 
 		return retVal;
 	}
+	
+	/**
+	 * getIdGenCode 
+	 * retrieve an List of relevant AlsWebGenCode
+	 * awgcId will be in itemVal, description in itemLabel
+	 * @param codeType
+	 * @return List<ListComp>
+	 */		
+	@SuppressWarnings("unchecked")
+	public List<ListComp> getIdGenCode(String codeType){		
+		ListComp lc;
+		List<ListComp> lst = new ArrayList<ListComp>();
+		AlsWebGenCodesAS awgcAS = new AlsWebGenCodesAS();
+		List<AlsWebGenCodes> records = awgcAS.findAllByWhere("where awgcName = '" + codeType + "'",null);
+		
+		for(AlsWebGenCodes row: records){
+			lc = new ListComp();
+			lc.setItemVal(row.getAwgcId().toString());
+			lc.setItemLabel(row.getAwgcDescr());
+			lst.add(lc);
+		}
+		return lst;		
+	}	
 }

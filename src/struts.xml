@@ -14,7 +14,9 @@
         </action>
     </package>
         
+    
     <include file="struts-alsaccount-admin.xml" />
+    <include file="struts-alsaccount-interfaceFiles.xml" />
     <include file="struts-alsaccount-sabhrs.xml" />
     
 </struts>    

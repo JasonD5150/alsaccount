@@ -36,8 +36,15 @@
 
 		<!-- SABHRS -->
 		<mapping class="fwp.alsaccount.dao.sabhrs.AlsTransactionGroup" />
-		<mapping class="fwp.alsaccount.dao.sabhrs.AlsTransactionGrpStatus" />
+		<mapping
+			class="fwp.alsaccount.dao.sabhrs.AlsTransactionGrpStatus" />
 		<mapping class="fwp.alsaccount.dao.sabhrs.AlsSabhrsEntries" />
+
+		<!-- Interface Files -->
+		<mapping
+			class="fwp.alsaccount.dao.interfaceFiles.AlsInterfaceFiles" />
+		<mapping class="fwp.AlsInterfaceFiles" />
+
 
 
 	</session-factory>

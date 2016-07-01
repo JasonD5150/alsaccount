@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+<constant name="struts.devMode" value="false" />
+
+	<package name="fwp.alsaccount.interfaceFiles" namespace="" extends="struts-default">
+	   <action name="interfaceFiles_*" method="{1}" class="fwp.alsaccount.interfaceFiles.action.InterfaceFilesAction">
+            <result>interfaceFiles/interfaceFiles.jsp</result>
+            <result name="execute">interfaceFiles/interfaceFiles.jsp</result>
+            <result name="input">interfaceFiles/interfaceFiles.jsp</result>
+            <result name="error">interfaceFiles/interfaceFiles.jsp</result>
+            <result name="report" type="stream">
+                <param name="contentType">application/vnd.ms-word</param>
+                <param name="contentDisposition">attachment;filename="${fileName}"</param>
+                <param name="inputName">inputStream</param>
+            </result> 
+      </action>
+      <action name="interfaceFilesGridDiv_*" method="{1}"  class="fwp.alsaccount.action.GenericAction">
+            <result>interfaceFiles/include/interfaceFilesGridDiv.jsp</result>
+            <result name="error">interfaceFiles/include/interfaceFilesGridDiv.jsp</result>
+            <result name="input">interfaceFiles/include/interfaceFilesGridDiv.jsp</result>
+      </action>  
+	
+	</package>
+ 
+ 	<package name="fwp.alsaccount.interfaceFiles.grid" namespace="/alsInterface" extends="json-default"> 
+ 		 <action  name="interfaceFilesGrid_*" class="fwp.alsaccount.interfaceFiles.grid.InterfaceFilesGridAction" >
+            <result type="json"/>
+            <result name="error" type="json" />
+            <result name="input" type="json"></result>
+            <result name="error_json" type="json" >
+               <param name="ignoreHierarchy">false</param>
+            </result> 
+        </action>    
+        <action  name="interfaceFilesGridEdit_*" class="fwp.alsaccount.interfaceFiles.grid.InterfaceFilesEditGridAction" >
+            <result type="json"/>
+            <result name="error" type="json" />
+            <result name="input" type="json"></result>
+            <result name="error_json" type="json" >
+               <param name="ignoreHierarchy">false</param>
+            </result> 
+        </action>        
+ 
+   </package>
+
+</struts>    
