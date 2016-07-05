@@ -4,6 +4,7 @@
 <constant name="struts.devMode" value="false" />
 
 	<package name="fwp.alsaccount.admin" namespace="" extends="struts-default">
+
 	  <action name="sysActivityAccountMaster_*" method="{1}" class="fwp.alsaccount.admin.action.BudgetYearSelectAction">
             <result>admin/systemActivityAccountMaster.jsp</result>
             <result name="error">admin/systemActivityAccountMaster.jsp</result>
@@ -71,7 +72,8 @@
       </action>     	
 	</package>
  
- 	<package name="fwp.alsaccount.admin.grid" namespace="/alsAccount" extends="json-default">     
+ 	<package name="fwp.alsaccount.admin.grid" namespace="/alsAccount" extends="json-default"> 
+
       <action name="sysActivityControlGrid_*" class="fwp.alsaccount.admin.grid.AlsSysActivityControlGridAction">
             <result type="json" />
         </action>       

@@ -43,13 +43,11 @@ public class InterfaceFilesEditGridAction extends ActionSupport{
 		}
 		// mark all other files with same parent as do not send (can send only one)
 		if (aifSendFlag.equals("Y")){
-			List<AlsInterfaceFiles> aifArry = aifAS.findAllByWhere(" WHERE aifOrigfileId = '" + origId.toString() + "'");
+			List<AlsInterfaceFiles> aifArry = aifAS.findAllByWhere(" WHERE (aifOrigfileId = '" + origId.toString() + "' or aifId = '" + origId.toString() + "') and aifSendFlag = 'Y'" );
 			for(AlsInterfaceFiles aifElem : aifArry){
-				if(aifElem.getAifSendFlag().equals("Y")){
-					aifElem.setAifSendFlag("N");
-					aifElem.setAifModPersonid(userId);
-					aifAS.save(aifElem);
-				}
+				aifElem.setAifSendFlag("N");
+				aifElem.setAifModPersonid(userId);
+				aifAS.save(aifElem);
 			}
 		}
 
@@ -68,9 +66,8 @@ public class InterfaceFilesEditGridAction extends ActionSupport{
 		
 		return SUCCESS;
 	}
-	public String getJSON() {
-		return execute();
-	}
+
+	
 	public String getAifFile() {
 		return aifFile;
 	}

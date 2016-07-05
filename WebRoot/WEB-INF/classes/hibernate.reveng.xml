@@ -178,4 +178,20 @@
      <column name="AAAL_WHO_LOG" jdbc-type="VARCHAR" type="String"></column>
      <column name="AAAL_WHEN_LOG" jdbc-type="DATE" type="java.sql.Timestamp"></column>
    </table>    
+   <table name="ALS_INTERFACE_FILES" schema="ALSMAN" class="fwp.alsaccount.dao.interfaceFiles.AlsInterfaceFiles"> 
+     <primary-key>
+         <generator class="sequence"> 
+           <param name="sequence">ALSMAN.ALSMAN_SEQ</param> 
+         </generator>  
+       <key-column name="AIF_ID" jdbc-type="NUMERIC" type="Integer" />
+     </primary-key>
+     <column name="AIF_MOD_DATE" exclude="true"></column>
+     <column name="AIF_MOD_DBUSER" exclude="true"></column>
+     <column name="AIF_CREATE_DBUSER" exclude="true"></column>
+     <column name="AIF_FILE"  type="java.sql.Clob"></column>     
+     <column name="AIF_CREATE_DATE" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="AIF_PROCESS_DATE" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="AIF_AWGC_ID" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="AIF_ORIGFILE_ID" jdbc-type="NUMERIC" type="Integer"></column>
+   </table>
 </hibernate-reverse-engineering>

@@ -57,10 +57,10 @@
 	    						formatoptions="{newformat : 'm/d/Y  h:i:s', srcformat : 'Y/m/d h:i:s'}"/>
 	    <sjg:gridColumn name="aifOrigfileId" index="aifOrigfileId" title="Original File Name and Date" sortable="true" hidden="false"   editable="false" width="300"  formatter="select" edittype="select" editoptions="{value: rtrnFileNameList()}"/>
 	    <sjg:gridColumn name="aifParentProcess" index="aifParentProcess" title="Parent Process" sortable="true" hidden="false"   editable="false" width="150" />
+	    <sjg:gridColumn name="aifSendFlag" index="aifSendFlag" title="Flag to Send" sortable="true" hidden="false" editable="true" width="50" edittype="checkbox" editoptions="{value:'Y:N'}"/>
 	    <sjg:gridColumn name="aifFileSent" index="aifFileSent" title="File Sent" sortable="true" hidden="false"   editable="false" width="50" />
 	    <sjg:gridColumn name="aifProcessDate" index="aifProcessDate" title="Date Processed" sortable="true" hidden="false"   editable="false" width="200" formatter="date" sorttype="datetime"
 	    						formatoptions="{newformat : 'm/d/Y  h:i:s', srcformat : 'Y/m/d h:i:s'}"/>	    
-	    <sjg:gridColumn name="aifSendFlag" index="aifSendFlag" title="Flag to Send" sortable="true" hidden="false" editable="true" width="50" edittype="checkbox" editoptions="{value:'Y:N'}"/>						
 	    <sjg:gridColumn name="aifNotes" index="aifNotes" title="Notes" sortable="true" hidden="false" editable="true" width="200"  edittype="textarea" editoptions="{maxLength:500, rows:'4', cols:'40'}" editrules="{edithidden: true}"/>
 		<sjg:gridColumn name="aifFile" index="aifFile" title="File" sortable="false" hidden="true" editable="true" width="30" edittype="textarea" editoptions="{maxLength:2000, rows:'5', cols:'150'}" editrules="{edithidden: true}"/>
 	</sjg:grid>   
