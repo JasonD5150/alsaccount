@@ -43,10 +43,6 @@
 		<!-- Interface Files -->
 		<mapping
 			class="fwp.alsaccount.dao.interfaceFiles.AlsInterfaceFiles" />
-		<mapping class="fwp.AlsInterfaceFiles" />
-
-
-
 	</session-factory>
 
 </hibernate-configuration>
