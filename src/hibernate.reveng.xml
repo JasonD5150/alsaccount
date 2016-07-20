@@ -2,7 +2,8 @@
 <!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-reverse-engineering-3.0.dtd" >
 
 <hibernate-reverse-engineering>
-	<table name="ALS_SABHRS_ENTRIES" schema="ALS" class="fwp.alsaccount.dao.sabhrsAlsSabhrsEntries"> 
+
+<table name="ALS_SABHRS_ENTRIES" schema="ALS" class="fwp.alsaccount.dao.sabhrsAlsSabhrsEntries"> 
      <primary-key id-class="fwp.alsaccount.dao.sabhrsAlsSabhrsEntriesIdPk" property="idPk">
        <column name="ASE_WHEN_ENTRY_POSTED" jdbc-type="DATE" type="java.sql.Timestamp"></column>
        <column name="ASE_SEQ_NO" jdbc-type="NUMERIC" type="Integer"></column>
@@ -193,5 +194,19 @@
      <column name="AIF_PROCESS_DATE" jdbc-type="DATE" type="java.sql.Timestamp"></column>
      <column name="AIF_AWGC_ID" jdbc-type="NUMERIC" type="Integer"></column>
      <column name="AIF_ORIGFILE_ID" jdbc-type="NUMERIC" type="Integer"></column>
+   </table>
+      <table name="ALS_BANK_CODE" schema="ALS" class="fwp.alsaccount.dao.admin.AlsBankCode"> 
+     <primary-key>
+       <key-column name="ABC_BANK_CD" jdbc-type="VARCHAR" type="String" />
+     </primary-key>
+     <column name="ABC_ACCOUNT_NO" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ABC_COMPANY_ID" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ABC_BANK_NM" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AZC_ZIP_CD" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AZC_CITY_NM" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ABC_WHO_LOG" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ABC_WHEN_LOG" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="ABC_CREATE_PERSONID" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ABC_ACTIVE" jdbc-type="VARCHAR" type="String"></column>
    </table>
 </hibernate-reverse-engineering>

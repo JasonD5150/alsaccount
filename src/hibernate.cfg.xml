@@ -43,6 +43,7 @@
 		<!-- Interface Files -->
 		<mapping
 			class="fwp.alsaccount.dao.interfaceFiles.AlsInterfaceFiles" />
+		<mapping class="fwp.alsaccount.admin.action.AlsBankCode" />
 	</session-factory>
 
 </hibernate-configuration>

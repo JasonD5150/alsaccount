@@ -69,7 +69,13 @@
             <result>admin/include/adjustmentParamTab.jsp</result>
             <result name="error">admin/include/adjustmentParamTab.jsp</result>
             <result name="input">admin/include/adjustmentParamTab.jsp</result>         
-      </action>     	
+      </action>  
+      <action name="bankCodeMaint_*" method="{1}" class="fwp.alsaccount.action.GenericAction">
+            <result>admin/bankCodeMaint.jsp</result>
+            <result name="error">admin/bankCodeMaint.jsp</result>
+            <result name="input">admin/bankCodeMaint.jsp</result>         
+      </action>
+      
 	</package>
  
  	<package name="fwp.alsaccount.admin.grid" namespace="/alsAccount" extends="json-default"> 
@@ -178,6 +184,16 @@
             <result type="json" />
         </action>       
         <action name="alsSabhrsFyeAdjstDtlGridEdit_*" class="fwp.alsaccount.admin.grid.AlsSabhrsFyeAdjstDtlGridEditAction">
+			<result type="json"></result>
+            <result type="json" name="input"></result>
+            <result name="error_json" type="json" >
+               <param name="ignoreHierarchy">false</param>
+            </result>
+		</action>
+		<action name="bankCodeGrid_*" method="{1}" class="fwp.alsaccount.admin.grid.AlsBankCodeGridAction">
+            <result type="json" />
+        </action>       
+        <action name="bankCodeGridEdit_*" class="fwp.alsaccount.admin.grid.AlsBankCodeGridEditAction">
 			<result type="json"></result>
             <result type="json" name="input"></result>
             <result name="error_json" type="json" >
