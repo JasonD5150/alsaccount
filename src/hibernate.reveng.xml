@@ -100,7 +100,6 @@
      <primary-key>
        <column name="ATG_TRANSACTION_CD" jdbc-type="NUMERIC" type="Integer"></column>
      </primary-key>
-     <column name="ATG_TRANSACTION_CD" jdbc-type="NUMERIC" type="Integer"></column>
      <column name="ATG_TRANSACTION_DESC" jdbc-type="VARCHAR" type="String"></column>
      <column name="ATG_IDENTIFIER_STRING" jdbc-type="VARCHAR" type="String"></column>
      <column name="ATG_INTERFACE_FILE" jdbc-type="VARCHAR" type="String"></column>
