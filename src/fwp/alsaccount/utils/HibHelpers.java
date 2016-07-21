@@ -375,4 +375,220 @@ public class HibHelpers {
 		}
 		return curBudgYear;
 	}
+	
+	public Integer getTransGrpBudgYear(Integer transCd, String grpIdentifier) {
+		Integer rtn = null;
+		
+		String queryString =  "SELECT DISTINCT "
+				+ "asac_budget_year year "
+				+ "FROM als.als_sabhrs_entries "
+				+ "WHERE atg_transaction_cd = "+transCd+" "
+				+ "AND atgs_group_identifier = '"+grpIdentifier+"' "
+				+ "AND ase_allow_upload_to_summary = 'Y'";
+		
+		try {
+			Query query = getSession()
+					.createSQLQuery(queryString)
+					.addScalar("year", StringType.INSTANCE);
+
+			List<String> tmpLst = query.list();
+			
+			if(!tmpLst.isEmpty() && tmpLst.size() == 1){
+				rtn = Integer.parseInt(tmpLst.get(0));
+			}
+		} catch (RuntimeException re) {
+			System.out.println(re.toString());
+		}
+		finally {
+			getSession().close();
+		}
+		return rtn;
+	}
+	
+	public Integer getTransGrpProgYear(Integer transCd, String grpIdentifier) {
+		Integer rtn = null;
+		
+		String queryString =  "SELECT DISTINCT "
+				+ "asac_program year "
+				+ "FROM als.als_sabhrs_entries "
+				+ "WHERE atg_transaction_cd = "+transCd+" "
+				+ "AND atgs_group_identifier = '"+grpIdentifier+"' "
+				+ "AND ase_allow_upload_to_summary = 'Y'";
+		
+		try {
+			Query query = getSession()
+					.createSQLQuery(queryString)
+					.addScalar("year", StringType.INSTANCE);
+			List<String> tmpLst = query.list();
+			if(!tmpLst.isEmpty() && tmpLst.size() == 1){
+				rtn = Integer.parseInt(tmpLst.get(0));
+			}
+		} catch (RuntimeException re) {
+			System.out.println(re.toString());
+		}
+		finally {
+			getSession().close();
+		}
+		return rtn;
+	}
+	
+	public String getAirOfflnPaymentApproved(String transGroupIdentifier) {
+		String rtn = null;
+		
+		String queryString =  "SELECT Air_Offln_Payment_Approved rtn "
+						    + "FROM Als.Als_Internal_Remittance "
+						    + "Where  Api_Provider_No = To_Number(Substr('"+transGroupIdentifier+"',2,6)) "
+						    + "AND Air_Billing_To = To_Date(Substr('"+transGroupIdentifier+"',9,10),'YYYY/MM/DD')";
+		
+		try {
+			Query query = getSession()
+					.createSQLQuery(queryString)
+					.addScalar("rtn", StringType.INSTANCE);
+			rtn = (String) query.uniqueResult();
+		} catch (RuntimeException re) {
+			System.out.println(re.toString());
+		}
+		finally {
+			getSession().close();
+		}
+		return rtn;
+	}
+	
+	public StringBuffer getTransGroupStatHistRpt(String where) {		
+
+		StringBuffer rtrn = new StringBuffer();
+		
+		Clob tmpClob = null;
+       
+        Connection conn = ((SessionImpl)getSession()).connection();
+        try {
+
+			CallableStatement cs = conn.prepareCall("{call ALS.ALS_ACCOUNTING.trans_grp_stat_history_rpt(?,?)}");
+			
+            cs.setString(1,where);
+            cs.setClob(2,tmpClob);
+            cs.registerOutParameter(2,OracleTypes.CLOB);
+
+            cs.execute();
+            
+            tmpClob = cs.getClob(2);
+            
+            if ( tmpClob != null ) {
+            	rtrn.append(tmpClob.getSubString(1, (int) tmpClob.length()));
+            } else {
+            	rtrn.append("No values returned");
+            }
+            
+			
+            conn.close();
+            
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			
+			getSession().close();
+		}
+        
+        return rtrn;
+	}	
+	
+	public StringBuilder getTreasuryDepositTicket(String txIdentifier, String transCd) {		
+		Integer runCd=0;
+		StringBuilder rtrn = new StringBuilder();
+		
+		Clob tmpClob = null;
+		
+        Connection conn = ((SessionImpl)getSession()).connection();
+        try {
+
+			CallableStatement cs = conn.prepareCall("{call ALS.ALS_ACCOUNTING.ALSR0334(?,?,?,?)}");
+			
+            cs.setString(1,txIdentifier);
+            cs.setString(2, transCd);
+            cs.setInt(3, runCd);
+            cs.setClob(4,tmpClob);
+            cs.registerOutParameter(3,OracleTypes.INTEGER);
+            cs.registerOutParameter(4,OracleTypes.CLOB);
+
+            cs.execute();
+            
+            tmpClob = cs.getClob(4);
+            
+            if ( tmpClob != null ) {
+            	rtrn.append(tmpClob.getSubString(1, (int) tmpClob.length()));
+            } else {
+            	rtrn.append("No values returned");
+            }
+            
+			
+            conn.close();
+            
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			
+			getSession().close();
+		}
+        
+        return rtrn;
+	}	
+	
+	public Integer getAlsDepIdSeq(String budgetYear, String type) {		
+		Integer rtrn = 0;
+
+        Connection conn = ((SessionImpl)getSession()).connection();
+        try {
+
+			CallableStatement cs = conn.prepareCall("{call ALS.ALS_GET_DEP_ID_SEQ(?,?,?)}");
+			
+            cs.setString(1,budgetYear);
+            cs.setString(2, type);
+            cs.setInt(3, rtrn);
+            cs.registerOutParameter(3,OracleTypes.INTEGER);
+           
+            cs.execute();            
+		
+            conn.close();
+            
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			getSession().close();
+		}
+        return rtrn;
+	}	
+	
+	public Integer getTransGroupCnt(String transGroupIdentifier) {
+		Integer cnt = 0;
+		String ipTranGrp = transGroupIdentifier.substring(0, 17);
+		String queryString =  "SELECT COUNT(*) cnt "
+						    + "FROM als.als_transaction_grp_status "
+						    + "WHERE '"+transGroupIdentifier+"' IN "
+															    + "(SELECT MIN(atgs_group_identifier) "
+															    + "FROM als.als_transaction_grp_status "
+															    + "WHERE atg_transaction_cd = 8 "
+															    + "AND atgs_group_identifier LIKE '"+ipTranGrp+"%' "
+															    + "UNION "
+															    + "SELECT MAX(atgs_group_identifier) "
+															    + "FROM als.als_transaction_grp_status "
+															    + "WHERE atg_transaction_cd = 8 "
+															    + "AND atgs_group_identifier LIKE '"+ipTranGrp+"%')";
+		
+		try {
+			Query query = getSession()
+					.createSQLQuery(queryString)
+					.addScalar("cnt", IntegerType.INSTANCE);
+			cnt = (Integer) query.uniqueResult();
+		} catch (RuntimeException re) {
+			System.out.println(re.toString());
+		}
+		finally {
+			getSession().close();
+		}
+		return cnt;
+	}
+	
 }

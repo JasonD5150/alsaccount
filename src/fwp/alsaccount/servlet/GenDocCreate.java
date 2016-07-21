@@ -67,6 +67,8 @@ public class GenDocCreate extends HttpServlet {
        		alsNonAlsTemplateCSV(request, response);
        	} else if (rptType.equals("updateAccCd")){
        		alsUpdateAccCdWord(request, response);
+       	} else if (rptType.equals("transGrpStatHistory")){
+       		alsTransGrpStatHistory(request, response);
        	}
       } catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -423,6 +425,20 @@ public class GenDocCreate extends HttpServlet {
 		
 	}
 	
+	public void alsTransGrpStatHistory(HttpServletRequest request,HttpServletResponse htmlResp) throws ParseException, IOException, JSONException {	
+		HibHelpers hh = new HibHelpers();
+		String filters = request.getParameter("filters");
+		String srchStr = " 1=1 ";
+		if(filters != null){
+			srchStr = buildTransGrpStatHistoryRptStr(srchStr, filters);
+    	}
+		
+		StringBuffer hold = hh.getTransGroupStatHistRpt(srchStr);
+
+		genCSVCreate("TransactionGroupApprovalHistory", hold, htmlResp);
+		
+	}
+	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);
 
@@ -448,10 +464,8 @@ public class GenDocCreate extends HttpServlet {
 	}
 	
 	public void genWordCreate(String sFileName,String mstr,HttpServletResponse htmlResp) {
-
 		htmlResp.reset();
 		
-	     
 		htmlResp.setContentType("application/vnd.ms-word");
 		htmlResp.setContentLength(mstr.length());
 		htmlResp.addHeader("Content-Disposition", "attachment; filename=\"" + sFileName + ".doc\"");
@@ -520,6 +534,10 @@ public class GenDocCreate extends HttpServlet {
     			
     			String tmp = rule.get("field");
     			
+    			if("provider".equals(tmp)){
+    				tmp = "TRIM(TRIM(LEADING 0 FROM substr(idPk.atgsGroupIdentifier,3,6))) ";
+    			}
+    			
     			if (i == 0) {
     				tmpCond = "and (";
     			} else {
@@ -551,6 +569,96 @@ public class GenDocCreate extends HttpServlet {
     	        	}else{
     	        		where = where + " " +tmpCond+ " upper(" + tmp + ") like upper('%" + rule.get("data")+"%')";
     	        	}
+    		    } else if (rule.get("op").equalsIgnoreCase("bw")) {
+    		    	where = where + " " +tmpCond+ " upper(" + tmp + ") like upper('" + rule.get("data")+"%')";
+    	        } else if (rule.get("op").equalsIgnoreCase("ew")) {
+    	        	where = where + " " +tmpCond+ " upper(" + tmp + ") like upper('%" + rule.get("data")+"')";
+    	        }			
+    		}
+    		 where = where + ")";	
+     
+    		  }
+    		  catch(Exception ex) {	  
+    		  }
+          return where;
+    	}
+	
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public String buildTransGrpStatHistoryRptStr(String where,String filters){
+    	try {
+            Hashtable<String,Object> jsonFilter = (Hashtable<String, Object>) (new gov.fwp.mt.RPC.FWPJsonRpc().new JsonParser(filters)).FromJson();
+            String groupOp = (String) jsonFilter.get("groupOp");
+            ArrayList rules = (ArrayList) jsonFilter.get("rules");
+
+            int rulesCount = rules.size();
+            String tmpCond = "";
+            
+    		for (int i = 0; i < rulesCount; i++) {
+    			Hashtable<String,String> rule = (Hashtable<String, String>) rules.get(i);
+    			
+    			String tmp = rule.get("field");
+    			
+    			if("provider".equals(tmp)){
+    				tmp = "TRIM(TRIM(LEADING 0 FROM substr(idPk.atgsGroupIdentifier,3,6))) ";
+    			}else if("atgsSummaryStatus".equals(tmp)){
+    				tmp = "ATGS_SUMMARY_STATUS";
+    			}else if("atgsInterfaceStatus".equals(tmp)){
+    				tmp = "ATGS_INTERFACE_STATUS";
+    			}else if("idPk.atgsSummaryDt".equals(tmp)){
+    				tmp = "ATGS_SUMMARY_DT";
+    			}else if("atgsInterfaceDt".equals(tmp)){
+    				tmp = "ATGS_INTERFACE_DT";
+    			}else if("atgsSummaryApprovedBy".equals(tmp)){
+    				tmp = "ATGS_SUMMARY_APPROVED_BY";
+    			}else if("atgsInterfaceApprovedBy".equals(tmp)){
+    				tmp = "ATGS_INTERFACE_APPROVED_BY";
+    			}else if("atgsWhenUploadToSummary".equals(tmp)){
+    				tmp = "ATGS_WHEN_UPLOAD_TO_SUMMARY";
+    			}else if("atgsFileName".equals(tmp)){
+    				tmp = "ATGS_FILE_NAME";
+    			}else if("atgsRemarks".equals(tmp)){
+    				tmp = "ATGS_REMARKS";
+    			}else if("abcBankCd".equals(tmp)){
+    				tmp = "ABC_BANK_CD";
+    			}else if("atgsAccountingDt".equals(tmp)){
+    				tmp = "ATGS_ACCOUNTING_DT";
+    			}else if("ATGS_NET_DR_CR".equals(tmp)){
+    				tmp = "atgsNetDrCr";
+    			}else if("atgsNonAlsFlag".equals(tmp)){
+    				tmp = "ATGS_NON_ALS_FLAG";
+    			}else if("atgsWhenUploadedToSabhrs".equals(tmp)){
+    				tmp = "ATGS_WHEN_UPLOADED_TO_SABHRS";
+    			}else if("atgsDepositId".equals(tmp)){
+    				tmp = "ATGS_DEPOSIT_ID";
+    			}else if("atgsArGlFlag".equals(tmp)){
+    				tmp = "ATGS_AR_GL_FLAG";
+    			}else if("atgsFileCreationDt".equals(tmp)){
+    				tmp = "ATGS_FILE_CREATION_DT";
+    			}else if("atgsBankReferenceNo".equals(tmp)){
+    				tmp = "ATGS_BANK_REFERENCE_NO";
+    			}else if("atgsFyePriorProgram".equals(tmp)){
+    				tmp = "ATGS_FYE_PRIOR_PROGRAM";
+    			}else if("idPk.atgsGroupIdentifier".equals(tmp)){
+    				tmp = "atgs_group_identifier";
+    			}
+    			
+    			if (i == 0) {
+    				tmpCond = "and (";
+    			} else {
+    				tmpCond = groupOp;
+    			}
+    			
+    	        if (rule.get("op").equalsIgnoreCase("eq")) {		    	  
+    	        	where = where + " " +tmpCond+" " + tmp + " = '" + rule.get("data")+"'";
+    	        } else if (rule.get("op").equalsIgnoreCase("ne")) {
+    	        	where = where + " " +tmpCond+" " + tmp + " <> '" + rule.get("data")+"'";
+    	        } else if (rule.get("op").equalsIgnoreCase("lt")) {
+    	        	where = where + " " +tmpCond+" " + tmp + " < '" + rule.get("data")+"'";
+    	        } else if (rule.get("op").equalsIgnoreCase("gt")) {
+    	        	where = where + " " +tmpCond+" " + tmp + " > '" + rule.get("data")+"'";
+    	        } else if (rule.get("op").equalsIgnoreCase("cn")) {
+    	        		where = where + " " +tmpCond+ " upper(" + tmp + ") like upper('%" + rule.get("data")+"%')";
     		    } else if (rule.get("op").equalsIgnoreCase("bw")) {
     		    	where = where + " " +tmpCond+ " upper(" + tmp + ") like upper('" + rule.get("data")+"%')";
     	        } else if (rule.get("op").equalsIgnoreCase("ew")) {

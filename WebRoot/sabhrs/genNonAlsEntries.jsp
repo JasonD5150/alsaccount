@@ -76,8 +76,26 @@
 		navigator="true"
 		navigatorEdit="true"
 		navigatorView="false"
-		navigatorAdd="false"
-		navigatorDelete="false"
+		navigatorAdd="true"
+		navigatorDelete="true"
+		navigatorAddOptions="{width:950,reloadAfterSubmit:true,
+    						  addedrow:'last',
+ 	    					  afterShowForm: function ($form) {
+                    			$form.closest('.ui-jqdialog').position({
+                        			my: 'center',
+                        			at: 'center',
+        							of: $('#transGroupDtlsTable').closest('div.ui-jqgrid')
+                    			});
+                    		  },
+                    		  beforeSubmit: function (postData) {
+    						  		postData.transIdentifier = $('#frmTransIdentifier').val();
+    						  		postData.transGrp = $('#frmTransGrp').val();
+    						  		return[true, ''];
+    						  },  
+    						  afterSubmit:errorHandler,
+    	                      addCaption:'Add New Code Info',
+    	                      closeAfterAdd:true,
+    	                      processData:'Adding Row to Database'}"
 		navigatorEditOptions="{width:950,reloadAfterSubmit:false,
     	                       editCaption:'Edit Code Info',    
     	                       closeAfterEdit:true,
@@ -112,17 +130,18 @@
 			<sjg:gridColumn name="aocOrg" index="aocOrg" title ="Org" width="10" sortable="false" editable="true" formoptions="{colpos:1,rowpos:3}"  edittype="select" formatter="select" editoptions="{value:','}"/>
 			<sjg:gridColumn name="asacProgram" index="asacProgram" title ="Program" width="10" sortable="false" editable="true" formoptions="{colpos:2,rowpos:3}" editoptions="{size:5,maxlength:4}"/>
 			<sjg:gridColumn name="asacSubclass" index="asacSubclass" title ="Subclass" width="10" sortable="false" editable="true" formoptions="{colpos:1,rowpos:4}" edittype="select" formatter="select" editoptions="{value:','}"/>
-			<sjg:gridColumn name="aamBusinessUnit" index="aamBusinessUnit" title ="Business Unit" width="10" sortable="false" editable="false"/>
-			<sjg:gridColumn name="asacProjectGrant" index="asacProjectGrant" title ="Project Grant" width="10" sortable="false" editable="true" formoptions="{colpos:2,rowpos:4}"/>
-			<sjg:gridColumn name="aseAmt" index="aseAmt" title ="Amount" width="10" sortable="false" editable="true" formoptions="{colpos:1,rowpos:5}" editrules="{number:true,required:true}"/>
+			<sjg:gridColumn name="aamBusinessUnit" index="aamBusinessUnit" title ="Business Unit" width="10" sortable="false" editable="true" formoptions="{colpos:2,rowpos:4}" editrules="{required:true}"/>
+			<sjg:gridColumn name="asacProjectGrant" index="asacProjectGrant" title ="Project Grant" width="10" sortable="false" editable="true" formoptions="{colpos:1,rowpos:5}"/>
+			<sjg:gridColumn name="aseAmt" index="aseAmt" title ="Amount" width="10" sortable="false" editable="true" formoptions="{colpos:2,rowpos:5}" editrules="{number:true,required:true}"/>
 			<sjg:gridColumn name="asacSystemActivityTypeCd" index="asacSystemActivityTypeCd" title ="Sys Activity Type Code" width="10" sortable="false" editable="false"/>
 			<sjg:gridColumn name="asacTxnCd" index="asacTxnCd" title ="Transaction Code" width="10" sortable="false" editable="false"/>
-			<sjg:gridColumn name="idPk.aseDrCrCd" index="idPk.aseDrCrCd" title ="Dr/Cr Code" width="10" sortable="false" editable="true" edittype="select" formatter="select" editoptions="{value: {D: 'Debit', C: 'Credit'}}" editrules="{required:true}" formoptions="{colpos:2,rowpos:5}"/>
+			<sjg:gridColumn name="idPk.aseDrCrCd" index="idPk.aseDrCrCd" title ="Dr/Cr Code" width="10" sortable="false" editable="true" edittype="select" formatter="select" editoptions="{value: {D: 'Debit', C: 'Credit'}}" editrules="{required:true}" formoptions="{colpos:1,rowpos:6}"/>
 			<sjg:gridColumn name="idPk.aseSeqNo" index="idPk.aseSeqNo" title ="Seq No" width="10" sortable="false" editable="false"/>
-			<sjg:gridColumn name="aseLineDescription" index="aseLineDescription" title ="Line Desc" width="40" sortable="false" editable="true" edittype="textarea" formoptions="{colpos:1,rowpos:6}"/>
+			<sjg:gridColumn name="aseLineDescription" index="aseLineDescription" title ="Line Desc" width="40" sortable="false" editable="true" edittype="textarea" formoptions="{colpos:2,rowpos:6}" editrules="{required:true}"/>
 	
 	</sjg:grid>
 
+	
 	<s:url id="accMasterDialogURL" action="accMasterDialog_input"/>
 	<sj:dialog 
     	id="accMasterDialog" 

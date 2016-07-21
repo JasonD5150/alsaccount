@@ -31,12 +31,19 @@ public class Utils {
 		return rtn;
 	}
 
-	public static Timestamp StrToTimestamp(String inDate){
-		DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+	public static Timestamp StrToTimestamp(String inDate, String type){
+		DateFormat shortFormat = new SimpleDateFormat("dd/MM/yyyy");
+		DateFormat longFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+		
 		Date date = null;
 		
 		try {
-			date = (Date) formatter.parse(inDate);
+			if("short".equals(type)){
+				date = (Date) shortFormat.parse(inDate);
+			}else{
+				date = (Date) longFormat.parse(inDate);
+			}
+			
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -241,5 +248,14 @@ public class Utils {
     	  }
           return where;
     }
+	
+	public static String dateFormat(Date in, String format){
+        String rtv = "";
+        if (in != null ){
+               SimpleDateFormat sdf = new SimpleDateFormat(format);
+               rtv = sdf.format(in);
+        }
+        return rtv;
+	}
 	
 }

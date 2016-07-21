@@ -67,91 +67,130 @@ public class AlsSabhrsEntriesGridEditAction extends ActionSupport{
 		String tmpCd = "";
 		Double tmpAmt = 0.0;
 		try{
-			if(oper.equalsIgnoreCase("add") || oper.equalsIgnoreCase("edit")){
-				if (oper.equalsIgnoreCase("add")) {
-					String[] templates = this.templates.split(",");
-					for(int i=0;i<templates.length;i++){
-				    	String[] values = templates[i].split("-");
-				    	tmpCd = values[0];
-				    	tmpAmt = Double.valueOf(values[1]);
-				    	
-				    	anatIdPk = new AlsNonAlsTemplateIdPk();
-				    	anatIdPk.setAnatBudgetYear(curBudgYear);
-				    	anatIdPk.setAnatCd(tmpCd);
-				    	anat = anatAS.findById(anatIdPk);
-				    	
-				    	ase = new AlsSabhrsEntries();
-				    	aseIdPk = new AlsSabhrsEntriesIdPk();
-				    	aseIdPk.setAseWhenEntryPosted(date);
-				    	aseIdPk.setAseDrCrCd("C");
-				    	aseIdPk.setAseSeqNo(aseAS.getNextSeqNo());
-				    	aseIdPk.setAseTxnCdSeqNo(1);
-				    	ase.setIdPk(aseIdPk);
-				    	ase.setAseAmt(tmpAmt);
-				    	ase.setAseAllowUploadToSummary("Y");
-				    	ase.setAamAccount(anat.getAnatCrAccount());
-				    	ase.setAamFund(anat.getAnatFund());
-				    	ase.setAocOrg(anat.getAnatCrOrg());
-				    	ase.setAsacSubclass(anat.getAnatCrSubclass());
-				    	ase.setAsacProjectGrant(anat.getAnatCrProjectGrant());
-				    	ase.setAseLineDescription(anat.getAnatCrLineDesc());
-				    	ase.setAsacSystemActivityTypeCd("Z");
-				    	ase.setAsacTxnCd("9");
-				    	ase.setAsacBudgetYear(curBudgYear);
-				    	ase.setAsacProgram(curBudgYear);
-				    	ase.setAamBusinessUnit(hh.getBusinessUnit());
-				    	ase.setAseWhenUploadedToSumm(getUploadedToSumDt());
-				    	ase.setAnatCd(tmpCd);
-				    	ase.setAtgsGroupIdentifier(transIdentifier);
-				    	ase.setAtgTransactionCd(transGrp);
-				    	ase.setAseNonAlsFlag("Y");
-				    	//TODO need to remove this logic when the triggers and correct audit columns are added to the db	
-						ase.setAseWhoLog(userInfo.getStateId().toString());
-						ase.setAseWhenLog(date);
-						//********************************************************************
-						aseAS.save(ase);
+			if (oper.equalsIgnoreCase("edit") || oper.equalsIgnoreCase("del")) {
+				DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				String[] keys = this.id.split("_");
+				aseIdPk.setAseWhenEntryPosted(new Timestamp(formatter.parse(keys[0]).getTime()));
+				aseIdPk.setAseSeqNo(Integer.parseInt(keys[1]));
+				aseIdPk.setAseDrCrCd(keys[2]);
+				aseIdPk.setAseTxnCdSeqNo(Integer.parseInt(keys[3]));
 
-				    	aseIdPk.setAseDrCrCd("D");
-				    	aseIdPk.setAseSeqNo(aseAS.getNextSeqNo());
-				    	ase.setIdPk(aseIdPk);
-				    	ase.setAamAccount(anat.getAnatDrAccount());
-				    	ase.setAocOrg(anat.getAnatDrOrg());
-				    	ase.setAsacSubclass(anat.getAnatDrSubclass());
-				    	ase.setAsacProjectGrant(anat.getAnatDrProjectGrant());
-				    	ase.setAseLineDescription(anat.getAnatDrLineDesc());
+				ase = aseAS.findById(aseIdPk);
+			}
+			
+			if (oper.equalsIgnoreCase("add")) {
+				if(aamAccount == "06" && ("".equals(asacSubclass)||asacSubclass == null)){
+					addActionError("Expense account requries subclass.");
+				}
+			
+				if (this.hasActionErrors()) {
+					return "error_json";
+				}
+				ase = new AlsSabhrsEntries();
+		    	aseIdPk = idPk;
+		    	aseIdPk.setAseWhenEntryPosted(date);
+		    	aseIdPk.setAseSeqNo(aseAS.getNextSeqNo());
+		    	aseIdPk.setAseTxnCdSeqNo(1);
+		    	ase.setIdPk(aseIdPk);
+		    	
+		    	ase.setAseAmt(aseAmt);
+		    	ase.setAseAllowUploadToSummary("Y");
+		    	ase.setAamAccount(aamAccount);
+		    	ase.setAamFund(aamFund);
+		    	ase.setAocOrg(aocOrg);
+		    	ase.setAsacSubclass(asacSubclass);
+		    	ase.setAsacProjectGrant(asacProjectGrant);
+		    	ase.setAseLineDescription(aseLineDescription);
+		    	ase.setAsacSystemActivityTypeCd("Z");
+		    	ase.setAsacTxnCd("9");
+		    	ase.setAsacBudgetYear(asacBudgetYear);
+		    	ase.setAsacProgram(asacProgram);
+		    	ase.setAamBusinessUnit(aamBusinessUnit);
+		    	ase.setAseWhenUploadedToSumm(getUploadedToSumDt());
 
-						aseAS.save(ase);
-					}
-				} else {
-					DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-					String[] keys = this.id.split("_");
-					aseIdPk.setAseWhenEntryPosted(new Timestamp(formatter.parse(keys[0]).getTime()));
-					aseIdPk.setAseSeqNo(Integer.parseInt(keys[1]));
-					aseIdPk.setAseDrCrCd(keys[2]);
-					aseIdPk.setAseTxnCdSeqNo(Integer.parseInt(keys[3]));
-	
-					ase = aseAS.findById(aseIdPk);
+		    	ase.setAtgsGroupIdentifier(transIdentifier);
+		    	ase.setAtgTransactionCd(transGrp);
+		    	ase.setAseNonAlsFlag("Y");
+		    	//TODO need to remove this logic when the triggers and correct audit columns are added to the db	
+				ase.setAseWhoLog(userInfo.getStateId().toString());
+				ase.setAseWhenLog(date);
+				//********************************************************************
+				aseAS.save(ase);
 				
-					ase.setAamAccount(aamAccount);
-					ase.setAamFund(aamFund);
-					ase.setAocOrg(aocOrg);
-					ase.setAsacBudgetYear(asacBudgetYear);
-					ase.setAsacProgram(asacProgram);
-					ase.setAsacSubclass(asacSubclass);
-
-					ase.setAsacProjectGrant(asacProjectGrant);
-					ase.setAseAmt(aseAmt);
-					
-					ase.setAseLineDescription(aseLineDescription);
-					
-					//TODO need to remove this logic when the triggers and correct audit columns are added to the db	
+			} else if (oper.equalsIgnoreCase("addTemplates")) {
+				String[] templates = this.templates.split(",");
+				for(int i=0;i<templates.length;i++){
+			    	String[] values = templates[i].split("-");
+			    	tmpCd = values[0];
+			    	tmpAmt = Double.valueOf(values[1]);
+			    	
+			    	anatIdPk = new AlsNonAlsTemplateIdPk();
+			    	anatIdPk.setAnatBudgetYear(curBudgYear);
+			    	anatIdPk.setAnatCd(tmpCd);
+			    	anat = anatAS.findById(anatIdPk);
+			    	
+			    	ase = new AlsSabhrsEntries();
+			    	aseIdPk = new AlsSabhrsEntriesIdPk();
+			    	aseIdPk.setAseWhenEntryPosted(date);
+			    	aseIdPk.setAseDrCrCd("C");
+			    	aseIdPk.setAseSeqNo(aseAS.getNextSeqNo());
+			    	aseIdPk.setAseTxnCdSeqNo(1);
+			    	ase.setIdPk(aseIdPk);
+			    	ase.setAseAmt(tmpAmt);
+			    	ase.setAseAllowUploadToSummary("Y");
+			    	ase.setAamAccount(anat.getAnatCrAccount());
+			    	ase.setAamFund(anat.getAnatFund());
+			    	ase.setAocOrg(anat.getAnatCrOrg());
+			    	ase.setAsacSubclass(anat.getAnatCrSubclass());
+			    	ase.setAsacProjectGrant(anat.getAnatCrProjectGrant());
+			    	ase.setAseLineDescription(anat.getAnatCrLineDesc());
+			    	ase.setAsacSystemActivityTypeCd("Z");
+			    	ase.setAsacTxnCd("9");
+			    	ase.setAsacBudgetYear(curBudgYear);
+			    	ase.setAsacProgram(curBudgYear);
+			    	ase.setAamBusinessUnit(hh.getBusinessUnit());
+			    	ase.setAseWhenUploadedToSumm(getUploadedToSumDt());
+			    	ase.setAnatCd(tmpCd);
+			    	ase.setAtgsGroupIdentifier(transIdentifier);
+			    	ase.setAtgTransactionCd(transGrp);
+			    	ase.setAseNonAlsFlag("Y");
+			    	//TODO need to remove this logic when the triggers and correct audit columns are added to the db	
 					ase.setAseWhoLog(userInfo.getStateId().toString());
 					ase.setAseWhenLog(date);
 					//********************************************************************
 					aseAS.save(ase);
-				}
-			}else if(oper.equalsIgnoreCase("del")){
 
+			    	aseIdPk.setAseDrCrCd("D");
+			    	aseIdPk.setAseSeqNo(aseAS.getNextSeqNo());
+			    	ase.setIdPk(aseIdPk);
+			    	ase.setAamAccount(anat.getAnatDrAccount());
+			    	ase.setAocOrg(anat.getAnatDrOrg());
+			    	ase.setAsacSubclass(anat.getAnatDrSubclass());
+			    	ase.setAsacProjectGrant(anat.getAnatDrProjectGrant());
+			    	ase.setAseLineDescription(anat.getAnatDrLineDesc());
+
+					aseAS.save(ase);
+				}
+			}else if(oper.equalsIgnoreCase("edit")){		
+				ase.setAamAccount(aamAccount);
+				ase.setAamFund(aamFund);
+				ase.setAocOrg(aocOrg);
+				ase.setAsacBudgetYear(asacBudgetYear);
+				ase.setAsacProgram(asacProgram);
+				ase.setAsacSubclass(asacSubclass);
+
+				ase.setAsacProjectGrant(asacProjectGrant);
+				ase.setAseAmt(aseAmt);
+				
+				ase.setAseLineDescription(aseLineDescription);
+				
+				//TODO need to remove this logic when the triggers and correct audit columns are added to the db	
+				ase.setAseWhoLog(userInfo.getStateId().toString());
+				ase.setAseWhenLog(date);
+				//********************************************************************
+				aseAS.save(ase);
+			}else if(oper.equalsIgnoreCase("del")){
+				aseAS.delete(ase);
 			}
 		}  catch(Exception ex) {
 			 if (ex.toString().contains("ORA-02292")){

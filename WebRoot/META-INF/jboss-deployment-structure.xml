@@ -4,6 +4,7 @@
      <dependencies>
         <module name="fwp.custom.Core"/>
         <module name="javax.servlet.api"  export="false"/>
+        <module name="fwp.common.itextPdf"  export="false"/>
         <module name="fwp.common.struts2.core" /> 
         <module name="fwp.common.struts2.xwork"/> 
         <module name="fwp.common.struts2.json"/>

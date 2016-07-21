@@ -44,7 +44,7 @@ public class AlsSabhrsFyeAdjstDtlGridEditAction extends ActionSupport{
 				tmp.setIdPk(idPk);
 			} else {
 				tmpIdPk.setAsfaBudgetYear(Integer.parseInt(id.split("/")[2]));
-				tmpIdPk.setAsfadAdjstDt(Utils.StrToTimestamp(id));
+				tmpIdPk.setAsfadAdjstDt(Utils.StrToTimestamp(id,"short"));
 
 				tmp = appSer.findById(tmpIdPk);
 			}

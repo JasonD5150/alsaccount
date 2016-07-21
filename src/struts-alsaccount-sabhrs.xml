@@ -24,6 +24,19 @@
             <result name="error">sabhrs/include/nonAlsMasterDialog.jsp</result>
             <result name="input">sabhrs/include/nonAlsMasterDialog.jsp</result>         
       </action>
+      <action name="transGroupApproval_*" method="{1}" class="fwp.alsaccount.sabhrs.action.TransactionGroupApprovalAction">
+            <result>sabhrs/transactionGroupApproval.jsp</result>
+            <result name="error">sabhrs/transactionGroupApproval.jsp</result>
+            <result name="input">sabhrs/transactionGroupApproval.jsp</result>         
+      </action>
+      <action name="getTreasureDepositTicketPdf_*" method="{1}" class="fwp.alsaccount.sabhrs.action.GetTreasureDepositTicketAction">
+               <result name="success" type="stream">
+                <param name="contentType">application/pdf</param>
+                <param name="contentDisposition">attachment;filename="${fileName}"</param>
+                <param name="inputName">inputStream</param>
+            </result>
+            <result name="error">sabhrs/transactionGroupApproval.jsp</result>
+        </action> 
 	</package>
  
  	<package name="fwp.alsaccount.sabhrs.grid" namespace="/alsAccount" extends="json-default">     
@@ -56,7 +69,17 @@
             <result name="error_json" type="json" >
                <param name="ignoreHierarchy">false</param>
             </result>
-		</action>       
+		</action> 
+		<action name="transGroupApprovalGrid_*" class="fwp.alsaccount.sabhrs.grid.AlsTransactionGrpApprovalGridAction">
+            <result type="json" />
+        </action> 
+        <action name="transGroupApprovalGridEdit_*" class="fwp.alsaccount.sabhrs.grid.AlsTransactionGrpApprovalGridEditAction">
+			<result type="json"></result>
+            <result type="json" name="input"></result>
+            <result name="error_json" type="json" >
+               <param name="ignoreHierarchy">false</param>
+            </result>
+		</action>            
    </package>
 
 	<package name="fwp.alsaccount.sabhrs.json" extends="json-default" >

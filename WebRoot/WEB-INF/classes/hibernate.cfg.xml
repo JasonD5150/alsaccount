@@ -39,6 +39,9 @@
 		<mapping
 			class="fwp.alsaccount.dao.sabhrs.AlsTransactionGrpStatus" />
 		<mapping class="fwp.alsaccount.dao.sabhrs.AlsSabhrsEntries" />
+		<mapping class="AlsSabhrsEntriesSummary" />
+		<mapping
+			class="fwp.alsaccount.dao.sabhrs.AlsSabhrsEntriesSummary" />
 
 		<!-- Interface Files -->
 		<mapping

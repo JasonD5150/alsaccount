@@ -38,19 +38,14 @@ $.subscribe('alsSabhrsEntriesComplete', function(event, data) {
 		.jqGrid({pager:'#alsSabhrsEntriesTable_pager'})
 		.jqGrid('navButtonAdd'
 		,'#alsSabhrsEntriesTable_pager'
-		,{id:"add_alsSabhrsEntriesTable"
-		,caption:""
-		,buttonicon:"ui-icon-plus"
+		,{id:"addTemplate_alsSabhrsEntriesTable"
+		,caption:"Add Template"
+		,buttonicon:"ui-icon-circle-plus"
 		,onClickButton:function(){ 
-			var sel_id = $("#transGroupDtlsTable").jqGrid('getGridParam', 'selrow');
-			if(sel_id != null){
-				$('#accMasterDialog').dialog('open');
-			}else{
-				alert("You must select a Transaction Group before you can add a SABHRS Entry.");
-			}
+			$('#accMasterDialog').dialog('open');
 		}
-		,position:"first"
-		,title:"Add"
+		,position:"last"
+		,title:"Add Template"
 		,cursor:"pointer"
 		});
 		
@@ -60,7 +55,17 @@ $.subscribe('alsSabhrsEntriesComplete', function(event, data) {
        		$("#alsSabhrsEntriesTable").jqGrid('setColProp','asacSubclass', { editoptions: { value: rtrnSubClassList()}});
        		$("#alsSabhrsEntriesTable").jqGrid('setColProp','aocOrg', { editoptions: { value: rtrnOrgList()}});
        		$("#alsSabhrsEntriesTable").jqGrid('setColProp','aamAccount', { editoptions: { value: rtrnAccountList()}});
-	   }   
+	   }
+	   
+	   var sel_id = $("#transGroupDtlsTable").jqGrid('getGridParam', 'selrow');
+	   if(sel_id != null){
+		   $("td[id='add_alsSabhrsEntriesTable']").toggle(true);
+		   $("td[id='addTemplate_alsSabhrsEntriesTable']").toggle(true);
+	   }else{
+		   $("td[id='add_alsSabhrsEntriesTable']").toggle(false);
+		   $("td[id='addTemplate_alsSabhrsEntriesTable']").toggle(false);
+	   }
+
 });
 
 function rtrnAccountList() {
@@ -132,7 +137,7 @@ function exitNonAlsMasterDialog(){
 	   	
 	   	if(templateSeleted){
 		    if(amountSet){
-		    	$('#frmOper').val('add');
+		    	$('#frmOper').val('addTemplates');
 		    	
 				url = "alsAccount/alsSabhrsEntriesGridEdit_execute.action";    
         		$.ajax({

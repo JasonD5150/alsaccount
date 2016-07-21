@@ -403,4 +403,104 @@ public class ListUtils {
 		}
 		return lst;		
 	}	
+	
+	@SuppressWarnings("unchecked")
+	public List<ListComp> getBankCodeList() {
+		List<ListComp> lst = new ArrayList<ListComp>();
+		
+		String queryString = "SELECT DISTINCT atgs.ABC_BANK_CD itemVal, "
+				   + "atgs.ABC_BANK_CD||' - '||abc.ABC_BANK_NM itemLabel "
+				   + "FROM ALS.ALS_TRANSACTION_GRP_STATUS atgs, "
+				   + "ALS.ALS_BANK_CODE abc "
+				   + "WHERE atgs.ABC_BANK_CD = abc.ABC_BANK_CD "
+				   + "AND atgs.ATG_TRANSACTION_CD = atgs.ATG_TRANSACTION_CD "
+				   + "ORDER BY 1";
+
+		Query query = getSession().createSQLQuery(queryString)
+				.addScalar("itemVal", StringType.INSTANCE)
+				.addScalar("itemLabel", StringType.INSTANCE)
+				.setResultTransformer(Transformers.aliasToBean(ListComp.class));
+
+		lst = query.list();
+		getSession().close(); 
+		return lst;
+	}
+	
+	/**
+	 * This method retrieves Project Grants from the database as formatted text for
+	 * a jqgrid column select list.
+	 */
+	@SuppressWarnings("unchecked")
+	public String getBankCodeListTxt(boolean addSelectOne)
+			throws Exception {
+		List<String> tmpLst = null;
+		String retVal = ": ";
+
+		if (addSelectOne) {
+			retVal = ":-- Select One --";
+		}
+
+		try {
+			List<ListComp> bankCodeLst = this.getBankCodeList();
+
+			if (bankCodeLst != null && !bankCodeLst.isEmpty()) {
+				for (ListComp lc : bankCodeLst) {
+					retVal += ";" + String.valueOf(lc.getItemVal()) + ":" + lc.getItemLabel();
+				}
+			}
+		} catch (Exception ex) {
+			throw new Exception(this.getClass().getName() + ".retrieveAllInventoryCodesAsText - " + ex.getMessage());
+		}
+
+		return retVal;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<ListComp> getGroupIdentifierList() {
+		List<ListComp> lst = new ArrayList<ListComp>();
+		
+		String queryString = "SELECT ATG_TRANSACTION_CD itemVal,"
+						   + "ATGS_GROUP_IDENTIFIER itemLabel "
+						   + "FROM ALS.ALS_TRANSACTION_GRP_STATUS "
+						   + "WHERE ATG_TRANSACTION_CD = ATG_TRANSACTION_CD "
+						   + "ORDER BY 1,2 Desc";
+
+		Query query = getSession().createSQLQuery(queryString)
+				.addScalar("itemVal", StringType.INSTANCE)
+				.addScalar("itemLabel", StringType.INSTANCE)
+				.setResultTransformer(Transformers.aliasToBean(ListComp.class));
+
+		lst = query.list();
+		getSession().close(); 
+		return lst;
+	}
+	
+	/**
+	 * This method retrieves Project Grants from the database as formatted text for
+	 * a jqgrid column select list.
+	 */
+	@SuppressWarnings("unchecked")
+	public String getGroupIdentifierListTxt(boolean addSelectOne)
+			throws Exception {
+		List<String> tmpLst = null;
+		String retVal = ": ";
+
+		if (addSelectOne) {
+			retVal = ":-- Select One --";
+		}
+
+		try {
+			List<ListComp> groupIdentifierLst = this.getGroupIdentifierList();
+
+			if (groupIdentifierLst != null && !groupIdentifierLst.isEmpty()) {
+				for (ListComp lc : groupIdentifierLst) {
+					retVal += ";" + lc.getItemLabel() + ":" + String.valueOf(lc.getItemVal())+" - "+lc.getItemLabel();
+				}
+			}
+		} catch (Exception ex) {
+			throw new Exception(this.getClass().getName() + ".retrieveAllInventoryCodesAsText - " + ex.getMessage());
+		}
+
+		return retVal;
+	}
 }

@@ -2,6 +2,32 @@
 <!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-reverse-engineering-3.0.dtd" >
 
 <hibernate-reverse-engineering>
+	<table name="ALS_SABHRS_ENTRIES_SUMMARY" schema="ALS" class="fwp.alsaccount.dao.sabhrs.AlsSabhrsEntriesSummary"> 
+     <primary-key id-class="fwp.alsaccount.dao.sabhrs.AlsSabhrsEntriesSummaryIdPk" property="idPk">
+       <column name="ASES_DATE_CREATED" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+       <column name="ASES_SEQ_NO" jdbc-type="NUMERIC" type="Integer"></column>
+     </primary-key>
+     <column name="AAM_BUSINESS_UNIT" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ASAC_REFERENCE" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="AAM_ACCOUNT" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AAM_FUND" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AOC_ORG" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ASAC_PROGRAM" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="ASAC_SUBCLASS" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ASAC_BUDGET_YEAR" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="ASAC_PROJECT_GRANT" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ASE_AMT" jdbc-type="NUMERIC" type="Double"></column>
+     <column name="ASAC_SYSTEM_ACTIVITY_TYPE_CD" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ASAC_TXN_CD" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ASES_WHEN_UPLOADED_TO_SABHRS" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="ASES_WHO_LOG" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ASES_WHEN_LOG" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="ATG_TRANSACTION_CD" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="ATGS_GROUP_IDENTIFIER" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ASE_NON_ALS_FLAG" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ASE_LINE_DESCRIPTION" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ATI_TRIBE_CD" jdbc-type="VARCHAR" type="String"></column>
+   </table>
 
 <table name="ALS_SABHRS_ENTRIES" schema="ALS" class="fwp.alsaccount.dao.sabhrsAlsSabhrsEntries"> 
      <primary-key id-class="fwp.alsaccount.dao.sabhrsAlsSabhrsEntriesIdPk" property="idPk">
