@@ -23,6 +23,8 @@
 					} 
 				return [rtrnstate,rtrnMsg]; 
 			};
+			
+
 		</script>
     </fwp:head>
   
@@ -70,15 +72,16 @@
 		rowNum="1000"
 		resizable="true">
 		
-			<sjg:gridColumn name="abcBankCd" index="abcBankCd" key="true" title =" Bank Code" width="25" sortable="false" hidden="false" editable="true"/>
-			<sjg:gridColumn name="abcAccountNo" index="abcAccountNo"  title =" Account Number" width="10" sortable="false" hidden="false"  editable="false"/>
-			<sjg:gridColumn name="abcCompanyId" index="abcCompanyId" title =" Company ID" width="50" sortable="false" edittype="textarea" editable="true"/>
-			<sjg:gridColumn name="abcBankNm" index="abcBankNm" title =" Bank Name" width="50" sortable="false" edittype="textarea" editable="true"/>
-			<sjg:gridColumn name="azcZipCd" index="azcZipCd" title =" Zip Code" width="25" sortable="false" editable="true"/>
-			<sjg:gridColumn name="azcCityNm" index="azcCityNm" title =" City" width="10" sortable="false" editable="false" />
-			<sjg:gridColumn name="abcCreatePersonid" index="abcCreatePersonid" title =" Create ID" width="10" sortable="false" editable="false" />
-			<sjg:gridColumn name="abcActive" index="abcActive" title =" Active" width="10" sortable="false" editable="false" />
-			<sjg:gridColumn name="abcWhenLog" index="abcWhenLog" title =" When Logged" width="20" sortable="false" editable="false"/>
+			<sjg:gridColumn name="abcBankCd" index="abcBankCd" key="true" title =" Bank Code" width="15" sortable="false" hidden="false" editable="true" editrules="{number:true,required:true}" editoptions="{size:4,maxlength:3}"/>
+			<sjg:gridColumn name="abcActive" index="abcActive" title =" Active" width="10" sortable="false" editable="true" edittype="select" editoptions="{value: {Y: 'Yes', N: 'No'}, defaultValue:'Y'}"/>
+			<sjg:gridColumn name="abcBankNm" index="abcBankNm" title =" Bank Name" width="45" sortable="false"  editable="true" editrules="{required:true}" editoptions="{size:26, maxlength:25}"/>
+			<sjg:gridColumn name="abcCompanyId" index="abcCompanyId" title =" Company Id" width="20" sortable="false" editable="true" editoptions="{size:11, maxlength:10}" editrules="{number:true}"/>
+			<sjg:gridColumn name="abcAccountNo" index="abcAccountNo"  title =" Account No" width="25" sortable="false" hidden="false"  editable="true" editoptions="{size:18, maxlength:17}" editrules="{number:true}"/>		
+			<sjg:gridColumn name="azcZipCd" index="azcZipCd" title =" Zip Code" width="13" sortable="false" editable="true" editrules="{number:true,required:true}" editoptions="{size:6,maxlength:5}"/>
+			<sjg:gridColumn name="azcCityNm" index="azcCityNm" title =" City" width="20" sortable="false" editable="false" />
+			<sjg:gridColumn name="abcWhenLog" index="abcWhenLog" title =" Updated On" width="35" sortable="false" editable="false" formatter="date" formatoptions="{srcformat:'y-m-d:H:i' , newformat : 'm/d/Y H:i'}"/>			
+			<sjg:gridColumn name="abcWhoLog" index="abcWhoLog" title =" Updated By" width="20" sortable="false" editable="false" />
+			<sjg:gridColumn name="abcCreatePersonid" index="abcCreatePersonid" title =" Updated Username" width="25" sortable="false" editable="false" />
 			
 	</sjg:grid>
 </fwp:template>  

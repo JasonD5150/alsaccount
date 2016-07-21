@@ -1,14 +1,18 @@
 package fwp.alsaccount.admin.grid;
 
 import java.sql.Timestamp;
+import java.util.Date;
 
 import org.apache.shiro.SecurityUtils;
 
 import com.opensymphony.xwork2.ActionSupport;
 
+import fwp.alsaccount.appservice.admin.AlsBankCodeAS;
 import fwp.alsaccount.appservice.admin.AlsNonAlsTemplateAS;
+import fwp.alsaccount.dao.admin.AlsBankCode;
 import fwp.alsaccount.dao.admin.AlsNonAlsTemplate;
 import fwp.alsaccount.dao.admin.AlsNonAlsTemplateIdPk;
+import fwp.alsaccount.utils.Utils;
 import fwp.security.user.UserDTO;
 
 
@@ -16,316 +20,244 @@ public class AlsBankCodeGridEditAction extends ActionSupport{
 	private static final long serialVersionUID = 1L;
 	private String oper;
 
-	private AlsNonAlsTemplateIdPk idPk = new AlsNonAlsTemplateIdPk();
 	private String id;
-	private String anatDesc;
-    private String anatBusinessUnit;
-    private String anatDrAccount;
-    private String anatCrAccount;
-    private String anatFund;
-    private String anatDrOrg;
-	private String anatCrOrg;
-    private String anatDrSubclass;
-    private String anatCrSubclass;
-    private Integer anatProgramYear;
-    private String anatDrProjectGrant;
-    private String anatCrProjectGrant;
-    private Integer anatDrJournalLineRefr;
-    private Integer anatCrJournalLineRefr;
-    private String anatDrLineDesc;
-    private String anatCrLineDesc;
-    private Integer budgYear;
-    private String anatDrJournalLineRefrDesc;
-    private String anatCrJournalLineRefrDesc;
+	private String abcBankCd;
+	private String abcAccountNo;
+	private String abcCompanyId;
+	private String abcBankNm;
+	private String azcZipCd;
+	private String azcCityNm;
+	private String abcWhoLog;
+	private Timestamp abcWhenLog;
+	private String abcCreatePersonid;
+	private String abcActive;
 
 
 	public String execute() throws Exception{
 		UserDTO userInfo = (UserDTO)SecurityUtils.getSubject().getSession().getAttribute("userInfo");
 		Timestamp date = new Timestamp(System.currentTimeMillis());
-		String errMsg="";			
-		
-		try{
-			AlsNonAlsTemplateAS appSer = new AlsNonAlsTemplateAS();
-			AlsNonAlsTemplate tmp = null;
-			
-			if (oper.equalsIgnoreCase("add")) {
-				tmp = new AlsNonAlsTemplate();
-				idPk.setAnatBudgetYear(budgYear);
-				tmp.setIdPk(idPk);
-				
-				//TODO need to remove this logic when the triggers and correct audit columns are added to the db	
-				tmp.setAnatWhoLog(userInfo.getStateId().toString());
-				tmp.setAnatWhenLog(date);
-				//********************************************************************
-			} else {
-				//Set current idPk
-				AlsNonAlsTemplateIdPk tmpIdPk = new AlsNonAlsTemplateIdPk();
-				String[] keys = this.id.split("_");
-				tmpIdPk.setAnatBudgetYear(Integer.parseInt(keys[0]));
-				tmpIdPk.setAnatCd(keys[1]);
-				
-				tmp = appSer.findById(tmpIdPk);
-			}
-			
-			if(oper.equalsIgnoreCase("add") || oper.equalsIgnoreCase("edit")){
-				if(oper.equalsIgnoreCase("add")){
-					if(appSer.isDuplicateEntry(idPk)){
-						addActionError("Unable to add this record due to duplicate Template Code.");
-					}else if(appSer.isDuplicateDesc(budgYear, anatDesc)){
-						addActionError("Unable to add this record due to duplicate Template Description.");
-					}
-				}
-				if (this.hasActionErrors()) {
-					return "error_json";
-				}
-				tmp.setAnatDesc(anatDesc);
-				tmp.setAnatBusinessUnit("52010");
-				tmp.setAnatFund(anatFund);
-				tmp.setAnatProgramYear(budgYear);
-				tmp.setAnatCrAccount(anatCrAccount);
-				tmp.setAnatCrLineDesc(anatCrLineDesc);
-				tmp.setAnatCrOrg(anatCrOrg);
-				if(appSer.getJlrParVal(anatCrJournalLineRefrDesc) != 0){
-					tmp.setAnatCrJournalLineRefr(appSer.getJlrParVal(anatCrJournalLineRefrDesc));
-				}
-				tmp.setAnatCrProjectGrant(anatCrProjectGrant);
-				tmp.setAnatCrSubclass(anatCrSubclass);
-				tmp.setAnatDrAccount(anatDrAccount);
-				tmp.setAnatDrLineDesc(anatDrLineDesc);
-				tmp.setAnatDrOrg(anatDrOrg);
-				if(appSer.getJlrParVal(anatDrJournalLineRefrDesc) != 0){
-					tmp.setAnatDrJournalLineRefr(appSer.getJlrParVal(anatDrJournalLineRefrDesc));
-				}
-				tmp.setAnatDrProjectGrant(anatDrProjectGrant);
-				tmp.setAnatDrSubclass(anatDrSubclass);
+		String errMsg="";
 
-				appSer.save(tmp);
-			}else if(oper.equalsIgnoreCase("del")){
-				appSer.delete(tmp);
+		try{
+			if(validation()){
+
+				AlsBankCodeAS appSer = new AlsBankCodeAS();
+				AlsBankCode tmp = null;
+
+				if (oper.equalsIgnoreCase("add")) {
+					tmp = new AlsBankCode();
+
+					tmp.setAbcBankCd(abcBankCd);
+
+				} else {
+
+					String idString = id.toString();
+					tmp = appSer.findById(idString);
+					abcWhenLog = tmp.getAbcWhenLog();
+					abcWhoLog = tmp.getAbcWhoLog();
+				}
+
+				if(oper.equalsIgnoreCase("add") || oper.equalsIgnoreCase("edit")){
+
+					//validate();
+
+					if (azcZipCd.length() != 5)
+					{
+
+						addActionError("Pease enter a valid zip code.");
+
+					}
+
+					if(oper.equalsIgnoreCase("add")){
+						if(appSer.isDuplicateEntry(abcBankCd)){
+							addActionError("Unable to add this record due to duplicate Bank Code.");
+						}
+					}
+					if (this.hasActionErrors() || this.hasFieldErrors()) {
+						return "error_json";
+					}
+
+					azcCityNm = "HELENA";
+					abcCreatePersonid = userInfo.getDisplayName();
+
+					tmp.setAbcAccountNo(abcAccountNo);
+					tmp.setAbcActive(abcActive);
+					tmp.setAbcBankCd(abcBankCd);
+					tmp.setAbcBankNm(abcBankNm);
+					tmp.setAbcCompanyId(abcCompanyId);
+					tmp.setAbcCreatePersonid(abcCreatePersonid);
+					tmp.setAbcWhenLog(abcWhenLog);
+					tmp.setAbcWhoLog(abcWhoLog);
+					tmp.setAzcCityNm(azcCityNm);
+					tmp.setAzcZipCd(azcZipCd);
+
+					appSer.save(tmp);
+				}else if(oper.equalsIgnoreCase("del")){
+					appSer.delete(tmp);
+				}
+			}else{
+				return "error_json";
 			}
-		}  catch(Exception ex) {
-			 if (ex.toString().contains("ORA-02292")){
-				  errMsg += "Grid has child record(s) which would need to be deleted first.";
-			  } else if (ex.toString().contains("ORA-02291")){
-				  errMsg += "Parent record not found.";
-			  } else if (ex.toString().contains("ORA-00001")){
-				  errMsg += "Unable to add this record due to duplicate.";
-			  }	else {
-				  errMsg += " " + ex.toString();
-			  }
-			  
-		    addActionError(errMsg);
-	        return "error_json";
+
+		}
+
+		catch(Exception ex) {
+			if (ex.toString().contains("ORA-02292")){
+				errMsg += "Grid has child record(s) which would need to be deleted first.";
+			} else if (ex.toString().contains("ORA-02291")){
+				errMsg += "Parent record not found.";
+			} else if (ex.toString().contains("ORA-00001")){
+				errMsg += "Unable to add this record due to duplicate.";
+			}	else {
+				errMsg += " " + ex.toString();
+			}
+
+			addActionError(errMsg);
+			return "error_json";
 		}	
 		return SUCCESS;
 	}
-	
+
+	private boolean validation()
+	{
+
+
+		if (azcZipCd.length() != 5)
+		{
+			addActionError("Zip code needs to be 5 characters.");
+		}
+		
+		
+		
+		if(hasActionErrors()){
+
+			return false;	
+		}
+		else{
+			return true;
+		}
+
+	}
+
+
+	public String getAbcBankCd() {
+		return abcBankCd;
+	}
+
+
+	public void setAbcBankCd(String abcBankCd) {
+		this.abcBankCd = abcBankCd;
+	}
+
+
+	public String getAbcAccountNo() {
+		return abcAccountNo;
+	}
+
+
+	public void setAbcAccountNo(String abcAccountNo) {
+		this.abcAccountNo = abcAccountNo;
+	}
+
+
+	public String getAbcCompanyId() {
+		return abcCompanyId;
+	}
+
+
+	public void setAbcCompanyId(String abcCompanyId) {
+		this.abcCompanyId = abcCompanyId;
+	}
+
+
+	public String getAbcBankNm() {
+		return abcBankNm;
+	}
+
+
+	public void setAbcBankNm(String abcBankNm) {
+		this.abcBankNm = abcBankNm;
+	}
+
+
+	public String getAzcZipCd() {
+		return azcZipCd;
+	}
+
+
+	public void setAzcZipCd(String azcZipCd) {
+		this.azcZipCd = azcZipCd;
+	}
+
+
+	public String getAzcCityNm() {
+		return azcCityNm;
+	}
+
+
+	public void setAzcCityNm(String azcCityNm) {
+		this.azcCityNm = azcCityNm;
+	}
+
+
+	public String getAbcWhoLog() {
+		return abcWhoLog;
+	}
+
+
+	public void setAbcWhoLog(String abcWhoLog) {
+		this.abcWhoLog = abcWhoLog;
+	}
+
+
+	public Timestamp getAbcWhenLog() {
+		return abcWhenLog;
+	}
+
+
+	public void setAbcWhenLog(Timestamp abcWhenLog) {
+		this.abcWhenLog = abcWhenLog;
+	}
+
+
+	public String getAbcCreatePersonid() {
+		return abcCreatePersonid;
+	}
+
+
+	public void setAbcCreatePersonid(String abcCreatePersonid) {
+		this.abcCreatePersonid = abcCreatePersonid;
+	}
+
+
+	public String getAbcActive() {
+		return abcActive;
+	}
+
+
+	public void setAbcActive(String abcActive) {
+		this.abcActive = abcActive;
+	}
+
+
 	public String getOper() {
 		return oper;
 	}
-	
+
+
 	public void setOper(String oper) {
 		this.oper = oper;
 	}
+
 
 	public String getId() {
 		return id;
 	}
 
+
 	public void setId(String id) {
 		this.id = id;
 	}
 
-	public String getAnatDesc() {
-		return anatDesc;
-	}
 
-
-	public void setAnatDesc(String anatDesc) {
-		this.anatDesc = anatDesc;
-	}
-
-
-	public String getAnatBusinessUnit() {
-		return anatBusinessUnit;
-	}
-
-
-	public void setAnatBusinessUnit(String anatBusinessUnit) {
-		this.anatBusinessUnit = anatBusinessUnit;
-	}
-
-
-	public String getAnatDrAccount() {
-		return anatDrAccount;
-	}
-
-
-	public void setAnatDrAccount(String anatDrAccount) {
-		this.anatDrAccount = anatDrAccount;
-	}
-
-
-	public String getAnatCrAccount() {
-		return anatCrAccount;
-	}
-
-
-	public void setAnatCrAccount(String anatCrAccount) {
-		this.anatCrAccount = anatCrAccount;
-	}
-
-
-	public String getAnatFund() {
-		return anatFund;
-	}
-
-
-	public void setAnatFund(String anatFund) {
-		this.anatFund = anatFund;
-	}
-
-
-	public String getAnatDrOrg() {
-		return anatDrOrg;
-	}
-
-
-	public void setAnatDrOrg(String anatDrOrg) {
-		this.anatDrOrg = anatDrOrg;
-	}
-
-
-	public String getAnatCrOrg() {
-		return anatCrOrg;
-	}
-
-
-	public void setAnatCrOrg(String anatCrOrg) {
-		this.anatCrOrg = anatCrOrg;
-	}
-
-
-	public String getAnatDrSubclass() {
-		return anatDrSubclass;
-	}
-
-
-	public void setAnatDrSubclass(String anatDrSubclass) {
-		this.anatDrSubclass = anatDrSubclass;
-	}
-
-
-	public String getAnatCrSubclass() {
-		return anatCrSubclass;
-	}
-
-
-	public void setAnatCrSubclass(String anatCrSubclass) {
-		this.anatCrSubclass = anatCrSubclass;
-	}
-
-
-	public Integer getAnatProgramYear() {
-		return anatProgramYear;
-	}
-
-
-	public void setAnatProgramYear(Integer anatProgramYear) {
-		this.anatProgramYear = anatProgramYear;
-	}
-
-
-	public String getAnatDrProjectGrant() {
-		return anatDrProjectGrant;
-	}
-
-
-	public void setAnatDrProjectGrant(String anatDrProjectGrant) {
-		this.anatDrProjectGrant = anatDrProjectGrant;
-	}
-
-
-	public String getAnatCrProjectGrant() {
-		return anatCrProjectGrant;
-	}
-
-
-	public void setAnatCrProjectGrant(String anatCrProjectGrant) {
-		this.anatCrProjectGrant = anatCrProjectGrant;
-	}
-
-
-	public Integer getAnatDrJournalLineRefr() {
-		return anatDrJournalLineRefr;
-	}
-
-
-	public void setAnatDrJournalLineRefr(Integer anatDrJournalLineRefr) {
-		this.anatDrJournalLineRefr = anatDrJournalLineRefr;
-	}
-
-
-	public Integer getAnatCrJournalLineRefr() {
-		return anatCrJournalLineRefr;
-	}
-
-
-	public void setAnatCrJournalLineRefr(Integer anatCrJournalLineRefr) {
-		this.anatCrJournalLineRefr = anatCrJournalLineRefr;
-	}
-
-
-	public String getAnatDrLineDesc() {
-		return anatDrLineDesc;
-	}
-
-
-	public void setAnatDrLineDesc(String anatDrLineDesc) {
-		this.anatDrLineDesc = anatDrLineDesc;
-	}
-
-
-	public String getAnatCrLineDesc() {
-		return anatCrLineDesc;
-	}
-
-
-	public void setAnatCrLineDesc(String anatCrLineDesc) {
-		this.anatCrLineDesc = anatCrLineDesc;
-	}
-
-
-	public void setIdPk(AlsNonAlsTemplateIdPk idPk) {
-		this.idPk = idPk;
-	}
-
-	public Integer getBudgYear() {
-		return budgYear;
-	}
-
-
-	public void setBudgYear(Integer budgYear) {
-		this.budgYear = budgYear;
-	}
-
-
-	public String getAnatDrJournalLineRefrDesc() {
-		return anatDrJournalLineRefrDesc;
-	}
-
-
-	public void setAnatDrJournalLineRefrDesc(String anatDrJournalLineRefrDesc) {
-		this.anatDrJournalLineRefrDesc = anatDrJournalLineRefrDesc;
-	}
-
-
-	public String getAnatCrJournalLineRefrDesc() {
-		return anatCrJournalLineRefrDesc;
-	}
-
-
-	public void setAnatCrJournalLineRefrDesc(String anatCrJournalLineRefrDesc) {
-		this.anatCrJournalLineRefrDesc = anatCrJournalLineRefrDesc;
-	}
 }
