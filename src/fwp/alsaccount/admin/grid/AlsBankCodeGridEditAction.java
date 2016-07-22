@@ -134,9 +134,9 @@ public class AlsBankCodeGridEditAction extends ActionSupport{
 		{
 			addActionError("Zip code needs to be 5 characters.");
 		}
-	else if (!zipCodeAS.zipValidate(azcZipCd)){
+	/*else if (!zipCodeAS.zipValidate(azcZipCd)){
 			addActionError("Please enter a valid zip code.");
-	        }
+	        }*/
 		
 	
 		if(hasActionErrors()){
