@@ -44,8 +44,7 @@ public class AlsTransactionGrpApprovalGridAction extends ActionSupport{
 	@SuppressWarnings("unchecked")
 	public String buildgrid(){  
 		HibHelpers hh = new HibHelpers();
-		Integer curBudgYear = 2016;
-				//Integer.parseInt(hh.getCurrentBudgetYear());
+		Integer curBudgYear = Integer.parseInt(hh.getCurrentBudgetYear());
 		
 		String srchStr = " where 1=1 ";
 		String orderStr = " ORDER BY idPk.atgTransactionCd,idPk.atgsGroupIdentifier";
@@ -116,6 +115,7 @@ public class AlsTransactionGrpApprovalGridAction extends ActionSupport{
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public String buildStr(String where){
+		HibHelpers hh = new HibHelpers();
     	try {
             Hashtable<String,Object> jsonFilter = (Hashtable<String, Object>) (new gov.fwp.mt.RPC.FWPJsonRpc().new JsonParser(filters)).FromJson();
             String groupOp = (String) jsonFilter.get("groupOp");
@@ -126,8 +126,7 @@ public class AlsTransactionGrpApprovalGridAction extends ActionSupport{
             
             Boolean searchCreated = true;
             Boolean searchIntStatus = true;
-            Integer curBudgYear = 2016;
-			//Integer.parseInt(hh.getCurrentBudgetYear());
+            Integer curBudgYear = Integer.parseInt(hh.getCurrentBudgetYear());
             
     		for (int i = 0; i < rulesCount; i++) {
     			Hashtable<String,String> rule = (Hashtable<String, String>) rules.get(i);

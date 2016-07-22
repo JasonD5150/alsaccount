@@ -264,6 +264,7 @@ public class AlsTransactionGrpApprovalGridEditAction extends ActionSupport{
 		return rtn;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void updateUploadToSummarySabhrs() throws ParseException{
 		String where = "";
 		where = "WHERE atgTransactionCd="+transGroupType+" "
@@ -295,6 +296,7 @@ public class AlsTransactionGrpApprovalGridEditAction extends ActionSupport{
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void updateProgramSabhrs() throws ParseException{
 		String where = "";
 		where = "WHERE atgTransactionCd="+transGroupType+" "
