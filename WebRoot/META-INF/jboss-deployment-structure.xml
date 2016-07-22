@@ -16,6 +16,7 @@
  		<module name="fwp.common.jsonOrg"/>
  		<module name="fwp.custom.JsonRpc"/>
  		<module name="org.slf4j"/>
+ 		<module name="fwp.dal.gen" export="false"/>
      </dependencies>
      <exclude-subsystems>
         <subsystem name="logging" />
