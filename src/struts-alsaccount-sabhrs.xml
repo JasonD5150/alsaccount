@@ -79,7 +79,7 @@
             <result name="error_json" type="json" >
                <param name="ignoreHierarchy">false</param>
             </result>
-		</action>          
+		</action>       
    </package>
 
 	<package name="fwp.alsaccount.sabhrs.json" extends="json-default" >
