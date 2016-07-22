@@ -10,8 +10,8 @@
         <module name="fwp.common.struts2.json"/>
         <module name="fwp.common.struts2.jquery"/> 
         <module name="fwp.common.hibernate" /> 
-		<module name="fwp.dal.alsaccount"/>
-		<module name="fwp.dal.alsadmin"/>
+		<module name="fwp.dal.alsaccount" export="false"/>
+		<module name="fwp.dal.alsadmin" export="false"/>
  		<module name="org.apache.commons.lang"/>
  		<module name="fwp.common.jsonOrg"/>
  		<module name="fwp.custom.JsonRpc"/>
