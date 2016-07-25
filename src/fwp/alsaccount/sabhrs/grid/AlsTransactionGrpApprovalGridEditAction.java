@@ -118,8 +118,6 @@ public class AlsTransactionGrpApprovalGridEditAction extends ActionSupport{
 								}
 							}
 						}
-					}else{
-						if(transGroupType == 8 && intAll == true){}
 					}
 				}
 				

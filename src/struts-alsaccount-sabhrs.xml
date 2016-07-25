@@ -37,6 +37,11 @@
             </result>
             <result name="error">sabhrs/transactionGroupApproval.jsp</result>
         </action>
+        <action name="transGroupMassApproval_*" method="{1}" class="fwp.alsaccount.action.GenericAction">
+			<result>sabhrs/transactionGroupMassApproval.jsp</result>
+			<result name="error">sabhrs/transactionGroupMassApproval.jsp</result>
+			<result name="input">sabhrs/transactionGroupMassApproval.jsp</result>         
+		</action>
 	</package>
  
  	<package name="fwp.alsaccount.sabhrs.grid" namespace="/alsAccount" extends="json-default">     
@@ -79,7 +84,17 @@
             <result name="error_json" type="json" >
                <param name="ignoreHierarchy">false</param>
             </result>
-		</action>       
+		</action>  
+		<action name="transGroupMassApprovalGrid_*" class="fwp.alsaccount.sabhrs.grid.AlsTransactionGrpMassApprovalGridAction">
+			<result type="json" />
+		</action> 
+		<action name="transGroupMassApprovalGridEdit_*" class="fwp.alsaccount.sabhrs.grid.AlsTransactionGrpMassApprovalGridEditAction">
+			<result type="json"></result>
+			<result type="json" name="input"></result>
+			<result name="error_json" type="json" >
+			   <param name="ignoreHierarchy">false</param>
+			</result>
+		</action>     
    </package>
 
 	<package name="fwp.alsaccount.sabhrs.json" extends="json-default" >

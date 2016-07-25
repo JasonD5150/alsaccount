@@ -23,6 +23,7 @@ import org.hibernate.type.StringType;
 import fwp.alsaccount.appservice.admin.AlsMiscAS;
 import fwp.alsaccount.dao.admin.AlsMisc;
 import fwp.alsaccount.dao.admin.AlsProviderInfo;
+import fwp.alsaccount.dto.sabhrs.AlsTransactionGrpMassCopyDTO;
 import fwp.alsaccount.hibernate.HibernateSessionFactory;
 
 public class HibHelpers {
@@ -592,4 +593,67 @@ public class HibHelpers {
 		return cnt;
 	}
 	
+	public List<AlsTransactionGrpMassCopyDTO> getTransGroupMassApprovalRecords(Date bpe, Date opa) {
+		List<AlsTransactionGrpMassCopyDTO> lst = new ArrayList<AlsTransactionGrpMassCopyDTO>();
+
+		String queryString =  "SELECT SUBSTR(a.atgs_group_identifier, 2, 6) providerNo, "
+								   + "TO_DATE(SUBSTR(a.atgs_group_identifier, 9, 10), 'YYYY/MM/DD') bpe, "
+								   + "SUM(NVL(a.atgs_net_dr_cr, 0)) atgsNetDrCr,"
+								   + "(SELECT api.api_business_nm FROM als_provider_info api WHERE api.api_provider_no = TRIM(SUBSTR(a.atgs_group_identifier, 2, 6))) providerName,"
+								   + "(SELECT DECODE(NVL(Apr_Remitt_Per_Status,'N'),'D','Delinquent',"
+								   												 + "'O','Off-line Payment Due',"
+								   												 + "'OP','Off-line Payment Pending',"
+								   												 + "'P','PAE Generated',"
+								   												 + "'I','Investigation',"
+								   												 + "'C','Collected Outside of ALS',"
+								   												 + "'None')"
+								   + "FROM ALS.Als_Provider_Remittance "
+								   + "WHERE  Api_Provider_No = TO_NUMBER(SUBSTR(a.atgs_group_identifier, 2, 6))"
+								   + "AND  Apr_Billing_To = TO_DATE(SUBSTR(a.atgs_group_identifier, 9, 10), 'YYYY/MM/DD')) remPerStat "
+						    + "FROM ALS.Als_Transaction_Grp_status A "
+						    + "WHERE a.atg_transaction_cd = 8 "
+						    + "AND a.atgs_interface_status IS NULL "
+						    + "AND LENGTH(a.atgs_group_identifier) = 22 ";
+				if(bpe != null){
+					queryString += "AND TO_DATE(SUBSTR(a.atgs_group_identifier, 9, 10),'YYYY/MM/DD') = TO_DATE('"+bpe+"','YYYY/MM/DD') ";
+				}else{
+					queryString += "AND SUBSTR(a.atgs_group_identifier, 9, 10) = SUBSTR(a.atgs_group_identifier, 9, 10) ";
+				}
+				queryString    += "AND EXISTS (SELECT 1 "
+						    		    + "FROM als.als_internal_remittance b "
+						    		    + "WHERE b.api_provider_no = TO_NUMBER(SUBSTR(a.atgs_group_identifier, 2, 6)) "
+						    		    + "AND b.air_billing_to = TO_DATE(SUBSTR(a.atgs_group_identifier, 9, 10), 'YYYY/MM/DD') "
+						    		    + "AND b.air_offln_payment_approved = 'Y' "
+						    		    + "AND b.air_offln_payment_app_dt = ";
+				if(opa != null){
+					queryString += opa+") ";
+				}else{
+					queryString += "b.air_offln_payment_app_dt) ";
+				}
+				queryString += "GROUP BY "
+						    + "SUBSTR(a.atgs_group_identifier, 2, 6), "
+						    + "TO_DATE(SUBSTR(a.atgs_group_identifier, 9, 10), 'YYYY/MM/DD') "
+						    + "ORDER BY 1, 2";
+		
+		try {
+			Query query = getSession()
+					.createSQLQuery(queryString)
+					.addScalar("providerNo", IntegerType.INSTANCE)
+					.addScalar("bpe", DateType.INSTANCE)
+					.addScalar("atgsNetDrCr", DoubleType.INSTANCE)
+					.addScalar("providerName", StringType.INSTANCE)
+					.addScalar("remPerStat", StringType.INSTANCE)
+	
+					.setResultTransformer(
+							Transformers.aliasToBean(AlsTransactionGrpMassCopyDTO.class));
+
+			lst = query.list();
+		} catch (RuntimeException re) {
+			System.out.println(re.toString());
+		}
+		finally {
+			getSession().close();
+		}
+		return lst;
+	}
 }
