@@ -1,6 +1,7 @@
 package fwp.alsaccount.admin.grid;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 
@@ -8,12 +9,8 @@ import com.opensymphony.xwork2.ActionSupport;
 
 import fwp.alsaccount.appservice.admin.AlsBankCodeAS;
 import fwp.alsaccount.dao.admin.AlsBankCode;
-
-
-
-
 import fwp.gen.appservice.GenZipCodesAS;
-
+import fwp.gen.hibernate.dao.GenZipCodes;
 import fwp.security.user.UserDTO;
 
 
@@ -121,12 +118,14 @@ public class AlsBankCodeGridEditAction extends ActionSupport{
 
 	private boolean validation()
 	{
-
+		
         
-        //GenZipCodesAS zipCodeAS = new GenZipCodesAS();
+        
         GenZipCodesAS zipCodeAS = new GenZipCodesAS();
+		List<GenZipCodes> zipCode = null;
         
-       
+		
+       zipCode = zipCodeAS.findByZipCode(azcZipCd);
         
        
         
@@ -134,9 +133,13 @@ public class AlsBankCodeGridEditAction extends ActionSupport{
 		{
 			addActionError("Zip code needs to be 5 characters.");
 		}
-	/*else if (!zipCodeAS.zipValidate(azcZipCd)){
+		
+		else if (zipCode.isEmpty() ){
 			addActionError("Please enter a valid zip code.");
-	        }*/
+	        }
+		
+		// Sets City name after validation
+		azcCityNm = zipCode.get(0).getCity();
 		
 	
 		if(hasActionErrors()){
