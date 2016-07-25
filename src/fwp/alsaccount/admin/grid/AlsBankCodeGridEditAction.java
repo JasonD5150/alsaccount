@@ -37,6 +37,10 @@ public class AlsBankCodeGridEditAction extends ActionSupport{
 		String errMsg="";
 
 		try{
+			
+			
+			
+			
 			if(validation()){
 
 				AlsBankCodeAS appSer = new AlsBankCodeAS();
@@ -46,7 +50,7 @@ public class AlsBankCodeGridEditAction extends ActionSupport{
 				List<GenZipCodes> zipCode = null;
 		        
 				
-		       zipCode = zipCodeAS.findByZipCode(azcZipCd);
+		        zipCode = zipCodeAS.findByZipCode(azcZipCd);
 
 				if (oper.equalsIgnoreCase("add")) {
 					tmp = new AlsBankCode();
@@ -129,6 +133,7 @@ public class AlsBankCodeGridEditAction extends ActionSupport{
 		{
         
         GenZipCodesAS zipCodeAS = new GenZipCodesAS();
+		
 		
        
         
