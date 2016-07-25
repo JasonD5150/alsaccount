@@ -33,7 +33,7 @@ public class AlsBankCodeGridEditAction extends ActionSupport{
 
 	public String execute() throws Exception{
 		UserDTO userInfo = (UserDTO)SecurityUtils.getSubject().getSession().getAttribute("userInfo");
-		Timestamp date = new Timestamp(System.currentTimeMillis());
+		
 		String errMsg="";
 
 		try{
@@ -41,6 +41,12 @@ public class AlsBankCodeGridEditAction extends ActionSupport{
 
 				AlsBankCodeAS appSer = new AlsBankCodeAS();
 				AlsBankCode tmp = null;
+				
+				GenZipCodesAS zipCodeAS = new GenZipCodesAS();
+				List<GenZipCodes> zipCode = null;
+		        
+				
+		       zipCode = zipCodeAS.findByZipCode(azcZipCd);
 
 				if (oper.equalsIgnoreCase("add")) {
 					tmp = new AlsBankCode();
@@ -86,7 +92,7 @@ public class AlsBankCodeGridEditAction extends ActionSupport{
 					tmp.setAbcCreatePersonid(abcCreatePersonid);
 					tmp.setAbcWhenLog(abcWhenLog);
 					tmp.setAbcWhoLog(abcWhoLog);
-					tmp.setAzcCityNm(azcCityNm);
+					tmp.setAzcCityNm(zipCode.get(0).getCity());
 					tmp.setAzcZipCd(azcZipCd);
 
 					appSer.save(tmp);
@@ -118,15 +124,12 @@ public class AlsBankCodeGridEditAction extends ActionSupport{
 
 	private boolean validation()
 	{
-		
-        
+		//doesn't need to validate if deleting
+		if(!oper.equalsIgnoreCase("del"))
+		{
         
         GenZipCodesAS zipCodeAS = new GenZipCodesAS();
-		List<GenZipCodes> zipCode = null;
-        
 		
-       zipCode = zipCodeAS.findByZipCode(azcZipCd);
-        
        
         
 		if (azcZipCd.length() != 5)
@@ -134,12 +137,11 @@ public class AlsBankCodeGridEditAction extends ActionSupport{
 			addActionError("Zip code needs to be 5 characters.");
 		}
 		
-		else if (zipCode.isEmpty() ){
+		else if ( zipCodeAS.findByZipCode(azcZipCd).isEmpty() ){
 			addActionError("Please enter a valid zip code.");
 	        }
 		
-		// Sets City name after validation
-		azcCityNm = zipCode.get(0).getCity();
+		
 		
 	
 		if(hasActionErrors()){
@@ -149,6 +151,9 @@ public class AlsBankCodeGridEditAction extends ActionSupport{
 		else{
 			return true;
 		}
+		}
+		
+		return true;
 
 	}
 
