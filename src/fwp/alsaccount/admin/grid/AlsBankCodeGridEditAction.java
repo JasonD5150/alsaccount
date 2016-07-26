@@ -46,11 +46,7 @@ public class AlsBankCodeGridEditAction extends ActionSupport{
 				AlsBankCodeAS appSer = new AlsBankCodeAS();
 				AlsBankCode tmp = null;
 				
-				GenZipCodesAS zipCodeAS = new GenZipCodesAS();
-				List<GenZipCodes> zipCode = null;
-		        
 				
-		        zipCode = zipCodeAS.findByZipCode(azcZipCd);
 
 				if (oper.equalsIgnoreCase("add")) {
 					tmp = new AlsBankCode();
@@ -61,20 +57,18 @@ public class AlsBankCodeGridEditAction extends ActionSupport{
 
 					String idString = id.toString();
 					tmp = appSer.findById(idString);
-					abcWhenLog = tmp.getAbcWhenLog();
-					abcWhoLog = tmp.getAbcWhoLog();
+					
 				}
 
 				if(oper.equalsIgnoreCase("add") || oper.equalsIgnoreCase("edit")){
+					
+					GenZipCodesAS zipCodeAS = new GenZipCodesAS();
+					List<GenZipCodes> zipCode = null;
+			        
+					
+			        zipCode = zipCodeAS.findByZipCode(azcZipCd);
 
-					//validate();
-
-					if (azcZipCd.length() != 5)
-					{
-
-						addActionError("Pease enter a valid zip code.");
-
-					}
+			
 
 					if(oper.equalsIgnoreCase("add")){
 						if(appSer.isDuplicateEntry(abcBankCd)){
@@ -85,7 +79,7 @@ public class AlsBankCodeGridEditAction extends ActionSupport{
 						return "error_json";
 					}
 
-					azcCityNm = "HELENA";
+					
 					abcCreatePersonid = userInfo.getDisplayName();
 
 					tmp.setAbcAccountNo(abcAccountNo);
@@ -94,8 +88,8 @@ public class AlsBankCodeGridEditAction extends ActionSupport{
 					tmp.setAbcBankNm(abcBankNm);
 					tmp.setAbcCompanyId(abcCompanyId);
 					tmp.setAbcCreatePersonid(abcCreatePersonid);
-					tmp.setAbcWhenLog(abcWhenLog);
-					tmp.setAbcWhoLog(abcWhoLog);
+					/*tmp.setAbcWhenLog(abcWhenLog);
+					tmp.setAbcWhoLog(abcWhoLog);*/
 					tmp.setAzcCityNm(zipCode.get(0).getCity());
 					tmp.setAzcZipCd(azcZipCd);
 
@@ -111,7 +105,7 @@ public class AlsBankCodeGridEditAction extends ActionSupport{
 
 		catch(Exception ex) {
 			if (ex.toString().contains("ORA-02292")){
-				errMsg += "Grid has child record(s) which would need to be deleted first.";
+				errMsg += "Bank Code has child record(s) which would need to be deleted first.";
 			} else if (ex.toString().contains("ORA-02291")){
 				errMsg += "Parent record not found.";
 			} else if (ex.toString().contains("ORA-00001")){
