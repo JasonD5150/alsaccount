@@ -76,11 +76,11 @@
             <result name="input">admin/bankCodeMaint.jsp</result>         
       </action>
       
-       <!-- <action name="tribalBankCodeMaint_*" method="{1}" class="fwp.alsaccount.action.GenericAction">
+       <action name="tribalBankCodeMaint_*" method="{1}" class="fwp.alsaccount.action.GenericAction">
             <result>admin/tribalBankCodeMaint.jsp</result>
             <result name="error">admin/tribalBankCodeMaint.jsp</result>
             <result name="input">admin/tribalBankCodeMaint.jsp</result>         
-      </action> -->
+      </action>
       
 	</package>
  
@@ -207,7 +207,7 @@
             </result>
 		</action>
 		
-		<!-- <action name="tribeBankCodeGrid_*" method="{1}" class="fwp.alsaccount.admin.grid.AlsTribeBankGridAction">
+		<action name="tribeBankCodeGrid_*" method="{1}" class="fwp.alsaccount.admin.grid.AlsTribeBankGridAction">
             <result type="json" />
         </action>
         <action name="tribeBankCodeGridEdit_*" class="fwp.alsaccount.admin.grid.AlsTribeBankGridEditAction">
@@ -216,7 +216,7 @@
             <result name="error_json" type="json" >
                <param name="ignoreHierarchy">false</param>
             </result>
-		</action> -->
+		</action>
    </package>
    
 

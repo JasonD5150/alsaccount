@@ -234,4 +234,20 @@
      <column name="ABC_CREATE_PERSONID" jdbc-type="VARCHAR" type="String"></column>
      <column name="ABC_ACTIVE" jdbc-type="VARCHAR" type="String"></column>
    </table>
+   
+      <table name="ALS_TRIBE_INFO" schema="ALS" class="fwp.alsaccount.dao.admin.AlsTribeInfo"> 
+     <primary-key>
+       <key-column name="ATI_TRIBE_CD" jdbc-type="VARCHAR" type="String" />
+     </primary-key>
+     <column name="ATI_TRIBE_NM" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ABC_BANK_CD" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ATI_DIRECTOR_NM" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ATI_WHO_LOG" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ATI_WHEN_LOG" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="ATI_TRIBE_ACCT_BANK_NM" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ATI_TRIBE_ACCT_ROUTING_NO" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ATI_TRIBE_ACCT_NO" jdbc-type="VARCHAR" type="String"></column>
+   </table>
+   
+   
 </hibernate-reverse-engineering>
