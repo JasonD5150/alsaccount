@@ -69,137 +69,30 @@
 			function resetSearch(){
 				$('#gridFrm')[0].reset();
 			}
+			
+			function reloadLists(){
+				$('#frmBudgYear').val($('#budgYear').val());
+				$.publish('reloadLists');
+			}
 
-			$(document).ready(function() {
-				resetSearch();
-			});
 	   	</script>
     </fwp:head>
-    
-    <s:hidden id="fundLst" name="fundLst"/>
-	<s:hidden id="subClassLst" name="subClassLst"/>
-	<s:hidden id="jlrLst" name="jlrLst"/>
-	<s:hidden id="projectGrantLst" name="projectGrantLst"/>
-	<s:hidden id="orgLst" name="orgLst"/>
-	<s:hidden id="accountLst" name="accountLst"/>
 	
     <div style="width:800px;text-align:center">
     	<h2 class="title">SABHRS Query</h2>
    	</div>
 	
-	<s:url id="sabhrsSelectLstUrl" action="sabhrsSelectLst" /> 
-	<fieldset style="border: black 1px solid; display: inline-block;">
-    	<legend style="font-weight: bold;font-size:larger">Search Criteria</legend>
-    	<s:actionerror/>
-    	<form id='gridFrm'>
-    		<table>
-    			<tr>			
-					<td class="label">Provider No: </td>
-					<td><s:select 
-				  			id="providerNo"
-				  			name="providerNo"
-				  			list="providerLst"
-				  			listKey="itemVal" 
-				  			listValue="itemLabel" 
-			       			headerKey=""
-							headerValue=" " 
-			       			theme="simple"
-			       			/></td>
-					<td class="label">IAFA Seq No: </td><!-- as long as it is tied to Provider No and Billing Period From/To -->
-					<td><s:textfield id="seqNo" name="seqNo" theme="simple" title="IAFA Sequence No" /></td>
-				</tr>
-				<tr>
-	    			<td>Billing Period From Date</td>
-		    		<td><sj:datepicker changeMonth="true" changeYear="true" id="bpFromDt"
-					   name="bpFromDt" displayFormat="mm/dd/yy"
-					   cssStyle="width:80px" maxlength="10"  maxDate="+0" title="Billing Period From Date" 
-					   showOn="focus" onblur="testDate(this)" /></td>
-				   	<td>Billing Period To Date</td>
-		    	 	<td><sj:datepicker changeMonth="true" changeYear="true" id="bpToDt"
-					   name="bpToDt" displayFormat="mm/dd/yy"
-					   cssStyle="width:80px" maxlength="10"  maxDate="+0" title="Billing Period To Date" 
-					   showOn="focus" onblur="testDate(this)" /></td>
-	    		</tr>
-	    		<tr><td colspan="4" style="border-bottom:1px solid black;"><br></td></tr>
-	    		<tr><td><br></td></tr>
-	    		<tr>
-	    			<td>From Date</td>
-		    		<td><sj:datepicker changeMonth="true" changeYear="true" id="fromDt"
-					   name="fromDt" displayFormat="mm/dd/yy"
-					   cssStyle="width:80px" maxlength="10"  maxDate="+0" title="From Date" 
-					   showOn="focus" onblur="testDate(this)"/></td>
-				   	<td>To Date</td>
-		    	 	<td><sj:datepicker changeMonth="true" changeYear="true" id="toDt"
-					   name="toDt" displayFormat="mm/dd/yy"
-					   cssStyle="width:80px" maxlength="10"  maxDate="+0" title="To Date" 
-					   showOn="focus" onblur="testDate(this)"/></td>
-	    		</tr>
-	    		<tr>
-	    			<td class="label">Journal Line Reference: </td>
-	    			<td><s:select 
-	    					id="jlr"
-							name="jlr"
-							list="jlrLst"
-							listKey="itemVal" 
-					  		listValue="itemLabel" 
-				       		headerKey=""
-							headerValue=" " 
-				       		theme="simple"/></td>
-	    			<td class="label">Account: </td>
-	    			<td><s:textfield id="account" name="account" theme="simple" title="Account" /></td>
-	    		</tr>
-	    		<tr>
-	    			<td class="label">Fund: </td>
-	    			<td><s:textfield id="fund" name="fund" theme="simple" title="Fund" /></td>
-	    			<td class="label">Org: </td>
-	    			<td><s:textfield id="org" name="org" theme="simple" title="Org" /></td>
-	    		</tr>
-	    		<tr>
-	    			<td class="label">Subclass: </td>
-	    			<td><s:textfield id="subClass" name="subClass" theme="simple" title="Sub Class" /></td>
-	    			<td class="label">Tribe Code: </td>
-	    			<td><s:textfield id="tribeCd" name="tribeCd" theme="simple" title="Tribe Code" /></td>
-	    		</tr>
-	    		<tr>
-	    			<td class="label">Budget Year: </td>
-	    			<td><s:textfield id="budgYear" name="budgYear" theme="simple" title="Budget Year" /></td>
-	    			<td class="label">Program Year: </td>
-	    			<td><s:textfield id="progYear" name="progYear" theme="simple" title="Program Year" /></td>
-	    		</tr>
-	    		<tr>
-	    			<td class="label">Transaction Group Identifier : </td>
-	    			<td><s:textfield id="txnGrpIdentifier" name="txnGrpIdentifier" theme="simple" title="Transaction Group Identifier" /></td>
-	    		</tr>
-	    		<tr>
-	    			<td class="label">System Activity Type Code: </td><!-- Example A3 -->
-	    			<td><s:textfield id="sysActTypeCd" name="sysActTypeCd" theme="simple" title="System Activity Type Code" /></td>
-	    			<td class="label">Transaction Type Code: </td>
-	    			<td><s:select 
-	    					id="transGrpType"
-							name="transGrpType"
-							list="transGroupTypeLst"
-							listKey="itemVal" 
-					  		listValue="itemLabel" 
-				       		headerKey=""
-							headerValue=" " 
-				       		theme="simple"/><%-- <s:textfield id="transGrpType" name="transGrpType" theme="simple" title="Transaction Group Type" /> --%></td>
-	    		</tr>
-	    		<tr>
-	    			<td class="label">Summary Approval Status: </td>
-					<td><s:select id="sumAppStat"  name="sumAppStat"
-							  headerKey="-1" headerValue="" theme="simple"
-							  list="#{'A':'Approved', 'D':'Disapproved', 'N':'Not Applicable'}"/></td>
-					<td class="label">Interface Approval Status: </td>
-					<td><s:select id="intAppStat"  name="intAppStat"
-							  headerKey="-1" headerValue="" theme="simple"
-							  list="#{'A':'Approved', 'D':'Disapproved', 'N':'Not Applicable'}"/></td>
-	    		</tr>
-    		</table>
-		</form>	
-		<s:submit id="submitSearch" onclick="submitSearch()" value="Submit" theme="simple"></s:submit>
-		<s:submit id="resetSearch" onclick="resetSearch()" value="Reset" theme="simple"></s:submit>
-	</fieldset>
-	<s:actionerror/>
+	<form id='divFrm'>
+		<s:hidden id="frmBudgYear" name="budgYear"/>
+	</form>
+	<s:url id="searchCriteriaDivUrl" value="sabhrsQueryDiv_input.action" />
+	<sj:div id="searchCriteriaDiv" 
+			href="%{searchCriteriaDivUrl}"
+			width="950"
+			formIds="divFrm"
+			reloadTopics="reloadLists">
+	</sj:div>
+	
   	<br>
   	<br>
 	<s:url id="alsSabhrsQueryGridURL" action="alsAccount/alsSabhrsQueryGrid_buildgrid" />  

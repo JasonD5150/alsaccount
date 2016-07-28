@@ -42,10 +42,15 @@
 			<result name="error">sabhrs/transactionGroupMassApproval.jsp</result>
 			<result name="input">sabhrs/transactionGroupMassApproval.jsp</result>         
 		</action>
-		<action name="sabhrsQuery_*" method="{1}" class="fwp.alsaccount.sabhrs.action.SabhrsQueryAction">
+		<action name="sabhrsQuery_*" method="{1}" class="fwp.alsaccount.action.GenericAction">
 			<result>sabhrs/sabhrsQuery.jsp</result>
 			<result name="error">sabhrs/sabhrsQuery.jsp</result>
 			<result name="input">sabhrs/sabhrsQuery.jsp</result>        
+		</action>
+		<action name="sabhrsQueryDiv_*" method="{1}" class="fwp.alsaccount.sabhrs.action.SabhrsQueryDivAction">
+			<result>sabhrs/include/sabhrsQueryDiv.jsp</result>
+			<result name="error">sabhrs/include/sabhrsQueryDiv.jsp</result>
+			<result name="input">sabhrs/include/sabhrsQueryDiv.jsp</result>        
 		</action>
 		<action name="downloadCsv"
                 class="fwp.alsaccount.action.DownloadCsvAction">

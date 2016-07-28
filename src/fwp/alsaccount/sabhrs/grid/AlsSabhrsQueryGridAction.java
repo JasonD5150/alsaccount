@@ -121,7 +121,7 @@ public class AlsSabhrsQueryGridAction extends ActionSupport{
 		
 		/*FROM*/
 		srchStr.append("FROM ALS.ALS_SABHRS_ENTRIES ase ");
-		if((sumAppStat != null && !"-1".equals(sumAppStat)) || (intAppStat != null && !"-1".equals(intAppStat))){
+		if((sumAppStat != null && !"".equals(sumAppStat)) || (intAppStat != null && !"".equals(intAppStat))){
 			srchStr.append(", ALS.ALS_TRANSACTION_GRP_STATUS atgs ");
 		}
 		/*WHERE*/
@@ -151,30 +151,30 @@ public class AlsSabhrsQueryGridAction extends ActionSupport{
     		srchStr.append("AND ase.aiafa_Seq_No = "+seqNo+" ");
     		search = true;
     	}
-    	if(jlr != null && !"".equals(jlr)){
+    	if(jlr != null && !" ".equals(jlr)){
     		srchStr.append("AND ase.ASAC_REFERENCE = (SELECT AM_PAR_VAL||SUBSTR('"+jlr+"',-2) "
     										   + "FROM ALS.ALS_MISC WHERE AM_KEY1 = 'JOURNAL_LINE_REFERENCE' "
     										   + "AND LPAD(AM_VAL_DESC,28,'0') = SUBSTR(LPAD('"+jlr+"',30,'0'),1,28) "
     										   + "AND ROWNUM <2) ");
     		search = true;
     	}
-    	if(account != null && !"".equals(account)){
+    	if(account != null && !" ".equals(account)){
     		srchStr.append("AND ase.aam_Account = '"+account+"' ");
     		search = true;
     	}
-    	if(fund != null && !"".equals(fund)){
+    	if(fund != null && !" ".equals(fund)){
     		srchStr.append("AND ase.aam_Fund = "+fund+" ");
     		search = true;
     	}
-    	if(org != null && !"".equals(org)){
+    	if(org != null && !" ".equals(org)){
     		srchStr.append("AND ase.aoc_Org = "+org+" ");
     		search = true;
     	}
-    	if(subclass != null && !"".equals(subclass)){
+    	if(subclass != null && !" ".equals(subclass)){
     		srchStr.append("AND ase.asac_Subclass = "+subclass+" ");
     		search = true;
     	}
-    	if(tribeCd != null && !"".equals(tribeCd)){
+    	if(tribeCd != null && !" ".equals(tribeCd)){
     		srchStr.append("AND ase.ati_Tribe_Cd = '"+tribeCd+"' ");
     		search = true;
     	}
@@ -190,24 +190,24 @@ public class AlsSabhrsQueryGridAction extends ActionSupport{
     		srchStr.append("AND ase.asac_Program = "+progYear+" ");
     		search = true;
     	}
-    	if(sysActTypeCd != null && !"".equals(sysActTypeCd)){
+    	if(sysActTypeCd != null && !" ".equals(sysActTypeCd)){
     		srchStr.append("AND ase.asac_System_Activity_Type_Cd||asac_Txn_Cd = '"+sysActTypeCd.toUpperCase()+"' ");
     		search = true;
     	}
-    	if(transGrpType != null && !"".equals(transGrpType)){
+    	if(transGrpType != null && !" ".equals(transGrpType)){
     		srchStr.append("AND ase.atg_Transaction_Cd = "+transGrpType+" ");
     		search = true;
     	}
-    	if((sumAppStat != null && !"-1".equals(sumAppStat)) || (intAppStat != null && !"-1".equals(intAppStat))){
+    	if((sumAppStat != null && !"".equals(sumAppStat)) || (intAppStat != null && !"".equals(intAppStat))){
     		srchStr.append("AND ase.atg_transaction_cd = atgs.atg_transaction_cd "
     					 + "AND ase.atgs_group_identifier = atgs.atgs_group_identifier ");
     		search = true;
     	}
-    	if(sumAppStat != null && !"-1".equals(sumAppStat)){
+    	if(sumAppStat != null && !"".equals(sumAppStat)){
     		srchStr.append("AND atgs.atgs_summary_status = '"+sumAppStat+"' ");
     		search = true;
     	}
-    	if(intAppStat != null && !"-1".equals(intAppStat)){
+    	if(intAppStat != null && !"".equals(intAppStat)){
     		srchStr.append("AND atgs.atgs_interface_status = '"+intAppStat+"' ");
     		search = true;
     	}

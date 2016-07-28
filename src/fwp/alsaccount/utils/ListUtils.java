@@ -27,31 +27,10 @@ public class ListUtils {
 	@SuppressWarnings("unchecked")
 	public List<ListComp> getBudgetYearList() {
 		List<ListComp> lst = new ArrayList<ListComp>();
-
+		lst.add(new ListComp());
 		String queryString = "SELECT DISTINCT asac_budget_year itemLabel, asac_budget_year itemVal "
 				+ "FROM als.ALS_SYS_ACTIVITY_CONTROL "
 				+ "ORDER BY asac_budget_year DESC";
-
-		Query query = getSession().createSQLQuery(queryString)
-				.addScalar("itemVal", StringType.INSTANCE)
-				.addScalar("itemLabel", StringType.INSTANCE)
-				.setResultTransformer(Transformers.aliasToBean(ListComp.class));
-
-		lst = query.list();
-		getSession().close();
-		return lst;
-	}
-
-	@SuppressWarnings("unchecked")
-	public List<ListComp> getProviderList() {
-		List<ListComp> lst = new ArrayList<ListComp>();
-
-		String queryString = "SELECT DISTINCT api.api_provider_no itemLabel, api.api_provider_no itemVal "
-				+ "FROM als.als_provider_info api, "
-				+ "     als.als_provider_status aps "
-				+ "WHERE api.api_provider_no = aps.api_provider_no "
-				+ "AND aps.api_provider_status = 'A' "
-				+ "ORDER BY api.api_provider_no";
 
 		Query query = getSession().createSQLQuery(queryString)
 				.addScalar("itemVal", StringType.INSTANCE)
@@ -88,66 +67,47 @@ public class ListUtils {
 		getSession().close(); 
 		return lst;
 	}
-
-	/**
-	 * This method retrieves all accounts for a given year from the database as
-	 * formatted text for a jqgrid column select list.
-	 */
+	
 	@SuppressWarnings("unchecked")
-	public String getAccountListTxt(String budgetYear, boolean addSelectOne) throws Exception {
-		HibHelpers hh = new HibHelpers();
-		String year = (budgetYear == null) ? hh.getCurrentBudgetYear() : budgetYear;
-		String retVal = ": ";
+	public List<ListComp> getTribeCdList() {
+		List<ListComp> lst = new ArrayList<ListComp>();
+		
 
-		if (addSelectOne) {
-			retVal = ":-- Select One --";
-		}
+		String queryString = "SELECT DISTINCT ATI_TRIBE_CD itemVal, "
+							+ "ATI_TRIBE_CD itemLabel "
+							+ "FROM ALS.ALS_TRIBE_INFO ";
 
-		String where = " WHERE idPk.asacBudgetYear = " + year
-				+ " ORDER BY idPk.aamAccount ";
-		AlsAccountMasterAS appSer = new AlsAccountMasterAS();
-		List<AlsAccountMaster> tmpLst = appSer.findAllByWhere(where);
+		Query query = getSession().createSQLQuery(queryString)
+				.addScalar("itemVal", StringType.INSTANCE)
+				.addScalar("itemLabel", StringType.INSTANCE)
+				.setResultTransformer(Transformers.aliasToBean(ListComp.class));
 
-		for (AlsAccountMaster tmp : tmpLst) {
-			retVal += ";" + tmp.getIdPk().getAamAccount() + ":"
-					+ tmp.getIdPk().getAamAccount();
-		}
-
-		getSession().close();
-
-		return retVal;
+		lst = query.list();
+		getSession().close(); 
+		return lst;
 	}
 
-	/**
-	 * This method retrieves all system activity codes for a given year from the
-	 * database as formatted text for a jqgrid column select list.
-	 */
 	@SuppressWarnings("unchecked")
-	public String getActTypeTranCdListTxt(String year, boolean addSelectOne) {
-		String retVal = ": ";
+	public List<ListComp> getProviderList() {
+		List<ListComp> lst = new ArrayList<ListComp>();
 
-		if (addSelectOne) {
-			retVal = ":-- Select One --";
-		}
+		String queryString = "SELECT DISTINCT api.api_provider_no itemLabel, api.api_provider_no itemVal "
+				+ "FROM als.als_provider_info api, "
+				+ "     als.als_provider_status aps "
+				+ "WHERE api.api_provider_no = aps.api_provider_no "
+				+ "AND aps.api_provider_status = 'A' "
+				+ "ORDER BY api.api_provider_no";
 
-		String where = " WHERE idPk.asacBudgetYear = "
-				+ year
-				+ " ORDER BY idPk.asacSystemActivityTypeCd,cast(idPk.asacTxnCd as int) ASC ";
-		AlsSysActivityControlAS appSer = new AlsSysActivityControlAS();
-		List<AlsSysActivityControl> tmpLst = appSer.findAllByWhere(where);
+		Query query = getSession().createSQLQuery(queryString)
+				.addScalar("itemVal", StringType.INSTANCE)
+				.addScalar("itemLabel", StringType.INSTANCE)
+				.setResultTransformer(Transformers.aliasToBean(ListComp.class));
 
-		for (AlsSysActivityControl tmp : tmpLst) {
-			retVal += ";" + tmp.getIdPk().getAsacSystemActivityTypeCd() + " "
-					+ tmp.getIdPk().getAsacTxnCd() + ":"
-					+ tmp.getIdPk().getAsacSystemActivityTypeCd() + " "
-					+ tmp.getIdPk().getAsacTxnCd();
-		}
-
+		lst = query.list();
 		getSession().close();
-
-		return retVal;
+		return lst;
 	}
-
+	
 	/**
 	 * This method retrieves all provider numbers from the database as formatted
 	 * text for a jqgrid column select list.
@@ -175,141 +135,106 @@ public class ListUtils {
 	}
 
 	/**
-	 * This method retrieves all account codes for a given year from the
-	 * database as formatted text for a jqgrid column select list.
+	 * This method retrieves all accounts for a given year from the database as
+	 * formatted text for a jqgrid column select list.
 	 */
 	@SuppressWarnings("unchecked")
-	public String getAccCdListTxt(String year, boolean addSelectOne)
-			throws Exception {
-		String retVal = ": ";
-
-		if (addSelectOne) {
-			retVal = ":-- Select One --";
-		}
+	public List<ListComp> getAccountList(String budgetYear) throws Exception {
+		List<ListComp> lst = new ArrayList<ListComp>();
+		ListComp tmp;
+		HibHelpers hh = new HibHelpers();
+		String year = (budgetYear == null) ? hh.getCurrentBudgetYear() : budgetYear;
 
 		String where = " WHERE idPk.asacBudgetYear = " + year
-				+ " ORDER BY idPk.aaccAccCd ";
-		AlsAccCdControlAS appSer = new AlsAccCdControlAS();
-		List<AlsAccCdControl> tmpLst = appSer.findAllByWhere(where);
-		String tmpCd = null;
-		for (AlsAccCdControl tmp : tmpLst) {
-			if (!tmp.getIdPk().getAaccAccCd().equals(tmpCd)) {
-				tmpCd = tmp.getIdPk().getAaccAccCd();
-				retVal += ";" + tmp.getIdPk().getAaccAccCd() + ":"
-						+ tmp.getIdPk().getAaccAccCd();
+				+ " ORDER BY idPk.aamAccount ";
+		
+		AlsAccountMasterAS appSer = new AlsAccountMasterAS();
+		List<AlsAccountMaster> aamLst = appSer.findAllByWhere(where);
+
+		for (AlsAccountMaster aam : aamLst) {
+			tmp = new ListComp();
+			tmp.setItemLabel(aam.getIdPk().getAamAccount());
+			tmp.setItemVal(aam.getIdPk().getAamAccount());
+			lst.add(tmp);
+		}
+
+		getSession().close();
+
+		return lst;
+	}
+	
+	/**
+	 * This method retrieves all accounts for a given year from the database as
+	 * formatted text for a jqgrid column select list.
+	 */
+	public String getAccountListTxt(String budgetYear, boolean addSelectOne) throws Exception {
+		String retVal = ": ";
+
+		List<ListComp> accountLst = this.getAccountList(budgetYear);
+
+		if (accountLst != null && !accountLst.isEmpty()) {
+			if (addSelectOne) {
+				retVal = ":-- Select One --";
+			}
+			for (ListComp lc : accountLst) {
+				retVal += ";" + String.valueOf(lc.getItemVal()) + ":" + lc.getItemLabel();
 			}
 		}
 
 		getSession().close();
 
 		return retVal;
+	}
+
+	
+	
+	/**
+	 * This method retrieves all org numbers from the database as ListComp
+	 */
+	@SuppressWarnings("unchecked")
+	public List<ListComp> getOrgList(String budgetYear) throws Exception {
+		List<ListComp> lst = new ArrayList<ListComp>();
+		HibHelpers hh = new HibHelpers();
+		String year = (budgetYear == null) ? hh.getCurrentBudgetYear() : budgetYear;
+
+		String queryString = "SELECT aoc_org itemVal, "
+						   + "aoc_org itemLabel " 
+						   + "FROM als.als_activity_account_linkage "
+						   + "WHERE aoc_org IS NOT NULL "
+						   + "AND asac_budget_year ="+year+" "
+						   + "UNION "
+						   + "SELECT aoc_org itemVal, "
+						   + "aoc_org itemLabel "
+						   + "FROM als.als_org_control "
+						   + "WHERE aoc_org IS NOT NULL "
+						   + "AND asac_budget_year ="+year+" "
+						   + "ORDER BY 1";
+		
+		Query query = getSession().createSQLQuery(queryString)
+				.addScalar("itemVal", StringType.INSTANCE)
+				.addScalar("itemLabel", StringType.INSTANCE)
+				.setResultTransformer(Transformers.aliasToBean(ListComp.class));
+
+		lst = query.list();
+		getSession().close(); 
+		return lst;
 	}
 
 	/**
 	 * This method retrieves all org numbers from the database as formatted
 	 * text for a jqgrid column select list.
 	 */
-	@SuppressWarnings("unchecked")
 	public String getOrgListTxt(String budgetYear, boolean addSelectOne) throws Exception {
-		HibHelpers hh = new HibHelpers();
-		String year = (budgetYear == null) ? hh.getCurrentBudgetYear() : budgetYear;
-		List<String> tmpLst = null;
 		String retVal = ": ";
 
 		if (addSelectOne) {
 			retVal = ":-- Select One --";
 		}
 
-		String queryString = "SELECT aoc_org FROM als.als_activity_account_linkage "
-						   + "WHERE aoc_org IS NOT NULL "
-						   + "AND asac_budget_year ="+year+" "
-						   + "UNION "
-						   + "SELECT aoc_org FROM als.als_org_control "
-						   + "WHERE aoc_org IS NOT NULL "
-						   + "AND asac_budget_year ="+year+" "
-						   + "ORDER BY 1";
-		Query query = getSession().createSQLQuery(queryString);
-		tmpLst = query.list();
+		List<ListComp> orgLst = this.getOrgList(budgetYear);
 
-		for (String i : tmpLst) {
-			if(!"".equals(i) && i != null){
-				retVal += ";" + i + ":" + i;
-			}
-			
-		}
-		getSession().close();
-
-		return retVal;
-	}
-
-	/**
-	 * This method retrieves fund codes from the database as formatted text for
-	 * a jqgrid column select list.
-	 */
-	@SuppressWarnings("unchecked")
-	public String getFundListTxt(String budgetYear, boolean addSelectOne) throws Exception {
-		HibHelpers hh = new HibHelpers();
-		String year = (budgetYear == null) ? hh.getCurrentBudgetYear() : budgetYear;
-		List<String> tmpLst = null;
-		String retVal = ": ";
-
-		if (addSelectOne) {
-			retVal = ":-- Select One --";
-		}
-
-		String queryString = "SELECT DISTINCT AAM_FUND "
-						   + "FROM ALS.ALS_ACTIVITY_ACCOUNT_LINKAGE "
-						   + "WHERE aam_fund IS NOT NULL "
-						   + "AND asac_budget_year ="+year+" "
-						   + "UNION "
-						   + "SELECT DISTINCT AACC_FUND "
-						   + "FROM ALS.ALS_ACC_CD_CONTROL "
-						   + "WHERE aacc_fund IS NOT NULL "
-						   + "AND asac_budget_year ="+year+" "
-						   + "ORDER BY aam_fund";
-						   
-		Query query = getSession().createSQLQuery(queryString);
-		tmpLst = query.list();
-
-		for (String i : tmpLst) {
-			retVal += ";" + i + ":" + i;
-		}
-		getSession().close();
-
-		return retVal;
-	}
-
-	/**
-	 * This method retrieves subclass codes from the database as formatted text for
-	 * a jqgrid column select list.
-	 */
-	@SuppressWarnings("unchecked")
-	public String getSubclassListTxt(String budgetYear, boolean addSelectOne) throws Exception {
-		HibHelpers hh = new HibHelpers();
-		String year = (budgetYear == null) ? hh.getCurrentBudgetYear() : budgetYear;
-		List<String> tmpLst = null;
-		String retVal = ": ";
-
-		if (addSelectOne) {
-			retVal = ":-- Select One --";
-		}
-
-		String queryString = "SELECT distinct ASAC_SUBCLASS  "
-						   + "FROM ALS.ALS_ACTIVITY_ACCOUNT_LINKAGE "
-						   + "WHERE ASAC_SUBCLASS IS NOT NULL "
-						   + "AND ASAC_BUDGET_YEAR="+year+" "
-						   + "UNION "
-						   + "SELECT distinct ASAC_SUBCLASS  "
-						   + "FROM ALS.ALS_ACC_CD_CONTROL "
-						   + "WHERE ASAC_SUBCLASS IS NOT NULL "
-						   + "AND ASAC_BUDGET_YEAR="+year+" "
-						   + "ORDER BY asac_subclass";
-		
-		Query query = getSession().createSQLQuery(queryString);
-		tmpLst = query.list();
-
-		for (String i : tmpLst) {
-			retVal += ";" + i + ":" + i;
+		for (ListComp o : orgLst) {
+			retVal += ";" + o.getItemVal() + ":" + o.getItemLabel();
 		}
 		getSession().close();
 
@@ -352,6 +277,257 @@ public class ListUtils {
 		for (ListComp i : jlrLst) {
 			retVal += ";" + i.getItemVal() + ":" + i.getItemLabel();
 		}
+		getSession().close();
+
+		return retVal;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<ListComp> getGroupIdentifierList() {
+		List<ListComp> lst = new ArrayList<ListComp>();
+		
+		String queryString = "SELECT ATG_TRANSACTION_CD itemVal,"
+						   + "ATGS_GROUP_IDENTIFIER itemLabel "
+						   + "FROM ALS.ALS_TRANSACTION_GRP_STATUS "
+						   + "WHERE ATG_TRANSACTION_CD = ATG_TRANSACTION_CD "
+						   + "ORDER BY 1,2 Desc";
+
+		Query query = getSession().createSQLQuery(queryString)
+				.addScalar("itemVal", StringType.INSTANCE)
+				.addScalar("itemLabel", StringType.INSTANCE)
+				.setResultTransformer(Transformers.aliasToBean(ListComp.class));
+
+		lst = query.list();
+		getSession().close(); 
+		return lst;
+	}
+
+	public String getGroupIdentifierListTxt(boolean addSelectOne)
+			throws Exception {
+
+		String retVal = ": ";
+
+		if (addSelectOne) {
+			retVal = ":-- Select One --";
+		}
+
+		try {
+			List<ListComp> groupIdentifierLst = this.getGroupIdentifierList();
+
+			if (groupIdentifierLst != null && !groupIdentifierLst.isEmpty()) {
+				for (ListComp lc : groupIdentifierLst) {
+					retVal += ";" + lc.getItemLabel() + ":" + String.valueOf(lc.getItemVal())+" - "+lc.getItemLabel();
+				}
+			}
+		} catch (Exception ex) {
+			throw new Exception(this.getClass().getName() + ".retrieveAllInventoryCodesAsText - " + ex.getMessage());
+		}
+
+		return retVal;
+	}
+
+	/**
+	 * This method retrieves fund codes from the database as ListComp
+	 */
+	@SuppressWarnings("unchecked")
+	public List<ListComp> getFundList(String budgetYear) throws Exception {
+		HibHelpers hh = new HibHelpers();
+		String year = (budgetYear == null) ? hh.getCurrentBudgetYear() : budgetYear;
+		
+		List<ListComp> lst = new ArrayList<ListComp>();
+
+		String queryString = "SELECT DISTINCT AAM_FUND itemVal,"
+						   + "AAM_FUND itemLabel "
+						   + "FROM ALS.ALS_ACTIVITY_ACCOUNT_LINKAGE "
+						   + "WHERE aam_fund IS NOT NULL "
+						   + "AND asac_budget_year ="+year+" "
+						   + "UNION "
+						   + "SELECT DISTINCT AACC_FUND itemVal, "
+						   + "AACC_FUND itemLabel "
+						   + "FROM ALS.ALS_ACC_CD_CONTROL "
+						   + "WHERE aacc_fund IS NOT NULL "
+						   + "AND asac_budget_year ="+year+" "
+						   + "ORDER BY itemVal";
+						   
+		Query query = getSession().createSQLQuery(queryString)
+				.addScalar("itemVal", StringType.INSTANCE)
+				.addScalar("itemLabel", StringType.INSTANCE)
+				.setResultTransformer(Transformers.aliasToBean(ListComp.class));
+
+		lst = query.list();
+		getSession().close(); 
+		return lst;
+	}
+	
+	/**
+	 * This method retrieves fund codes from the database as formatted text for
+	 * a jqgrid column select list.
+	 */
+	@SuppressWarnings("unchecked")
+	public String getFundListTxt(String budgetYear, boolean addSelectOne) throws Exception {
+		String retVal = ": ";
+
+		if (addSelectOne) {
+			retVal = ":-- Select One --";
+		}
+
+		try {
+			List<ListComp> fundLst = this.getFundList(budgetYear);
+
+			if (fundLst != null && !fundLst.isEmpty()) {
+				for (ListComp lc : fundLst) {
+					retVal += ";" + lc.getItemLabel() + ":" + String.valueOf(lc.getItemVal())+" - "+lc.getItemLabel();
+				}
+			}
+		} catch (Exception ex) {
+			throw new Exception(this.getClass().getName() + ".retrieveAllFundAsListComp - " + ex.getMessage());
+		}
+
+		return retVal;
+	}
+
+	/**
+	 * This method retrieves subclass codes from the database as ListComp
+	 */
+	@SuppressWarnings("unchecked")
+	public List<ListComp> getSubclassList(String budgetYear) throws Exception {
+		HibHelpers hh = new HibHelpers();
+		String year = (budgetYear == null) ? hh.getCurrentBudgetYear() : budgetYear;
+
+		List<ListComp> lst = new ArrayList<ListComp>();
+
+		String queryString = "SELECT DISTINCT ASAC_SUBCLASS itemVal, "
+						   + "ASAC_SUBCLASS itemLabel "
+						   + "FROM ALS.ALS_ACTIVITY_ACCOUNT_LINKAGE "
+						   + "WHERE ASAC_SUBCLASS IS NOT NULL "
+						   + "AND ASAC_BUDGET_YEAR="+year+" "
+						   + "UNION "
+						   + "SELECT DISTINCT ASAC_SUBCLASS itemVal,"
+						   + "ASAC_SUBCLASS itemLabel "
+						   + "FROM ALS.ALS_ACC_CD_CONTROL "
+						   + "WHERE ASAC_SUBCLASS IS NOT NULL "
+						   + "AND ASAC_BUDGET_YEAR="+year+" "
+						   + "ORDER BY itemVal";
+		
+		Query query = getSession().createSQLQuery(queryString)
+				.addScalar("itemVal", StringType.INSTANCE)
+				.addScalar("itemLabel", StringType.INSTANCE)
+				.setResultTransformer(Transformers.aliasToBean(ListComp.class));
+
+		lst = query.list();
+		getSession().close(); 
+		return lst;
+	}
+	
+	/**
+	 * This method retrieves subclass codes from the database as formatted text for
+	 * a jqgrid column select list.
+	 */
+	public String getSubclassListTxt(String budgetYear, boolean addSelectOne) throws Exception {
+		String retVal = ": ";
+
+		if (addSelectOne) {
+			retVal = ":-- Select One --";
+		}
+
+		try {
+			List<ListComp> subclassLst = this.getSubclassList(budgetYear);
+
+			if (subclassLst != null && !subclassLst.isEmpty()) {
+				for (ListComp lc : subclassLst) {
+					retVal += ";" + lc.getItemLabel() + ":" + String.valueOf(lc.getItemVal())+" - "+lc.getItemLabel();
+				}
+			}
+		} catch (Exception ex) {
+			throw new Exception(this.getClass().getName() + ".retrieveAllSubclassAsTxt - " + ex.getMessage());
+		}
+
+		return retVal;
+	}
+	
+	/**
+	 * This method retrieves all system activity codes for a given year from the
+	 * database as ListComp
+	 */
+	@SuppressWarnings("unchecked")
+	public List<ListComp> getActTypeTranCdList(String budgetYear) {
+		HibHelpers hh = new HibHelpers();
+		String year = (budgetYear == null) ? hh.getCurrentBudgetYear() : budgetYear;
+		
+		List<ListComp> lst = new ArrayList<ListComp>();
+		ListComp tmp;
+		String where = " WHERE idPk.asacBudgetYear = "
+						+ year
+						+ " ORDER BY idPk.asacSystemActivityTypeCd,cast(idPk.asacTxnCd as int) ASC ";
+		
+		AlsSysActivityControlAS appSer = new AlsSysActivityControlAS();
+		List<AlsSysActivityControl> asacLst = appSer.findAllByWhere(where);
+
+		for (AlsSysActivityControl asac : asacLst) {
+			tmp = new ListComp();
+			tmp.setItemLabel(asac.getIdPk().getAsacSystemActivityTypeCd() + " " + asac.getIdPk().getAsacTxnCd());
+			tmp.setItemVal(asac.getIdPk().getAsacSystemActivityTypeCd() + " " + asac.getIdPk().getAsacTxnCd());
+			lst.add(tmp);
+		}
+
+		getSession().close();
+
+		return lst;
+	}
+	
+	/**
+	 * This method retrieves all system activity codes for a given year from the
+	 * database as formatted text for a jqgrid column select list.
+	 */
+	@SuppressWarnings("unchecked")
+	public String getActTypeTranCdListTxt(String budgetYear, boolean addSelectOne) throws Exception {
+		String retVal = ": ";
+
+		if (addSelectOne) {
+			retVal = ":-- Select One --";
+		}
+
+		try {
+			List<ListComp> actTypeTransCdLst = this.getActTypeTranCdList(budgetYear);
+
+			if (actTypeTransCdLst != null && !actTypeTransCdLst.isEmpty()) {
+				for (ListComp lc : actTypeTransCdLst) {
+					retVal += ";" + lc.getItemLabel() + ":" + String.valueOf(lc.getItemVal());
+				}
+			}
+		} catch (Exception ex) {
+			throw new Exception(this.getClass().getName() + ".retrieveAllSubclassAsTxt - " + ex.getMessage());
+		}
+
+		return retVal;
+	}
+
+	/**
+	 * This method retrieves all account codes for a given year from the
+	 * database as formatted text for a jqgrid column select list.
+	 */
+	@SuppressWarnings("unchecked")
+	public String getAccCdListTxt(String year, boolean addSelectOne)
+			throws Exception {
+		String retVal = ": ";
+
+		if (addSelectOne) {
+			retVal = ":-- Select One --";
+		}
+
+		String where = " WHERE idPk.asacBudgetYear = " + year
+				+ " ORDER BY idPk.aaccAccCd ";
+		AlsAccCdControlAS appSer = new AlsAccCdControlAS();
+		List<AlsAccCdControl> tmpLst = appSer.findAllByWhere(where);
+		String tmpCd = null;
+		for (AlsAccCdControl tmp : tmpLst) {
+			if (!tmp.getIdPk().getAaccAccCd().equals(tmpCd)) {
+				tmpCd = tmp.getIdPk().getAaccAccCd();
+				retVal += ";" + tmp.getIdPk().getAaccAccCd() + ":"
+						+ tmp.getIdPk().getAaccAccCd();
+			}
+		}
+
 		getSession().close();
 
 		return retVal;
@@ -463,69 +639,6 @@ public class ListUtils {
 		}
 
 		return retVal;
-	}
-	
-	@SuppressWarnings("unchecked")
-	public List<ListComp> getGroupIdentifierList() {
-		List<ListComp> lst = new ArrayList<ListComp>();
-		
-		String queryString = "SELECT ATG_TRANSACTION_CD itemVal,"
-						   + "ATGS_GROUP_IDENTIFIER itemLabel "
-						   + "FROM ALS.ALS_TRANSACTION_GRP_STATUS "
-						   + "WHERE ATG_TRANSACTION_CD = ATG_TRANSACTION_CD "
-						   + "ORDER BY 1,2 Desc";
-
-		Query query = getSession().createSQLQuery(queryString)
-				.addScalar("itemVal", StringType.INSTANCE)
-				.addScalar("itemLabel", StringType.INSTANCE)
-				.setResultTransformer(Transformers.aliasToBean(ListComp.class));
-
-		lst = query.list();
-		getSession().close(); 
-		return lst;
-	}
-
-	public String getGroupIdentifierListTxt(boolean addSelectOne)
-			throws Exception {
-
-		String retVal = ": ";
-
-		if (addSelectOne) {
-			retVal = ":-- Select One --";
-		}
-
-		try {
-			List<ListComp> groupIdentifierLst = this.getGroupIdentifierList();
-
-			if (groupIdentifierLst != null && !groupIdentifierLst.isEmpty()) {
-				for (ListComp lc : groupIdentifierLst) {
-					retVal += ";" + lc.getItemLabel() + ":" + String.valueOf(lc.getItemVal())+" - "+lc.getItemLabel();
-				}
-			}
-		} catch (Exception ex) {
-			throw new Exception(this.getClass().getName() + ".retrieveAllInventoryCodesAsText - " + ex.getMessage());
-		}
-
-		return retVal;
-	}
-	
-	@SuppressWarnings("unchecked")
-	public List<ListComp> getSabhrsQueryAccountLst() {
-		List<ListComp> lst = new ArrayList<ListComp>();
-		
-		String queryString = "SELECT DISTINCT AAM_ACCOUNT itemVal, "
-							+ "AAM_ACCOUNT itemLabel "
-							+ "FROM ALS.ALS_SABHRS_ENTRIES "
-							+ "ORDER BY AAM_ACCOUNT ";
-
-		Query query = getSession().createSQLQuery(queryString)
-				.addScalar("itemVal", StringType.INSTANCE)
-				.addScalar("itemLabel", StringType.INSTANCE)
-				.setResultTransformer(Transformers.aliasToBean(ListComp.class));
-
-		lst = query.list();
-		getSession().close(); 
-		return lst;
 	}
 	
 	@SuppressWarnings("unchecked")
