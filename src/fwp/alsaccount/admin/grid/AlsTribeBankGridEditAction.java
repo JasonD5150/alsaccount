@@ -23,6 +23,7 @@ import com.opensymphony.xwork2.ActionSupport;
 
 
 
+
 import fwp.alsaccount.appservice.admin.AlsTribeInfoAS;
 import fwp.alsaccount.dao.admin.AlsTribeInfo;
 import fwp.security.user.UserDTO;
@@ -46,6 +47,7 @@ public class AlsTribeBankGridEditAction extends ActionSupport{
 
 	public String execute() throws Exception{
 		UserDTO userInfo = (UserDTO)SecurityUtils.getSubject().getSession().getAttribute("userInfo");
+		Timestamp date = new Timestamp(System.currentTimeMillis());
 		
 		String errMsg="";
 
@@ -87,18 +89,21 @@ public class AlsTribeBankGridEditAction extends ActionSupport{
 					}
 
 					
-					/*abcCreatePersonid = userInfo.getDisplayName();
+					
+					
+					//abcCreatePersonid = userInfo.getDisplayName();
+					
+					tmp.setAtiWhoLog(userInfo.getStateId().toString());
+					tmp.setAtiWhenLog(date);
 
-					tmp.setAbcAccountNo(abcAccountNo);
-					tmp.setAbcActive(abcActive);
 					tmp.setAbcBankCd(abcBankCd);
-					tmp.setAbcBankNm(abcBankNm);
-					tmp.setAbcCompanyId(abcCompanyId);
-					tmp.setAbcCreatePersonid(abcCreatePersonid);
-					tmp.setAbcWhenLog(abcWhenLog);
-					tmp.setAbcWhoLog(abcWhoLog);
-					tmp.setAzcCityNm(zipCode.get(0).getCity());
-					tmp.setAzcZipCd(azcZipCd);*/
+					tmp.setAtiDirectorNm(atiDirectorNm);
+					tmp.setAtiTribeAcctBankNm(atiTribeAcctBankNm);
+					tmp.setAtiTribeAcctNo(atiTribeAcctNo);
+					tmp.setAtiTribeAcctRoutingNo(atiTribeAcctRoutingNo);
+					tmp.setAtiTribeCd(atiTribeCd);
+					tmp.setAtiTribeNm(atiTribeNm);
+					
 
 					appSer.save(tmp);
 				}else if(oper.equalsIgnoreCase("del")){

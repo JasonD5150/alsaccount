@@ -72,16 +72,16 @@
 		rowNum="1000"
 		resizable="true">
 		
-			<sjg:gridColumn name="atiTribeCd" index="atiTribeCd" key="true" title =" Tribe Code" width="15" sortable="false" hidden="false" editable="true" editrules="{required:true}" editoptions="{size:4,maxlength:3}"/>
-			<sjg:gridColumn name="abcBankCd" index="abcBankCd" title =" Bank Code" width="15" sortable="false"  editable="true" editrules="{required:true}" editoptions="{size:4, maxlength:3}"/>
-			<sjg:gridColumn name="atiDirectorNm" index="atiDirectorNm" title =" Director Name" width="20" sortable="false" editable="true" editoptions="{size:11, maxlength:10}"/>
-			<sjg:gridColumn name="atiTribeNm" index="atiTribeNm" title =" Tribe Name" width="20" sortable="false" editable="true"/>
-			<sjg:gridColumn name="atiTribeAcctBankNm" index="atiTribeAcctBankNm" title =" Bank Name" width="35" sortable="false" editable="false" />
+			<sjg:gridColumn name="atiTribeCd" index="atiTribeCd" key="true" title =" Tribe Code" width="6" sortable="false" hidden="false" editable="true" editrules="{required:true}" editoptions="{size:6,maxlength:5}"/>
+			<sjg:gridColumn name="abcBankCd" index="abcBankCd" title =" Bank Code" width="15" sortable="false"  editable="true" editrules="{required:true}" editoptions="{size:26, maxlength:25}"/>
+			<sjg:gridColumn name="atiDirectorNm" index="atiDirectorNm" title =" Director Name" width="20" sortable="false" editable="true" editoptions="{size:26, maxlength:100}"/>
+			<sjg:gridColumn name="atiTribeNm" index="atiTribeNm" title =" Tribe Name" width="20" sortable="false" editable="true" editoptions="{size:26, maxlength:25}"/>
+			<sjg:gridColumn name="atiTribeAcctBankNm" index="atiTribeAcctBankNm" title =" Bank Name" width="35" sortable="false" editable="true" editoptions="{size:24, maxlength:23}"/>
 			<sjg:gridColumn name="atiWhoLog" index="atiWhoLog"  title =" Who Log" width="25" sortable="false" hidden="true"  editable="true" />		
 			<sjg:gridColumn name="atiWhenLog" index="atiWhenLog" title =" When Log" width="13" sortable="false" hidden="true" editable="true" />
 			
-			<sjg:gridColumn name="atiTribeAcctRoutingNo" index="atiTribeAcctRoutingNo" title =" Routing Number" width="20" sortable="false" editable="true" hidden="false"/>			
-			<sjg:gridColumn name="atiTribeAcctNo" index="atiTribeAcctNo" title =" Account Number" width="20" sortable="false" editable="true" hidden="false"/>
+			<sjg:gridColumn name="atiTribeAcctRoutingNo" index="atiTribeAcctRoutingNo" title =" Routing Number" width="20" sortable="false" editable="true" hidden="false" editoptions="{size:10, maxlength:9}"/>			
+			<sjg:gridColumn name="atiTribeAcctNo" index="atiTribeAcctNo" title =" Account Number" width="20" sortable="false" editable="true" hidden="false" editoptions="{size:18, maxlength:17}"/>
 			
 			
 	</sjg:grid>
