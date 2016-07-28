@@ -315,29 +315,42 @@ public class ListUtils {
 
 		return retVal;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<ListComp> getJLRList() {
+		List<ListComp> lst = new ArrayList<ListComp>();
+		
+		String queryString = "SELECT DISTINCT am_val_desc || '00'  itemVal, "
+						   + "am_val_desc || '00'  itemLabel "
+						   + "FROM als.als_misc "
+						   + "WHERE am_key1 = 'JOURNAL_LINE_REFERENCE' "
+						   + "ORDER BY itemVal ";
+
+		Query query = getSession().createSQLQuery(queryString)
+				.addScalar("itemVal", StringType.INSTANCE)
+				.addScalar("itemLabel", StringType.INSTANCE)
+				.setResultTransformer(Transformers.aliasToBean(ListComp.class));
+
+		lst = query.list();
+		getSession().close(); 
+		return lst;
+	}
 
 	/**
 	 * This method retrieves Journal Line Reference codes from the database as formatted text for
 	 * a jqgrid column select list.
 	 */
-	@SuppressWarnings("unchecked")
 	public String getJLRListTxt(boolean addSelectOne) throws Exception {
-		List<String> tmpLst = null;
 		String retVal = ": ";
 
 		if (addSelectOne) {
 			retVal = ":-- Select One --";
 		}
 
-		String queryString = "SELECT DISTINCT am_val_desc || '00' am_val_desc "
-				+ "FROM als.als_misc "
-				+ "WHERE am_key1 = 'JOURNAL_LINE_REFERENCE' "
-				+ "ORDER BY am_val_desc";
-		Query query = getSession().createSQLQuery(queryString);
-		tmpLst = query.list();
+		List<ListComp> jlrLst = this.getJLRList();
 
-		for (String i : tmpLst) {
-			retVal += ";" + i + ":" + i;
+		for (ListComp i : jlrLst) {
+			retVal += ";" + i.getItemVal() + ":" + i.getItemLabel();
 		}
 		getSession().close();
 
@@ -388,7 +401,6 @@ public class ListUtils {
 	 * @param codeType
 	 * @return List<ListComp>
 	 */		
-	@SuppressWarnings("unchecked")
 	public List<ListComp> getIdGenCode(String codeType){		
 		ListComp lc;
 		List<ListComp> lst = new ArrayList<ListComp>();
@@ -430,10 +442,8 @@ public class ListUtils {
 	 * This method retrieves Project Grants from the database as formatted text for
 	 * a jqgrid column select list.
 	 */
-	@SuppressWarnings("unchecked")
 	public String getBankCodeListTxt(boolean addSelectOne)
 			throws Exception {
-		List<String> tmpLst = null;
 		String retVal = ": ";
 
 		if (addSelectOne) {
@@ -474,15 +484,10 @@ public class ListUtils {
 		getSession().close(); 
 		return lst;
 	}
-	
-	/**
-	 * This method retrieves Project Grants from the database as formatted text for
-	 * a jqgrid column select list.
-	 */
-	@SuppressWarnings("unchecked")
+
 	public String getGroupIdentifierListTxt(boolean addSelectOne)
 			throws Exception {
-		List<String> tmpLst = null;
+
 		String retVal = ": ";
 
 		if (addSelectOne) {
@@ -503,4 +508,45 @@ public class ListUtils {
 
 		return retVal;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<ListComp> getSabhrsQueryAccountLst() {
+		List<ListComp> lst = new ArrayList<ListComp>();
+		
+		String queryString = "SELECT DISTINCT AAM_ACCOUNT itemVal, "
+							+ "AAM_ACCOUNT itemLabel "
+							+ "FROM ALS.ALS_SABHRS_ENTRIES "
+							+ "ORDER BY AAM_ACCOUNT ";
+
+		Query query = getSession().createSQLQuery(queryString)
+				.addScalar("itemVal", StringType.INSTANCE)
+				.addScalar("itemLabel", StringType.INSTANCE)
+				.setResultTransformer(Transformers.aliasToBean(ListComp.class));
+
+		lst = query.list();
+		getSession().close(); 
+		return lst;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<ListComp> getSabhrsTransGroupTypeLst() {
+		List<ListComp> lst = new ArrayList<ListComp>();
+		
+		String queryString = "SELECT DISTINCT TG.ATG_TRANSACTION_CD itemVal, "
+							+ "TG.ATG_TRANSACTION_CD||' - '||TG.ATG_TRANSACTION_DESC itemLabel "
+							+ "FROM ALS.ALS_TRANSACTION_GROUP TG, "
+							+ "ALS.ALS_TRANSACTION_GRP_STATUS TGS "
+							+ "WHERE TG.ATG_TRANSACTION_CD = TGS.ATG_TRANSACTION_CD "
+							+ "ORDER BY 1,2 desc";
+
+		Query query = getSession().createSQLQuery(queryString)
+				.addScalar("itemVal", StringType.INSTANCE)
+				.addScalar("itemLabel", StringType.INSTANCE)
+				.setResultTransformer(Transformers.aliasToBean(ListComp.class));
+
+		lst = query.list();
+		getSession().close(); 
+		return lst;
+	}
+	
 }

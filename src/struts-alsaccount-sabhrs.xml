@@ -42,6 +42,20 @@
 			<result name="error">sabhrs/transactionGroupMassApproval.jsp</result>
 			<result name="input">sabhrs/transactionGroupMassApproval.jsp</result>         
 		</action>
+		<action name="sabhrsQuery_*" method="{1}" class="fwp.alsaccount.sabhrs.action.SabhrsQueryAction">
+			<result>sabhrs/sabhrsQuery.jsp</result>
+			<result name="error">sabhrs/sabhrsQuery.jsp</result>
+			<result name="input">sabhrs/sabhrsQuery.jsp</result>        
+		</action>
+		<action name="downloadCsv"
+                class="fwp.alsaccount.action.DownloadCsvAction">
+            <result name="success" type="stream">
+                <param name="contentType">text/csv</param>
+                <param name="inputName">csvFileInputStream</param>
+                <param name="contentDisposition">attachment;filename="${fileName}"</param>
+                <param name="bufferSize">1024</param>
+            </result>
+        </action>
 	</package>
  
  	<package name="fwp.alsaccount.sabhrs.grid" namespace="/alsAccount" extends="json-default">     
@@ -94,7 +108,11 @@
 			<result name="error_json" type="json" >
 			   <param name="ignoreHierarchy">false</param>
 			</result>
-		</action>     
+		</action>  
+		<action name="alsSabhrsQueryGrid_*" class="fwp.alsaccount.sabhrs.grid.AlsSabhrsQueryGridAction">
+            <result type="json" />
+            <result type="json" name="input"></result>
+        </action>   
    </package>
 
 	<package name="fwp.alsaccount.sabhrs.json" extends="json-default" >
@@ -104,6 +122,12 @@
             <result name="error_json" type="json" >
                <param name="ignoreHierarchy">false</param>
             </result>
+        </action>
+        <action name="sabhrsQueryBuildCsv" class="fwp.alsaccount.sabhrs.json.SabhrsQueryBuildCsvAction">
+            <interceptor-ref name="json">
+                <param name="enableSMD">true</param>
+            </interceptor-ref>
+            <result type="json"/>
         </action>
     </package>
 

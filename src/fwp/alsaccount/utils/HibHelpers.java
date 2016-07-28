@@ -23,6 +23,7 @@ import org.hibernate.type.StringType;
 import fwp.alsaccount.appservice.admin.AlsMiscAS;
 import fwp.alsaccount.dao.admin.AlsMisc;
 import fwp.alsaccount.dao.admin.AlsProviderInfo;
+import fwp.alsaccount.dto.sabhrs.AlsSabhrsEntriesDTO;
 import fwp.alsaccount.dto.sabhrs.AlsTransactionGrpMassCopyDTO;
 import fwp.alsaccount.hibernate.HibernateSessionFactory;
 
@@ -378,6 +379,7 @@ public class HibHelpers {
 		return curBudgYear;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public Integer getTransGrpBudgYear(Integer transCd, String grpIdentifier) {
 		Integer rtn = null;
 		
@@ -407,6 +409,7 @@ public class HibHelpers {
 		return rtn;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public Integer getTransGrpProgYear(Integer transCd, String grpIdentifier) {
 		Integer rtn = null;
 		
@@ -593,6 +596,7 @@ public class HibHelpers {
 		return cnt;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<AlsTransactionGrpMassCopyDTO> getTransGroupMassApprovalRecords(Date bpe, Date opa) {
 		List<AlsTransactionGrpMassCopyDTO> lst = new ArrayList<AlsTransactionGrpMassCopyDTO>();
 
@@ -655,5 +659,83 @@ public class HibHelpers {
 			getSession().close();
 		}
 		return lst;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<AlsSabhrsEntriesDTO> getSabhrsQueryRecords(String queryStr) {
+		List<AlsSabhrsEntriesDTO> lst = new ArrayList<AlsSabhrsEntriesDTO>();
+
+		String queryString = queryStr;
+		
+		try {
+			Query query = getSession()
+					.createSQLQuery(queryString)
+					.addScalar("aseWhenEntryPosted")
+					.addScalar("aseSeqNo", IntegerType.INSTANCE)
+					.addScalar("aseDrCrCd")
+					.addScalar("aseTxnCdSeqNo", IntegerType.INSTANCE)
+					.addScalar("asacBudgetYear", IntegerType.INSTANCE)
+					.addScalar("asacSystemActivityTypeCd")
+					.addScalar("asacTxnCd")
+					.addScalar("aamAccount")
+					.addScalar("aamBusinessUnit")
+					.addScalar("aamFund")
+					.addScalar("aocOrg")
+					.addScalar("asacProgram", IntegerType.INSTANCE)
+					.addScalar("asacSubclass")
+					.addScalar("asacProjectGrant")
+					.addScalar("jlr")
+					.addScalar("aseAmt", DoubleType.INSTANCE)
+					.addScalar("aseAllowUploadToSummary")
+					.addScalar("upToSummDt")
+					.addScalar("asesSeqNo", IntegerType.INSTANCE)
+					.addScalar("apiProviderNo", IntegerType.INSTANCE)
+					.addScalar("bpFromDt")
+					.addScalar("bpToDt")
+					.addScalar("aiafaSeqNo", IntegerType.INSTANCE)
+					.addScalar("aseWhoLog")
+					.addScalar("aseWhenLog")
+					.addScalar("aseWhenUploadedToSumm")
+					.addScalar("atgTransactionCd", IntegerType.INSTANCE)
+					.addScalar("atgsGroupIdentifier")
+					.addScalar("aseNonAlsFlag")
+					.addScalar("aseLineDescription")
+					.addScalar("atiTribeCd")
+					.addScalar("anatCd")
+					.addScalar("gridKey")
+					.addScalar("sumStat")
+					.addScalar("intStat")
+	
+					.setResultTransformer(
+							Transformers.aliasToBean(AlsSabhrsEntriesDTO.class));
+
+			lst = query.list();
+		} catch (RuntimeException re) {
+			System.out.println(re.toString());
+		}
+		finally {
+			getSession().close();
+		}
+		return lst;
+	}
+	
+	public Integer getSabhrsQueryCount(String queryStr) {
+		Integer cnt = 0;
+
+		String queryString = queryStr;
+		
+		try {
+			Query query = getSession()
+					.createSQLQuery(queryString)
+					.addScalar("cnt", IntegerType.INSTANCE);
+
+			cnt = (Integer) query.uniqueResult();
+		} catch (RuntimeException re) {
+			System.out.println(re.toString());
+		}
+		finally {
+			getSession().close();
+		}
+		return cnt;
 	}
 }
