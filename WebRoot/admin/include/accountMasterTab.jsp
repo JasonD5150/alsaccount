@@ -55,8 +55,8 @@
 		formIds="gridFrm" >
 
 			<sjg:gridColumn name="gridKey" title ="id" width="55" hidden="true" key="true"/>
-			<sjg:gridColumn name="idPk.asacBudgetYear" index="idPk.asacBudgetYear" title =" Budget Year" width="25" sortable="false" hidden="false" editable="false" search="false"/>
-			<sjg:gridColumn name="idPk.aamAccount" index="idPk.aamAccount" title =" Account" width="25" sortable="false" hidden="false" editable="true" editrules="{required:true}" editoptions="{size:7,maxlength:6}"/>
+			<sjg:gridColumn name="idPk.asacBudgetYear" index="idPk.asacBudgetYear" title =" Budget Year" width="25" sortable="false" hidden="false" editable="false" search="false" align="right"/>
+			<sjg:gridColumn name="idPk.aamAccount" index="idPk.aamAccount" title =" Account" width="25" sortable="false" hidden="false" editable="true" editrules="{required:true}" editoptions="{size:7,maxlength:6}" align="right"/>
 			<sjg:gridColumn name="aamAccountDesc" index="aamAccountDesc" title =" Desc" width="100" sortable="false" hidden="false" editable="true" edittype="textarea" editrules="{required:true}"/>
 			<sjg:gridColumn name="budgYear" index="budgYear" title ="" width="25" sortable="false" hidden="true" editable = "true" />
 			

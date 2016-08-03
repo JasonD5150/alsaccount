@@ -1,11 +1,12 @@
 package fwp.alsaccount.action;
 
-import com.opensymphony.xwork2.ActionSupport;
+import java.io.File;
+import java.io.FileInputStream;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileInputStream;
+import com.opensymphony.xwork2.ActionSupport;
 
 /**
  * Action handler for the ALS Person search pages to download CSV export file.

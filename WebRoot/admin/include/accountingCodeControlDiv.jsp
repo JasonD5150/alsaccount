@@ -58,11 +58,11 @@
 
 			<sjg:gridColumn name="gridKey" title ="id" width="55" hidden="true" key="true"/>
 			<sjg:gridColumn name="idPk.asacBudgetYear" index="idPk.asacBudgetYear" title =" Budget Year" width="25" sortable="false" hidden="true"/>
-			<sjg:gridColumn name="idPk.aaccAccCd" index="idPk.aaccAccCd" title =" Account Code" width="25" sortable="false" hidden="false" editable="true" editrules="{number:true,required:true}" editoptions="{size:4,maxlength:3}"/>
-			<sjg:gridColumn name="idPk.aaccSeqNo" index="idPk.aaccSeqNo" title =" Seq No" width="25" sortable="false" hidden="false" editable="false" editrules="{number:true,required:true}" editoptions="{size:3,maxlength:2}"/>
-			<sjg:gridColumn name="aamAccount" index="aamAccount" title =" Account" width="40" sortable="false" hidden="false" editable="true" editrules="{required:true}" edittype="select" formatter="select" editoptions="{value:','}"/>
-			<sjg:gridColumn name="aaccFund" index="aaccFund" title =" Fund" width="30" sortable="false" hidden="false" editable="true" editrules="{required:true}"/>
-			<sjg:gridColumn name="aaccAllocatedAmt" index="aaccAllocatedAmt" title =" Allocated Amount" width="40" sortable="false" hidden="false" editable="true" />
+			<sjg:gridColumn name="idPk.aaccAccCd" index="idPk.aaccAccCd" title =" Account Code" width="25" sortable="false" hidden="false" editable="true" editrules="{number:true,required:true}" editoptions="{size:4,maxlength:3}" align="right"/>
+			<sjg:gridColumn name="idPk.aaccSeqNo" index="idPk.aaccSeqNo" title =" Seq No" width="25" sortable="false" hidden="false" editable="false" editrules="{number:true,required:true}" editoptions="{size:3,maxlength:2}" align="right"/>
+			<sjg:gridColumn name="aamAccount" index="aamAccount" title =" Account" width="40" sortable="false" hidden="false" editable="true" editrules="{required:true}" edittype="select" formatter="select" editoptions="{value:','}" align="right"/>
+			<sjg:gridColumn name="aaccFund" index="aaccFund" title =" Fund" width="30" sortable="false" hidden="false" editable="true" editrules="{required:true}" align="right"/>
+			<sjg:gridColumn name="aaccAllocatedAmt" index="aaccAllocatedAmt" title =" Allocated Amount" width="40" sortable="false" hidden="false" editable="true" align="right"/>
 			<sjg:gridColumn name="aaccJlrRequired" index="aaccJlrRequired" title =" Open Item Key Indicator" width="20" sortable="false" hidden="false" editable="true" 
 				edittype="select" formatter="select" editoptions="{value: {Y: 'Yes', N: 'No'}, defaultValue:'N'}"/>
 			<sjg:gridColumn name="aocOrg" index="aocOrg" title =" Org" width="20" sortable="false" hidden="false" editable="true"/>

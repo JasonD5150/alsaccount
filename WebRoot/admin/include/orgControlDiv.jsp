@@ -73,10 +73,10 @@
 		resizable="true">
 
 			<sjg:gridColumn name="gridKey" title ="id" width="55" hidden="true" key="true"/>
-			<sjg:gridColumn name="idPk.aaccAccCd" index="idPk.aaccAccCd" title ="Account Code" width="10" sortable="false" hidden="false" editable="true" edittype="select" formatter="select" editoptions="{value:','}" editrules="{required:true}"/>
-			<sjg:gridColumn name="idPk.apiProviderNo" index="idPk.apiProviderNo" title ="Issuing Provider Num" width="15" sortable="false" hidden="false" editable="true" edittype="select" formatter="select" editoptions="{value:','}" editrules="{required:true}"/>
-			<sjg:gridColumn name="aocOrg" index="aocOrg" title ="Org" width="15" sortable="false" hidden="false" editable = "true" editrules="{required:true}"/>
-			<sjg:gridColumn name="provRegion" index="provRegion" title ="Provider Region Num" width="10" sortable="false" hidden="false" editable = "false" search="false"/>
+			<sjg:gridColumn name="idPk.aaccAccCd" index="idPk.aaccAccCd" title ="Account Code" width="10" sortable="false" hidden="false" editable="true" edittype="select" formatter="select" editoptions="{value:','}" editrules="{required:true}" align="right"/>
+			<sjg:gridColumn name="idPk.apiProviderNo" index="idPk.apiProviderNo" title ="Issuing Provider Num" width="15" sortable="false" hidden="false" editable="true" edittype="select" formatter="select" editoptions="{value:','}" editrules="{required:true}" align="right"/>
+			<sjg:gridColumn name="aocOrg" index="aocOrg" title ="Org" width="15" sortable="false" hidden="false" editable = "true" editrules="{required:true}" align="right"/>
+			<sjg:gridColumn name="provRegion" index="provRegion" title ="Provider Region Num" width="10" sortable="false" hidden="false" editable = "false" search="false" align="right"/>
 			<sjg:gridColumn name="provName" index="provName" title ="Provider Name" width="50" sortable="false" hidden="false" editable = "false" search="false"/>
 			
 			

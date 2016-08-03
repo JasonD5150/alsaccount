@@ -17,14 +17,23 @@ function errorHandler(response, postdata) {
 	return [rtrnstate,rtrnMsg]; 
 };
 
+function submitSearch(){
+	$('#transGroupAppDiv').toggle(false);
+	$('#transGroupApprovalTable').jqGrid('setGridParam',{datatype:'json'});
+	$.publish('reloadTransGroupMaintTable')
+	
+}
 function resetSearch(){
-	$('#srchSumDt').val('');
-	$('#srchGrpIntentifier').val('');
-	document.getElementsByName("srchYear")[0].checked = true;
-	document.getElementsByName("srchDisapproval")[0].checked = true;
+	$('#gridFrm')[0].reset();
 }
 
 function enableDisableElements() {
+	if(($('#transGroupType').val() == 1 || $('#transGroupType').val() == 3) && ($('#bankRefNo').val() != null && $('#bankRefNo').val() != "")){
+		$('#getRpt').prop({disabled:false});
+	}else{
+		$('#getRpt').prop({disabled:true});
+	}
+	
 	$('#transGroupType').prop({disabled:true});
 	$('#desc').prop({disabled:true});
 	$('#transGroupIdentifier').prop({disabled:true});
@@ -212,59 +221,9 @@ function submitTransGroupApproval(){
 }
 
 function getGenRpt() {
-	$('#rptDialog').dialog('close');
-	var postFilters = $("#transGroupApprovalTable").jqGrid('getGridParam', 'postData').filters;
-	$('#frmFilters').val(postFilters);
-	
-
-	if(document.getElementsByName("reportTypeT").checked){
-		$('#frmRptType').val("transGrpStatHistory");
-		$('#rptFrm').attr('action', 'genDocCreate');
-		$('#rptFrm').submit();
-	}else{
-		$('#txIdentifier').val($('#transGroupIdentifier').val());
-		$('#transCd').val($('#transGroupType').val());
-		$('#getTreasureDepositTicketPdf').submit();
-	}
-}
-
-function openReportDialog(){
-	if(($('#transGroupType').val() == 1 || $('#transGroupType').val() == 3) && ($('#bankRefNo').val() != null || $('#bankRefNo').val() != "")){
-		$('#reportTypeG').prop({disabled:false});
-	}else{
-		$('#reportTypeG').prop({disabled:true});
-	}
-	$('#reportDialog').dialog('open');
-}
-
-function searchTransGroup(){
-	$('#frmRptWhere').val($('#gridFrm').serialize());
-	$.publish('reloadTransGroupMaintTable');
-	resetSearch();
-	$('#searchDialog').dialog('close');
-}
-
-$.subscribe('transGroupComplete', function(event, data) {					
-   if ( $("#transGroupApprovalTable").length) {
-   		$("#transGroupApprovalTable").jqGrid('setColProp','abcBankCd', { searchoptions: { value: rtrnBankCodeLst()}});
-   		$("#transGroupApprovalTable").jqGrid('setColProp','provider', { searchoptions: { value: rtrnProviderLst()}});
-   		//$("#transGroupApprovalTable").jqGrid('setColProp','idPk.atgsGroupIdentifier', { searchoptions: { value: rtrnGroupIdentifierLst()}});
-   }
-});
-
-function rtrnBankCodeLst() {
-		var rslt = $("#bankCodeLst").val();
-		return rslt;
-}
-
-function rtrnProviderLst() {
-	var rslt = $("#providerLst").val();
-	return rslt;
-}
-
-function rtrnGroupIdentifierLst() {
-	var rslt = $("#groupIdentifierLst").val();
-	return rslt;
+	$('#txIdentifier').val($('#transGroupIdentifier').val());
+	$('#transCd').val($('#transGroupType').val());
+	$('#getTreasureDepositTicketPdf').submit();
 }
 
 function sumAppStatSelected(){

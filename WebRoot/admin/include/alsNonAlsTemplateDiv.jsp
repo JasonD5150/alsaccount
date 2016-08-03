@@ -68,8 +68,8 @@
 			<sjg:gridColumn name="idPk.anatBudgetYear" index="idPk.anatBudgetYear" title =" Budget Year" width="25" sortable="false" hidden="true"/>
 			<sjg:gridColumn name="idPk.anatCd" index="idPk.anatCd" title =" Template Code" width="25" sortable="false" hidden="false" editable="true" editrules="{required:true}"/>
 			<sjg:gridColumn name="anatDesc" index="anatDesc" title ="Description" width="25" sortable="false" hidden="false" editable="true" edittype="textarea" editrules="{required:true}"/>
-			<sjg:gridColumn name="anatDrAccount" index="anatDrAccount" title ="Debit Account" width="25" sortable="false" hidden="false" editable="true" edittype="select" formatter="select" editoptions="{value:','}" editrules="{required:true}"/>
-			<sjg:gridColumn name="anatCrAccount" index="anatCrAccount" title ="Credit Account" width="25" sortable="false" hidden="false" editable="true" edittype="select" formatter="select" editoptions="{value:','}" editrules="{required:true}"/>
+			<sjg:gridColumn name="anatDrAccount" index="anatDrAccount" title ="Debit Account" width="25" sortable="false" hidden="false" editable="true" edittype="select" formatter="select" editoptions="{value:','}" editrules="{required:true}" align="right"/>
+			<sjg:gridColumn name="anatCrAccount" index="anatCrAccount" title ="Credit Account" width="25" sortable="false" hidden="false" editable="true" edittype="select" formatter="select" editoptions="{value:','}" editrules="{required:true}" align="right"/>
 			<sjg:gridColumn name="anatFund" index="anatFund" title ="Fund" width="25" sortable="false" hidden="false" editable="true" edittype="select" formatter="select" editoptions="{value:','}" editrules="{required:true}"/>
 			<sjg:gridColumn name="anatDrSubclass" index="anatDrSubclass" title ="Debit Sub-Class" width="25" sortable="false" hidden="false" editable="true" edittype="select" formatter="select" editoptions="{value:','}"/>
 			<sjg:gridColumn name="anatDrProjectGrant" index="anatDrProjectGrant" title ="Debit Project Grant" width="25" sortable="false" hidden="false" editable="true" edittype="select" formatter="select" editoptions="{value:','}"/>
@@ -79,7 +79,7 @@
 			<sjg:gridColumn name="anatCrSubclass" index="anatCrSubclass" title ="Credit Sub-Class" width="25" sortable="false" hidden="false" editable="true" edittype="select" formatter="select" editoptions="{value:','}"/>
 			<sjg:gridColumn name="anatCrProjectGrant" index="anatCrProjectGrant" title ="Credit Project Grant" width="25" sortable="false" hidden="false" editable="true" edittype="select" formatter="select" editoptions="{value:','}"/>
 			<sjg:gridColumn name="anatCrJournalLineRefr" index="anatCrJournalLineRefr" title ="Credit Journal Line Reference" width="25" sortable="false" hidden="true"/>
-			<sjg:gridColumn name="anatCrJournalLineRefrDesc" index="anatCrJournalLineRefrDesc" title ="Credit Journal Line Reference" width="25" sortable="false" hidden="false" editable="true" edittype="select" formatter="select" editoptions="{value:','}"/>
+			<sjg:gridColumn name="anatCrJournalLineRefrDesc" index="anatCrJournalLineRefrDesc" title ="Credit Journal Line Reference" width="25" sortable="false" hidden="false" editable="true" edittype="select" formatter="select" editoptions="{value:','}" align="right"/>
 			<sjg:gridColumn name="anatCrLineDesc" index="anatCrLineDesc" title ="Credit Line Desc." width="25" sortable="false" hidden="false" editable="true" editrules="{required:true}"/>
 			
 			

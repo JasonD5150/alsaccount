@@ -27,7 +27,7 @@ public class GenNonAlsEntriesAction extends ActionSupport{
 			ListUtils lu = new ListUtils();
 			setFundLst(lu.getFundListTxt(null,false));
 			setSubClassLst(lu.getSubclassListTxt(null,false));
-			setJlrLst(lu.getJLRListTxt(false));
+			setJlrLst(lu.getJLRCurBudgYearListTxt(false));
 			setProjectGrantLst(lu.getProjectGrantsListTxt(null,false));
 			setOrgLst(lu.getOrgListTxt(null,false));
 			setAccountLst(lu.getAccountListTxt(null,false));

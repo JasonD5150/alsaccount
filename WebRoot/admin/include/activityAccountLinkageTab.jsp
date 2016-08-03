@@ -61,14 +61,14 @@
 		formIds="gridFrm">
 
 			<sjg:gridColumn name="gridKey" title ="id" width="55" hidden="true" key="true"/>
-			<sjg:gridColumn name="idPk.asacBudgetYear" index="idPk.asacBudgetYear" title =" Budget Year" width="25" sortable="false" hidden="false" editable="false" search="false"/>
+			<sjg:gridColumn name="idPk.asacBudgetYear" index="idPk.asacBudgetYear" title =" Budget Year" width="25" sortable="false" hidden="false" editable="false" search="false" align="right"/>
 			<sjg:gridColumn name="sysActTypeTransCd" index="sysActTypeTransCd" title ="Activity Type / Transaction Code" width="25" sortable="false" hidden="false" editable="true" edittype="select" formatter="select" editoptions="{value:','}" />
 			<%-- <sjg:gridColumn name="idPk.asacSystemActivityTypeCd" index="idPk.asacSystemActivityTypeCd" title =" Sys Activity Type Code" width="10" sortable="false" hidden="false" editable="false" editrules="{required:true}" editoptions="{size:2,maxlength:1}"/>
 			<sjg:gridColumn name="idPk.asacTxnCd" index="idPk.asacTxnCd" title =" Transaction Code" width="25" sortable="false" hidden="false" editable="false" editrules="{number:true,required:true}"  editoptions="{size:4,maxlength:3}"/> --%>
 			<sjg:gridColumn name="idPk.aaalDrCrCd" index="idPk.aaalDrCrCd" title =" Credit / Debit" width="25" sortable="false" hidden="false" editable="true" edittype="select" formatter="select" editoptions="{value: {D: 'Debit', C: 'Credit'}}" editrules="{required:true}" />
 			<sjg:gridColumn name="aamAccount" index="aamAccount" title =" Account" width="25" sortable="false" hidden="false" editable="true" edittype="select" formatter="select" editoptions="{value:','}" />
-			<sjg:gridColumn name="aaalReference" index="aaalReference" title =" Open Item Key Indicator" width="25" sortable="false" hidden="false" editable = "true" edittype="select" editoptions="{value: {'':'',999: 'YES'}}"/>
-			<sjg:gridColumn name="aamFund" index="aamFund" title ="Fund" width="25" sortable="false" hidden="false" editable="true" editoptions="{size:7,maxlength:6}"/>
+			<sjg:gridColumn name="aaalReference" index="aaalReference" title =" Open Item Key Indicator" width="25" sortable="false" hidden="false" editable = "true" edittype="select" editoptions="{value: {'':'',999: 'YES'}}" align="right"/>
+			<sjg:gridColumn name="aamFund" index="aamFund" title ="Fund" width="25" sortable="false" hidden="false" editable="true" editoptions="{size:7,maxlength:6}" align="right"/>
 			<sjg:gridColumn name="aocOrg" index="aocOrg" title ="Org" width="25" sortable="false" hidden="false" editable = "true" editoptions="{size:7,maxlength:6}"/>
 			<sjg:gridColumn name="asacSubclass" index="asacSubclass" title ="Sub-Class" width="25" sortable="false" hidden="false" editable = "true" editoptions="{size:6,maxlength:5}"/>
 			<sjg:gridColumn name="aaalAccountingCdFlag" index="aaalAccountingCdFlag" title ="Details in Accounting Code Control Table" width="25" sortable="false" hidden="false" editable="true" edittype="select" formatter="select" editoptions="{value: {Y: 'Yes', N: 'No'}, defaultValue:'N'}"/>

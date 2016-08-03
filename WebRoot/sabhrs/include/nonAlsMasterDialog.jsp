@@ -6,6 +6,7 @@
 
 
 <h5> To add a template select the check box and enter an amount.<br/> 
+To enter an amount you must type the amount and hit the enter key.
 </h5>
 <s:url id="alsNonAlsTemplateGrid" action="alsAccount/alsNonAlsTemplateGrid_buildgrid" /> 
 <sjg:grid

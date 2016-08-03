@@ -2,6 +2,28 @@
 <!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-reverse-engineering-3.0.dtd" >
 
 <hibernate-reverse-engineering>
+	 <table name="ALS_PROVIDER_BANK_DETAILS" schema="ALS" class="fwp.alsaccount.dao.sabhrsAlsProviderBankDetails"> 
+     <primary-key id-class="fwp.alsaccount.dao.sabhrsAlsProviderBankDetailsIdPk" property="idPk">
+       <column name="API_PROVIDER_NO" jdbc-type="NUMERIC" type="Integer"></column>
+       <column name="APBD_BILLING_TO" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+       <column name="APBD_SEQ_NO" jdbc-type="NUMERIC" type="Integer"></column>
+     </primary-key>
+     <column name="ABC_BANK_CD" jdbc-type="VARCHAR" type="String"></column>
+     <column name="APBD_AMOUNT_DEPOSIT" jdbc-type="NUMERIC" type="Double"></column>
+     <column name="APBD_DEPOSIT_DATE" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="APBD_DEPOSIT_ID" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ATGS_GROUP_IDENTIFIER" jdbc-type="VARCHAR" type="String"></column>
+     <column name="APBD_WHO_LOG" jdbc-type="VARCHAR" type="String"></column>
+     <column name="APBD_WHEN_LOG" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="ATG_TRANSACTION_CD" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="APBD_BILLING_FROM" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="CREATE_DATE" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="CREATE_DBUSER" jdbc-type="VARCHAR" type="String"></column>
+     <column name="CREATE_PERSONID" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="MOD_DATE" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="MOD_DBUSER" jdbc-type="VARCHAR" type="String"></column>
+     <column name="MOD_PERSONID" jdbc-type="NUMERIC" type="Integer"></column>
+   </table>
 	<table name="ALS_SABHRS_ENTRIES_SUMMARY" schema="ALS" class="fwp.alsaccount.dao.sabhrs.AlsSabhrsEntriesSummary"> 
      <primary-key id-class="fwp.alsaccount.dao.sabhrs.AlsSabhrsEntriesSummaryIdPk" property="idPk">
        <column name="ASES_DATE_CREATED" jdbc-type="DATE" type="java.sql.Timestamp"></column>

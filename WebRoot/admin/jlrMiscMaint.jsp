@@ -87,7 +87,7 @@
 			<sjg:gridColumn name="amSeqNo" title ="amSeqNo" width="55" hidden="true" key="true"/>
 			<sjg:gridColumn name="amValDesc" index="amValDesc" title ="JLR ID" width="10" sortable="false" hidden="false" editable="true" editrules="{required:true}"/>
 			<sjg:gridColumn name="amDesc2" index="amDesc2" title ="JLR Description" width="100" sortable="false" hidden="false" editable="true" edittype="textarea" editrules="{required:true}"/>
-			<sjg:gridColumn name="amParVal" index="amParVal" title ="JLR Seq No" width="15" sortable="false" hidden="false" editable = "true" editrules="{number:true,required:true,minValue:0,maxValue:999}"/>
+			<sjg:gridColumn name="amParVal" index="amParVal" title ="JLR Seq No" width="15" sortable="false" hidden="false" editable = "true" editrules="{number:true,required:true,minValue:0,maxValue:999}" align="right"/>
 			
 	</sjg:grid>
 

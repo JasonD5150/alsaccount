@@ -1,7 +1,7 @@
 package fwp.alsaccount.sabhrs.grid;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.HibernateException;
@@ -28,33 +28,29 @@ public class AlsTransactionGrpApprovalGridAction extends ActionSupport{
     private String              sidx;
     private String              filters;
     private boolean             loadonce         = false;
-    private Integer budgYear;
-    private String srchYear;
-    private String srchDisapproval;
-    private String srchProvider;
-    private String srchSumDt;
-    private String srchIntDt;
-    private String srchDepositId;
-    private String srchBankCd;
-    private String srchBankReferenceNo;
-    private String srchWhenUploadedToSabhrs;
-    private String srchFileName;
-    private String srchGrpIntentifier;
-
+    private Integer 			srchTransGrpType;
+    private String				srchTranGrpId;
+    private Date				srchTranGrpCreated;
+    private Date				srchAccDt;
+    private String				srchSumAppStat;
+    private Date				srchSumAppDt;
+    private String				srchIntAppStat;
+    private Date				srchIntAppDt;
+    private Date				srchUpToSumDt;
+    private String				srchBankCd;
+    private String				srchBankRefNo;
+    private String				srchIntFileNm;
+	private String				srchDepId;
+    private Integer				srchProviderNo;
+    
 	@SuppressWarnings("unchecked")
 	public String buildgrid(){  
 		HibHelpers hh = new HibHelpers();
-		Integer curBudgYear = Integer.parseInt(hh.getCurrentBudgetYear());
 		
-		String srchStr = " where 1=1 ";
+		
+		String srchStr = buildQueryStr();
 		String orderStr = " ORDER BY idPk.atgTransactionCd,idPk.atgsGroupIdentifier";
 		
-		if(filters != null && !"".equals(filters)){
-    		srchStr = buildStr(srchStr);
-    	}else{
-    		srchStr += " AND TO_CHAR(atgsWhenCreated,'YYYY') = "+curBudgYear +" AND atgsInterfaceStatus NOT IN ('N','D')";
-    	}
-    	
     	AlsTransactionGrpStatusAS atgsAS = new AlsTransactionGrpStatusAS();
     	List<AlsTransactionGrpStatus> atgs = new ArrayList<AlsTransactionGrpStatus>();
     	
@@ -113,122 +109,94 @@ public class AlsTransactionGrpApprovalGridAction extends ActionSupport{
 	    return SUCCESS;
     }
 	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public String buildStr(String where){
-		HibHelpers hh = new HibHelpers();
-    	try {
-            Hashtable<String,Object> jsonFilter = (Hashtable<String, Object>) (new gov.fwp.mt.RPC.FWPJsonRpc().new JsonParser(filters)).FromJson();
-            String groupOp = (String) jsonFilter.get("groupOp");
-            ArrayList rules = (ArrayList) jsonFilter.get("rules");
-
-            int rulesCount = rules.size();
-            String tmpCond = "";
-            
-            Boolean searchCreated = true;
-            Boolean searchIntStatus = true;
-            Integer curBudgYear = Integer.parseInt(hh.getCurrentBudgetYear());
-            
-    		for (int i = 0; i < rulesCount; i++) {
-    			Hashtable<String,String> rule = (Hashtable<String, String>) rules.get(i);
-    			
-    			String tmp = rule.get("field");
-    			if("atgsWhenCreated".equals(tmp)){
-    				searchCreated = false;
-    			}else if("atgsInterfaceStatus".equals(tmp)){
-    				searchIntStatus = false;
-    			}else if("idPk.atgsGroupIdentifier".equals(tmp)){
-    				searchCreated = false;
-    				searchIntStatus = false;
-    			}
-    				
-    			if("provider".equals(tmp)){
-    				tmp = "TRIM(TRIM(LEADING 0 FROM substr(idPk.atgsGroupIdentifier,3,6))) ";
-    			}else if("atgsWhenCreated".equals(tmp)){
-    				tmp = "EXTRACT (YEAR FROM atgsWhenCreated) ";
-    			}
-    			if (i == 0) {
-    				tmpCond = "and (";
-    			} else {
-    				tmpCond = groupOp;
-    			}
-    			
-    			if(rule.get("data").equalsIgnoreCase("yes")){
-    				rule.put("data", "Y");
-    			}else if(rule.get("data").equalsIgnoreCase("no")){
-    				rule.put("data", "N");
-    			}
-    			
-    	        if (rule.get("op").equalsIgnoreCase("eq")) {	
-    	        	if("null".equals(rule.get("data"))){
-    	        		where = where + " " +tmpCond+" " + tmp + " IS NULL ";
-    	        	}else{
-    	        		where = where + " " +tmpCond+" " + tmp + " = '" + rule.get("data")+"'";
-    	        	}
-    	        	
-    	        } else if (rule.get("op").equalsIgnoreCase("ne")) {
-    	        	if("null".equals(rule.get("data"))){
-    	        		where = where + " " +tmpCond+" " + tmp + " IS NOT NULL ";
-    	        	}else{
-    	        		where = where + " " +tmpCond+" " + tmp + " <> '" + rule.get("data")+"'";
-    	        	}
-    	        } else if (rule.get("op").equalsIgnoreCase("lt")) {
-    	        	where = where + " " +tmpCond+" " + tmp + " < '" + rule.get("data")+"'";
-    	        } else if (rule.get("op").equalsIgnoreCase("gt")) {
-    	        	where = where + " " +tmpCond+" " + tmp + " > '" + rule.get("data")+"'";
-    	        } else if (rule.get("op").equalsIgnoreCase("cn")) {
-    	        	where = where + " " +tmpCond+ " upper(" + tmp + ") like upper('%" + rule.get("data")+"%')";
-    		    } else if (rule.get("op").equalsIgnoreCase("bw")) {
-    		    	where = where + " " +tmpCond+ " upper(" + tmp + ") like upper('" + rule.get("data")+"%')";
-    	        } else if (rule.get("op").equalsIgnoreCase("ew")) {
-    	        	where = where + " " +tmpCond+ " upper(" + tmp + ") like upper('%" + rule.get("data")+"')";
-    	        }			
-    		}
-    		 where = where + ")";	
-    		 if(searchCreated){
-    			 where = where + " AND TO_CHAR(atgsWhenCreated,'YYYY') = "+curBudgYear;
-    		 }
-    		 if(searchIntStatus){
-    			 where = where + " AND atgsInterfaceStatus NOT IN ('N','D')";
-    		 }
-    		  }
-    		  catch(Exception ex) {
-    			  where = "Build String Error: " + ex;  
-    	  }
-    	
-    	
-        return where;
-    }
-
 	
-	public String getSrchIntDt() {
-		return srchIntDt;
+	
+	private String buildQueryStr(){
+		HibHelpers hh = new HibHelpers();
+		Integer curBudgYear = Integer.parseInt(hh.getCurrentBudgetYear());
+		StringBuilder srchStr = new StringBuilder();
+		Boolean searchCreated = true;
+		Boolean searchIntStatus = true;
+		/*WHERE*/
+    	srchStr.append("WHERE 1=1 ");
+ 
+    	if(srchTransGrpType != null && !"".equals(srchTransGrpType)){
+    		srchStr.append("AND idPk.atgTransactionCd = "+srchTransGrpType+" ");
+    		
+    	}
+		if(srchTranGrpId != null && !"".equals(srchTranGrpId)){
+			srchStr.append("AND idPk.atgsGroupIdentifier = '"+srchTranGrpId+"' ");
+			searchCreated = false;
+			searchIntStatus = false;
+			
+		}
+		if(srchTranGrpCreated != null){
+			srchStr.append("AND TO_DATE('atgsWhenCreated','MM/DD/YYYY') = TO_DATE('"+srchTranGrpCreated+"','MM/DD/YYYY') ");
+			searchCreated = false;
+			
+		}
+		if(srchAccDt != null){
+			srchStr.append("AND atgsAccountingDt = TO_DATE('"+srchAccDt+"','MM/DD/YYYY') ");
+			
+		}
+		if(srchSumAppStat != null && !"".equals(srchSumAppStat)){
+			srchStr.append("AND atgsSummaryStatus = '"+srchSumAppStat+"' ");
+			
+		}
+		if(srchSumAppDt != null ){
+			srchStr.append("AND TO_DATE('atgsSummaryDt','MM/DD/YYYY') = TO_DATE('"+srchSumAppDt+"','MM/DD/YYYY') ");
+			
+		}
+		if(srchIntAppStat != null && !"".equals(srchIntAppStat)){
+			srchStr.append("AND atgsInterfaceStatus = '"+srchIntAppStat+"' ");
+			searchIntStatus = false;
+			
+		}
+		if(srchIntAppDt != null ){
+			srchStr.append("AND TO_DATE('atgsInterfaceDt','MM/DD/YYYY') = TO_DATE('"+srchIntAppDt+"','MM/DD/YYYY') ");
+			
+		}
+		if(srchUpToSumDt != null ){
+			srchStr.append("AND atgsWhenUploadToSummary = TO_DATE('"+srchUpToSumDt+"','MM/DD/YYYY') ");
+			
+		}
+		if(srchBankCd != null && !"".equals(srchBankCd)){
+    		srchStr.append("AND abcBankCd = "+srchBankCd+" ");
+    		
+		}
+		if(srchBankRefNo != null && !"".equals(srchBankRefNo)){
+    		srchStr.append("AND atgsBankReferenceNo = '"+srchBankRefNo+"' ");
+    		
+		}
+		if(srchIntFileNm != null && !"".equals(srchIntFileNm)){
+    		srchStr.append("AND atgsFileName = '"+srchIntFileNm+"' ");
+    		
+		}
+		if(srchDepId != null && !"".equals(srchDepId)){
+    		srchStr.append("AND atgsDepositId = '"+srchDepId+"' ");
+    		
+		}
+		if(srchProviderNo != null && !"".equals(srchProviderNo)){
+    		srchStr.append("AND TRIM(TRIM(LEADING 0 FROM substr(idPk.atgsGroupIdentifier,3,6))) = '"+srchProviderNo+"' ");
+    		
+		}
+    	
+		if(searchCreated){
+			srchStr.append("AND TO_CHAR(atgsWhenCreated,'YYYY') = "+curBudgYear+" ");
+		}
+		if(searchIntStatus){
+			srchStr.append("AND atgsInterfaceStatus NOT IN ('N','D') ");
+		}
+		return srchStr.toString();
 	}
 
-
-	public void setSrchIntDt(String srchIntDt) {
-		this.srchIntDt = srchIntDt;
+	public List<AlsTransactionGrpStatusDTO> getModel() {
+		return model;
 	}
 
-
-	public String getSrchYear() {
-		return srchYear;
+	public void setModel(List<AlsTransactionGrpStatusDTO> model) {
+		this.model = model;
 	}
-
-
-	public void setSrchYear(String srchYear) {
-		this.srchYear = srchYear;
-	}
-
-
-	public String getSrchDisapproval() {
-		return srchDisapproval;
-	}
-
-
-	public void setSrchDisapproval(String srchDisapproval) {
-		this.srchDisapproval = srchDisapproval;
-	}
-
 
 	public String getJSON()
 	{
@@ -299,44 +267,76 @@ public class AlsTransactionGrpApprovalGridAction extends ActionSupport{
         this.loadonce = loadonce;
     }
 
-    public Integer getBudgYear() {
-		return budgYear;
+	public Integer getSrchTransGrpType() {
+		return srchTransGrpType;
 	}
 
-	public void setBudgYear(Integer budgYear) {
-		this.budgYear = budgYear;
+	public void setSrchTransGrpType(Integer srchTransGrpType) {
+		this.srchTransGrpType = srchTransGrpType;
 	}
 
-	public List<AlsTransactionGrpStatusDTO> getModel() {
-		return model;
+	public String getSrchTranGrpId() {
+		return srchTranGrpId;
 	}
 
-	public void setModel(List<AlsTransactionGrpStatusDTO> model) {
-		this.model = model;
+	public void setSrchTranGrpId(String srchTranGrpId) {
+		this.srchTranGrpId = srchTranGrpId;
 	}
 
-	public String getSrchProvider() {
-		return srchProvider;
+	public Date getSrchTranGrpCreated() {
+		return srchTranGrpCreated;
 	}
 
-	public void setSrchProvider(String srchProvider) {
-		this.srchProvider = srchProvider;
+	public void setSrchTranGrpCreated(Date srchTranGrpCreated) {
+		this.srchTranGrpCreated = srchTranGrpCreated;
 	}
 
-	public String getSrchSumDt() {
-		return srchSumDt;
+	public Date getSrchAccDt() {
+		return srchAccDt;
 	}
 
-	public void setSrchSumDt(String srchSumDt) {
-		this.srchSumDt = srchSumDt;
-	}
-	
-	public String getSrchDepositId() {
-		return srchDepositId;
+	public void setSrchAccDt(Date srchAccDt) {
+		this.srchAccDt = srchAccDt;
 	}
 
-	public void setSrchDepositId(String srchDepositId) {
-		this.srchDepositId = srchDepositId;
+	public String getSrchSumAppStat() {
+		return srchSumAppStat;
+	}
+
+	public void setSrchSumAppStat(String srchSumAppStat) {
+		this.srchSumAppStat = srchSumAppStat;
+	}
+
+	public Date getSrchSumAppDt() {
+		return srchSumAppDt;
+	}
+
+	public void setSrchSumAppDt(Date srchSumAppDt) {
+		this.srchSumAppDt = srchSumAppDt;
+	}
+
+	public String getSrchIntAppStat() {
+		return srchIntAppStat;
+	}
+
+	public void setSrchIntAppStat(String srchIntAppStat) {
+		this.srchIntAppStat = srchIntAppStat;
+	}
+
+	public Date getSrchIntAppDt() {
+		return srchIntAppDt;
+	}
+
+	public void setSrchIntAppDt(Date srchIntAppDt) {
+		this.srchIntAppDt = srchIntAppDt;
+	}
+
+	public Date getSrchUpToSumDt() {
+		return srchUpToSumDt;
+	}
+
+	public void setSrchUpToSumDt(Date srchUpToSumDt) {
+		this.srchUpToSumDt = srchUpToSumDt;
 	}
 
 	public String getSrchBankCd() {
@@ -347,36 +347,35 @@ public class AlsTransactionGrpApprovalGridAction extends ActionSupport{
 		this.srchBankCd = srchBankCd;
 	}
 
-	public String getSrchBankReferenceNo() {
-		return srchBankReferenceNo;
+	public String getSrchBankRefNo() {
+		return srchBankRefNo;
 	}
 
-	public void setSrchBankReferenceNo(String srchBankReferenceNo) {
-		this.srchBankReferenceNo = srchBankReferenceNo;
+	public void setSrchBankRefNo(String srchBankRefNo) {
+		this.srchBankRefNo = srchBankRefNo;
 	}
 
-	public String getSrchWhenUploadedToSabhrs() {
-		return srchWhenUploadedToSabhrs;
+	public String getSrchIntFileNm() {
+		return srchIntFileNm;
 	}
 
-	public void setSrchWhenUploadedToSabhrs(String srchWhenUploadedToSabhrs) {
-		this.srchWhenUploadedToSabhrs = srchWhenUploadedToSabhrs;
+	public void setSrchIntFileNm(String srchIntFileNm) {
+		this.srchIntFileNm = srchIntFileNm;
 	}
 
-	public String getSrchFileName() {
-		return srchFileName;
+	public String getSrchDepId() {
+		return srchDepId;
 	}
 
-	public void setSrchFileName(String srchFileName) {
-		this.srchFileName = srchFileName;
-	}
-	
-	public String getSrchGrpIntentifier() {
-		return srchGrpIntentifier;
+	public void setSrchDepId(String srchDepId) {
+		this.srchDepId = srchDepId;
 	}
 
-	public void setSrchGrpIntentifier(String srchGrpIntentifier) {
-		this.srchGrpIntentifier = srchGrpIntentifier;
+	public Integer getSrchProviderNo() {
+		return srchProviderNo;
 	}
 
+	public void setSrchProviderNo(Integer srchProviderNo) {
+		this.srchProviderNo = srchProviderNo;
+	}
 }

@@ -1,4 +1,4 @@
-function exportGrid(gridName,dataLabel){
+function exportGrid(gridName,dataLabel,queryForm){
 	var _jqGrid=$("#"+gridName);
 	_jqGrid.jqGrid("setGridParam", {rowNum: 999999999, autowidth: true, shrinkToFit: false}).trigger("reloadGrid");
 	var _rowNum = _jqGrid.jqGrid("getGridParam", "rowNum"),
@@ -25,6 +25,14 @@ function exportGrid(gridName,dataLabel){
 			}
 		});
 	});
+	if(queryForm != null && queryForm != ""){
+		var filters = $("#"+queryForm).serialize();
+		_data["filters"] =  filters;
+	}
+	
+	
+	
+
 	return _data;
 	
 }

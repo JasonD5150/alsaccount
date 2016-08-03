@@ -1,12 +1,12 @@
 package fwp.alsaccount.sabhrs.json;
 
-import com.opensymphony.xwork2.ActionSupport;
-
-import fwp.alsaccount.dao.sabhrs.AlsSabhrsEntries;
-import fwp.alsaccount.dao.sabhrs.AlsSabhrsEntriesIdPk;
-import fwp.alsaccount.dto.sabhrs.AlsSabhrsEntriesDTO;
-import fwp.alsaccount.utils.Utils;
-import fwp.gen.utils.ListComp;
+import java.io.File;
+import java.io.FileWriter;
+import java.net.URLDecoder;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -15,14 +15,12 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import com.opensymphony.xwork2.ActionSupport;
+
+import fwp.alsaccount.dao.sabhrs.AlsSabhrsEntries;
+import fwp.alsaccount.dao.sabhrs.AlsSabhrsEntriesIdPk;
+import fwp.alsaccount.dto.sabhrs.AlsSabhrsEntriesDTO;
+import fwp.gen.utils.ListComp;
 
 /**
  * Action handler for the SABHRS Query search page to CSV export file.
@@ -36,6 +34,7 @@ public class SabhrsQueryBuildCsvAction extends ActionSupport {
 
 	private List<AlsSabhrsEntriesDTO> sabhrsEntries = new ArrayList<>();
 	private List<ListComp> columnNameValues = new ArrayList<>();
+	private String filters;
 
 	private String csvFileName;
 	private String fileName;
@@ -47,19 +46,68 @@ public class SabhrsQueryBuildCsvAction extends ActionSupport {
 
 	private void buildcsv() throws Exception {
 		File tempFile = File.createTempFile("personinformation", "csv");
-		fileName="ALSPerson.csv";
+		fileName="SABHRSDetail.csv";
 		StringBuilder titleLine = new StringBuilder();
 
-		for (ListComp listComp : this.columnNameValues) {
+		String[] csvHeaders={"Budget Year",
+							 "JLR",
+							 "Account",
+							 "Fund",
+							 "Org",
+							 "Program",
+							 "Subclass",
+							 "Business Unit",
+							 "Project Grant",
+							 "Amount",
+							 "Sys Activity Type Code",
+							 "Transaction Cd",
+							 "Dr/CR Code",
+							 "Summary Seq No",
+							 "Line Desc",
+							 "When Entry Posted",
+							 "Allow Upload To Summary",
+							 "When Uploaded To Summary",
+							 "Seq No",
+							 "Provider No",
+							 "Billing From",
+							 "Billing To",
+							 "AIAFA Seq No",
+							 "Transaction Type Cd",
+							 "Group Identifier",
+							 "Non Als Flag",
+							 "Tribe Cd",
+							 "ANAT Cd",
+							 "Summary Status",
+							 "Interface Status" };
+		for(int i=0;i<csvHeaders.length;i++){
+			titleLine.append(csvHeaders[i]+",");
+		}
+		/*SELECTED COLUMNS
+		 * for (ListComp listComp : this.columnNameValues) {
 			if (validColumn(listComp)) {
 				if (titleLine.length() > 0) {
 					titleLine.append(",");
 				}
 				titleLine.append(StringEscapeUtils.escapeCsv(listComp.getItemLabel()));
 			}
-		}
+		}*/
 		titleLine.append("\n");
 		FileWriter fileWriter = new FileWriter(tempFile);
+		fileWriter.write("SABHRS Detail Report\n\n");
+		
+		if(!"".equals(filters)&& filters != null){
+			String[] criteria = URLDecoder.decode(filters,"UTF-8").split("&");
+			for(String tmp : criteria){
+				Integer length = tmp.trim().split("=").length;
+				if(length > 1){
+					String column = tmp.split("=")[0];
+					String value = tmp.split("=")[1];
+					fileWriter.write(getColumnLabel(column)+" = "+value+"\n");
+					//System.out.println(column +" = "+value);
+				}
+			}
+			fileWriter.write("\n");
+		}
 		fileWriter.write(titleLine.toString());
 		
 		for (AlsSabhrsEntriesDTO se : sabhrsEntries) {
@@ -107,7 +155,8 @@ public class SabhrsQueryBuildCsvAction extends ActionSupport {
 			   "aseDrCrCd".equals(listComp.getItemVal())||
 			   "aseTxnCdSeqNo".equals(listComp.getItemVal())||
 			   "sumStat".equals(listComp.getItemVal())||
-			   "intStat".equals(listComp.getItemVal())){
+			   "intStat".equals(listComp.getItemVal())||
+			   "jlr".equals(listComp.getItemVal())){
 				AlsSabhrsEntriesDTO.class.getMethod("get" + StringUtils.capitalize(listComp.getItemVal()));
 			}else{
 				AlsSabhrsEntries.class.getMethod("get" + StringUtils.capitalize(listComp.getItemVal()));
@@ -117,6 +166,51 @@ public class SabhrsQueryBuildCsvAction extends ActionSupport {
 		} catch (NoSuchMethodException e) {
 			return false;
 		}
+	}
+	
+	private String getColumnLabel(String column){
+		switch(column){
+		case "providerNo":
+			return "Provider No ";
+		case "seqNo":
+			return "IAFA Seq No ";
+		case "bpFromDt":
+			return "Billing Period From Date ";
+		case "bpToDt":
+			return "Billing Period To Date ";
+		case "fromDt":
+			return "From Date ";
+		case "toDt":
+			return "To Date ";
+		case "budgYear":
+			return "Budget Year ";
+		case "progYear":
+			return "Program Year ";
+		case "jlr":
+			return "Journal Line Reference ";
+		case "account":
+			return "Account ";
+		case "fund":
+			return "Fund ";
+		case "org":
+			return "Org ";
+		case "subClass":
+			return "Subclass ";
+		case "tribeCd":
+			return "Tribe Code ";
+		case "txnGrpIdentifier":
+			return "Transaction Group Identifier ";
+		case "sysActTypeCd":
+			return "System Activity Type Code ";
+		case "transGrpType":
+			return "Transaction Type Code ";
+		case "sumAppStat":
+			return "Summary Approval Status ";
+		case "intAppStat":
+			return "Interface Approval Status ";			
+		default:
+			return "N/A";
+		}	
 	}
 
 	public String getCsvFileName() {
@@ -149,6 +243,20 @@ public class SabhrsQueryBuildCsvAction extends ActionSupport {
 
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
+	}
+
+	/**
+	 * @return the filters
+	 */
+	public String getFilters() {
+		return filters;
+	}
+
+	/**
+	 * @param filters the filters to set
+	 */
+	public void setFilters(String filters) {
+		this.filters = filters;
 	}
 }
 

@@ -260,6 +260,26 @@ public class ListUtils {
 		getSession().close(); 
 		return lst;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<ListComp> getJLRCurBudgYearList() {
+		List<ListComp> lst = new ArrayList<ListComp>();
+		
+		String queryString = "SELECT DISTINCT am_val_desc || SUBSTR((SELECT am.am_par_val FROM als_misc am WHERE am.am_key1 = 'BUDGET YEAR'),3,4)  itemVal, "
+						   + "am_val_desc || SUBSTR((SELECT am.am_par_val FROM als_misc am WHERE am.am_key1 = 'BUDGET YEAR'),3,4)  itemLabel "
+						   + "FROM als.als_misc "
+						   + "WHERE am_key1 = 'JOURNAL_LINE_REFERENCE' "
+						   + "ORDER BY itemVal ";
+
+		Query query = getSession().createSQLQuery(queryString)
+				.addScalar("itemVal", StringType.INSTANCE)
+				.addScalar("itemLabel", StringType.INSTANCE)
+				.setResultTransformer(Transformers.aliasToBean(ListComp.class));
+
+		lst = query.list();
+		getSession().close(); 
+		return lst;
+	}
 
 	/**
 	 * This method retrieves Journal Line Reference codes from the database as formatted text for
@@ -273,6 +293,27 @@ public class ListUtils {
 		}
 
 		List<ListComp> jlrLst = this.getJLRList();
+
+		for (ListComp i : jlrLst) {
+			retVal += ";" + i.getItemVal() + ":" + i.getItemLabel();
+		}
+		getSession().close();
+
+		return retVal;
+	}
+	
+	/**
+	 * This method retrieves Journal Line Reference codes from the database as formatted text for
+	 * a jqgrid column select list.
+	 */
+	public String getJLRCurBudgYearListTxt(boolean addSelectOne) throws Exception {
+		String retVal = ": ";
+
+		if (addSelectOne) {
+			retVal = ":-- Select One --";
+		}
+
+		List<ListComp> jlrLst = this.getJLRCurBudgYearList();
 
 		for (ListComp i : jlrLst) {
 			retVal += ";" + i.getItemVal() + ":" + i.getItemLabel();
@@ -376,7 +417,7 @@ public class ListUtils {
 
 			if (fundLst != null && !fundLst.isEmpty()) {
 				for (ListComp lc : fundLst) {
-					retVal += ";" + lc.getItemLabel() + ":" + String.valueOf(lc.getItemVal())+" - "+lc.getItemLabel();
+					retVal += ";" + lc.getItemLabel() + ":" +lc.getItemLabel();
 				}
 			}
 		} catch (Exception ex) {
@@ -435,7 +476,7 @@ public class ListUtils {
 
 			if (subclassLst != null && !subclassLst.isEmpty()) {
 				for (ListComp lc : subclassLst) {
-					retVal += ";" + lc.getItemLabel() + ":" + String.valueOf(lc.getItemVal())+" - "+lc.getItemLabel();
+					retVal += ";" + lc.getItemLabel() + ":" +lc.getItemLabel();
 				}
 			}
 		} catch (Exception ex) {

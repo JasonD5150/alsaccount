@@ -2,6 +2,28 @@
 <!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-reverse-engineering-3.0.dtd" >
 
 <hibernate-reverse-engineering>
+	 <table name="ALS_PROVIDER_BANK_DETAILS" schema="ALS" class="fwp.alsaccount.dao.sabhrsAlsProviderBankDetails"> 
+     <primary-key id-class="fwp.alsaccount.dao.sabhrsAlsProviderBankDetailsIdPk" property="idPk">
+       <column name="API_PROVIDER_NO" jdbc-type="NUMERIC" type="Integer"></column>
+       <column name="APBD_BILLING_TO" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+       <column name="APBD_SEQ_NO" jdbc-type="NUMERIC" type="Integer"></column>
+     </primary-key>
+     <column name="ABC_BANK_CD" jdbc-type="VARCHAR" type="String"></column>
+     <column name="APBD_AMOUNT_DEPOSIT" jdbc-type="NUMERIC" type="Double"></column>
+     <column name="APBD_DEPOSIT_DATE" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="APBD_DEPOSIT_ID" jdbc-type="VARCHAR" type="String"></column>
+     <column name="ATGS_GROUP_IDENTIFIER" jdbc-type="VARCHAR" type="String"></column>
+     <column name="APBD_WHO_LOG" jdbc-type="VARCHAR" type="String"></column>
+     <column name="APBD_WHEN_LOG" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="ATG_TRANSACTION_CD" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="APBD_BILLING_FROM" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="CREATE_DATE" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="CREATE_DBUSER" jdbc-type="VARCHAR" type="String"></column>
+     <column name="CREATE_PERSONID" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="MOD_DATE" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="MOD_DBUSER" jdbc-type="VARCHAR" type="String"></column>
+     <column name="MOD_PERSONID" jdbc-type="NUMERIC" type="Integer"></column>
+   </table>
 	<table name="ALS_SABHRS_ENTRIES_SUMMARY" schema="ALS" class="fwp.alsaccount.dao.sabhrs.AlsSabhrsEntriesSummary"> 
      <primary-key id-class="fwp.alsaccount.dao.sabhrs.AlsSabhrsEntriesSummaryIdPk" property="idPk">
        <column name="ASES_DATE_CREATED" jdbc-type="DATE" type="java.sql.Timestamp"></column>
@@ -248,6 +270,135 @@
      <column name="ATI_TRIBE_ACCT_ROUTING_NO" jdbc-type="VARCHAR" type="String"></column>
      <column name="ATI_TRIBE_ACCT_NO" jdbc-type="VARCHAR" type="String"></column>
    </table>
+   
+   <table name="ALS_TRIBE_ITEM_INFO" schema="ALS" class="fwp.alsaccount.dao.admin.AlsTribeItemInfo"> 
+     <primary-key id-class="fwp.alsaccount.dao.admin.AlsTribeItemInfoIdPk" property="idPk">
+       <column name="AICT_USAGE_PERIOD_FROM" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+       <column name="AICT_USAGE_PERIOD_TO" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+       <column name="AICT_ITEM_TYPE_CD" jdbc-type="VARCHAR" type="String"></column>
+     </primary-key>
+      <column name="ATI_TRIBE_CD" jdbc-type="VARCHAR" type="String" />
+      <column name="ATCT_WHO_LOG" jdbc-type="VARCHAR" type="String"></column>
+      <column name="ATCT_WHEN_LOG" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+  
+    </table>
+    
+    <table name="ALS_ITEM_CONTROL_TABLE" schema="ALS" class="fwp.alsaccount.dao.admin.AlsItemControlTable"> 
+     <primary-key id-class="fwp.alsaccount.dao.admin.AlsItemControlTableIdPk" property="idPk">
+       <column name="AICT_USAGE_PERIOD_FROM" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+       <column name="AICT_USAGE_PERIOD_TO" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+       <column name="AICT_ITEM_TYPE_CD" jdbc-type="VARCHAR" type="String"></column>
+     </primary-key>
+      
+    
+     <column name="AICT_LICENSE_PERMIT_FLAG" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_TAG_FLAG" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_REPLACEMENT_LIMIT" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="AICT_CLASSIFICATION_IND" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_RESIDENCY_IND" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_DISPLAY_OVERRIDE_IND" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_SEASON_FROM_DT" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="AICT_SEASON_TO_DT" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="AICT_MAIL_EXT_PERIOD" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="AICT_PERSON_TYPE_CD" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_MAIL_LIST_EXCLUSION_IND" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_USAGE_DEADLINE" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="AICT_ITEM_QUOTA_IND" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_COMBIN_ITM_QUT_RESI_IND" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_DRAW_INTERIM_STATUS_IND" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_APPL_PROC_TIME_LN_FROM_DT" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="AICT_APPL_PROC_TIME_LN_TO_DT" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="AICT_PREPAY_APPL_FEE_IND" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_DRAW_FEE" jdbc-type="NUMERIC" type="Double"></column>
+     <column name="AICT_APPL_NOTIFICATION_DT" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="AICT_ITEM_ISSUE_TIME_LN_FRM_DT" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="AICT_ITEM_ISSUE_TIME_LN_TO_DT" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="AICT_CNTRL_FULFILLMENT_IND" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_CNTRL_FULFILLMENT_PROMPT" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_REVIEW_INTERIM_STATUS_IND" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_REVIEW_PROGRAM_NM" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_REV_PREPAY_ITEM_FEE_IND" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_ITEM_EXCHANGE_DEADLINE" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="AICT_POS_PRNT_TEMPL_CD" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="AICT_CENTRAL_PRNT_TEMPL_CD" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="AICT_APP_RECEIPT_PRNT_TEMPL_CD" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="AICT_PRINTER_PRINT_IND" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="AICT_SEPARATE_PRINT_IND" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_NO_POUCH_TO_BE_HANDED_OUT" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="AICT_PERSON_ID_TEMPLATE_CD" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="AICT_COMMISSION" jdbc-type="NUMERIC" type="Double"></column>
+     <column name="AICT_REPLACEMENT_FEE_IND" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_COMBINATION_REQUIRED_IND" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_OPP_TYPE_SP_DT_IND" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_ITEM_TRIBAL_IND" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_RESIDENCY_DECLARATION_IND" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_EXEMPTION_IND" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_RESIDENCY_SUPP_MAT_IND" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_RECIPROCITY_IND" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_VALID_AREA_OPP_T_IND" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_OPP_TYPE_DISPLAY_PROMPT" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_APP_NO_FROM_RANGE" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="AICT_APP_NO_TO_RANGE" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="AICT_ITEM_OPP_NO_FROM_RANGE" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="AICT_ITEM_OPP_NO_TO_RANGE" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="AICT_EXCHANGE_ALLOWED_FOR" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_WHO_LOG" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_WHEN_LOG" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="AICT_EXCLUSION_TIME_PERIOD" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="AICT_COMB_ITEM_QUOTA_ITEM_TYP" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_APP_PARTY_IND" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_APP_PARTY_LIMIT" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="AICT_BONUS_POINT_IND" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_PREF_SPONSOR_IND" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_DEER_ONLY_IND" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_FEE_DONATION_IND" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_GROUP_LIMIT" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="AICT_APP_PARTY_CHOICE_IND" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_SECONDARY_ITEM" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_VIOLATION_EXCLUSION" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_RENEWAL_ALLOWED" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_INTERNAL_REPL_LIMIT" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="AICT_REMARKS_IND" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_CENTRAL_PRINT_IND" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_DISABLED_QUOTA" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="AICT_DONATION_IND" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_MIN_DONATION_AMT" jdbc-type="NUMERIC" type="Double"></column>
+     <column name="AICT_DISPLAY_OVERRIDE_TRN_IND" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_NONTYPICAL_USAGE_LIC_YR" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="AICT_REFUND_DRAWING_ITEM_FEE" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_MAX_COMM_ITEMS_PER_SESS" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="AICT_REPLACEMENT_FROM_DT" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="AICT_SPECIAL_PROCESS_IND" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_FEATURED_ITEM_DESC" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_FEATURED_ITEM_ACTIVE" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_DONATION_ITEM_TYPE_CD" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_MRKTG_QUESTION" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AICT_DONATE_IND" jdbc-type="VARCHAR" type="String"></column>
+   </table>
+      
+      
+      
+       <table name="ALS_ITEM_TYPE" schema="ALS" class="fwp.alsaccount.dao.admin.AlsItemType"> 
+       <primary-key id-class="fwp.alsaccount.dao.admin.AlsItemTypeIdPk" property="idPk">
+       <column name="AI_ITEM_ID" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AIC_CATEGORY_ID" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AIT_TYPE_ID" jdbc-type="VARCHAR" type="String"></column>
+       
+       </primary-key>
+     
+     <column name="AIT_TYPE_DESC" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AIT_WHO_LOG" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AIT_WHEN_LOG" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+   </table> 
+      
+      
+      
+      
+      
+      
+      
+  
+   
    
    
 </hibernate-reverse-engineering>

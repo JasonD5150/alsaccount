@@ -57,8 +57,8 @@
 		formIds="tranCodeFrm" >
 
 			<sjg:gridColumn name="gridKey" title ="id" width="55" hidden="true" key="true"/>
-			<sjg:gridColumn name="idPk.asacSystemActivityTypeCd" index="idPk.asacSystemActivityTypeCd" title =" Activity Type Code" width="25" sortable="false" hidden="true"/>
-			<sjg:gridColumn name="idPk.asacTxnCd" index="idPk.asacTxnCd" title =" Transaction Code" width="25" sortable="false" hidden="false" editable="true" editrules="{number:true,required:true}" editoptions="{size:2,maxlength:1}"/>
+			<sjg:gridColumn name="idPk.asacSystemActivityTypeCd" index="idPk.asacSystemActivityTypeCd" title =" Activity Type Code" width="25" sortable="false" hidden="true" />
+			<sjg:gridColumn name="idPk.asacTxnCd" index="idPk.asacTxnCd" title =" Transaction Code" width="25" sortable="false" hidden="false" editable="true" editrules="{number:true,required:true}" editoptions="{size:2,maxlength:1}" align="right"/>
 			<sjg:gridColumn name="asattcDesc" index="asattcDesc" title =" Desc" width="100" sortable="false" hidden="false" editable="true" edittype="textarea" editrules="{required:true}"/>
 			<sjg:gridColumn name="asattcWhoLog" index="asattcWhoLog" title =" Create" width="20" sortable="false" hidden="false" editable="false"/>
 			<sjg:gridColumn name="asattcWhenLog" index="asattcWhenLog" title =" Create Date" width="40" sortable="false" hidden="false" editable="false" formatter="date" formatoptions="{srcformat:'y-m-d:H:i' , newformat : 'm/d/Y H:i'}"/>

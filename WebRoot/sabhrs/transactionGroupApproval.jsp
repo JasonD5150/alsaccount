@@ -11,6 +11,7 @@
     <fwp:head>
         <sj:head locale="en" jqueryui="true" jquerytheme="smoothness" customBasepath="css/jquery"/>
         <script type="text/javascript" src= "/alsaccount/sabhrs/scripts/fwp.transactionGroupApproval.js"></script>  
+    	<script type="text/javascript" src= "/alsaccount/scripts/fieldEdits.js"></script>  
     </fwp:head>
     
     <s:hidden id="bankCodeLst" name="bankCodeLst"/>
@@ -25,6 +26,7 @@
     </form>
     
     <s:form action="getTreasureDepositTicketPdf">
+    	<s:hidden id="type" name="type" value="S" />
     	<s:hidden id="txIdentifier" name="txIdentifier" />
       	<s:hidden id="transCd" name="transCd" />
     </s:form>
@@ -33,6 +35,14 @@
     	<h2 class="title">Transaction Group Approval for Summary and Interface file</h2>
    	</div>
    	
+   	<s:url id="transGrpAppQueryDivUrl" value="transGrpAppQueryDiv_input.action" />
+	<sj:div id="searchCriteriaDiv" 
+			href="%{transGrpAppQueryDivUrl}"
+			width="950">
+	</sj:div>
+	
+  	<br>
+  	<br>
 	<s:url id="transGroupMaintGridURL" action="alsAccount/transGroupApprovalGrid_buildgrid" />
 	<s:url id="transGroupMaintGridEditURL" action="alsAccount/transGroupApprovalGridEdit_execute" />
 	<sjg:grid
@@ -47,7 +57,7 @@
 		navigatorView="false"
 		navigatorAdd="false"
 		navigatorDelete="false"
-		navigatorSearch="true"
+		navigatorSearch="false"
 		navigatorSearchOptions="{sopt:['cn','bw','eq','ne','lt','gt','ew'],multipleSearch:true,closeAfterSearch:true}"
     	navigatorAddOptions="{width:950,reloadAfterSubmit:true,
     						  addedrow:'last',
@@ -210,28 +220,9 @@
 		<input type="submit" value="Save" onclick="submitTransGroupApproval();">
 		<input type="submit" value="Back" onclick="$('#transGroupAppDiv').toggle(false);">
 	</div>
-	<input id="getRptDialog" 
+	<input id="getRpt" 
 			   type="button"
-			   onclick="openReportDialog();" 
-			   value="Generate Report">
+			   onclick="getGenRpt();" 
+			   value="Generate Deposit Ticket" disabled>
 	
-	<sj:dialog
-    	id="reportDialog" 
-    	autoOpen="false" 
-    	modal="true" 
-    	title="Reports"
-    	width="400" 
-    	height="150"
-    	buttons="{
-       	    'Run': function() {
-       	    	getGenRpt();
-       	    },
-       	    'Cancel': function() {
-               $('#reportDialog').dialog('close');
-       	    }
-        }">
-			<s:iterator value="#{'T':'Transaction Group Status History Report','G':'Generate Treasure Deposit Tickets'}"> 
-			  <s:radio theme="simple" name="reportType" list="#{key:value}"/><br>
-			</s:iterator>
-	</sj:dialog>
 </fwp:template>

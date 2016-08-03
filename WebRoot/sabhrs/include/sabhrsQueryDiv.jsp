@@ -27,12 +27,12 @@
 				<td><s:textfield id="seqNo" name="seqNo" theme="simple" title="IAFA Sequence No" /></td>
 			</tr>
 			<tr>
-    			<td>Billing Period From Date</td>
+    			<td>Billing Period From Date: </td>
 	    		<td><sj:datepicker changeMonth="true" changeYear="true" id="bpFromDt"
 				   name="bpFromDt" displayFormat="mm/dd/yy"
 				   cssStyle="width:80px" maxlength="10"  maxDate="+0" title="Billing Period From Date" 
 				   showOn="focus" onblur="testDate(this)" /></td>
-			   	<td>Billing Period To Date</td>
+			   	<td>Billing Period To Date: </td>
 	    	 	<td><sj:datepicker changeMonth="true" changeYear="true" id="bpToDt"
 				   name="bpToDt" displayFormat="mm/dd/yy"
 				   cssStyle="width:80px" maxlength="10"  maxDate="+0" title="Billing Period To Date" 
@@ -41,12 +41,12 @@
     		<tr><td colspan="4" style="border-bottom:1px solid black;"><br></td></tr>
     		<tr><td><br></td></tr>
     		<tr>
-    			<td>From Date</td>
+    			<td>From Date: </td>
 	    		<td><sj:datepicker changeMonth="true" changeYear="true" id="fromDt"
 				   name="fromDt" displayFormat="mm/dd/yy"
 				   cssStyle="width:80px" maxlength="10"  maxDate="+0" title="From Date" 
 				   showOn="focus" onblur="testDate(this)"/></td>
-			   	<td>To Date</td>
+			   	<td>To Date: </td>
 	    	 	<td><sj:datepicker changeMonth="true" changeYear="true" id="toDt"
 				   name="toDt" displayFormat="mm/dd/yy"
 				   cssStyle="width:80px" maxlength="10"  maxDate="+0" title="To Date" 
@@ -134,7 +134,7 @@
 							   theme="simple"/></td>
     		</tr>
     		<tr>
-    			<td class="label">Transaction Group Identifier : </td>
+    			<td class="label">Transaction Group Identifier: </td>
     			<td><s:textfield id="txnGrpIdentifier" name="txnGrpIdentifier" theme="simple" title="Transaction Group Identifier" /></td>
     		</tr>
     		<tr>

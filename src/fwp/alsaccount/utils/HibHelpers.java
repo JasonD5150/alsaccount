@@ -19,11 +19,14 @@ import org.hibernate.type.DateType;
 import org.hibernate.type.DoubleType;
 import org.hibernate.type.IntegerType;
 import org.hibernate.type.StringType;
+import org.hibernate.type.TimestampType;
 
 import fwp.alsaccount.appservice.admin.AlsMiscAS;
 import fwp.alsaccount.dao.admin.AlsMisc;
 import fwp.alsaccount.dao.admin.AlsProviderInfo;
-import fwp.alsaccount.dto.admin.AlsTribeItemDTO;import fwp.alsaccount.dto.sabhrs.AlsSabhrsEntriesDTO;
+import fwp.alsaccount.dto.admin.AlsTribeItemDTO;
+import fwp.alsaccount.dto.sabhrs.AlsProviderBankDetailsDTO;
+import fwp.alsaccount.dto.sabhrs.AlsSabhrsEntriesDTO;
 import fwp.alsaccount.dto.sabhrs.AlsTransactionGrpMassCopyDTO;
 import fwp.alsaccount.hibernate.HibernateSessionFactory;
 
@@ -768,4 +771,74 @@ public List<AlsTribeItemDTO> findTribeBankItems()
 			getSession().close();
 		}
 		return cnt;
-	}}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<AlsProviderBankDetailsDTO> getIntProviderTreasuryDepositTickets(String queryStr) {
+		List<AlsProviderBankDetailsDTO> lst = new ArrayList<AlsProviderBankDetailsDTO>();
+
+		String queryString = queryStr;
+		
+		try {
+			Query query = getSession()
+					.createSQLQuery(queryString)
+					.addScalar("gridKey", StringType.INSTANCE)
+					.addScalar("providerNo", IntegerType.INSTANCE)
+					.addScalar("providerName", StringType.INSTANCE)
+					.addScalar("apbdAmountDeposit", DoubleType.INSTANCE)
+					.addScalar("apbdDepositDate", TimestampType.INSTANCE)
+					.addScalar("apbdDepositId", StringType.INSTANCE)
+	
+					.setResultTransformer(
+							Transformers.aliasToBean(AlsProviderBankDetailsDTO.class));
+
+			lst = query.list();
+		} catch (RuntimeException re) {
+			System.out.println(re.toString());
+		}
+		finally {
+			getSession().close();
+		}
+		return lst;
+	}
+	
+	public StringBuilder loadTmpDepositIds(String key, String ids) {
+		StringBuilder rtrn = new StringBuilder();
+		
+		Clob tmpClob = null;
+		
+        Connection conn = ((SessionImpl)getSession()).connection();
+        try {
+			CallableStatement cs = conn
+					.prepareCall("{call als.als_accounting.load_temp_alsr0908(?,?,?)}");
+
+			cs.setString(1, key);
+			cs.setString(2, ids);
+            cs.setClob(3,tmpClob);
+            cs.registerOutParameter(3,OracleTypes.CLOB);
+
+            cs.execute();
+            
+            tmpClob = cs.getClob(3);
+            
+            if ( tmpClob != null ) {
+            	rtrn.append(tmpClob.getSubString(1, (int) tmpClob.length()));
+            } else {
+            	rtrn.append("No values returned");
+            }
+            
+			
+            conn.close();
+            
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			
+			getSession().close();
+		}
+        
+        return rtrn;
+	}
+}
+

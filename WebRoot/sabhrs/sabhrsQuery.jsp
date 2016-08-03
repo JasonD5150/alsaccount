@@ -23,7 +23,8 @@
 				,caption:""
 				,buttonicon:"ui-icon-extlink"
 				,onClickButton:function(){ 
-					grid.jqGrid('columnChooser');
+					grid.jqGrid('columnChooser',{caption: "Columns: CTRL-click select/deselect a column, CTRL-A select all",
+												 width: 500});
 				}
 				,position:"last"
 				,title:"Add/Remove Columns"
@@ -35,7 +36,7 @@
 			function exportToCSV(){
 				$.ajax({
 					type: "POST",
-					data: JSON.stringify(exportGrid("alsSabhrsQueryTable","sabhrsEntries")),
+					data: JSON.stringify(exportGrid("alsSabhrsQueryTable","sabhrsEntries","gridFrm")),
 					dataType: "json",
 					cache: false,
 					contentType: "application/json",
@@ -136,8 +137,8 @@
 			<sjg:gridColumn name="aseAmt" index="aseAmt" title ="Amount" width="10" sortable="false" editable="true"/>
 			<sjg:gridColumn name="asacSystemActivityTypeCd" index="asacSystemActivityTypeCd" title ="Sys Activity Type Code" width="10" sortable="false" editable="false"/>
 			<sjg:gridColumn name="asacTxnCd" index="asacTxnCd" title ="Transaction Cd" width="10" sortable="false" editable="false"/>
-			<sjg:gridColumn name="aseDrCrCd" index="aseDrCrCd" title ="Dr/Cr Code" width="10" sortable="false" editable="true" edittype="select" formatter="select" editoptions="{value: {D: 'Debit', C: 'Credit'}}"/>
-			<sjg:gridColumn name="aseSeqNo" index="aseSeqNo" title ="Seq No" width="10" sortable="false" editable="false"/>
+			<sjg:gridColumn name="aseDrCrCd" index="aseDrCrCd" title ="Dr/Cr Code" width="10" sortable="false" editable="true" edittype="select" formatter="select" editoptions="{value: {D: 'Debit', C: 'Credit'}}" />
+			<sjg:gridColumn name="aseSeqNo" index="aseSeqNo" title ="Summary Seq No" width="10" sortable="false" editable="false"/>
 			<sjg:gridColumn name="aseLineDescription" index="aseLineDescription" title ="Line Desc" width="40" sortable="false" editable="true" edittype="textarea" />
 			
 			<!-- HIDDEN COLUMNS-->

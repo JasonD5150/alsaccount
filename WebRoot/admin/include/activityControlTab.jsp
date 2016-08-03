@@ -55,11 +55,11 @@
 		formIds="gridFrm">
 
 			<sjg:gridColumn name="gridKey" title ="id" width="55" hidden="true" key="true"/>
-			<sjg:gridColumn name="idPk.asacBudgetYear" index="idPk.asacBudgetYear" title =" Budget Year" width="25" sortable="false" hidden="false" editable="false" search="false"/>
+			<sjg:gridColumn name="idPk.asacBudgetYear" index="idPk.asacBudgetYear" title =" Budget Year" width="25" sortable="false" hidden="false" editable="false" search="false" align="right"/>
 			<sjg:gridColumn name="idPk.asacSystemActivityTypeCd" index="idPk.asacSystemActivityTypeCd" title ="Activity Type Code" width="10" sortable="false" hidden="false" editable="true" editrules="{required:true}" editoptions="{size:2,maxlength:1}"/>
-			<sjg:gridColumn name="idPk.asacTxnCd" index="idPk.asacTxnCd" title =" Transaction Code" width="25" sortable="false" hidden="false" editable="true" editrules="{number:true,required:true}" editoptions="{size:4,maxlength:3}"/>
+			<sjg:gridColumn name="idPk.asacTxnCd" index="idPk.asacTxnCd" title =" Transaction Code" width="25" sortable="false" hidden="false" editable="true" editrules="{number:true,required:true}" editoptions="{size:4,maxlength:3}" align="right"/>
 			<sjg:gridColumn name="asacSysActivityTypeCdDesc" index="asacSysActivityTypeCdDesc" title =" Desc" width="100" sortable="false" hidden="false" editable="true" edittype="textarea" editrules="{required:true}"/>
-			<sjg:gridColumn name="asacProgram" index="asacProgram" title =" Program" width="25" sortable="false" hidden="false" editable = "false"/>
+			<sjg:gridColumn name="asacProgram" index="asacProgram" title =" Program" width="25" sortable="false" hidden="false" editable = "false" align="right"/>
 			<sjg:gridColumn name="sysActivityTypeDesc" index="sysActivityTypeDesc" title ="" width="25" sortable="false" hidden="true" editable = "false" />
 			<sjg:gridColumn name="sysTranCodeDesc" index="sysTranCodeDesc" title ="" width="25" sortable="false" hidden="true" editable = "false" />
 			

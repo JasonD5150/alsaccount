@@ -1,28 +1,10 @@
 package fwp.alsaccount.admin.grid;
 
 import java.sql.Timestamp;
-import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 
 import com.opensymphony.xwork2.ActionSupport;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 import fwp.alsaccount.appservice.admin.AlsTribeInfoAS;
 import fwp.alsaccount.dao.admin.AlsTribeInfo;
