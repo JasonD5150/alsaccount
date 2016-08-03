@@ -69,10 +69,14 @@
 		scrollrows="true"
 		height="300"
 		width="950"
+		loadonce = "true"
 		rowNum="1000"
+		sortable="true"
+		sortorder="asc"
+		sortname="abcBankCd"
 		resizable="true">
 		
-			<sjg:gridColumn name="abcBankCd" index="abcBankCd" key="true" title =" Bank Code" width="15" sortable="false" hidden="false" editable="true" editrules="{number:true,required:true}" editoptions="{size:4,maxlength:3}"/>
+			<sjg:gridColumn name="abcBankCd" index="abcBankCd" key="true" title =" Bank Code" width="15" sortable="true" hidden="false" editable="true" editrules="{number:true,required:true}" editoptions="{size:4,maxlength:3}"  />
 			<sjg:gridColumn name="abcActive" index="abcActive" title =" Active" width="10" sortable="false" editable="true" edittype="select" editoptions="{value: {Y: 'Yes', N: 'No'}, defaultValue:'Y'}"/>
 			<sjg:gridColumn name="abcBankNm" index="abcBankNm" title =" Bank Name" width="45" sortable="true"  editable="true" editrules="{required:true}" editoptions="{size:26, maxlength:25}"/>
 			<sjg:gridColumn name="abcCompanyId" index="abcCompanyId" title =" Company Id" width="20" sortable="false" editable="true" editoptions="{size:11, maxlength:10}" editrules="{number:true}"/>
