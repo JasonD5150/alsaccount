@@ -23,7 +23,8 @@ import org.hibernate.type.StringType;
 import fwp.alsaccount.appservice.admin.AlsMiscAS;
 import fwp.alsaccount.dao.admin.AlsMisc;
 import fwp.alsaccount.dao.admin.AlsProviderInfo;
-import fwp.alsaccount.dto.admin.AlsTribeItemDTO;import fwp.alsaccount.dto.sabhrs.AlsTransactionGrpMassCopyDTO;
+import fwp.alsaccount.dto.admin.AlsTribeItemDTO;import fwp.alsaccount.dto.sabhrs.AlsSabhrsEntriesDTO;
+import fwp.alsaccount.dto.sabhrs.AlsTransactionGrpMassCopyDTO;
 import fwp.alsaccount.hibernate.HibernateSessionFactory;
 
 public class HibHelpers {
@@ -659,7 +660,8 @@ public class HibHelpers {
 		}
 		return lst;
 	}
-@SuppressWarnings("unchecked")public List<AlsTribeItemDTO> findTribeBankItems()
+@SuppressWarnings("unchecked")
+public List<AlsTribeItemDTO> findTribeBankItems()
 	{
 		
 		List<AlsTribeItemDTO> toReturn = new ArrayList<AlsTribeItemDTO>();

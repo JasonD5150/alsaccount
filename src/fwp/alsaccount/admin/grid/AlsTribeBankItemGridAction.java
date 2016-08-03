@@ -76,7 +76,7 @@ public class AlsTribeBankItemGridAction extends ActionSupport{
     	/*AlsTribeItemInfoAS abcAS = new AlsTribeItemInfoAS();*/
     	
         try{
-        	model = hibHelper.findTribeBankItems(tribeID);
+        	//model = hibHelper.findTribeBankItems(tribeID);
         	
         }
         catch (HibernateException re) {
@@ -110,7 +110,7 @@ public String buildgridList(){
     	/*AlsTribeItemInfoAS abcAS = new AlsTribeItemInfoAS();*/
     	
         try{
-        	model = hibHelper.findTribeBankItems(tribeID);
+        	//model = hibHelper.findTribeBankItems(tribeID);
         	
         }
         catch (HibernateException re) {
