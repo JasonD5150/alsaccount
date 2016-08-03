@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/strutsXwork"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/alsaccount_dal"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/slf4j"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/hibernate"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/CommonLang"/>
@@ -28,5 +27,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/itextPdf"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/gen_dal"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/slf4jLogger"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/alsaccount_dal"/>
 	<classpathentry kind="output" path="WebRoot/WEB-INF/classes"/>
 </classpath>

@@ -23,8 +23,7 @@ import org.hibernate.type.StringType;
 import fwp.alsaccount.appservice.admin.AlsMiscAS;
 import fwp.alsaccount.dao.admin.AlsMisc;
 import fwp.alsaccount.dao.admin.AlsProviderInfo;
-import fwp.alsaccount.dto.sabhrs.AlsSabhrsEntriesDTO;
-import fwp.alsaccount.dto.sabhrs.AlsTransactionGrpMassCopyDTO;
+import fwp.alsaccount.dto.admin.AlsTribeItemDTO;import fwp.alsaccount.dto.sabhrs.AlsTransactionGrpMassCopyDTO;
 import fwp.alsaccount.hibernate.HibernateSessionFactory;
 
 public class HibHelpers {
@@ -660,7 +659,37 @@ public class HibHelpers {
 		}
 		return lst;
 	}
+@SuppressWarnings("unchecked")public List<AlsTribeItemDTO> findTribeBankItems()
+	{
+		
+		List<AlsTribeItemDTO> toReturn = new ArrayList<AlsTribeItemDTO>();
+		String queryString = "SELECT DISTINCT a.AICT_USAGE_PERIOD_FROM, a.AICT_USAGE_PERIOD_TO, a.AICT_ITEM_TYPE_CD , b.AIT_TYPE_DESC "
+				+ "FROM ALS.ALS_ITEM_CONTROL_TABLE a, ALS.ALS_ITEM_TYPE b, als.als_tribe_item_info c "
+				+ "WHERE a.AICT_ITEM_TYPE_CD  = b.AI_ITEM_ID||b.AIC_CATEGORY_ID||b.AIT_TYPE_ID "
+				+ "AND AICT_ITEM_TRIBAL_IND = 'Y' "
+				+ "ORDER BY AICT_USAGE_PERIOD_FROM DESC, AICT_USAGE_PERIOD_TO DESC, AICT_ITEM_TYPE_CD ";
+		try {
+			Query query = getSession()
+					.createSQLQuery(queryString)
+					/*.addScalar("providerNo", IntegerType.INSTANCE)
+					.addScalar("bpe", DateType.INSTANCE)
+					.addScalar("atgsNetDrCr", DoubleType.INSTANCE)
+					.addScalar("providerName", StringType.INSTANCE)
+					.addScalar("remPerStat", StringType.INSTANCE)*/
 	
+					.setResultTransformer(
+							Transformers.aliasToBean(AlsTribeItemDTO.class));
+
+			toReturn = query.list();
+		} catch (RuntimeException re) {
+			System.out.println(re.toString());
+		}
+		finally {
+			getSession().close();
+		}
+		return toReturn;
+		
+	}
 	@SuppressWarnings("unchecked")
 	public List<AlsSabhrsEntriesDTO> getSabhrsQueryRecords(String queryStr) {
 		List<AlsSabhrsEntriesDTO> lst = new ArrayList<AlsSabhrsEntriesDTO>();
@@ -737,5 +766,4 @@ public class HibHelpers {
 			getSession().close();
 		}
 		return cnt;
-	}
-}
+	}}
