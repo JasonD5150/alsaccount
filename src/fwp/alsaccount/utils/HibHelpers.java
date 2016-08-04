@@ -28,6 +28,7 @@ import fwp.alsaccount.dto.admin.AlsTribeItemDTO;
 import fwp.alsaccount.dto.sabhrs.AlsProviderBankDetailsDTO;
 import fwp.alsaccount.dto.sabhrs.AlsSabhrsEntriesDTO;
 import fwp.alsaccount.dto.sabhrs.AlsTransactionGrpMassCopyDTO;
+import fwp.alsaccount.dto.sabhrs.InternalProviderTdtDTO;
 import fwp.alsaccount.hibernate.HibernateSessionFactory;
 
 public class HibHelpers {
@@ -541,7 +542,7 @@ public class HibHelpers {
 		}
         
         return rtrn;
-	}	
+	}
 	
 	public Integer getAlsDepIdSeq(String budgetYear, String type) {		
 		Integer rtrn = 0;
@@ -699,11 +700,9 @@ public List<AlsTribeItemDTO> findTribeBankItems()
 	public List<AlsSabhrsEntriesDTO> getSabhrsQueryRecords(String queryStr) {
 		List<AlsSabhrsEntriesDTO> lst = new ArrayList<AlsSabhrsEntriesDTO>();
 
-		String queryString = queryStr;
-		
 		try {
 			Query query = getSession()
-					.createSQLQuery(queryString)
+					.createSQLQuery(queryStr)
 					.addScalar("aseWhenEntryPosted")
 					.addScalar("aseSeqNo", IntegerType.INSTANCE)
 					.addScalar("aseDrCrCd")
@@ -753,28 +752,8 @@ public List<AlsTribeItemDTO> findTribeBankItems()
 		return lst;
 	}
 	
-	public Integer getSabhrsQueryCount(String queryStr) {
-		Integer cnt = 0;
-
-		String queryString = queryStr;
-		
-		try {
-			Query query = getSession()
-					.createSQLQuery(queryString)
-					.addScalar("cnt", IntegerType.INSTANCE);
-
-			cnt = (Integer) query.uniqueResult();
-		} catch (RuntimeException re) {
-			System.out.println(re.toString());
-		}
-		finally {
-			getSession().close();
-		}
-		return cnt;
-	}
-	
 	@SuppressWarnings("unchecked")
-	public List<AlsProviderBankDetailsDTO> getIntProviderTreasuryDepositTickets(String queryStr) {
+	public List<AlsProviderBankDetailsDTO> getInternalProviderTdt(String queryStr) {
 		List<AlsProviderBankDetailsDTO> lst = new ArrayList<AlsProviderBankDetailsDTO>();
 
 		String queryString = queryStr;
@@ -802,43 +781,50 @@ public List<AlsTribeItemDTO> findTribeBankItems()
 		return lst;
 	}
 	
-	public StringBuilder loadTmpDepositIds(String key, String ids) {
-		StringBuilder rtrn = new StringBuilder();
-		
-		Clob tmpClob = null;
-		
-        Connection conn = ((SessionImpl)getSession()).connection();
-        try {
-			CallableStatement cs = conn
-					.prepareCall("{call als.als_accounting.load_temp_alsr0908(?,?,?)}");
-
-			cs.setString(1, key);
-			cs.setString(2, ids);
-            cs.setClob(3,tmpClob);
-            cs.registerOutParameter(3,OracleTypes.CLOB);
-
-            cs.execute();
-            
-            tmpClob = cs.getClob(3);
-            
-            if ( tmpClob != null ) {
-            	rtrn.append(tmpClob.getSubString(1, (int) tmpClob.length()));
-            } else {
-            	rtrn.append("No values returned");
-            }
-            
+	@SuppressWarnings("unchecked")
+	public List<InternalProviderTdtDTO> getDeposits(String ids)
+		{
+			List<InternalProviderTdtDTO> rtn = new ArrayList<InternalProviderTdtDTO>();
+			String queryString = "SELECT apbd.apbd_billing_to bpe, "
+									+ "apbd.api_provider_no provNo, "
+									+ "apbd.abc_bank_cd bankCd, " 
+									+ "apbd.apbd_deposit_date depDt, "
+									+ "apbd.apbd_deposit_id depId, "
+									+ "apbd.apbd_amount_deposit depAmt, "
+									+ "(SELECT abc_bank_nm FROM als.als_bank_code abc WHERE abc.abc_bank_cd = apbd.abc_bank_cd) bankNm, "
+									+ "(SELECT api_business_nm FROM als.als_provider_info api WHERE api.api_provider_no = apbd.api_provider_no) businessNm,"
+									+ "(als.als_package.get_pval('SABHRS BUSINESS UNIT', (SELECT atg_interface_file FROM als.als_transaction_group WHERE atg_transaction_cd = 8))) businessUnit "
+									+ "FROM	als.als_provider_bank_details apbd "
+									+ "WHERE apbd_deposit_id IN ("+ids+") "
+									+ "ORDER BY 1, 2, 3, 4";
 			
-            conn.close();
-            
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
+			try {
+				Query query = getSession()
+						.createSQLQuery(queryString)
+						.addScalar("bpe", DateType.INSTANCE)
+						.addScalar("provNo", IntegerType.INSTANCE)
+						.addScalar("bankCd", IntegerType.INSTANCE)
+						.addScalar("depDt", DateType.INSTANCE)
+						.addScalar("depId", StringType.INSTANCE)
+						.addScalar("depAmt", DoubleType.INSTANCE)
+						.addScalar("bankNm", StringType.INSTANCE)
+						.addScalar("businessNm", StringType.INSTANCE)
+						.addScalar("businessUnit", StringType.INSTANCE)
+	
+		
+						.setResultTransformer(
+								Transformers.aliasToBean(InternalProviderTdtDTO.class));
+
+				rtn = query.list();
+			} catch (RuntimeException re) {
+				System.out.println(re.toString());
+			}
+			finally {
+				getSession().close();
+			}
+			return rtn;
 			
-			getSession().close();
 		}
-        
-        return rtrn;
-	}
+
 }
 

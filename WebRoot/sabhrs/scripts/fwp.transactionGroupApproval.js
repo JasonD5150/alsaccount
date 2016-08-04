@@ -223,7 +223,7 @@ function submitTransGroupApproval(){
 function getGenRpt() {
 	$('#txIdentifier').val($('#transGroupIdentifier').val());
 	$('#transCd').val($('#transGroupType').val());
-	$('#getTreasureDepositTicketPdf').submit();
+	$('#pdfFrm').submit();
 }
 
 function sumAppStatSelected(){

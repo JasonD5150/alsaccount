@@ -25,7 +25,7 @@
       
     </form>
     
-    <s:form action="getTreasureDepositTicketPdf">
+    <s:form id="pdfFrm" action="getTdtPdf">
     	<s:hidden id="type" name="type" value="S" />
     	<s:hidden id="txIdentifier" name="txIdentifier" />
       	<s:hidden id="transCd" name="transCd" />

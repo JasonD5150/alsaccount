@@ -51,11 +51,11 @@ public class AlsSabhrsQueryGridAction extends ActionSupport{
     
 	public String buildgrid(){ 
     	HibHelpers hh = new HibHelpers();
-    	String queryStr = buildQueryStr();
+    	String srchStr = buildQueryStr();
         try{
         	setModel(new ArrayList<AlsSabhrsEntriesDTO>());
         	if (search) {
-        		model = hh.getSabhrsQueryRecords(queryStr);
+        		model = hh.getSabhrsQueryRecords(srchStr);
     		}
         }
         catch (HibernateException re) {

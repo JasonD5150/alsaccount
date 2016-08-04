@@ -404,7 +404,6 @@ public class ListUtils {
 	 * This method retrieves fund codes from the database as formatted text for
 	 * a jqgrid column select list.
 	 */
-	@SuppressWarnings("unchecked")
 	public String getFundListTxt(String budgetYear, boolean addSelectOne) throws Exception {
 		String retVal = ": ";
 
@@ -520,7 +519,6 @@ public class ListUtils {
 	 * This method retrieves all system activity codes for a given year from the
 	 * database as formatted text for a jqgrid column select list.
 	 */
-	@SuppressWarnings("unchecked")
 	public String getActTypeTranCdListTxt(String budgetYear, boolean addSelectOne) throws Exception {
 		String retVal = ": ";
 

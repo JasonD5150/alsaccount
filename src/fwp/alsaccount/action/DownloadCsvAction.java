@@ -3,9 +3,6 @@ package fwp.alsaccount.action;
 import java.io.File;
 import java.io.FileInputStream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.opensymphony.xwork2.ActionSupport;
 
 /**
@@ -15,7 +12,6 @@ import com.opensymphony.xwork2.ActionSupport;
  */
 public class DownloadCsvAction extends ActionSupport {
 
-	private static final Logger log = LoggerFactory.getLogger(DownloadCsvAction.class);
 	private static final long serialVersionUID = -8877192033064929268L;
 
 	private FileInputStream csvFileInputStream;

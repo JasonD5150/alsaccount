@@ -12,10 +12,10 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionSupport;
+
+
 
 import fwp.alsaccount.dao.sabhrs.AlsSabhrsEntries;
 import fwp.alsaccount.dao.sabhrs.AlsSabhrsEntriesIdPk;
@@ -29,7 +29,6 @@ import fwp.gen.utils.ListComp;
  */
 public class SabhrsQueryBuildCsvAction extends ActionSupport {
 
-	private static final Logger log = LoggerFactory.getLogger(SabhrsQueryBuildCsvAction.class);
 	private static final long serialVersionUID = -198737835399515405L;
 
 	private List<AlsSabhrsEntriesDTO> sabhrsEntries = new ArrayList<>();
