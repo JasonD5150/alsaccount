@@ -46,7 +46,7 @@
 	<s:url id="addItemDialogUrl" action="addTribeBankItemDiv_input.action" />
 
 	<sj:dialog id="addItemDialog" href="%{addItemDialogUrl}"
-		autoOpen="false" modal="true" title="Add Item" 
+		autoOpen="false" modal="true" title="Add Item" width="800"
 		   
 		buttons="{
             'Close': function() {
