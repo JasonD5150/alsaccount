@@ -116,35 +116,7 @@ public class AlsTribeBankGridEditAction extends ActionSupport{
 
 	private boolean validation()
 	{
-		//doesn't need to validate if deleting
-		/*if(!oper.equalsIgnoreCase("del"))
-		{
-        
-        GenZipCodesAS zipCodeAS = new GenZipCodesAS();
 		
-		
-       
-        
-		if (azcZipCd.length() != 5)
-		{
-			addActionError("Zip code needs to be 5 characters.");
-		}
-		
-		else if ( zipCodeAS.findByZipCode(azcZipCd).isEmpty() ){
-			addActionError("Please enter a valid zip code.");
-	        }
-		
-		
-		
-	
-		if(hasActionErrors()){
-
-			return false;	
-		}
-		else{
-			return true;
-		}
-		}*/
 		
 		return true;
 

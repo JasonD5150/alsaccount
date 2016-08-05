@@ -93,10 +93,12 @@
             <result name="input">admin/include/tribeBankItemDiv.jsp</result>            
       </action>
       
-      <action name="addTribeBankItemDiv_*" method="{1}" class="fwp.alsaccount.action.GenericAction">
+      <action name="addTribeBankItemDiv_*" method="{1}" class="fwp.alsaccount.admin.action.AddTribeItemDivAction">
             <result>admin/include/addTribeBankItemDiv.jsp</result>
             <result name="error">admin/include/addTribeBankItemDiv.jsp</result>
-            <result name="input">admin/include/addTribeBankItemDiv.jsp</result>            
+             <result name="input">admin/include/addTribeBankItemDiv.jsp</result>
+            <result name="tribeBankItem_success">admin/include/tribeBankItemAddSuccessDiv.jsp</result>
+                    
       </action>
       
 	</package>
@@ -244,6 +246,13 @@
             <result name="error_json" type="json" >
                <param name="ignoreHierarchy">false</param>
             </result>
+		</action>
+		
+		  <action name="addTribeBankItemGridEdit" class="fwp.alsaccount.admin.grid.AlsTribeBankItemGridEditAction">
+			<result type="json"></result>
+	        <result name="error_json" type="json">
+               <param name="ignoreHierarchy">false</param>
+            </result>			
 		</action>
         
    </package>

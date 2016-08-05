@@ -664,38 +664,87 @@ public class HibHelpers {
 		}
 		return lst;
 	}
-@SuppressWarnings("unchecked")
-public List<AlsTribeItemDTO> findTribeBankItems()
-	{
+	@SuppressWarnings("unchecked")
+	public List<AlsTribeItemDTO> findTribeBankItems(String tribeId)
+		{
+			
+			List<AlsTribeItemDTO> toReturn = new ArrayList<AlsTribeItemDTO>();
+			String queryString = "SELECT DISTINCT a.AICT_USAGE_PERIOD_FROM||a.AICT_USAGE_PERIOD_TO||a.AICT_ITEM_TYPE_CD itemKey, a.AICT_USAGE_PERIOD_FROM aictUsagePeriodFrom, a.AICT_USAGE_PERIOD_TO aictUsagePeriodTo, a.AICT_ITEM_TYPE_CD aictItemTypeCd, b.AIT_TYPE_DESC aitTypeDesc "
+					+ "FROM ALS.ALS_ITEM_CONTROL_TABLE a, ALS.ALS_ITEM_TYPE b, als.als_tribe_item_info c "
+					+ "WHERE a.AICT_ITEM_TYPE_CD  = b.AI_ITEM_ID||b.AIC_CATEGORY_ID||b.AIT_TYPE_ID "
+					+ "AND AICT_ITEM_TRIBAL_IND = 'Y' "
+					+ "AND c.ati_tribe_cd = :tribeId "
+					+ "AND a.aict_item_type_cd = c.aict_item_type_cd "
+					+ "AND c.aict_usage_period_from = a.aict_usage_period_from "
+					+ "AND c.aict_usage_period_to = a.aict_usage_period_to "
+					+ "ORDER BY aictUsagePeriodFrom DESC, aictUsagePeriodTo DESC, aictItemTypeCd DESC";
+			try {
+				Query query = getSession()
+						.createSQLQuery(queryString)
+						.addScalar("itemKey", StringType.INSTANCE)
+						.addScalar("aitTypeDesc", StringType.INSTANCE)
+						.addScalar("aictUsagePeriodFrom", DateType.INSTANCE)
+						.addScalar("aictUsagePeriodTo", DateType.INSTANCE)
+						.addScalar("aictItemTypeCd", StringType.INSTANCE)
 		
-		List<AlsTribeItemDTO> toReturn = new ArrayList<AlsTribeItemDTO>();
-		String queryString = "SELECT DISTINCT a.AICT_USAGE_PERIOD_FROM, a.AICT_USAGE_PERIOD_TO, a.AICT_ITEM_TYPE_CD , b.AIT_TYPE_DESC "
-				+ "FROM ALS.ALS_ITEM_CONTROL_TABLE a, ALS.ALS_ITEM_TYPE b, als.als_tribe_item_info c "
-				+ "WHERE a.AICT_ITEM_TYPE_CD  = b.AI_ITEM_ID||b.AIC_CATEGORY_ID||b.AIT_TYPE_ID "
-				+ "AND AICT_ITEM_TRIBAL_IND = 'Y' "
-				+ "ORDER BY AICT_USAGE_PERIOD_FROM DESC, AICT_USAGE_PERIOD_TO DESC, AICT_ITEM_TYPE_CD ";
-		try {
-			Query query = getSession()
-					.createSQLQuery(queryString)
-					/*.addScalar("providerNo", IntegerType.INSTANCE)
-					.addScalar("bpe", DateType.INSTANCE)
-					.addScalar("atgsNetDrCr", DoubleType.INSTANCE)
-					.addScalar("providerName", StringType.INSTANCE)
-					.addScalar("remPerStat", StringType.INSTANCE)*/
-	
-					.setResultTransformer(
-							Transformers.aliasToBean(AlsTribeItemDTO.class));
+						.setResultTransformer(
+								Transformers.aliasToBean(AlsTribeItemDTO.class));
+				 query.setString("tribeId", tribeId);
 
-			toReturn = query.list();
-		} catch (RuntimeException re) {
-			System.out.println(re.toString());
+				toReturn = query.list();
+			} catch (RuntimeException re) {
+				System.out.println(re.toString());
+			}
+			finally {
+				getSession().close();
+			}
+			return toReturn;
+			
 		}
-		finally {
-			getSession().close();
-		}
-		return toReturn;
+
+	@SuppressWarnings("unchecked")
+	public List<AlsTribeItemDTO> findUnusedTribeBankItems(String tribeId)
+		{
+			
+			List<AlsTribeItemDTO> toReturn = new ArrayList<AlsTribeItemDTO>();
+			String queryString =  " SELECT DISTINCT d.itemkey itemKey, d.aictusageperiodfrom aictUsagePeriodFrom, d.aictusageperiodto aictUsagePeriodTo, d.aictitemtypecd aictItemTypeCd, d.aittypedesc aitTypeDesc, c.ati_tribe_cd"
+								+ " FROM (SELECT DISTINCT a.AICT_USAGE_PERIOD_FROM||a.AICT_USAGE_PERIOD_TO||a.AICT_ITEM_TYPE_CD itemKey, "
+								+ " 	         a.AICT_USAGE_PERIOD_FROM aictUsagePeriodFrom,"
+								+ "     	     a.AICT_USAGE_PERIOD_TO aictUsagePeriodTo,"
+								+ "              a.AICT_ITEM_TYPE_CD aictItemTypeCd,"
+								+ "              b.AIT_TYPE_DESC aitTypeDesc    "
+								+ "       FROM ALS.ALS_ITEM_CONTROL_TABLE a,"
+								+ "              ALS.ALS_ITEM_TYPE b"
+	                            + "       WHERE a.AICT_ITEM_TYPE_CD  = b.AI_ITEM_ID||b.AIC_CATEGORY_ID||b.AIT_TYPE_ID"
+	                            + "       AND AICT_ITEM_TRIBAL_IND = 'Y') d"
+	                            + " LEFT JOIN ALS.Als_Tribe_Item_Info c"
+	                            + " ON c.aict_usage_period_from = aictUsagePeriodFrom"
+	                            + " and c.aict_usage_period_to = aictUsagePeriodTo"
+	                            + " and c.aict_item_type_cd = aictItemTypeCd"
+	                            + " WHERE c.ati_tribe_cd IS NULL";
+			try {
+				Query query = getSession()
+						.createSQLQuery(queryString)
+						.addScalar("itemKey", StringType.INSTANCE)
+						.addScalar("aitTypeDesc", StringType.INSTANCE)
+						.addScalar("aictUsagePeriodFrom", DateType.INSTANCE)
+						.addScalar("aictUsagePeriodTo", DateType.INSTANCE)
+						.addScalar("aictItemTypeCd", StringType.INSTANCE)
 		
-	}
+						.setResultTransformer(
+								Transformers.aliasToBean(AlsTribeItemDTO.class));
+				
+
+				toReturn = query.list();
+			} catch (RuntimeException re) {
+				System.out.println(re.toString());
+			}
+			finally {
+				getSession().close();
+			}
+			return toReturn;
+			
+		}
 	@SuppressWarnings("unchecked")
 	public List<AlsSabhrsEntriesDTO> getSabhrsQueryRecords(String queryStr) {
 		List<AlsSabhrsEntriesDTO> lst = new ArrayList<AlsSabhrsEntriesDTO>();

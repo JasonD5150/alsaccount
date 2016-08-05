@@ -38,31 +38,18 @@ public class AlsTribeBankItemGridAction extends ActionSupport{
     private boolean             loadonce         = false;
 
 
-	@SuppressWarnings("unchecked")
+	
 	public String buildgrid(){    	
 		
 		HibHelpers hibHelper = new HibHelpers();
-		
-		
-    	/*String srchStr = " where 1=1";*/
-    	/*String orderStr = " order by atiTribeCd";
-    	
-    	if(filters != null && !"".equals(filters)){
-    		//srchStr = buildStr(srchStr);
-    		srchStr = Utils.buildStr(srchStr, filters);*/
-    		/*if(srchStr.contains("Build String Error:")){
-    			addActionError(srchStr);
-    		}*/
-    	/*}
-    	*/
-    	/*AlsTribeItemInfoAS abcAS = new AlsTribeItemInfoAS();*/
+	
     	
         try{
-        	//model = hibHelper.findTribeBankItems(tribeID);
+        	model = hibHelper.findTribeBankItems(tribeID);
         	
         }
         catch (HibernateException re) {
-        	//System.out.println(re.toString());
+        	
             log.debug("AlsTribeItem did not load " + re.getMessage());
         }
         setRows(model.size());
@@ -77,22 +64,8 @@ public String buildgridList(){
 		
 		HibHelpers hibHelper = new HibHelpers();
 		
-		
-    	/*String srchStr = " where 1=1";*/
-    	/*String orderStr = " order by atiTribeCd";
-    	
-    	if(filters != null && !"".equals(filters)){
-    		//srchStr = buildStr(srchStr);
-    		srchStr = Utils.buildStr(srchStr, filters);*/
-    		/*if(srchStr.contains("Build String Error:")){
-    			addActionError(srchStr);
-    		}*/
-    	/*}
-    	*/
-    	/*AlsTribeItemInfoAS abcAS = new AlsTribeItemInfoAS();*/
-    	
-        try{
-        	//model = hibHelper.findTribeBankItems(tribeID);
+		try{
+        	model = hibHelper.findUnusedTribeBankItems(tribeID);
         	
         }
         catch (HibernateException re) {

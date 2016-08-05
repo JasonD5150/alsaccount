@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -249,13 +250,22 @@ public class Utils {
           return where;
     }
 	
-	public static String dateFormat(Date in, String format){
-        String rtv = "";
-        if (in != null ){
-               SimpleDateFormat sdf = new SimpleDateFormat(format);
-               rtv = sdf.format(in);
+	
+	
+	//Breaks a string into parts
+	public static List<String> getParts(String string, int partitionSize) {
+        List<String> parts = new ArrayList<String>();
+        int len = string.length();
+        for (int i=0; i<len; i+=partitionSize)
+        {
+            parts.add(string.substring(i, Math.min(len, i + partitionSize)));
         }
-        return rtv;
-	}
+        return parts;
+    }
+	
+	public static java.sql.Date convertJavaDateToSqlDate(java.util.Date date) {
+	    return new java.sql.Date(date.getTime());
+	} 
+	
 	
 }
