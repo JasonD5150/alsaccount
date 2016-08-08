@@ -26,7 +26,7 @@ public class TransactionGroupApprovalAction extends ActionSupport{
 	public String input(){
 		try {
 			ListUtils lu = new ListUtils();
-			setBankCodeLst(lu.getBankCodeListTxt(false));
+			setBankCodeLst(lu.getTransGrpBankCodeListTxt(false));
 			setProviderLst(lu.getProviderListTxt(false));
 			//setGroupIdentifierLst(lu.getGroupIdentifierListTxt(false));
 			

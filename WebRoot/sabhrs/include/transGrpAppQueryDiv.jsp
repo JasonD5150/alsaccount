@@ -10,6 +10,8 @@
    	<legend style="font-weight: bold;font-size:larger">Search Criteria</legend>
    	<s:actionerror/>
    	<form id='gridFrm'>
+   	<p>Defaults to the current budget year, if no date is used in the query.<br>
+   	Disapproved and Not Applicable Interface Approval Status are omitted unless queried on.</p>
    		<table>
    			<tr>
     			<td class="label">Tx Group type: </td>

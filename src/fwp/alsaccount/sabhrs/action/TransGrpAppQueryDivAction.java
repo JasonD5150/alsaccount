@@ -29,7 +29,7 @@ public class TransGrpAppQueryDivAction extends ActionSupport{
 		try {
 			providerLst = lu.getProviderList();
 			transGroupTypeLst = lu.getSabhrsTransGroupTypeLst();
-			bankCdLst = lu.getBankCodeList();
+			bankCdLst = lu.getTransGrpBankCodeList();
 		} catch (Exception e) {
 			//System.out.println(e.getMessage());
 			log.debug(e.getMessage());

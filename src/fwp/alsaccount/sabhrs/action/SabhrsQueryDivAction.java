@@ -47,7 +47,6 @@ public class SabhrsQueryDivAction extends ActionSupport{
 			budgetYearSel = lu.getBudgetYearList();
 	
 			tribeCdLst = lu.getTribeCdList();
-			providerLst = lu.getProviderList();
 			accountLst = lu.getAccountList(budgYear);
 			fundLst = lu.getFundList(budgYear);
 			orgLst = lu.getOrgList(budgYear);

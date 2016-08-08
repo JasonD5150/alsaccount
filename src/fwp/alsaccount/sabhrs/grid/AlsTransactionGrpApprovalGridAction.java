@@ -1,5 +1,6 @@
 package fwp.alsaccount.sabhrs.grid;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -113,6 +114,7 @@ public class AlsTransactionGrpApprovalGridAction extends ActionSupport{
 	
 	private String buildQueryStr(){
 		HibHelpers hh = new HibHelpers();
+		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/YYYY");
 		Integer curBudgYear = Integer.parseInt(hh.getCurrentBudgetYear());
 		StringBuilder srchStr = new StringBuilder();
 		Boolean searchCreated = true;
@@ -131,12 +133,13 @@ public class AlsTransactionGrpApprovalGridAction extends ActionSupport{
 			
 		}
 		if(srchTranGrpCreated != null){
-			srchStr.append("AND TO_DATE('atgsWhenCreated','MM/DD/YYYY') = TO_DATE('"+srchTranGrpCreated+"','MM/DD/YYYY') ");
+			srchStr.append("AND TO_CHAR(atgsWhenCreated,'MM/DD/YYYY') = '"+sdf.format(srchTranGrpCreated)+"' ");
 			searchCreated = false;
 			
 		}
 		if(srchAccDt != null){
-			srchStr.append("AND atgsAccountingDt = TO_DATE('"+srchAccDt+"','MM/DD/YYYY') ");
+			srchStr.append("AND TO_CHAR(atgsAccountingDt,'MM/DD/YYYY') = '"+sdf.format(srchAccDt)+"' ");
+			searchCreated = false;
 			
 		}
 		if(srchSumAppStat != null && !"".equals(srchSumAppStat)){
@@ -144,7 +147,8 @@ public class AlsTransactionGrpApprovalGridAction extends ActionSupport{
 			
 		}
 		if(srchSumAppDt != null ){
-			srchStr.append("AND TO_DATE('atgsSummaryDt','MM/DD/YYYY') = TO_DATE('"+srchSumAppDt+"','MM/DD/YYYY') ");
+			srchStr.append("AND TO_CHAR(atgsSummaryDt,'MM/DD/YYYY') = '"+sdf.format(srchSumAppDt)+"' ");
+			searchCreated = false;
 			
 		}
 		if(srchIntAppStat != null && !"".equals(srchIntAppStat)){
@@ -153,15 +157,17 @@ public class AlsTransactionGrpApprovalGridAction extends ActionSupport{
 			
 		}
 		if(srchIntAppDt != null ){
-			srchStr.append("AND TO_DATE('atgsInterfaceDt','MM/DD/YYYY') = TO_DATE('"+srchIntAppDt+"','MM/DD/YYYY') ");
+			srchStr.append("AND TO_CHAR(atgsInterfaceDt,'MM/DD/YYYY') = '"+sdf.format(srchIntAppDt)+"' ");
+			searchCreated = false;
 			
 		}
 		if(srchUpToSumDt != null ){
-			srchStr.append("AND atgsWhenUploadToSummary = TO_DATE('"+srchUpToSumDt+"','MM/DD/YYYY') ");
+			srchStr.append("AND TO_CHAR(atgsWhenUploadToSummary,'MM/DD/YYYY') = '"+sdf.format(srchUpToSumDt)+"' ");
+			searchCreated = false;
 			
 		}
 		if(srchBankCd != null && !"".equals(srchBankCd)){
-    		srchStr.append("AND abcBankCd = "+srchBankCd+" ");
+    		srchStr.append("AND abcBankCd = '"+srchBankCd+"' ");
     		
 		}
 		if(srchBankRefNo != null && !"".equals(srchBankRefNo)){
@@ -185,7 +191,7 @@ public class AlsTransactionGrpApprovalGridAction extends ActionSupport{
 			srchStr.append("AND TO_CHAR(atgsWhenCreated,'YYYY') = "+curBudgYear+" ");
 		}
 		if(searchIntStatus){
-			srchStr.append("AND atgsInterfaceStatus NOT IN ('N','D') ");
+			srchStr.append("AND (atgsInterfaceStatus NOT IN ('N','D') OR atgsInterfaceStatus IS NULL)");
 		}
 		return srchStr.toString();
 	}

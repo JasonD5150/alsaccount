@@ -632,7 +632,7 @@ public class ListUtils {
 	}	
 	
 	@SuppressWarnings("unchecked")
-	public List<ListComp> getBankCodeList() {
+	public List<ListComp> getTransGrpBankCodeList() {
 		List<ListComp> lst = new ArrayList<ListComp>();
 		
 		String queryString = "SELECT DISTINCT atgs.ABC_BANK_CD itemVal, "
@@ -657,7 +657,7 @@ public class ListUtils {
 	 * This method retrieves Project Grants from the database as formatted text for
 	 * a jqgrid column select list.
 	 */
-	public String getBankCodeListTxt(boolean addSelectOne)
+	public String getTransGrpBankCodeListTxt(boolean addSelectOne)
 			throws Exception {
 		String retVal = ": ";
 
@@ -666,7 +666,7 @@ public class ListUtils {
 		}
 
 		try {
-			List<ListComp> bankCodeLst = this.getBankCodeList();
+			List<ListComp> bankCodeLst = this.getTransGrpBankCodeList();
 
 			if (bankCodeLst != null && !bankCodeLst.isEmpty()) {
 				for (ListComp lc : bankCodeLst) {
@@ -681,6 +681,26 @@ public class ListUtils {
 	}
 	
 	@SuppressWarnings("unchecked")
+	public List<ListComp> getProviderBankCodeList(Integer provNo) {
+		List<ListComp> lst = new ArrayList<ListComp>();
+		
+		String queryString = "SELECT DISTINCT abc.ABC_BANK_CD itemVal, "
+							+ "abc.ABC_BANK_CD itemLabel "
+							+ "FROM  ALS.ALS_BANK_CODE abc  "
+							//+ "WHERE abc.api"
+							+ "ORDER BY 1";
+
+		Query query = getSession().createSQLQuery(queryString)
+				.addScalar("itemVal", StringType.INSTANCE)
+				.addScalar("itemLabel", StringType.INSTANCE)
+				.setResultTransformer(Transformers.aliasToBean(ListComp.class));
+
+		lst = query.list();
+		getSession().close(); 
+		return lst;
+	}
+	
+	@SuppressWarnings("unchecked")
 	public List<ListComp> getSabhrsTransGroupTypeLst() {
 		List<ListComp> lst = new ArrayList<ListComp>();
 		
@@ -690,6 +710,26 @@ public class ListUtils {
 							+ "ALS.ALS_TRANSACTION_GRP_STATUS TGS "
 							+ "WHERE TG.ATG_TRANSACTION_CD = TGS.ATG_TRANSACTION_CD "
 							+ "ORDER BY 1,2 desc";
+
+		Query query = getSession().createSQLQuery(queryString)
+				.addScalar("itemVal", StringType.INSTANCE)
+				.addScalar("itemLabel", StringType.INSTANCE)
+				.setResultTransformer(Transformers.aliasToBean(ListComp.class));
+
+		lst = query.list();
+		getSession().close(); 
+		return lst;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<ListComp> getBillingToLst(Integer provNo) {
+		List<ListComp> lst = new ArrayList<ListComp>();
+		
+		String queryString = "SELECT AIR_BILLING_TO BILLING_DT||' - '||TO_CHAR(AIR_BILLING_TO,''MM/DD/YYYY'') itemVal,"
+							+ "AIR_BILLING_TO BILLING_DT||' - '||TO_CHAR(AIR_BILLING_TO,''MM/DD/YYYY'') itemLabel "
+		 	   	            +"FROM ALS.ALS_INTERNAL_REMITTANCE "
+		 	   	            +"WHERE API_PROVIDER_NO = "+provNo+" "
+		 	                +"Order By  1 DESC";
 
 		Query query = getSession().createSQLQuery(queryString)
 				.addScalar("itemVal", StringType.INSTANCE)

@@ -121,7 +121,16 @@
 									   cssStyle="width:80px" maxlength="10"  maxDate="+0" title="Offline Payment Approval Date" 
 									   showOn="focus" onblur="testDate(this)"/></td>
     				<td class="label"> Provider No: </td>
-    				<td><s:textfield id="provNo" name="provNo" theme="simple" title="Provider No" cssStyle="width:80px"/></td>
+    				<td><s:select 
+			  			id="provNo"
+			  			name="provNo"
+			  			list="providerLst"
+			  			listKey="itemVal" 
+			  			listValue="itemLabel" 
+		       			headerKey=""
+						headerValue=" " 
+		       			theme="simple"
+		       			/></td>
 	   			</tr>
 	   		</table>
 		</form>	
