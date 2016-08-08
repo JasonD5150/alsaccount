@@ -24,6 +24,10 @@
 				return [rtrnstate,rtrnMsg]; 
 			};
 			
+			function reloadBankCodeGrid(){
+         $("#bankCodeMaintTable").jqGrid('setGridParam',{datatype:'json'}).trigger('reloadGrid');
+    }
+			
 
 		</script>
     </fwp:head>
@@ -37,7 +41,7 @@
 	<s:url id="bankCodeMaintGridEditURL" action="alsAccount/bankCodeGridEdit_execute" />    
 	<sjg:grid
 		id="bankCodeMaintTable"
-		caption="Bank Code Mainenance"
+		caption="Bank Code Maintenance"
 		href="%{bankCodeMaintGridURL}"
 		editurl="%{bankCodeMaintGridEditURL}"		
 		dataType="json"
@@ -52,16 +56,19 @@
     	navigatorAddOptions="{width:500,reloadAfterSubmit:true,
     						  addedrow:'last',
     	                      addCaption:'Add New Bank Code',
-    	                      afterSubmit:errorHandler,
+    	                      afterSubmit:errorHandler, 
     	                      closeAfterAdd:true,
+    	                       afterComplete:reloadBankCodeGrid,
     	                      processData:'Adding Row to Database'}"
     	navigatorEditOptions="{width:500,reloadAfterSubmit:false,
     	                       editCaption:'Edit Bank Code',
     	                       afterSubmit:errorHandler,	    
     	                       closeAfterEdit:true,
+    	                        reloadAfterSubmit:true,
+    	                        afterComplete:reloadBankCodeGrid,
     	                       processData:'Updating to Database'}"
     	navigatorViewOptions="{width:500,reloadAfterSubmit:false}"    	
-    	navigatorDeleteOptions="{afterSubmit:errorHandler}"
+    	navigatorDeleteOptions="{afterSubmit:errorHandler, reloadAfterSubmit:true}"
     	gridModel="model"
 		rownumbers="false"
 		editinline="false"
