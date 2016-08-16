@@ -6,14 +6,13 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="sjg" uri="/struts-jquery-grid-tags" %>
 
-<fwp:template >
-
+<fwp:template>
     <fwp:head>
         <sj:head locale="en" jqueryui="true" jquerytheme="smoothness" customBasepath="css/jquery"/>
         <script type="text/javascript" src= "/alsaccount/sabhrs/scripts/fwp.transactionGroupApproval.js"></script>  
     	<script type="text/javascript" src= "/alsaccount/scripts/fieldEdits.js"></script>  
     </fwp:head>
-    
+
     <s:hidden id="bankCodeLst" name="bankCodeLst"/>
     <s:hidden id="providerLst" name="providerLst"/>
     <s:hidden id="groupIdentifierLst" name="groupIdentifierLst"/>
@@ -30,11 +29,18 @@
     	<s:hidden id="txIdentifier" name="txIdentifier" />
       	<s:hidden id="transCd" name="transCd" />
     </s:form>
+    
+    <s:form id="lstFrm">
+    	<s:hidden id="txGrpType" name="txGrpType"/>
+    	<s:hidden id="provNo" name="provNo"/>
+    </s:form>
        
+    <div id="errorMessage" style="font-weight:bold; color:#FF0000;" hidden="true"></div>
+    
     <div style="width:800px;text-align:center">
     	<h2 class="title">Transaction Group Approval for Summary and Interface file</h2>
    	</div>
-   	
+  
    	<s:url id="transGrpAppQueryDivUrl" value="transGrpAppQueryDiv_input.action" />
 	<sj:div id="searchCriteriaDiv" 
 			href="%{transGrpAppQueryDivUrl}"

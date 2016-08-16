@@ -23,11 +23,39 @@
 				  		listValue="itemLabel" 
 			       		headerKey=" "
 						headerValue=" " 
-			       		theme="simple"/></td>
+			       		theme="simple"
+			       		onchange="transGrpTypeChanged(this)"/></td>
+    		</tr>
+    		<tr>
+    			<td class="label">Provider: </td>
+    			<td><s:url id="provListUrl" action="getProvLst" /> 
+					<sj:select id="srchProviderNo"
+							   name="srchProviderNo"
+							   theme="simple"
+							   href="%{provListUrl}"
+						  	   listKey="itemVal" 
+						  	   listValue="itemLabel"
+						  	   headerKey=" "
+							   headerValue=" " 
+						  	   list="providerLst"
+						  	   formIds="lstFrm"
+						  	   reloadTopics="reloadProvLst"
+						  	   onchange="provNoChanged(this)"/></td>
     		</tr>
 			<tr>
     			<td>Transaction Group Identifier: </td>
-	    		<td><s:textfield id="srchTranGrpId" name="srchTranGrpId" theme="simple" title="Transaction Group Identifier" /></td>
+	    		<td><s:url id="transGrpIdListUrl" action="getTransGrpIdLst" /> 
+					<sj:select id="srchTranGrpId"
+							   name="srchTranGrpId"
+							   theme="simple"
+							   href="%{transGrpIdListUrl}"
+						  	   listKey="itemVal" 
+						  	   listValue="itemLabel"
+						  	   headerKey=" "
+							   headerValue=" " 
+						  	   list="transGrpIdLst"
+						  	   formIds="lstFrm"
+						  	   reloadTopics="reloadTransGrpIdLst"/></td>
 			   	<td>Transaction Group Created: </td>
 	    	 	<td><sj:datepicker changeMonth="true" changeYear="true" id="srchTranGrpCreated"
 				   name="srchTranGrpCreated" displayFormat="mm/dd/yy"
@@ -82,22 +110,10 @@
     			<td><s:textfield id="srchBankRefNo" name="srchBankRefNo" theme="simple" title="Bank Reference No" /></td>
     		</tr>
     		<tr>
-    			
     			<td class="label">Interface File Name: </td>
     			<td><s:textfield id="srchIntFileNm" name="srchIntFileNm" theme="simple" title="Interface File Name" /></td>
     			<td class="label">Deposit Id: </td>
     			<td><s:textfield id="srchDepId" name="srchDepId" theme="simple" title="Deposit Id" /></td>
-    			<td class="label">Provider: </td>
-    			<td><s:select 
-			  			id="srchProviderNo"
-			  			name="srchProviderNo"
-			  			list="providerLst"
-			  			listKey="itemVal" 
-			  			listValue="itemLabel" 
-		       			headerKey=""
-						headerValue=" " 
-		       			theme="simple"
-		       			/></td>
     		</tr>    		
    		</table>
 	</form>	

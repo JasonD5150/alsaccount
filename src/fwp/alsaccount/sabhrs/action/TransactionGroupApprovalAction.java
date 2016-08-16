@@ -8,6 +8,7 @@ import com.opensymphony.xwork2.ActionSupport;
 
 import fwp.alsaccount.utils.ListUtils;
 import fwp.security.user.UserDTO;
+import fwp.utils.StringUtils;
 
 public class TransactionGroupApprovalAction extends ActionSupport{
 	
@@ -24,11 +25,11 @@ public class TransactionGroupApprovalAction extends ActionSupport{
 	}
 	
 	public String input(){
+		StringUtils su = new StringUtils();
+		ListUtils lu = new ListUtils();
 		try {
-			ListUtils lu = new ListUtils();
-			setBankCodeLst(lu.getTransGrpBankCodeListTxt(false));
-			setProviderLst(lu.getProviderListTxt(false));
-			//setGroupIdentifierLst(lu.getGroupIdentifierListTxt(false));
+			setBankCodeLst(su.listCompListToString(lu.getTransGrpBankCodeList()));
+			setProviderLst(su.listCompListToString(lu.getProviderList()));
 			
 			UserDTO userInfo = (UserDTO)SecurityUtils.getSubject().getSession().getAttribute("userInfo");
 			setUser(userInfo.getStateId().toString());

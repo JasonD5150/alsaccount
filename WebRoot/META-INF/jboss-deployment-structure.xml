@@ -18,6 +18,7 @@
  		<module name="org.slf4j"/>
  		<module name="fwp.dal.gen" export="false"/>
  		<module name="fwp.common.lang3"/>
+ 		<module name="fwp.custom.fwpUtils"/>
      </dependencies>
      <exclude-subsystems>
         <subsystem name="logging" />

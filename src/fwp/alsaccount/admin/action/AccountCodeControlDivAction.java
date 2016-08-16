@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import com.opensymphony.xwork2.ActionSupport;
 
 import fwp.alsaccount.utils.ListUtils;
+import fwp.utils.StringUtils;
 
 
 public class AccountCodeControlDivAction extends ActionSupport {
@@ -17,9 +18,10 @@ public class AccountCodeControlDivAction extends ActionSupport {
 	private String budgYear;
 
 	public String input(){
+		StringUtils su = new StringUtils();
+		ListUtils lu = new ListUtils();
 		try {
-			ListUtils lu = new ListUtils();
-			accountLst = lu.getAccountListTxt(budgYear, false);
+			accountLst = su.listCompListToString(lu.getAccountList(budgYear));
 		} catch (Exception e) {
 			//System.out.println(e.getMessage());
 			log.debug(e.getMessage());

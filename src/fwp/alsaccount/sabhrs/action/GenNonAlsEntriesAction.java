@@ -1,11 +1,15 @@
 package fwp.alsaccount.sabhrs.action;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionSupport;
 
+import fwp.ListComp;
 import fwp.alsaccount.utils.ListUtils;
+import fwp.utils.StringUtils;
 
 public class GenNonAlsEntriesAction extends ActionSupport{
 	
@@ -18,19 +22,26 @@ public class GenNonAlsEntriesAction extends ActionSupport{
 	private String projectGrantLst;
 	private String orgLst;
 	private String accountLst;
+	private List<ListComp> transGroupTypeLst;
+	private List<ListComp> budgetYearSel;
+	private List<ListComp> providerLst;
 
 	public GenNonAlsEntriesAction(){
 	}
 	
 	public String input(){
+		StringUtils su = new StringUtils();
+		ListUtils lu = new ListUtils();
 		try {
-			ListUtils lu = new ListUtils();
-			setFundLst(lu.getFundListTxt(null,false));
-			setSubClassLst(lu.getSubclassListTxt(null,false));
-			setJlrLst(lu.getJLRCurBudgYearListTxt(false));
-			setProjectGrantLst(lu.getProjectGrantsListTxt(null,false));
-			setOrgLst(lu.getOrgListTxt(null,false));
-			setAccountLst(lu.getAccountListTxt(null,false));
+			setFundLst(su.listCompListToString(lu.getFundList(null)));
+			setSubClassLst(su.listCompListToString(lu.getSubclassList(null)));
+			setJlrLst(su.listCompListToString(lu.getJLRCurBudgYearList()));
+			setProjectGrantLst(lu.getProjectGrantsListTxt(null, false));
+			setOrgLst(su.listCompListToString(lu.getOrgList(null)));
+			setAccountLst(su.listCompListToString(lu.getAccountList(null)));
+			setBudgetYearSel(lu.getBudgetYearList());
+			transGroupTypeLst = lu.getSabhrsTransGroupTypeLst();
+			providerLst = lu.getProviderList();
 		} catch (Exception e) {
 			//System.out.println(e.getMessage());
 			log.debug(e.getMessage());
@@ -100,6 +111,48 @@ public class GenNonAlsEntriesAction extends ActionSupport{
 	 */
 	public void setAccountLst(String accountLst) {
 		this.accountLst = accountLst;
+	}
+
+	/**
+	 * @return the transGroupTypeLst
+	 */
+	public List<ListComp> getTransGroupTypeLst() {
+		return transGroupTypeLst;
+	}
+
+	/**
+	 * @param transGroupTypeLst the transGroupTypeLst to set
+	 */
+	public void setTransGroupTypeLst(List<ListComp> transGroupTypeLst) {
+		this.transGroupTypeLst = transGroupTypeLst;
+	}
+
+	/**
+	 * @return the budgetYearSel
+	 */
+	public List<ListComp> getBudgetYearSel() {
+		return budgetYearSel;
+	}
+
+	/**
+	 * @param budgetYearSel the budgetYearSel to set
+	 */
+	public void setBudgetYearSel(List<ListComp> budgetYearSel) {
+		this.budgetYearSel = budgetYearSel;
+	}
+
+	/**
+	 * @return the providerLst
+	 */
+	public List<ListComp> getProviderLst() {
+		return providerLst;
+	}
+
+	/**
+	 * @param providerLst the providerLst to set
+	 */
+	public void setProviderLst(List<ListComp> providerLst) {
+		this.providerLst = providerLst;
 	}
 
 }

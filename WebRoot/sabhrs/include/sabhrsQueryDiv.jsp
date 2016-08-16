@@ -13,16 +13,18 @@
    		<table>
    			<tr>			
 				<td class="label">Provider No: </td>
-				<td><s:select 
-			  			id="providerNo"
-			  			name="providerNo"
-			  			list="providerLst"
-			  			listKey="itemVal" 
-			  			listValue="itemLabel" 
-		       			headerKey=""
-						headerValue=" " 
-		       			theme="simple"
-		       			/></td>
+				<td class="autocompleter"><sj:autocompleter
+									id="providerNo"
+									name="providerNo"
+									list="providerLst"
+									listValue="itemLabel"
+									listKey="itemVal"
+									selectBox="true"
+									selectBoxIcon="true"
+									forceValidOption="true"
+									loadMinimumCount="2"
+									theme="simple" 
+									/></td>
 				<td class="label">IAFA Seq No: </td><!-- as long as it is tied to Provider No and Billing Period From/To -->
 				<td><s:textfield id="seqNo" name="seqNo" theme="simple" title="IAFA Sequence No" /></td>
 			</tr>
@@ -54,84 +56,103 @@
     		</tr>
     		<tr>
     			<td class="label">Budget Year: </td>
-    			<td><s:select id="budgYear" 
-    							name="budgYear" 
-    							list="budgetYearSel" 
-    							listKey="itemVal" 
-    							listValue="itemLabel"
-    							title="Budget Year" 
-    							label="Budget Year " 
-    							cssStyle="width:130px" 
-    							onchange="reloadLists()" 
-    							theme="simple"/></td>
+    			<td class="autocompleter"><sj:autocompleter
+									id="budgYear"
+									name="budgYear"
+									list="budgetYearSel"
+									listValue="itemLabel"
+									listKey="itemVal"
+									selectBox="true"
+									selectBoxIcon="true"
+									forceValidOption="true"
+									loadMinimumCount="2"
+									theme="simple" 
+									/></td>
     			<td class="label">Program Year: </td>
     			<td><s:textfield id="progYear" name="progYear" theme="simple" title="Program Year" /></td>
     		</tr>
     		<tr>
     			<td class="label">Journal Line Reference: </td>
-    			<td><s:select 
-    					id="jlr"
-						name="jlr"
-						list="jlrLst"
-						listKey="itemVal" 
-				  		listValue="itemLabel" 
-			       		headerKey=" "
-						headerValue=" " 
-			       		theme="simple"/></td>
+    			<td class="autocompleter"><sj:autocompleter
+									id="jlr"
+									name="jlr"
+									list="jlrLst"
+									listValue="itemLabel"
+									listKey="itemVal"
+									selectBox="true"
+									selectBoxIcon="true"
+									forceValidOption="false"
+									loadMinimumCount="2"
+									theme="simple"/></td>
     			<td class="label">Account: </td>
-    			<td><s:select id="account" 
-							   name="account"
-							   list="accountLst" 
-							   listKey="itemVal" 
-							   listValue="itemLabel"
-							   headerKey=" "
-							   headerValue=" " 
-							   label="Account"
-							   theme="simple"/></td>
+    			<td class="autocompleter"><sj:autocompleter
+									id="account"
+									name="account"
+									list="accountLst"
+									listValue="itemLabel"
+									listKey="itemVal"
+									selectBox="true"
+									selectBoxIcon="true"
+									forceValidOption="true"
+									loadMinimumCount="2"
+									theme="simple" 
+									/></td>
     		</tr>
     		<tr>
     			<td class="label">Fund: </td>
-    			<td><s:select id="fund" 
-							   name="fund"
-							   list="fundLst" 
-							   listKey="itemVal" 
-							   listValue="itemLabel"
-							   headerKey=" "
-							   headerValue=" " 
-							   label="Fund"
-							   theme="simple"/></td>
+    			<td class="autocompleter"><sj:autocompleter
+									id="fund"
+									name="fund"
+									list="fundLst"
+									listValue="itemLabel"
+									listKey="itemVal"
+									selectBox="true"
+									selectBoxIcon="true"
+									forceValidOption="true"
+									loadMinimumCount="2"
+									theme="simple" 
+									/></td>
     			<td class="label">Org: </td>
-    			<td><s:select id="org" 
-							   name="org"
-							   list="orgLst" 
-							   listKey="itemVal" 
-							   listValue="itemLabel"
-							   headerKey=" "
-							   headerValue=" " 
-							   label="Fund"
-							   theme="simple"/></td>
+    			<td class="autocompleter"><sj:autocompleter
+									id="org"
+									name="org"
+									list="orgLst"
+									listValue="itemLabel"
+									listKey="itemVal"
+									selectBox="true"
+									selectBoxIcon="true"
+									forceValidOption="true"
+									loadMinimumCount="2"
+									theme="simple" 
+									/></td>
     		</tr>
     		<tr>
     			<td class="label">Subclass: </td>
-    			<td><s:select id="subClass" 
-							   name="subClass"
-							   list="subclassLst" 
-							   listKey="itemVal" 
-							   listValue="itemLabel"
-							   headerKey=" "
-							   headerValue=" " 
-							   label="Fund"
-							   theme="simple"/></td>
+    			<td class="autocompleter"><sj:autocompleter
+									id="subClass"
+									name="subClass"
+									list="subClassLst"
+									listValue="itemLabel"
+									listKey="itemVal"
+									selectBox="true"
+									selectBoxIcon="true"
+									forceValidOption="true"
+									loadMinimumCount="2"
+									theme="simple" 
+									/></td>
     			<td class="label">Tribe Code: </td>
-    			<td><s:select id="tribeCd" 
-							   name="tribeCd"
-							   list="tribeCdLst" 
-							   listKey="itemVal" 
-							   listValue="itemLabel"
-							   headerKey=" "
-							   headerValue=" " 
-							   label="Tribe Code"
-							   theme="simple"/></td>
+    			<td class="autocompleter"><sj:autocompleter
+									id="tribeCd"
+									name="tribeCd"
+									list="tribeCdLst"
+									listValue="itemLabel"
+									listKey="itemVal"
+									selectBox="true"
+									selectBoxIcon="true"
+									forceValidOption="true"
+									loadMinimumCount="2"
+									theme="simple" 
+									/></td>
     		</tr>
     		<tr>
     			<td class="label">Transaction Group Identifier: </td>
@@ -139,25 +160,31 @@
     		</tr>
     		<tr>
     			<td class="label">System Activity Type Code: </td><!-- Example A3 -->
-    			<td><s:select id="sysActTypeCd" 
-							   name="sysActTypeCd"
-							   list="sysActTypeCdLst" 
-							   listKey="itemVal" 
-							   listValue="itemLabel"
-							   headerKey=" "
-							   headerValue=" " 
-							   label="System Activity Type Code"
-							   theme="simple"/></td>
+    			<td class="autocompleter"><sj:autocompleter
+									id="sysActTypeCd"
+									name="sysActTypeCd"
+									list="sysActTypeCdLst"
+									listValue="itemLabel"
+									listKey="itemVal"
+									selectBox="true"
+									selectBoxIcon="true"
+									forceValidOption="true"
+									loadMinimumCount="2"
+									theme="simple" 
+									/></td>
     			<td class="label">Transaction Type Code: </td>
-    			<td><s:select 
-    					id="transGrpType"
-						name="transGrpType"
-						list="transGroupTypeLst"
-						listKey="itemVal" 
-				  		listValue="itemLabel" 
-			       		headerKey=" "
-						headerValue=" " 
-			       		theme="simple"/></td>
+    			<td class="autocompleter"><sj:autocompleter
+									id="transGrpType"
+									name="transGrpType"
+									list="transGrpTypeLst"
+									listValue="itemLabel"
+									listKey="itemVal"
+									selectBox="true"
+									selectBoxIcon="true"
+									forceValidOption="true"
+									loadMinimumCount="2"
+									theme="simple" 
+									/></td>
     		</tr>
     		<tr>
     			<td class="label">Summary Approval Status: </td>

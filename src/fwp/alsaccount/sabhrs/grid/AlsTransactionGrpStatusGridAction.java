@@ -28,28 +28,21 @@ public class AlsTransactionGrpStatusGridAction extends ActionSupport{
     private String              sidx;
     private String              filters;
     private boolean             loadonce         = false;
+    
     private Integer budgYear;
+	private Integer provNo;
+    private Integer transGrpType;
+    private String transGrpIdentifier;
 
 	@SuppressWarnings("unchecked")
 	public String buildgrid(){  
-		HibHelpers hh = new HibHelpers();
-		Integer curBudgYear = Integer.parseInt(hh.getCurrentBudgetYear());
-    	String srchStr = " WHERE atgsFileCreationDt IS NULL"
-    				   + " AND  NVL(atgsSummaryStatus,'X')<>'N'"
-    				   + "AND ((TO_CHAR(atgsWhenCreated,'YYYY')= "+curBudgYear+") "
-    				   + "  or (TO_CHAR(atgsWhenCreated,'YYYY')= "+(curBudgYear+1)+")"
-    				   + "  or (TO_CHAR(atgsWhenCreated,'YYYY')= "+(curBudgYear-1)+"))";
-    	String orderStr = " ORDER BY idPk.atgTransactionCd,idPk.atgsGroupIdentifier";
-    	
-    	if(filters != null && !"".equals(filters)){
-    		srchStr = buildStr(srchStr);
-    	}
+    	String srchStr = buildQueryStr();
     	
     	AlsTransactionGrpStatusAS atgsAS = new AlsTransactionGrpStatusAS();
     	List<AlsTransactionGrpStatus> atgs = new ArrayList<AlsTransactionGrpStatus>();
     	
         try{
-        	atgs = atgsAS.findAllByWhere(srchStr+orderStr);
+        	atgs = atgsAS.findAllByWhere(srchStr);
         	
         	setModel(new ArrayList<AlsTransactionGrpStatusDTO>());
         	AlsTransactionGrpStatusDTO tmp;
@@ -75,65 +68,41 @@ public class AlsTransactionGrpStatusGridAction extends ActionSupport{
 
 	    return SUCCESS;
     }
+	
+	private String buildQueryStr(){
+		HibHelpers hh = new HibHelpers();
+		if(budgYear == null || "".equals(budgYear)){
+			budgYear =  Integer.parseInt(hh.getCurrentBudgetYear());
+		}
+		StringBuilder srchStr = new StringBuilder();
 
+		srchStr.append("WHERE atgsFileCreationDt IS NULL "
+    				   + " AND  NVL(atgsSummaryStatus,'X')<>'N' "
+    				   + "AND ((TO_CHAR(atgsWhenCreated,'YYYY')= "+budgYear+") "
+    				   + "  or (TO_CHAR(atgsWhenCreated,'YYYY')= "+(budgYear+1)+") "
+    				   + "  or (TO_CHAR(atgsWhenCreated,'YYYY')= "+(budgYear-1)+")) ");
+		
+		if(transGrpType != null && !"".equals(transGrpType)){
+			srchStr.append("AND idPk.atgTransactionCd = "+transGrpType+" ");		
+		}
+		if(transGrpIdentifier != null && !"".equals(transGrpIdentifier)){
+			srchStr.append("AND idPk.atgsGroupIdentifier like UPPER('"+transGrpIdentifier+"%') ");		
+		}
+		if(provNo != null && !"".equals(provNo)){
+			srchStr.append("AND TRIM(TRIM(LEADING 0 FROM substr(idPk.atgsGroupIdentifier,3,6))) = '"+provNo+"' ");
+		}
+		
+		srchStr.append("ORDER BY idPk.atgTransactionCd,idPk.atgsGroupIdentifier");
+		
+		return srchStr.toString();
+	}
 	
 	public String getJSON()
 	{
 		return buildgrid();
 	}
 	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public String buildStr(String where){
-    	try {
-            Hashtable<String,Object> jsonFilter = (Hashtable<String, Object>) (new gov.fwp.mt.RPC.FWPJsonRpc().new JsonParser(filters)).FromJson();
-            String groupOp = (String) jsonFilter.get("groupOp");
-            ArrayList rules = (ArrayList) jsonFilter.get("rules");
-
-            int rulesCount = rules.size();
-            String tmpCond = "";
-            
-    		for (int i = 0; i < rulesCount; i++) {
-    			Hashtable<String,String> rule = (Hashtable<String, String>) rules.get(i);
-    			
-    			String tmp = rule.get("field");
-    			
-    			if (i == 0) {
-    				tmpCond = "and (";
-    			} else {
-    				tmpCond = groupOp;
-    			}
-    			
-    			if("atgsWhenCreated".equals(tmp)){
-	        		tmp = "TO_CHAR("+tmp+",'YYYY')";
-    			}
-    			
-    			
-    	        if (rule.get("op").equalsIgnoreCase("eq")) {		    	  
-    	        	where = where + " " +tmpCond+" " + tmp + " = '" + rule.get("data")+"'";
-    	        } else if (rule.get("op").equalsIgnoreCase("ne")) {
-    	        	where = where + " " +tmpCond+" " + tmp + " <> '" + rule.get("data")+"'";
-    	        } else if (rule.get("op").equalsIgnoreCase("lt")) {
-    	        	where = where + " " +tmpCond+" " + tmp + " < '" + rule.get("data")+"'";
-    	        } else if (rule.get("op").equalsIgnoreCase("gt")) {
-    	        	where = where + " " +tmpCond+" " + tmp + " > '" + rule.get("data")+"'";
-    	        } else if (rule.get("op").equalsIgnoreCase("cn")) {
-    	        	where = where + " " +tmpCond+ " upper(" + tmp + ") like upper('%" + rule.get("data")+"%')";
-    		    } else if (rule.get("op").equalsIgnoreCase("bw")) {
-    		    	where = where + " " +tmpCond+ " upper(" + tmp + ") like upper('" + rule.get("data")+"%')";
-    	        } else if (rule.get("op").equalsIgnoreCase("ew")) {
-    	        	where = where + " " +tmpCond+ " upper(" + tmp + ") like upper('%" + rule.get("data")+"')";
-    	        }			
-    		}
-    		 where = where + ")";	
-     
-    		  }
-    		  catch(Exception ex) {
-    			  where = "Build String Error: " + ex;  
-    	  }
-          return where;
-    }
-
-
+	
     /**
      * @return the rows
      */
@@ -255,6 +224,33 @@ public class AlsTransactionGrpStatusGridAction extends ActionSupport{
 		this.model = model;
 	}
 	
-	
+	public Integer getProvNo() {
+		return provNo;
+	}
+
+
+	public void setProvNo(Integer provNo) {
+		this.provNo = provNo;
+	}
+
+
+	public Integer getTransGrpType() {
+		return transGrpType;
+	}
+
+
+	public void setTransGrpType(Integer transGrpType) {
+		this.transGrpType = transGrpType;
+	}
+
+
+	public String getTransGrpIdentifier() {
+		return transGrpIdentifier;
+	}
+
+
+	public void setTransGrpIdentifier(String transGrpIdentifier) {
+		this.transGrpIdentifier = transGrpIdentifier;
+	}
 
 }

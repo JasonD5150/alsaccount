@@ -5,31 +5,48 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="sjg" uri="/struts-jquery-grid-tags" %>
 
-<fwp:template>
+<fwp:template loadJquery="false" useFwpJqueryUI="true">
     <fwp:head>
         <sj:head locale="en" jqueryui="true" jquerytheme="smoothness" customBasepath="css/jquery"/>
 	   	<script type="text/javascript" src= "/alsaccount/scripts/fieldEdits.js"></script>  
 	   	<script type="text/javascript" src= "/alsaccount/scripts/exportGrid.js"></script>  
+	   	<style type="text/css">
+			@import url("/alsaccount/css/alsaccount.css");
+        </style>
 	   	<script>
 	   		$.subscribe("alsSabhrsQueryTableComplete", function (event, data) {
-	   		
-	   		var grid = $('#alsSabhrsQueryTable');
-			             
-             $("#alsSabhrsQueryTable")
-				.jqGrid({pager:'#alsSabhrsQueryTable_pager'})
-				.jqGrid('navButtonAdd'
-				,'#alsSabhrsQueryTable_pager'
-				,{id:"columnSelector_alsSabhrsQueryTable"
-				,caption:""
-				,buttonicon:"ui-icon-extlink"
-				,onClickButton:function(){ 
-					grid.jqGrid('columnChooser',{caption: "Columns: CTRL-click select/deselect a column, CTRL-A select all",
-												 width: 500});
-				}
-				,position:"last"
-				,title:"Add/Remove Columns"
-				,cursor:"pointer"
-				});
+	   			var error = $("#alsSabhrsQueryTable").jqGrid('getGridParam', 'userData');
+	    		if (error != null && error.length > 0) {
+	    			$("#errorMessage").html(error);
+					$("#errorMessage").dialog({
+						title:"Search Error",
+					    resizable: false,
+					    height:"auto",
+					    modal: true,
+					    buttons: {
+			                "Ok": function() {
+			                    $(this).dialog("close");
+			                 }
+			             }
+					});
+	    		}
+    		
+		   		var grid = $('#alsSabhrsQueryTable');         
+	             $("#alsSabhrsQueryTable")
+					.jqGrid({pager:'#alsSabhrsQueryTable_pager'})
+					.jqGrid('navButtonAdd'
+					,'#alsSabhrsQueryTable_pager'
+					,{id:"columnSelector_alsSabhrsQueryTable"
+					,caption:""
+					,buttonicon:"ui-icon-extlink"
+					,onClickButton:function(){ 
+						grid.jqGrid('columnChooser',{caption: "Columns: CTRL-click select/deselect a column, CTRL-A select all",
+													 width: 500});
+					}
+					,position:"last"
+					,title:"Add/Remove Columns"
+					,cursor:"pointer"
+					});
 
 			});
 			
@@ -54,6 +71,16 @@
 			}
 			
 			function submitSearch(){
+				$('#providerNo').val($('#providerNo_widget').val());
+				$('#budgYear').val($('#budgYear_widget').val());
+				$('#jlr').val($('#jlr_widget').val());
+				$('#account').val($('#account_widget').val());
+				$('#fund').val($('#fund_widget').val());
+				$('#org').val($('#org_widget').val());
+				$('#subClass').val($('#subClass_widget').val());
+				$('#tribeCd').val($('#tribeCd_widget').val());
+				$('#sysActTypeCd').val($('#sysActTypeCd_widget').val());
+				$('#transGrpType').val($('#transGrpType_widget').val());
 				var search = true;
 				if(($('#seqNo').val() != null && $('#seqNo').val() != "" )&& 
 					(($('#providerNo').val() == null || $('#providerNo').val() == "") || 
@@ -68,7 +95,25 @@
 				}
 			}
 			function resetSearch(){
-				$('#gridFrm')[0].reset();
+				$('#providerNo').val('');
+				$('#seqNo').val('');
+				$('#bpFromDt').val('');
+				$('#bpToDt').val('');
+				$('#fromDt').val('');
+				$('#toDt').val('');
+				$('#budgYear').val('');
+				$('#progYear').val('');
+				$('#jlr').val('');
+				$('#account').val('');
+				$('#fund').val('');
+				$('#org').val('');
+				$('#subClass').val('');
+				$('#tribeCd').val('');
+				$('#txnGrpIdentifier').val('');
+				$('#sysActTypeCd').val('');
+				$('#transGrpType').val('');
+				$('#sumAppStat').val('');
+				$('#intAppStat').val('');
 			}
 			
 			function reloadLists(){
@@ -78,6 +123,8 @@
 
 	   	</script>
     </fwp:head>
+	
+	<div id="errorMessage" style="font-weight:bold; color:#FF0000;" hidden="true"></div>
 	
     <div style="width:800px;text-align:center">
     	<h2 class="title">SABHRS Query</h2>
@@ -118,7 +165,7 @@
 		scrollrows="true"
 		height="100"
 		width="950"
-		rowNum="1000"
+		rowNum="10000"
 		formIds="gridFrm"
 		reloadTopics="reloadAlsSabhrsEntriesTable"
 		onCompleteTopics="alsSabhrsQueryTableComplete"
@@ -134,18 +181,18 @@
 			<sjg:gridColumn name="asacSubclass" index="asacSubclass" title ="Subclass" width="10" sortable="false" editable="true" />
 			<sjg:gridColumn name="aamBusinessUnit" index="aamBusinessUnit" title ="Business Unit" width="10" sortable="false" editable="true"/>
 			<sjg:gridColumn name="asacProjectGrant" index="asacProjectGrant" title ="Project Grant" width="10" sortable="false" editable="true"/>
-			<sjg:gridColumn name="aseAmt" index="aseAmt" title ="Amount" width="10" sortable="false" editable="true"/>
+			<sjg:gridColumn name="aseAmt" index="aseAmt" title ="Amount" width="10" sortable="false" editable="true" formatter= "number" formatoptions="{decimalPlaces: 2}" align="right"/>
 			<sjg:gridColumn name="asacSystemActivityTypeCd" index="asacSystemActivityTypeCd" title ="Sys Activity Type Code" width="10" sortable="false" editable="false"/>
 			<sjg:gridColumn name="asacTxnCd" index="asacTxnCd" title ="Transaction Cd" width="10" sortable="false" editable="false"/>
 			<sjg:gridColumn name="aseDrCrCd" index="aseDrCrCd" title ="Dr/Cr Code" width="10" sortable="false" editable="true" edittype="select" formatter="select" editoptions="{value: {D: 'Debit', C: 'Credit'}}" />
-			<sjg:gridColumn name="aseSeqNo" index="aseSeqNo" title ="Summary Seq No" width="10" sortable="false" editable="false"/>
+			<sjg:gridColumn name="aseSeqNo" index="aseSeqNo" title ="SABHRS Entries Seq No" width="10" sortable="false" editable="false"/>
 			<sjg:gridColumn name="aseLineDescription" index="aseLineDescription" title ="Line Desc" width="40" sortable="false" editable="true" edittype="textarea" />
 			
 			<!-- HIDDEN COLUMNS-->
-			<sjg:gridColumn name="aseWhenEntryPosted" index="aseWhenEntryPosted" title ="When Entry Posted" width="40" sortable="false" editable="true" hidden="true"/>
+			<sjg:gridColumn name="aseWhenEntryPosted" index="aseWhenEntryPosted" title ="When Entry Posted" width="40" sortable="false" editable="true" hidden="true" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y h:i:s' }"/>
 			<sjg:gridColumn name="aseAllowUploadToSummary" index="aseAllowUploadToSummary" title ="Allow Upload To Summary" width="40" sortable="false" editable="true" hidden="true"/>
 			<sjg:gridColumn name="upToSummDt" index="upToSummDt" title ="When Uploaded To Summary" width="40" sortable="false" editable="true" hidden="true" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }"/>
-			<sjg:gridColumn name="asesSeqNo" index="asesSeqNo" title ="Seq No" width="40" sortable="false" editable="true" hidden="true"/>
+			<sjg:gridColumn name="asesSeqNo" index="asesSeqNo" title ="SABHRS Entries Summary Seq No" width="40" sortable="false" editable="true" hidden="true"/>
 			<sjg:gridColumn name="apiProviderNo" index="apiProviderNo" title ="Provider No" width="40" sortable="false" editable="true" hidden="true"/>
 			<sjg:gridColumn name="bpFromDt" index="bpFromDt" title ="Billing From" width="40" sortable="false" editable="true" hidden="true" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }"/>
 			<sjg:gridColumn name="bpToDt" index="bpToDt" title ="Billing To" width="40" sortable="false" editable="true" hidden="true" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }"/>

@@ -7,9 +7,9 @@ import java.util.List;
 
 import com.opensymphony.xwork2.ActionSupport;
 
+import fwp.ListComp;
 import fwp.alsaccount.appservice.interfaceFiles.AlsInterfaceFilesAS;
 import fwp.alsaccount.dao.interfaceFiles.AlsInterfaceFiles;
-import fwp.alsaccount.hibernate.utils.ListComp;
 import fwp.alsaccount.utils.ListUtils;
 
 /**

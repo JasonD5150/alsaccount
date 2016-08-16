@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionSupport;
 
-import fwp.alsaccount.hibernate.utils.ListComp;
+import fwp.ListComp;
 import fwp.alsaccount.utils.ListUtils;
 
 public class TransGrpAppQueryDivAction extends ActionSupport{
@@ -27,7 +27,7 @@ public class TransGrpAppQueryDivAction extends ActionSupport{
 	public String input(){
 		ListUtils lu = new ListUtils();
 		try {
-			providerLst = lu.getProviderList();
+			providerLst = lu.getTransGrpAppProviderList();
 			transGroupTypeLst = lu.getSabhrsTransGroupTypeLst();
 			bankCdLst = lu.getTransGrpBankCodeList();
 		} catch (Exception e) {

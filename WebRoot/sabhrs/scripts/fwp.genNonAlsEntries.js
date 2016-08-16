@@ -23,6 +23,20 @@ function errorHandler(response, postdata) {
 	return [rtrnstate,rtrnMsg]; 
 };
 
+function submitSearch(){
+	$('#transGroupDtlsTable').jqGrid('setGridParam',{datatype:'json'});
+	$.publish('reloadTransGroupDtlsTable');
+}
+function resetSearch(){
+	$('#budgYear').val('');
+	$('#provNo').val('');
+	$('#transGrpType').val('');
+	$('#budgYear_widget').val('');
+	$('#provNo_widget').val('');
+	$('#transGrpType_widget').val('');
+	$('#transGrpIdentifier').val('');
+}
+
 $.subscribe('transGroupDtlsSelected', function(event, data) {				
 	var sel_id = $("#transGroupDtlsTable").jqGrid('getGridParam', 'selrow');					    				  
 	$('#frmTransGrp').val($("#transGroupDtlsTable").jqGrid('getCell', sel_id, 'idPk.atgTransactionCd'));
@@ -65,7 +79,7 @@ $.subscribe('alsSabhrsEntriesComplete', function(event, data) {
 		   $("td[id='add_alsSabhrsEntriesTable']").toggle(false);
 		   $("td[id='addTemplate_alsSabhrsEntriesTable']").toggle(false);
 	   }
-
+	   menuSec("genNonAlsEntries");
 });
 
 function rtrnAccountList() {
@@ -160,4 +174,5 @@ function exitNonAlsMasterDialog(){
   		}else{
   			$('#accMasterDialog').dialog('close');
   		}
+	   	
 }

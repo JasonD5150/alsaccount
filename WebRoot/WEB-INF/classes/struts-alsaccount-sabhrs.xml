@@ -4,6 +4,22 @@
 <constant name="struts.devMode" value="false" />
 
 	<package name="fwp.alsaccount.sabhrs" namespace="" extends="struts-default">
+	  <action name="downloadCsv" class="fwp.alsaccount.action.DownloadCsvAction">
+            <result name="success" type="stream">
+                <param name="contentType">text/csv</param>
+                <param name="inputName">csvFileInputStream</param>
+                <param name="contentDisposition">attachment;filename="${fileName}"</param>
+                <param name="bufferSize">1024</param>
+            </result>
+      </action>
+      <action name="getTdtPdf_*" method="{1}" class="fwp.alsaccount.sabhrs.action.GetTdtPDFAction">
+               <result name="success" type="stream">
+                <param name="contentType">application/pdf</param>
+                <param name="contentDisposition">attachment;filename="${fileName}"</param>
+                <param name="inputName">inputStream</param>
+            </result>
+            <result name="error">sabhrs/transactionGroupApproval.jsp</result>
+      </action>
       <action name="transGroupMaint_*" method="{1}" class="fwp.alsaccount.action.GenericAction">
             <result>sabhrs/transactionGroupMaint.jsp</result>
             <result name="error">sabhrs/transactionGroupMaint.jsp</result>
@@ -29,14 +45,7 @@
             <result name="error">sabhrs/transactionGroupApproval.jsp</result>
             <result name="input">sabhrs/transactionGroupApproval.jsp</result>         
       </action>
-      <action name="getTreasureDepositTicketPdf_*" method="{1}" class="fwp.alsaccount.sabhrs.action.GetTreasureDepositTicketAction">
-               <result name="success" type="stream">
-                <param name="contentType">application/pdf</param>
-                <param name="contentDisposition">attachment;filename="${fileName}"</param>
-                <param name="inputName">inputStream</param>
-            </result>
-            <result name="error">sabhrs/transactionGroupApproval.jsp</result>
-        </action>
+      
         <action name="transGroupMassApproval_*" method="{1}" class="fwp.alsaccount.action.GenericAction">
 			<result>sabhrs/transactionGroupMassApproval.jsp</result>
 			<result name="error">sabhrs/transactionGroupMassApproval.jsp</result>
@@ -57,19 +66,20 @@
 			<result name="error">sabhrs/include/transGrpAppQueryDiv.jsp</result>
 			<result name="input">sabhrs/include/transGrpAppQueryDiv.jsp</result>        
 		</action>
-		<action name="downloadCsv"
-                class="fwp.alsaccount.action.DownloadCsvAction">
-            <result name="success" type="stream">
-                <param name="contentType">text/csv</param>
-                <param name="inputName">csvFileInputStream</param>
-                <param name="contentDisposition">attachment;filename="${fileName}"</param>
-                <param name="bufferSize">1024</param>
-            </result>
-        </action>
-        <action name="intProviderTreasuryTickets_*" method="{1}" class="fwp.alsaccount.action.GenericAction">
-			<result>sabhrs/intProviderTreasuryTickets.jsp</result>
-			<result name="error">sabhrs/intProviderTreasuryTickets.jsp</result>
-			<result name="input">sabhrs/intProviderTreasuryTickets.jsp</result>        
+        <action name="internalProviderTdt_*" method="{1}" class="fwp.alsaccount.sabhrs.action.InternalProviderTdtAction">
+			<result>sabhrs/internalProviderTdt.jsp</result>
+			<result name="error">sabhrs/internalProviderTdt.jsp</result>
+			<result name="input">sabhrs/internalProviderTdt.jsp</result>        
+		</action>
+		<action name="iafaQuery_*" method="{1}" class="fwp.alsaccount.action.GenericAction">
+			<result>sabhrs/iafaQuery.jsp</result>
+			<result name="error">sabhrs/iafaQuery.jsp</result>
+			<result name="input">sabhrs/iafaQuery.jsp</result>        
+		</action>
+		<action name="iafaQueryDiv_*" method="{1}" class="fwp.alsaccount.sabhrs.action.IafaQueryDivAction">
+			<result>sabhrs/include/iafaQueryDiv.jsp</result>
+			<result name="error">sabhrs/include/iafaQueryDiv.jsp</result>
+			<result name="input">sabhrs/include/iafaQueryDiv.jsp</result>        
 		</action>
 	</package>
  
@@ -129,16 +139,13 @@
             <result type="json" />
             <result type="json" name="input"></result>
         </action> 
-        <action name="intProviderTreasuryTicketGrid_*" class="fwp.alsaccount.sabhrs.grid.AlsProviderBankDetailsGridAction">
+        <action name="internalProviderTdtGrid_*" class="fwp.alsaccount.sabhrs.grid.InternalProviderTdtGridAction">
 			<result type="json" />
-		</action> 
-		<action name="intProviderTreasuryTicketGridEdit_*" class="fwp.alsaccount.sabhrs.grid.AlsProviderBankDetailsGridEditAction">
-			<result type="json"></result>
-			<result type="json" name="input"></result>
-			<result name="error_json" type="json" >
-			   <param name="ignoreHierarchy">false</param>
-			</result>
-		</action>    
+		</action>
+		<action name="iafaQueryGrid_*" class="fwp.alsaccount.sabhrs.grid.IafaQueryGridAction">
+            <result type="json" />
+        	<result type="json" name="input"></result>   
+        </action>
    </package>
 
 	<package name="fwp.alsaccount.sabhrs.json" extends="json-default" >
@@ -155,6 +162,20 @@
             </interceptor-ref>
             <result type="json"/>
         </action>
+        <action name="iafaQueryBuildCsv" class="fwp.alsaccount.sabhrs.json.IafaQueryBuildCsvAction">
+            <interceptor-ref name="json">
+                <param name="enableSMD">true</param>
+            </interceptor-ref>
+            <result type="json"/>
+        </action>
+        <action name="getProvLst_*" method="{1}" class="fwp.alsaccount.json.ProviderListJson">
+			<result name="success" type="json"></result>
+			<result name="input" type="json"></result>
+		</action>
+		<action name="getTransGrpIdLst_*" method="{1}" class="fwp.alsaccount.json.TransGrpIdListJson">
+			<result name="success" type="json"></result>
+			<result name="input" type="json"></result>
+		</action>
     </package>
 
 </struts>    

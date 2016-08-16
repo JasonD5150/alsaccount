@@ -44,6 +44,8 @@ public class AlsTransactionGrpApprovalGridAction extends ActionSupport{
 	private String				srchDepId;
     private Integer				srchProviderNo;
     
+    private String 				userdata;
+    
 	@SuppressWarnings("unchecked")
 	public String buildgrid(){  
 		HibHelpers hh = new HibHelpers();
@@ -58,45 +60,42 @@ public class AlsTransactionGrpApprovalGridAction extends ActionSupport{
         try{
         	atgs = atgsAS.findAllByWhere(srchStr+orderStr);
         	
-        	setModel(new ArrayList<AlsTransactionGrpStatusDTO>());
-        	AlsTransactionGrpStatusDTO tmp;
-        	
-        	for(AlsTransactionGrpStatus a : atgs){
-        		tmp = new AlsTransactionGrpStatusDTO();
-        		tmp.setGridKey(a.getIdPk().getAtgTransactionCd()+"_"+a.getIdPk().getAtgsGroupIdentifier());
-        		tmp.setIdPk(a.getIdPk());
-        		tmp.setDesc(atgsAS.getTransDesc(a.getIdPk().getAtgTransactionCd()));
-        		
-        		tmp.setAtgsWhenCreated(a.getAtgsWhenCreated());
-        		
-        		tmp.setAtgsAccountingDt(a.getAtgsAccountingDt());
-        		
-        		tmp.setAtgsSummaryStatus(a.getAtgsSummaryStatus());
-        		tmp.setAtgsSummaryApprovedBy(a.getAtgsSummaryApprovedBy());
-        		tmp.setAtgsSummaryDt(a.getAtgsSummaryDt());
-        		tmp.setAtgsInterfaceStatus(a.getAtgsInterfaceStatus());
-        		tmp.setAtgsInterfaceApprovedBy(a.getAtgsInterfaceApprovedBy());
-        		tmp.setAtgsInterfaceDt(a.getAtgsInterfaceDt());
-        		
-        		tmp.setAtgsWhenUploadToSummary(a.getAtgsWhenUploadToSummary());
-        		tmp.setAbcBankCd(a.getAbcBankCd());
-        		tmp.setAtgsBankReferenceNo(a.getAtgsBankReferenceNo());
-        		
-        		tmp.setAtgsArGlFlag(a.getAtgsArGlFlag());
-        		tmp.setAtgsFileCreationDt(a.getAtgsFileCreationDt());
-        		tmp.setAtgsFileName(a.getAtgsFileName());
-        		
-        		tmp.setAtgsNonAlsFlag(a.getAtgsNonAlsFlag());
-        		tmp.setAtgsNetDrCr(a.getAtgsNetDrCr());
-        		tmp.setAtgsDepositId(a.getAtgsDepositId());
-        		
-        		tmp.setAtgsRemarks(a.getAtgsRemarks());
-        		tmp.setAtgsWhenUploadedToSabhrs(a.getAtgsWhenUploadedToSabhrs());
-        		
-        		tmp.setBudgYear(hh.getTransGrpBudgYear(tmp.getIdPk().getAtgTransactionCd(), tmp.getIdPk().getAtgsGroupIdentifier()));
-        		tmp.setProgramYear(hh.getTransGrpProgYear(tmp.getIdPk().getAtgTransactionCd(), tmp.getIdPk().getAtgsGroupIdentifier()));
-        		model.add(tmp);
-        	}
+        	if (atgs.size() > 10000) {
+        		setUserdata("Please narrow search. The search grid is limited to 10000 rows. There were " + atgs.size() + " entries selected.");
+        		atgs = new ArrayList<AlsTransactionGrpStatus>();
+    		}else{
+    			setModel(new ArrayList<AlsTransactionGrpStatusDTO>());
+            	AlsTransactionGrpStatusDTO tmp;
+            	
+            	for(AlsTransactionGrpStatus a : atgs){
+            		tmp = new AlsTransactionGrpStatusDTO();
+            		tmp.setGridKey(a.getIdPk().getAtgTransactionCd()+"_"+a.getIdPk().getAtgsGroupIdentifier());
+            		tmp.setIdPk(a.getIdPk());
+            		tmp.setDesc(atgsAS.getTransDesc(a.getIdPk().getAtgTransactionCd()));
+            		tmp.setAtgsWhenCreated(a.getAtgsWhenCreated());
+            		tmp.setAtgsAccountingDt(a.getAtgsAccountingDt());
+            		tmp.setAtgsSummaryStatus(a.getAtgsSummaryStatus());
+            		tmp.setAtgsSummaryApprovedBy(a.getAtgsSummaryApprovedBy());
+            		tmp.setAtgsSummaryDt(a.getAtgsSummaryDt());
+            		tmp.setAtgsInterfaceStatus(a.getAtgsInterfaceStatus());
+            		tmp.setAtgsInterfaceApprovedBy(a.getAtgsInterfaceApprovedBy());
+            		tmp.setAtgsInterfaceDt(a.getAtgsInterfaceDt());
+            		tmp.setAtgsWhenUploadToSummary(a.getAtgsWhenUploadToSummary());
+            		tmp.setAbcBankCd(a.getAbcBankCd());
+            		tmp.setAtgsBankReferenceNo(a.getAtgsBankReferenceNo());
+            		tmp.setAtgsArGlFlag(a.getAtgsArGlFlag());
+            		tmp.setAtgsFileCreationDt(a.getAtgsFileCreationDt());
+            		tmp.setAtgsFileName(a.getAtgsFileName());
+            		tmp.setAtgsNonAlsFlag(a.getAtgsNonAlsFlag());
+            		tmp.setAtgsNetDrCr(a.getAtgsNetDrCr());
+            		tmp.setAtgsDepositId(a.getAtgsDepositId());
+            		tmp.setAtgsRemarks(a.getAtgsRemarks());
+            		tmp.setAtgsWhenUploadedToSabhrs(a.getAtgsWhenUploadedToSabhrs());
+            		tmp.setBudgYear(hh.getTransGrpBudgYear(tmp.getIdPk().getAtgTransactionCd(), tmp.getIdPk().getAtgsGroupIdentifier()));
+            		tmp.setProgramYear(hh.getTransGrpProgYear(tmp.getIdPk().getAtgTransactionCd(), tmp.getIdPk().getAtgsGroupIdentifier()));
+            		model.add(tmp);
+            	}
+    		}        	
         }
         catch (HibernateException re) {
         	//System.out.println(re.toString());
@@ -112,59 +111,64 @@ public class AlsTransactionGrpApprovalGridAction extends ActionSupport{
 	
 	
 	
+	public String getUserdata() {
+		return userdata;
+	}
+
+
+
+	public void setUserdata(String userdata) {
+		this.userdata = userdata;
+	}
+
+
+
 	private String buildQueryStr(){
 		HibHelpers hh = new HibHelpers();
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/YYYY");
 		Integer curBudgYear = Integer.parseInt(hh.getCurrentBudgetYear());
 		StringBuilder srchStr = new StringBuilder();
 		Boolean searchCreated = true;
-		Boolean searchIntStatus = true;
 		/*WHERE*/
     	srchStr.append("WHERE 1=1 ");
  
     	if(srchTransGrpType != null && !"".equals(srchTransGrpType)){
     		srchStr.append("AND idPk.atgTransactionCd = "+srchTransGrpType+" ");
-    		
+    		searchCreated = false;
     	}
-		if(srchTranGrpId != null && !"".equals(srchTranGrpId)){
+		if(srchTranGrpId != null && !" ".equals(srchTranGrpId)){
 			srchStr.append("AND idPk.atgsGroupIdentifier = '"+srchTranGrpId+"' ");
 			searchCreated = false;
-			searchIntStatus = false;
-			
 		}
 		if(srchTranGrpCreated != null){
 			srchStr.append("AND TO_CHAR(atgsWhenCreated,'MM/DD/YYYY') = '"+sdf.format(srchTranGrpCreated)+"' ");
 			searchCreated = false;
-			
 		}
 		if(srchAccDt != null){
 			srchStr.append("AND TO_CHAR(atgsAccountingDt,'MM/DD/YYYY') = '"+sdf.format(srchAccDt)+"' ");
 			searchCreated = false;
-			
 		}
 		if(srchSumAppStat != null && !"".equals(srchSumAppStat)){
 			srchStr.append("AND atgsSummaryStatus = '"+srchSumAppStat+"' ");
-			
+		}else{
+			srchStr.append("AND atgsSummaryStatus IS NULL ");
 		}
 		if(srchSumAppDt != null ){
 			srchStr.append("AND TO_CHAR(atgsSummaryDt,'MM/DD/YYYY') = '"+sdf.format(srchSumAppDt)+"' ");
 			searchCreated = false;
-			
 		}
 		if(srchIntAppStat != null && !"".equals(srchIntAppStat)){
 			srchStr.append("AND atgsInterfaceStatus = '"+srchIntAppStat+"' ");
-			searchIntStatus = false;
-			
+		}else{
+			srchStr.append("AND atgsInterfaceStatus IS NULL ");
 		}
 		if(srchIntAppDt != null ){
 			srchStr.append("AND TO_CHAR(atgsInterfaceDt,'MM/DD/YYYY') = '"+sdf.format(srchIntAppDt)+"' ");
 			searchCreated = false;
-			
 		}
 		if(srchUpToSumDt != null ){
 			srchStr.append("AND TO_CHAR(atgsWhenUploadToSummary,'MM/DD/YYYY') = '"+sdf.format(srchUpToSumDt)+"' ");
 			searchCreated = false;
-			
 		}
 		if(srchBankCd != null && !"".equals(srchBankCd)){
     		srchStr.append("AND abcBankCd = '"+srchBankCd+"' ");
@@ -186,13 +190,10 @@ public class AlsTransactionGrpApprovalGridAction extends ActionSupport{
     		srchStr.append("AND TRIM(TRIM(LEADING 0 FROM substr(idPk.atgsGroupIdentifier,3,6))) = '"+srchProviderNo+"' ");
     		
 		}
-    	
 		if(searchCreated){
 			srchStr.append("AND TO_CHAR(atgsWhenCreated,'YYYY') = "+curBudgYear+" ");
 		}
-		if(searchIntStatus){
-			srchStr.append("AND (atgsInterfaceStatus NOT IN ('N','D') OR atgsInterfaceStatus IS NULL)");
-		}
+		
 		return srchStr.toString();
 	}
 

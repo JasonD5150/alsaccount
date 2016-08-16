@@ -1,11 +1,13 @@
 package fwp.alsaccount.admin.action;
 
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionSupport;
 
 import fwp.alsaccount.utils.ListUtils;
+import fwp.utils.StringUtils;
 
 public class AlsNonAlsTemplateDivAction extends ActionSupport{
 	
@@ -23,12 +25,13 @@ public class AlsNonAlsTemplateDivAction extends ActionSupport{
 	}
 	
 	public String input(){
+		StringUtils su = new StringUtils();
+		ListUtils lu = new ListUtils();
 		try {
-			ListUtils lu = new ListUtils();
-			setAccountLst(lu.getAccountListTxt(budgYear, false));
-			setFundLst(lu.getFundListTxt(null,false));
-			setSubClassLst(lu.getSubclassListTxt(null,false));
-			setJlrLst(lu.getJLRListTxt(false));
+			setAccountLst(su.listCompListToString(lu.getAccountList(budgYear)));
+			setFundLst(su.listCompListToString(lu.getFundList(null)));
+			setSubClassLst(su.listCompListToString(lu.getSubclassList(null)));
+			setJlrLst(su.listCompListToString(lu.getJLRList()));
 			setProjectGrantLst(lu.getProjectGrantsListTxt(null,false));
 		} catch (Exception e) {
 			//System.out.println(e.getMessage());

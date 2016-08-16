@@ -47,16 +47,24 @@ public class AlsSabhrsQueryGridAction extends ActionSupport{
     private String 				sysActTypeCd;
     private String 				transGrpType;
     
-    private Boolean 			search = false;
+    private String 				userdata;
+	private Boolean 			search = false;
     
 	public String buildgrid(){ 
     	HibHelpers hh = new HibHelpers();
-    	String srchStr = buildQueryStr();
+    	String where = buildQueryStr();
         try{
         	setModel(new ArrayList<AlsSabhrsEntriesDTO>());
         	if (search) {
-        		model = hh.getSabhrsQueryRecords(srchStr);
+        		Integer cnt = hh.getSabhrsQueryCount(where);
+        		if(cnt > 10000){
+            		setUserdata("Please narrow search. The search grid is limited to 10000 rows. There were " + cnt + " entries selected.");
+            	}else{
+            		model = hh.getSabhrsQueryRecords(where);
+            	}
     		}
+        	
+        	
         }
         catch (HibernateException re) {
         	//System.out.println(re.toString());
@@ -72,53 +80,6 @@ public class AlsSabhrsQueryGridAction extends ActionSupport{
 
 	private String buildQueryStr(){
 		StringBuilder srchStr = new StringBuilder();
-		/*SELECT*/
-		srchStr.append("SELECT ase.ase_When_Entry_Posted aseWhenEntryPosted, "
-				+ "ase.ase_Seq_No aseSeqNo, "
-				+ "ase.ase_Dr_Cr_Cd aseDrCrCd, "
-				+ "ase.ase_Txn_Cd_Seq_No aseTxnCdSeqNo, "
-				+ "ase.asac_Budget_Year asacBudgetYear, "
-				+ "ase.asac_System_Activity_Type_Cd asacSystemActivityTypeCd, "
-				+ "ase.asac_Txn_Cd asacTxnCd, " 
-				+ "ase.aam_Account aamAccount, "
-				+ "ase.aam_Business_Unit aamBusinessUnit, "
-				+ "ase.aam_Fund aamFund, "
-				+ "ase.aoc_Org aocOrg, "
-				+ "ase.asac_Program asacProgram, "
-				+ "ase.asac_Subclass asacSubclass, "
-				+ "ase.asac_Project_Grant asacProjectGrant, "
-				+ "(SELECT DISTINCT AM_VAL_DESC||SUBSTR(ase.asac_Reference,-2) rtn "
-							+ "FROM ALS.ALS_MISC "
-							+ "WHERE AM_KEY1 ='JOURNAL_LINE_REFERENCE' "
-							+ "AND LTRIM(AM_PAR_VAL,'0')=LTRIM(SUBSTR(LPAD(ase.asac_Reference,5,'0'),1,3),'0') "
-							+ "AND ROWNUM <2) jlr, "
-				+ "ase.ase_Amt aseAmt, "
-				+ "ase.ase_Allow_Upload_To_Summary aseAllowUploadToSummary, "
-				+ "ase.ase_When_Uploaded_To_Summary upToSummDt, "
-				+ "ase.ases_Seq_No asesSeqNo, "
-				+ "ase.api_Provider_No apiProviderNo, "
-				+ "ase.apr_Billing_From bpFromDt, "
-				+ "ase.apr_Billing_To bpToDt, "
-				+ "ase.aiafa_Seq_No aiafaSeqNo, "
-				+ "ase.ase_Who_Log aseWhoLog, "
-				+ "ase.ase_When_Log aseWhenLog, "
-				+ "ase.ase_When_Uploaded_To_Summ aseWhenUploadedToSumm, "
-				+ "ase.atg_Transaction_Cd atgTransactionCd, "
-				+ "ase.atgs_Group_Identifier atgsGroupIdentifier, "
-				+ "ase.ase_Non_Als_Flag aseNonAlsFlag, "
-				+ "ase.ase_Line_Description aseLineDescription, "
-				+ "ase.ati_Tribe_Cd atiTribeCd, "
-				+ "ase.anat_Cd anatCd, "
-				+ "TO_CHAR(ase.ase_When_Entry_Posted, 'yyyy-mm-dd hh:mm:ss')||'_'||ase.ase_Seq_No||'_'||ase.ase_Dr_Cr_Cd||'_'||ase.ase_Txn_Cd_Seq_No gridKey, "
-				+ "(SELECT ATGS_SUMMARY_STATUS rtn "
-					+ "FROM ALS.ALS_TRANSACTION_GRP_STATUS "
-					+ "WHERE ATG_TRANSACTION_CD = ase.atg_Transaction_Cd "
-					+ "AND ATGS_GROUP_IDENTIFIER = ase.atgs_Group_Identifier) sumStat, "
-				+ "(SELECT ATGS_INTERFACE_STATUS rtn "
-					+ "FROM ALS.ALS_TRANSACTION_GRP_STATUS "
-					+ "WHERE ATG_TRANSACTION_CD = ase.atg_Transaction_Cd "
-					+ "AND ATGS_GROUP_IDENTIFIER = ase.atgs_Group_Identifier) intStat ");
-		
 		/*FROM*/
 		srchStr.append("FROM ALS.ALS_SABHRS_ENTRIES ase ");
 		if((sumAppStat != null && !"".equals(sumAppStat)) || (intAppStat != null && !"".equals(intAppStat))){
@@ -128,12 +89,18 @@ public class AlsSabhrsQueryGridAction extends ActionSupport{
     	srchStr.append("WHERE 1=1 ");
     	
     	if(fromDt != null){
-    		srchStr.append("AND ase.ase_When_Entry_Posted >= TO_DATE('"+fromDt+"','YYYY-MM-DD') ");
-    		search = true;
-    	}
-    	if(toDt != null){
-    		srchStr.append("AND ase.ase_When_Entry_Posted <= TO_DATE('"+toDt+"','YYYY-MM-DD') ");
-    		search = true;
+    		if(toDt != null){
+    			if(fromDt.equals(toDt)){
+    				srchStr.append("AND ase.ase_When_Entry_Posted > (TO_DATE('"+fromDt+"','YYYY-MM-DD')-1) AND ase.ase_When_Entry_Posted < (TO_DATE('"+fromDt+"','YYYY-MM-DD')+1) ");
+            		search = true;
+    			}else{
+    				srchStr.append("AND ase.ase_When_Entry_Posted BETWEEN TO_DATE('"+fromDt+"','YYYY-MM-DD') AND TO_DATE('"+toDt+"','YYYY-MM-DD') ");
+            		search = true;
+    			}
+        	}else{
+        		srchStr.append("AND ase.ase_When_Entry_Posted BETWEEN TO_DATE('"+fromDt+"','YYYY-MM-DD') AND SYSDATE ");
+        		search = true;
+        	}
     	}
     	if(bpFromDt != null){
     		srchStr.append("AND ase.apr_Billing_From = TO_DATE('"+bpFromDt+"','YYYY-MM-DD') ");
@@ -151,30 +118,30 @@ public class AlsSabhrsQueryGridAction extends ActionSupport{
     		srchStr.append("AND ase.aiafa_Seq_No = "+seqNo+" ");
     		search = true;
     	}
-    	if(jlr != null && !" ".equals(jlr)){
+    	if(jlr != null && !"".equals(jlr)){
     		srchStr.append("AND ase.ASAC_REFERENCE = (SELECT AM_PAR_VAL||SUBSTR('"+jlr+"',-2) "
     										   + "FROM ALS.ALS_MISC WHERE AM_KEY1 = 'JOURNAL_LINE_REFERENCE' "
     										   + "AND LPAD(AM_VAL_DESC,28,'0') = SUBSTR(LPAD('"+jlr+"',30,'0'),1,28) "
     										   + "AND ROWNUM <2) ");
     		search = true;
     	}
-    	if(account != null && !" ".equals(account)){
+    	if(account != null && !"".equals(account)){
     		srchStr.append("AND ase.aam_Account = '"+account+"' ");
     		search = true;
     	}
-    	if(fund != null && !" ".equals(fund)){
+    	if(fund != null && !"".equals(fund)){
     		srchStr.append("AND ase.aam_Fund = "+fund+" ");
     		search = true;
     	}
-    	if(org != null && !" ".equals(org)){
-    		srchStr.append("AND ase.aoc_Org = "+org+" ");
+    	if(org != null && !"".equals(org)){
+    		srchStr.append("AND ase.aoc_Org = '"+org+"' ");
     		search = true;
     	}
-    	if(subclass != null && !" ".equals(subclass)){
+    	if(subclass != null && !"".equals(subclass)){
     		srchStr.append("AND ase.asac_Subclass = "+subclass+" ");
     		search = true;
     	}
-    	if(tribeCd != null && !" ".equals(tribeCd)){
+    	if(tribeCd != null && !"".equals(tribeCd)){
     		srchStr.append("AND ase.ati_Tribe_Cd = '"+tribeCd+"' ");
     		search = true;
     	}
@@ -190,11 +157,11 @@ public class AlsSabhrsQueryGridAction extends ActionSupport{
     		srchStr.append("AND ase.asac_Program = "+progYear+" ");
     		search = true;
     	}
-    	if(sysActTypeCd != null && !" ".equals(sysActTypeCd)){
+    	if(sysActTypeCd != null && !"".equals(sysActTypeCd)){
     		srchStr.append("AND ase.asac_System_Activity_Type_Cd||asac_Txn_Cd = '"+sysActTypeCd.toUpperCase()+"' ");
     		search = true;
     	}
-    	if(transGrpType != null && !" ".equals(transGrpType)){
+    	if(transGrpType != null && !"".equals(transGrpType)){
     		srchStr.append("AND ase.atg_Transaction_Cd = "+transGrpType+" ");
     		search = true;
     	}
@@ -476,6 +443,14 @@ public class AlsSabhrsQueryGridAction extends ActionSupport{
 
 	public void setTxnGrpIdentifier(String txnGrpIdentifier) {
 		this.txnGrpIdentifier = txnGrpIdentifier;
+	}
+	
+	public String getUserdata() {
+		return userdata;
+	}
+
+	public void setUserdata(String userdata) {
+		this.userdata = userdata;
 	}
 
 }

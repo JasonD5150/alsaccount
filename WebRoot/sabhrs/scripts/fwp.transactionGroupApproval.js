@@ -248,3 +248,32 @@ function intStatSelected(){
 		$('#intAppDt').val('');
 	}
 }
+function transGrpTypeChanged(selected){
+	$('#txGrpType').val(selected.value);
+	$.publish('reloadProvLst');
+}
+function provNoChanged(selected){
+	if(selected.value == null){
+		$('#provNo').val();
+	}else{
+		$('#provNo').val(selected.value);
+	}
+	$.publish('reloadTransGrpIdLst');
+}
+$.subscribe("transGroupComplete", function (event, data) {
+	var error = $("#transGroupApprovalTable").jqGrid('getGridParam', 'userData');
+	if (error != null && error.length > 0) {
+		$("#errorMessage").html(error);
+		$("#errorMessage").dialog({
+			title:"Search Error",
+		    resizable: false,
+		    height:"auto",
+		    modal: true,
+		    buttons: {
+                "Ok": function() {
+                    $(this).dialog("close");
+                 }
+             }
+		});
+	}
+});

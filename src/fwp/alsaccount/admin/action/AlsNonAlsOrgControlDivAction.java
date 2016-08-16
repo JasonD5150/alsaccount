@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import com.opensymphony.xwork2.ActionSupport;
 
 import fwp.alsaccount.utils.ListUtils;
+import fwp.utils.StringUtils;
 
 public class AlsNonAlsOrgControlDivAction extends ActionSupport{
 	
@@ -20,10 +21,11 @@ public class AlsNonAlsOrgControlDivAction extends ActionSupport{
 	}
 	
 	public String input(){
+		StringUtils su = new StringUtils();
 		try {
 			ListUtils lu = new ListUtils();
-			setOrgLst(lu.getOrgListTxt(null,false));
-			setProviderLst(lu.getProviderListTxt(false));
+			setOrgLst(su.listCompListToString(lu.getOrgList(null)));
+			setProviderLst(su.listCompListToString(lu.getProviderList()));
 		} catch (Exception e) {
 			//System.out.println(e.getMessage());
 			log.debug(e.getMessage());

@@ -15,10 +15,11 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 
 import com.opensymphony.xwork2.ActionSupport;
 
+import fwp.ListComp;
 import fwp.alsaccount.dao.sabhrs.AlsSabhrsEntries;
 import fwp.alsaccount.dao.sabhrs.AlsSabhrsEntriesIdPk;
 import fwp.alsaccount.dto.sabhrs.AlsSabhrsEntriesDTO;
-import fwp.gen.utils.ListComp;
+
 
 /**
  * Action handler for the SABHRS Query search page to CSV export file.
@@ -46,7 +47,7 @@ public class SabhrsQueryBuildCsvAction extends ActionSupport {
 		fileName="SABHRSDetail.csv";
 		StringBuilder titleLine = new StringBuilder();
 
-		String[] csvHeaders={"Budget Year",
+		/*String[] csvHeaders={"Budget Year",
 							 "JLR",
 							 "Account",
 							 "Fund",
@@ -78,29 +79,32 @@ public class SabhrsQueryBuildCsvAction extends ActionSupport {
 							 "Interface Status" };
 		for(int i=0;i<csvHeaders.length;i++){
 			titleLine.append(csvHeaders[i]+",");
-		}
-		/*SELECTED COLUMNS
-		 * for (ListComp listComp : this.columnNameValues) {
+		}*/
+		
+		for (ListComp listComp : this.columnNameValues) {
 			if (validColumn(listComp)) {
 				if (titleLine.length() > 0) {
 					titleLine.append(",");
 				}
 				titleLine.append(StringEscapeUtils.escapeCsv(listComp.getItemLabel()));
 			}
-		}*/
+		}
 		titleLine.append("\n");
 		FileWriter fileWriter = new FileWriter(tempFile);
 		fileWriter.write("SABHRS Detail Report\n\n");
 		
+		/*Search Criteria*/
 		if(!"".equals(filters)&& filters != null){
 			String[] criteria = URLDecoder.decode(filters,"UTF-8").split("&");
 			for(String tmp : criteria){
-				Integer length = tmp.trim().split("=").length;
-				if(length > 1){
-					String column = tmp.split("=")[0];
-					String value = tmp.split("=")[1];
-					fileWriter.write(getColumnLabel(column)+" = "+value+"\n");
-					//System.out.println(column +" = "+value);
+				if(!tmp.contains("_widget")){
+					Integer length = tmp.trim().split("=").length;
+					if(length > 1){
+						String column = tmp.split("=")[0];
+						String value = tmp.split("=")[1];
+						fileWriter.write(getColumnLabel(column)+" = "+value+"\n");
+						//System.out.println(column +" = "+value);
+					}
 				}
 			}
 			fileWriter.write("\n");
