@@ -101,9 +101,6 @@
 				$('#gridFrm')[0].reset();
 			}
 			
-			$.subscribe("searchDivComplete", function (event, data) {
-				$('#itemTypeCd_widget').unbind( "focus" );
-			});
 
 	   	</script>
 	   	<style>
