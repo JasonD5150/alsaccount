@@ -6,8 +6,8 @@ import org.apache.shiro.SecurityUtils;
 
 import com.opensymphony.xwork2.ActionSupport;
 
+import fwp.als.hibernate.admin.dao.AlsSysActivityTypeCodes;
 import fwp.alsaccount.appservice.admin.AlsSysActivityTypeCodesAS;
-import fwp.alsaccount.dao.admin.AlsSysActivityTypeCodes;
 import fwp.security.user.UserDTO;
 
 

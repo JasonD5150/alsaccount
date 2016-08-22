@@ -9,8 +9,8 @@ import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionSupport;
 
+import fwp.als.hibernate.admin.dao.AlsSysActivityTypeTranCds;
 import fwp.alsaccount.appservice.admin.AlsSysActivityTypeTranCdsAS;
-import fwp.alsaccount.dao.admin.AlsSysActivityTypeTranCds;
 import fwp.alsaccount.dto.admin.AlsSysActivityTypeTranCdsDTO;
 import fwp.alsaccount.utils.Utils;
 

@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -32,6 +33,14 @@ public class Utils {
 		return rtn;
 	}
 
+	public static Date addDays(Date date, int days) {
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTime(date);
+        cal.add(Calendar.DATE, days);
+                 
+        return cal.getTime();
+    }
+	
 	public static Timestamp StrToTimestamp(String inDate, String type){
 		DateFormat shortFormat = new SimpleDateFormat("dd/MM/yyyy");
 		DateFormat longFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
@@ -267,5 +276,8 @@ public class Utils {
 	    return new java.sql.Date(date.getTime());
 	} 
 	
-	
+	public static Double nullFix(Double in){
+        if (in == null) return 0.0;
+        else return in;
+	}
 }

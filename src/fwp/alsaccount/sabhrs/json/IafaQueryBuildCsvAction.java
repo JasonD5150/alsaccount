@@ -15,7 +15,7 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 import com.opensymphony.xwork2.ActionSupport;
 
 import fwp.ListComp;
-import fwp.alsaccount.dto.sabhrs.IafaQueryDTO;
+import fwp.alsaccount.dto.sabhrs.IafaDetailsDTO;
 
 /**
  * Action handler for the SABHRS Query search page to CSV export file.
@@ -26,7 +26,7 @@ public class IafaQueryBuildCsvAction extends ActionSupport {
 
 	private static final long serialVersionUID = -198737835399515405L;
 
-	private List<IafaQueryDTO> iafaEntries = new ArrayList<>();
+	private List<IafaDetailsDTO> iafaEntries = new ArrayList<>();
 	private List<ListComp> columnNameValues = new ArrayList<>();
 	private String filters;
 
@@ -144,7 +144,7 @@ public class IafaQueryBuildCsvAction extends ActionSupport {
 		fileWriter.write(titleLine.toString());
 		
 		Double amountTotal = 0.0;
-		for (IafaQueryDTO ie : iafaEntries) {			
+		for (IafaDetailsDTO ie : iafaEntries) {			
 			StringBuilder line = new StringBuilder();
 			Boolean firstColumn = true;
 			for (ListComp listComp : this.columnNameValues) {
@@ -189,7 +189,7 @@ public class IafaQueryBuildCsvAction extends ActionSupport {
 	}
 	private Boolean validColumn(ListComp listComp) {
 		try {
-			IafaQueryDTO.class.getMethod("get" + StringUtils.capitalize(listComp.getItemVal()));
+			IafaDetailsDTO.class.getMethod("get" + StringUtils.capitalize(listComp.getItemVal()));
 			System.out.println("Found get" + StringUtils.capitalize(listComp.getItemVal()));
 			return true;
 		} catch (NoSuchMethodException e) {
@@ -313,11 +313,11 @@ public class IafaQueryBuildCsvAction extends ActionSupport {
 		return columnNameValues;
 	}
 
-	public List<IafaQueryDTO> getIafaEntries() {
+	public List<IafaDetailsDTO> getIafaEntries() {
 		return iafaEntries;
 	}
 
-	public void setIafaEntries(List<IafaQueryDTO> iafaEntries) {
+	public void setIafaEntries(List<IafaDetailsDTO> iafaEntries) {
 		this.iafaEntries = iafaEntries;
 	}
 

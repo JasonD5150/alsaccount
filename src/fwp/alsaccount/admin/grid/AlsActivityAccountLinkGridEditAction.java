@@ -6,9 +6,9 @@ import org.apache.shiro.SecurityUtils;
 
 import com.opensymphony.xwork2.ActionSupport;
 
+import fwp.als.hibernate.admin.dao.AlsActivityAccountLinkage;
+import fwp.als.hibernate.admin.dao.AlsActivityAccountLinkageIdPk;
 import fwp.alsaccount.appservice.admin.AlsActivityAccountLinkageAS;
-import fwp.alsaccount.dao.admin.AlsActivityAccountLinkage;
-import fwp.alsaccount.dao.admin.AlsActivityAccountLinkageIdPk;
 import fwp.security.user.UserDTO;
 
 
@@ -39,10 +39,9 @@ public class AlsActivityAccountLinkGridEditAction extends ActionSupport{
 			
 			if (oper.equalsIgnoreCase("add")) {
 				tmp = new AlsActivityAccountLinkage();
-				String[] keys = this.sysActTypeTransCd.split("\\s+");
 				idPk.setAsacBudgetYear(budgYear);
-				idPk.setAsacSystemActivityTypeCd(keys[0]);
-				idPk.setAsacTxnCd(keys[1]);
+				idPk.setAsacSystemActivityTypeCd(this.sysActTypeTransCd.substring(0, 1));
+				idPk.setAsacTxnCd(this.sysActTypeTransCd.substring(1, this.sysActTypeTransCd.length()));
 				tmp.setIdPk(idPk);
 			} else {
 				//Set current idPk
@@ -73,7 +72,7 @@ public class AlsActivityAccountLinkGridEditAction extends ActionSupport{
 				tmp.setAaalWhoLog(userInfo.getStateId().toString());
 				tmp.setAaalWhenLog(date);
 				
-				appSer.save(tmp);
+				//appSer.save(tmp);
 				
 			}else if(oper.equalsIgnoreCase("del")){
 				appSer.delete(tmp);

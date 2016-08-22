@@ -114,13 +114,12 @@
 	
     <div style="width:800px;text-align:center">
     	<h2 class="title">IAFA Session Query</h2>
-   	</div>	
+   	</div>
 	<s:actionerror/>
-	<s:url id="searchCriteriaDivUrl" value="iafaQueryDiv_input.action" />
+	<s:url id="searchCriteriaDivUrl" value="iafaDetailsQueryDiv_input.action" />
 	<sj:div id="searchCriteriaDiv" 
 			href="%{searchCriteriaDivUrl}"
 			width="950"
-			formIds="divFrm"
 			reloadTopics="reloadLists"
 			onCompleteTopics="searchDivComplete">
 	</sj:div>

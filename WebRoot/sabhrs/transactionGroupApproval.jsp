@@ -11,6 +11,7 @@
         <sj:head locale="en" jqueryui="true" jquerytheme="smoothness" customBasepath="css/jquery"/>
         <script type="text/javascript" src= "/alsaccount/sabhrs/scripts/fwp.transactionGroupApproval.js"></script>  
     	<script type="text/javascript" src= "/alsaccount/scripts/fieldEdits.js"></script>  
+    	<script type="text/javascript" src= "/alsaccount/scripts/menuSecurity.js"></script>  
     </fwp:head>
 
     <s:hidden id="bankCodeLst" name="bankCodeLst"/>
@@ -223,7 +224,7 @@
 			</tr>
 		</table>
 		</s:form>
-		<input type="submit" value="Save" onclick="submitTransGroupApproval();">
+		<input id="saveTransGrpApp" type="submit" value="Save" onclick="submitTransGroupApproval();">
 		<input type="submit" value="Back" onclick="$('#transGroupAppDiv').toggle(false);">
 	</div>
 	<input id="getRpt" 

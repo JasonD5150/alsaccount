@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import com.opensymphony.xwork2.ActionSupport;
 
 import fwp.alsaccount.utils.ListUtils;
-import fwp.utils.StringUtils;
+import fwp.utils.FwpStringUtils;
 
 public class OrgControlDivAction extends ActionSupport{
 	
@@ -21,7 +21,7 @@ public class OrgControlDivAction extends ActionSupport{
 	}
 	
 	public String input(){
-		StringUtils su = new StringUtils();
+		FwpStringUtils su = new FwpStringUtils();
 		ListUtils lu = new ListUtils();
 		try {
 			setAccountCdLst(lu.getAccCdListTxt(budgYear, false));

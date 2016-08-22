@@ -178,9 +178,15 @@
 						  headerKey="" headerValue="" theme="simple"
 						  list="#{'A':'Active', 'V':'Voided'}"/></td>
 				<td class="label">Session Date: </td>
-				<td><s:textfield id="sessDt" name="sessDt" theme="simple" title="Issuing Provider Name" /></td>
+				<td><sj:datepicker changeMonth="true" changeYear="true" id="sessDt"
+				   name="sessDt" displayFormat="mm/dd/yy"
+				   cssStyle="width:80px" maxlength="10"  maxDate="+0" title="Billing Period To Date" 
+				   showOn="focus" onblur="testDate(this)" placeholder="mm/dd/yyyy" /></td>
 				<td class="label">Session Void Date: </td>
-				<td><s:textfield id="sessVoidDt" name="sessVoidDt" theme="simple" title="Issuing Provider Name" /></td>
+				<td><sj:datepicker changeMonth="true" changeYear="true" id="sessVoidDt"
+				   name="sessVoidDt" displayFormat="mm/dd/yy"
+				   cssStyle="width:80px" maxlength="10"  maxDate="+0" title="Billing Period To Date" 
+				   showOn="focus" onblur="testDate(this)" placeholder="mm/dd/yyyy" /></td>
     			<td class="label">Session Origin: </td>
 				<td><s:textfield id="sessOrigin" name="sessOrigin" theme="simple" title="Issuing Provider Name" />
     		</tr>

@@ -23,14 +23,14 @@ import org.hibernate.type.IntegerType;
 import org.hibernate.type.StringType;
 import org.hibernate.type.TimestampType;
 
+import fwp.als.hibernate.admin.dao.AlsMisc;
+import fwp.als.hibernate.provider.dao.AlsProviderInfo;
 import fwp.alsaccount.appservice.admin.AlsMiscAS;
-import fwp.alsaccount.dao.admin.AlsMisc;
-import fwp.alsaccount.dao.admin.AlsProviderInfo;
 import fwp.alsaccount.dto.admin.AlsTribeItemDTO;
 import fwp.alsaccount.dto.sabhrs.AlsProviderBankDetailsDTO;
 import fwp.alsaccount.dto.sabhrs.AlsSabhrsEntriesDTO;
 import fwp.alsaccount.dto.sabhrs.AlsTransactionGrpMassCopyDTO;
-import fwp.alsaccount.dto.sabhrs.IafaQueryDTO;
+import fwp.alsaccount.dto.sabhrs.IafaDetailsDTO;
 import fwp.alsaccount.dto.sabhrs.InternalProviderTdtDTO;
 import fwp.alsaccount.hibernate.HibernateSessionFactory;
 
@@ -920,8 +920,8 @@ public class HibHelpers {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<IafaQueryDTO> getIafaQueryRecords(String where) throws HibernateException {
-		List<IafaQueryDTO> lst = new ArrayList<IafaQueryDTO>();
+	public List<IafaDetailsDTO> getIafaQueryRecords(String where) throws HibernateException {
+		List<IafaDetailsDTO> lst = new ArrayList<IafaDetailsDTO>();
 		String queryStr = "SELECT DISTINCT ALS_ITEM_APPL_FEE_ACCT.API_PROVIDER_NO apiProviderNo, "
 				+ "ALS_ITEM_APPL_FEE_ACCT.API_PROVIDER_NO||'_'||ALS_ITEM_APPL_FEE_ACCT.APR_BILLING_FROM||'_'||ALS_ITEM_APPL_FEE_ACCT.APR_BILLING_TO||'_'||ALS_ITEM_APPL_FEE_ACCT.AIAFA_SEQ_NO gridKey, "
 				+ "ALS_PROVIDER_INFO.API_BUSINESS_NM apiBusinessNm, "
@@ -1056,7 +1056,7 @@ public class HibHelpers {
 					.addScalar("reasonDesc")
 	
 					.setResultTransformer(
-							Transformers.aliasToBean(IafaQueryDTO.class));
+							Transformers.aliasToBean(IafaDetailsDTO.class));
 
 			lst = query.list();
 		} catch (HibernateException he){
@@ -1071,6 +1071,7 @@ public class HibHelpers {
 		return lst;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public String getOtherTxnGrp(Integer provNo, java.util.Date date, java.util.Date date2, Integer iafaSeqNo, String transGroupIdentifier) {
 		List<String> rtnLst;
 		String rtn = "";
@@ -1134,7 +1135,6 @@ public class HibHelpers {
 	
 	public Double getSessionTotal(String string, Integer ahmCd, java.util.Date date, Date fromDt, Date toDt) {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-		String test = sdf.format(date);
 		Double rtn = 0.0;
 		String queryString =  "SELECT NVL(SUM(AIAFA_AMT),0)  rtn "
 							+ "FROM Als.ALS_ITEM_APPL_FEE_ACCT "
@@ -1193,6 +1193,5 @@ public class HibHelpers {
 		}
 		return rtn;
 	}
-	
 }
 

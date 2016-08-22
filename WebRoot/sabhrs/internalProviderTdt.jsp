@@ -107,19 +107,19 @@
     				<td><sj:datepicker changeMonth="true" changeYear="true" id="bpeFrom"
 									   name="bpeFrom" displayFormat="mm/dd/yy"
 									   cssStyle="width:80px" maxlength="10"  maxDate="+0" title="BPE Date From" 
-									   showOn="focus" onblur="testDate(this)"/></td>
+									   showOn="focus" onblur="testDate(this)" placeholder="mm/dd/yyyy"/></td>
     				<td class="label"> To: </td>
     				<td><sj:datepicker changeMonth="true" changeYear="true" id="bpeTo"
 									   name="bpeTo" displayFormat="mm/dd/yy"
 									   cssStyle="width:80px" maxlength="10"  maxDate="+0" title="BPE Date To" 
-									   showOn="focus" onblur="testDate(this)"/></td>
+									   showOn="focus" onblur="testDate(this)" placeholder="mm/dd/yyyy"/></td>
 	   			</tr>
 	   			<tr>
 	   				<td class="label">Offline Payment Approval Date: </td>
     				<td><sj:datepicker changeMonth="true" changeYear="true" id="opaDate"
 									   name="opaDate" displayFormat="mm/dd/yy"
 									   cssStyle="width:80px" maxlength="10"  maxDate="+0" title="Offline Payment Approval Date" 
-									   showOn="focus" onblur="testDate(this)"/></td>
+									   showOn="focus" onblur="testDate(this)" placeholder="mm/dd/yyyy"/></td>
     				<td class="label"> Provider No: </td>
     				<td><s:select 
 			  			id="provNo"

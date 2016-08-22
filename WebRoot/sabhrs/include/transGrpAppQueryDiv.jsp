@@ -60,12 +60,12 @@
 	    	 	<td><sj:datepicker changeMonth="true" changeYear="true" id="srchTranGrpCreated"
 				   name="srchTranGrpCreated" displayFormat="mm/dd/yy"
 				   cssStyle="width:80px" maxlength="10"  maxDate="+0" title="Transaction Group Created" 
-				   showOn="focus" onblur="testDate(this)" /></td>
+				   showOn="focus" onblur="testDate(this)" placeholder="mm/dd/yyyy"/></td>
 				<td>Accounting Date: </td>
 	    		<td><sj:datepicker changeMonth="true" changeYear="true" id="srchAccDt"
 				   name="srchAccDt" displayFormat="mm/dd/yy"
 				   cssStyle="width:80px" maxlength="10"  maxDate="+0" title="Accounting Date" 
-				   showOn="focus" onblur="testDate(this)"/></td>
+				   showOn="focus" onblur="testDate(this)" placeholder="mm/dd/yyyy"/></td>
     		</tr>
 			<tr>
 			   	<td>Summary Approval Status: </td>
@@ -76,7 +76,7 @@
 	    	 	<td><sj:datepicker changeMonth="true" changeYear="true" id="srchSumAppDt"
 				   name="srchSumAppDt" displayFormat="mm/dd/yy"
 				   cssStyle="width:80px" maxlength="10"  maxDate="+0" title="Summary Approval Date" 
-				   showOn="focus" onblur="testDate(this)"/></td>
+				   showOn="focus" onblur="testDate(this)" placeholder="mm/dd/yyyy"/></td>
     		</tr>
     		<tr>
 			   	<td>Interface Approval Status: </td>
@@ -87,14 +87,14 @@
 	    	 	<td><sj:datepicker changeMonth="true" changeYear="true" id="srchIntAppDt"
 				   name="srchIntAppDt" displayFormat="mm/dd/yy"
 				   cssStyle="width:80px" maxlength="10"  maxDate="+0" title="Interface Approval Date" 
-				   showOn="focus" onblur="testDate(this)"/></td>
+				   showOn="focus" onblur="testDate(this)" placeholder="mm/dd/yyyy"/></td>
     		</tr>
     		<tr>
     			<td>Date Uploaded to Summary: </td>
 	    	 	<td><sj:datepicker changeMonth="true" changeYear="true" id="srchUpToSumDt"
 				   name="srchUpToSumDt" displayFormat="mm/dd/yy"
 				   cssStyle="width:80px" maxlength="10"  maxDate="+0" title="Date Uploaded to Summary:" 
-				   showOn="focus" onblur="testDate(this)"/></td>
+				   showOn="focus" onblur="testDate(this)" placeholder="mm/dd/yyyy"/></td>
 				<td class="label">Bank Code: </td>
     			<td><s:select 
 			  			id="srchBankCd"

@@ -9,9 +9,9 @@ import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionSupport;
 
+import fwp.als.hibernate.provider.dao.AlsProviderInfo;
 import fwp.alsaccount.appservice.admin.AlsNonAlsOrgControlAS;
 import fwp.alsaccount.dao.admin.AlsNonAlsOrgControl;
-import fwp.alsaccount.dao.admin.AlsProviderInfo;
 import fwp.alsaccount.dto.admin.AlsNonAlsOrgControlDTO;
 import fwp.alsaccount.utils.HibHelpers;
 import fwp.alsaccount.utils.Utils;

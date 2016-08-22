@@ -33,12 +33,12 @@
 	    		<td><sj:datepicker changeMonth="true" changeYear="true" id="bpFromDt"
 				   name="bpFromDt" displayFormat="mm/dd/yy"
 				   cssStyle="width:80px" maxlength="10"  maxDate="+0" title="Billing Period From Date" 
-				   showOn="focus" onblur="testDate(this)" /></td>
+				   showOn="focus" onblur="testDate(this)" placeholder="mm/dd/yyyy"/></td>
 			   	<td>Billing Period To Date: </td>
 	    	 	<td><sj:datepicker changeMonth="true" changeYear="true" id="bpToDt"
 				   name="bpToDt" displayFormat="mm/dd/yy"
 				   cssStyle="width:80px" maxlength="10"  maxDate="+0" title="Billing Period To Date" 
-				   showOn="focus" onblur="testDate(this)" /></td>
+				   showOn="focus" onblur="testDate(this)" placeholder="mm/dd/yyyy"/></td>
     		</tr>
     		<tr><td colspan="4" style="border-bottom:1px solid black;"><br></td></tr>
     		<tr><td><br></td></tr>
@@ -47,12 +47,12 @@
 	    		<td><sj:datepicker changeMonth="true" changeYear="true" id="fromDt"
 				   name="fromDt" displayFormat="mm/dd/yy"
 				   cssStyle="width:80px" maxlength="10"  maxDate="+0" title="From Date" 
-				   showOn="focus" onblur="testDate(this)"/></td>
+				   showOn="focus" onblur="testDate(this)" placeholder="mm/dd/yyyy"/></td>
 			   	<td>To Date: </td>
 	    	 	<td><sj:datepicker changeMonth="true" changeYear="true" id="toDt"
 				   name="toDt" displayFormat="mm/dd/yy"
 				   cssStyle="width:80px" maxlength="10"  maxDate="+0" title="To Date" 
-				   showOn="focus" onblur="testDate(this)"/></td>
+				   showOn="focus" onblur="testDate(this)" placeholder="mm/dd/yyyy"/></td>
     		</tr>
     		<tr>
     			<td class="label">Budget Year: </td>

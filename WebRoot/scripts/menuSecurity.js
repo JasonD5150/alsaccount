@@ -4,8 +4,11 @@ function menuSec (tstId) {
 	if(role == "V"){
 		if (tstId === 'genNonAlsEntries') { // budget information -- appropriations
 			$("td[id='add_alsSabhrsEntriesTable']").toggle(false);
-			   $("td[id='addTemplate_alsSabhrsEntriesTable']").toggle(false);
-		} 
+			$("td[id='addTemplate_alsSabhrsEntriesTable']").toggle(false);
+		}else if(tstId === 'transGrpApp'){
+			$("#saveTransGrpApp").toggle(false);
+			$("#getRpt").toggle(false);
+		}
 	}
 	
 

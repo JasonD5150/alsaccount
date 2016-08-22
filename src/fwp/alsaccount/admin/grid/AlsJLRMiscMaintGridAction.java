@@ -9,8 +9,8 @@ import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionSupport;
 
+import fwp.als.hibernate.admin.dao.AlsMisc;
 import fwp.alsaccount.appservice.admin.AlsMiscAS;
-import fwp.alsaccount.dao.admin.AlsMisc;
 import fwp.alsaccount.utils.Utils;
 
 public class AlsJLRMiscMaintGridAction extends ActionSupport{

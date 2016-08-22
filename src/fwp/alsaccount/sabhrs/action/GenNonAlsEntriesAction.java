@@ -9,7 +9,7 @@ import com.opensymphony.xwork2.ActionSupport;
 
 import fwp.ListComp;
 import fwp.alsaccount.utils.ListUtils;
-import fwp.utils.StringUtils;
+import fwp.utils.FwpStringUtils;
 
 public class GenNonAlsEntriesAction extends ActionSupport{
 	
@@ -30,7 +30,7 @@ public class GenNonAlsEntriesAction extends ActionSupport{
 	}
 	
 	public String input(){
-		StringUtils su = new StringUtils();
+		FwpStringUtils su = new FwpStringUtils();
 		ListUtils lu = new ListUtils();
 		try {
 			setFundLst(su.listCompListToString(lu.getFundList(null)));

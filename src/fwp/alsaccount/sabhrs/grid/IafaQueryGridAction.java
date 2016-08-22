@@ -11,14 +11,14 @@ import org.slf4j.LoggerFactory;
 import com.opensymphony.xwork2.ActionSupport;
 
 import fwp.alsaccount.dto.sabhrs.AlsSabhrsEntriesDTO;
-import fwp.alsaccount.dto.sabhrs.IafaQueryDTO;
+import fwp.alsaccount.dto.sabhrs.IafaDetailsDTO;
 import fwp.alsaccount.utils.HibHelpers;
 
 public class IafaQueryGridAction extends ActionSupport{
     private static final long   serialVersionUID = 5078264277068533593L;
     private static final Logger    log              = LoggerFactory.getLogger(IafaQueryGridAction.class);
 
-    private List<IafaQueryDTO>    model;
+    private List<IafaDetailsDTO>    model;
     private Integer             rows             = 0;
     private Integer             page             = 0;
     private Integer             total            = 0;
@@ -96,17 +96,17 @@ public class IafaQueryGridAction extends ActionSupport{
     	HibHelpers hh = new HibHelpers();
     	String where = buildQueryStr();
     	
-    	List<IafaQueryDTO> iafaLst = new ArrayList<IafaQueryDTO>();
-    	IafaQueryDTO iafa = null;
+    	List<IafaDetailsDTO> iafaLst = new ArrayList<IafaDetailsDTO>();
+    	IafaDetailsDTO iafa = null;
         try{
-        	setModel(new ArrayList<IafaQueryDTO>());
+        	setModel(new ArrayList<IafaDetailsDTO>());
         	if (search) {
         		Integer cnt = hh.getIafaQueryCount(where);
         		if(cnt > 10000){
         			setUserdata("Please narrow search. The search grid is limited to 10000 rows. There were " + cnt + " entries selected.");
             	}else{
         			iafaLst = hh.getIafaQueryRecords(where);
-        			for(IafaQueryDTO tmp : iafaLst){
+        			for(IafaDetailsDTO tmp : iafaLst){
             			iafa = tmp;
             			iafa.setOtherTxnGrp(hh.getOtherTxnGrp(iafa.getApiProviderNo(), iafa.getAprBillingFrom(), iafa.getAprBillingTo(), iafa.getAiafaSeqNo(), iafa.getAtgsGroupIdentifier()));
             			if(iafa.getAcdCostGroupSeqNo() != null){
@@ -445,11 +445,11 @@ public class IafaQueryGridAction extends ActionSupport{
         this.loadonce = loadonce;
     }
 
-	public List<IafaQueryDTO> getModel() {
+	public List<IafaDetailsDTO> getModel() {
 		return model;
 	}
 
-	public void setModel(ArrayList<IafaQueryDTO> arrayList) {
+	public void setModel(ArrayList<IafaDetailsDTO> arrayList) {
 		this.model = arrayList;
 	}
 

@@ -6,8 +6,8 @@ import org.apache.shiro.SecurityUtils;
 
 import com.opensymphony.xwork2.ActionSupport;
 
+import fwp.als.hibernate.admin.dao.AlsTribeInfo;
 import fwp.alsaccount.appservice.admin.AlsTribeInfoAS;
-import fwp.alsaccount.dao.admin.AlsTribeInfo;
 import fwp.security.user.UserDTO;
 
 

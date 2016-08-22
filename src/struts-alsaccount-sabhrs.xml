@@ -72,14 +72,19 @@
 			<result name="input">sabhrs/internalProviderTdt.jsp</result>        
 		</action>
 		<action name="iafaQuery_*" method="{1}" class="fwp.alsaccount.action.GenericAction">
-			<result>sabhrs/iafaQuery.jsp</result>
-			<result name="error">sabhrs/iafaQuery.jsp</result>
-			<result name="input">sabhrs/iafaQuery.jsp</result>        
+			<result>sabhrs/iafaDetailsQuery.jsp</result>
+			<result name="error">sabhrs/iafaDetailsQuery.jsp</result>
+			<result name="input">sabhrs/iafaDetailsQuery.jsp</result>        
 		</action>
-		<action name="iafaQueryDiv_*" method="{1}" class="fwp.alsaccount.sabhrs.action.IafaQueryDivAction">
-			<result>sabhrs/include/iafaQueryDiv.jsp</result>
-			<result name="error">sabhrs/include/iafaQueryDiv.jsp</result>
-			<result name="input">sabhrs/include/iafaQueryDiv.jsp</result>        
+		<action name="iafaDetailsQueryDiv_*" method="{1}" class="fwp.alsaccount.sabhrs.action.IafaDetailsQueryDivAction">
+			<result>sabhrs/include/iafaDetailsQueryDiv.jsp</result>
+			<result name="error">sabhrs/include/iafaDetailsQueryDiv.jsp</result>
+			<result name="input">sabhrs/include/iafaDetailsQueryDiv.jsp</result>        
+		</action>
+		<action name="iafaSummaryQuery_*" method="{1}" class="fwp.alsaccount.action.GenericAction">
+			<result>sabhrs/iafaSummaryQuery.jsp</result>
+			<result name="error">sabhrs/iafaSummaryQuery.jsp</result>
+			<result name="input">sabhrs/iafaSummaryQuery.jsp</result>        
 		</action>
 	</package>
  

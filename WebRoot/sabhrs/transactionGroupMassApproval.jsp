@@ -137,12 +137,12 @@
 		    		<td><sj:datepicker changeMonth="true" changeYear="true" id="bpe"
 					   name="bpe" displayFormat="mm/dd/yy"
 					   cssStyle="width:80px" maxlength="10"  maxDate="+0" title="Billing Period End Date" 
-					   showOn="focus" onblur="testDate(this)" /></td>
+					   showOn="focus" onblur="testDate(this)" placeholder="mm/dd/yyyy"/></td>
 					<td>Offline Payment Approval Date</td>
 					<td><sj:datepicker changeMonth="true" changeYear="true" id="opa"
 					   name="opa" displayFormat="mm/dd/yy"
 					   cssStyle="width:80px" maxlength="10"  maxDate="+0" title="Offline Payment Approval Date" 
-					   showOn="focus" onblur="testDate(this)" /></td>
+					   showOn="focus" onblur="testDate(this)" placeholder="mm/dd/yyyy"/></td>
 	    		</tr>
     		</table>
 		</form>	

@@ -10,8 +10,8 @@ import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionSupport;
 
+import fwp.als.hibernate.admin.dao.AlsActivityAccountLinkage;
 import fwp.alsaccount.appservice.admin.AlsActivityAccountLinkageAS;
-import fwp.alsaccount.dao.admin.AlsActivityAccountLinkage;
 import fwp.alsaccount.dto.admin.AlsActivityAccountLinkageDTO;
 
 public class AlsActivityAccountLinkGridAction extends ActionSupport{
@@ -50,7 +50,7 @@ public class AlsActivityAccountLinkGridAction extends ActionSupport{
         	for(AlsActivityAccountLinkage aaa : aaal){
         		tmp = new AlsActivityAccountLinkageDTO();
         		tmp.setIdPk(aaa.getIdPk());
-        		tmp.setSysActTypeTransCd(aaa.getIdPk().getAsacSystemActivityTypeCd()+" "+aaa.getIdPk().getAsacTxnCd());
+        		tmp.setSysActTypeTransCd(aaa.getIdPk().getAsacSystemActivityTypeCd()+aaa.getIdPk().getAsacTxnCd());
         		tmp.setAaalAccountingCdFlag(aaa.getAaalAccountingCdFlag());
         		tmp.setAaalReference(aaa.getAaalReference());
         		tmp.setAaalWhenLog(aaa.getAaalWhenLog());

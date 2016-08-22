@@ -4,6 +4,10 @@
  * 
  * @author cfa027
  */
+$(document).ready(function(){
+	menuSec("transGrpApp");
+});
+
 function errorHandler(response, postdata) {
     rtrnstate = true; 
     rtrnMsg = ""; 

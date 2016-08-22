@@ -10,15 +10,15 @@
         <module name="fwp.common.struts2.json"/>
         <module name="fwp.common.struts2.jquery"/> 
         <module name="fwp.common.hibernate" /> 
-		<module name="fwp.dal.alsaccount" export="false"/>
-		<module name="fwp.dal.alsadmin" export="false"/>
+		<module name="fwp.dal.alsaccount"/>
+		<module name="fwp.dal.alsadmin"/>
  		<module name="org.apache.commons.lang"/>
  		<module name="fwp.common.jsonOrg"/>
  		<module name="fwp.custom.JsonRpc"/>
  		<module name="org.slf4j"/>
- 		<module name="fwp.dal.gen" export="false"/>
+ 		<module name="fwp.dal.gen"/>
  		<module name="fwp.common.lang3"/>
- 		<module name="fwp.custom.fwpUtils"/>
+ 		<module name="fwp.custom.fwpMethods"/>
      </dependencies>
      <exclude-subsystems>
         <subsystem name="logging" />

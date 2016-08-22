@@ -15,20 +15,18 @@ import fwp.ListComp;
 import fwp.als.appservice.admin.AlsMiscAS;
 import fwp.als.appservice.generic.AlsWebGenCodesAS;
 import fwp.als.hibernate.admin.dao.AlsMisc;
+import fwp.als.hibernate.admin.dao.AlsSysActivityControl;
+import fwp.als.hibernate.admin.dao.AlsTribeInfo;
 import fwp.als.hibernate.generic.dao.AlsWebGenCodes;
+import fwp.als.hibernate.item.dao.AlsItemCategory;
 import fwp.alsaccount.appservice.admin.AlsAccCdControlAS;
 import fwp.alsaccount.appservice.admin.AlsAccountMasterAS;
 import fwp.alsaccount.appservice.admin.AlsItemCategoryAS;
-import fwp.alsaccount.appservice.admin.AlsProviderInfoAS;
 import fwp.alsaccount.appservice.admin.AlsSysActivityControlAS;
 import fwp.alsaccount.appservice.admin.AlsTribeInfoAS;
 import fwp.alsaccount.appservice.sabhrs.AlsTransactionGrpStatusAS;
 import fwp.alsaccount.dao.admin.AlsAccCdControl;
 import fwp.alsaccount.dao.admin.AlsAccountMaster;
-import fwp.alsaccount.dao.admin.AlsItemCategory;
-import fwp.alsaccount.dao.admin.AlsProviderInfo;
-import fwp.alsaccount.dao.admin.AlsSysActivityControl;
-import fwp.alsaccount.dao.admin.AlsTribeInfo;
 import fwp.alsaccount.dao.sabhrs.AlsTransactionGrpStatus;
 import fwp.alsaccount.hibernate.HibernateSessionFactory;
 
@@ -58,15 +56,12 @@ public class ListUtils {
         	if (StringUtils.isNotBlank(amKey2Value)) {
         		whereClause += " AND amKey2 = '" + amKey2Value + "'";
         	}
-        	
         	if (StringUtils.isNotBlank(amKey3Value)) {
         		whereClause += " AND amKey3 = '" + amKey3Value + "'";
         	}
-        	
         	if (StringUtils.isNotBlank(amKey4Value)) {
         		whereClause += " AND amKey4 = '" + amKey4Value + "'";
         	}
-        	
         	if (StringUtils.isNotBlank(amKey5Value)) {
         		whereClause += " AND amKey5 = '" + amKey5Value + "'";
         	}
@@ -709,6 +704,13 @@ public class ListUtils {
 	}
 	
 	
+	
+	
+	
+	
+	
+	
+	
 	/*IAFA Query Lists*/
 	@SuppressWarnings("unchecked")
 	public List<ListComp> getIafaQueryProviderList() {
@@ -788,9 +790,27 @@ public class ListUtils {
 			tmp.setItemVal(atgs.getIdPk().getAtgsGroupIdentifier());
 			lst.add(tmp);
 		}
-
 		getSession().close();
+		return lst;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<ListComp> getIafaSummaryProcessTypeList() {
+		List<ListComp> lst = new ArrayList<ListComp>();
 
+		String queryString = "SELECT AM_PAR_VAL itemVal, "
+							+ "AM_PAR_VAL||' - '||AM_KEY2 itemLabel "
+							+ "FROM ALS.ALS_MISC "
+							+ "WHERE Am_Key1='PROCESS TYPE' And Am_Key2 IN ('ISSUE','OFFLINE ISSUE') "
+							+ "ORDER BY  2,1";
+
+		Query query = getSession().createSQLQuery(queryString)
+				.addScalar("itemVal", StringType.INSTANCE)
+				.addScalar("itemLabel", StringType.INSTANCE)
+				.setResultTransformer(Transformers.aliasToBean(ListComp.class));
+
+		lst = query.list();
+		getSession().close();
 		return lst;
 	}
 }

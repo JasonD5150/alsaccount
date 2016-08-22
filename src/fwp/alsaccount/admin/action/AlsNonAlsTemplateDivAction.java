@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 import com.opensymphony.xwork2.ActionSupport;
 
 import fwp.alsaccount.utils.ListUtils;
-import fwp.utils.StringUtils;
+import fwp.utils.FwpStringUtils;
 
 public class AlsNonAlsTemplateDivAction extends ActionSupport{
 	
@@ -25,7 +25,7 @@ public class AlsNonAlsTemplateDivAction extends ActionSupport{
 	}
 	
 	public String input(){
-		StringUtils su = new StringUtils();
+		FwpStringUtils su = new FwpStringUtils();
 		ListUtils lu = new ListUtils();
 		try {
 			setAccountLst(su.listCompListToString(lu.getAccountList(budgYear)));

@@ -6,9 +6,9 @@ import org.apache.shiro.SecurityUtils;
 
 import com.opensymphony.xwork2.ActionSupport;
 
+import fwp.als.hibernate.admin.dao.AlsSysActivityTypeTranCds;
+import fwp.als.hibernate.admin.dao.AlsSysActivityTypeTranCdsIdPk;
 import fwp.alsaccount.appservice.admin.AlsSysActivityTypeTranCdsAS;
-import fwp.alsaccount.dao.admin.AlsSysActivityTypeTranCds;
-import fwp.alsaccount.dao.admin.AlsSysActivityTypeTranCdsIdPk;
 import fwp.security.user.UserDTO;
 
 

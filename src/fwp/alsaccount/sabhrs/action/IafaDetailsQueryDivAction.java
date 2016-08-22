@@ -11,10 +11,10 @@ import fwp.ListComp;
 import fwp.alsaccount.utils.HibHelpers;
 import fwp.alsaccount.utils.ListUtils;
 
-public class IafaQueryDivAction extends ActionSupport{
+public class IafaDetailsQueryDivAction extends ActionSupport{
 	
 	private static final long serialVersionUID = 5217638596755074369L;
-	private static final Logger log = LoggerFactory.getLogger(IafaQueryDivAction.class);
+	private static final Logger log = LoggerFactory.getLogger(IafaDetailsQueryDivAction.class);
 
 	private List<ListComp> provLst;
 	private List<ListComp> tribeCdLst;
@@ -32,9 +32,9 @@ public class IafaQueryDivAction extends ActionSupport{
 
 	private String budgYear;
 
-	public IafaQueryDivAction(){
+	public IafaDetailsQueryDivAction(){
 	}
-	
+
 	public String input(){
 		ListUtils lu = new ListUtils();
 		HibHelpers hh = new HibHelpers();
@@ -43,18 +43,18 @@ public class IafaQueryDivAction extends ActionSupport{
 		}
 		try {
 			provLst = lu.getIafaQueryProviderList();
-			tribeCdLst = lu.getTribeCdList();
 			applicationTypeLst = lu.getIafaApplicationTypeList();
-			itemIndicatorLst = lu.getMiscCodes("ITEM INDICATOR", null, null, null, null, null, null, true, true);
-			itemStatusLst = lu.getMiscCodes("ITEM STATUS", null, null, null, null, null, null, true, true);
-			itemCategoryCdLst = lu.getItemCategoryList();
 			itemTypeLst = lu.getItemTypeCd(null);
-			applicationDispositionLst = lu.getMiscCodes("APPLICATION DISPOSITION", null, null, null, null, null, null, true, true);
 			amountTypeCdLst = lu.getMiscCodes("IAFA_AMOUNT_TYPE", null, null, null, null, null, null, true, true);
-			costPrerequisiteCdLst = lu.getIafaPrerequisiteList();
 			processCategoryCdLst = lu.getMiscCodes("PROCESS_CATEGORY", null, null, null, null, null, null, true, true);
 			processTypeCdLst = lu.getMiscCodes("PROCESS_TYPE", null, null, null, null, null, null, true, true);
 			reasonTypeCdLst = lu.getMiscCodes("PAE_REASON", null, null, null, null, null, null, true, true);
+			tribeCdLst = lu.getTribeCdList();
+			itemCategoryCdLst = lu.getItemCategoryList();
+			itemIndicatorLst = lu.getMiscCodes("ITEM INDICATOR", null, null, null, null, null, null, true, true);
+			itemStatusLst = lu.getMiscCodes("ITEM STATUS", null, null, null, null, null, null, true, true);
+			applicationDispositionLst = lu.getMiscCodes("APPLICATION DISPOSITION", null, null, null, null, null, null, true, true);
+			costPrerequisiteCdLst = lu.getIafaPrerequisiteList();
 		
 		} catch (Exception e) {
 			//System.out.println(e.getMessage());
@@ -179,6 +179,4 @@ public class IafaQueryDivAction extends ActionSupport{
 	public void setProvLst(List<ListComp> provLst) {
 		this.provLst = provLst;
 	}
-
-	
 }

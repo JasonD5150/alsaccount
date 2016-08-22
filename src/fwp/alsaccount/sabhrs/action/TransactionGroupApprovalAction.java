@@ -8,7 +8,7 @@ import com.opensymphony.xwork2.ActionSupport;
 
 import fwp.alsaccount.utils.ListUtils;
 import fwp.security.user.UserDTO;
-import fwp.utils.StringUtils;
+import fwp.utils.FwpStringUtils;
 
 public class TransactionGroupApprovalAction extends ActionSupport{
 	
@@ -25,7 +25,7 @@ public class TransactionGroupApprovalAction extends ActionSupport{
 	}
 	
 	public String input(){
-		StringUtils su = new StringUtils();
+		FwpStringUtils su = new FwpStringUtils();
 		ListUtils lu = new ListUtils();
 		try {
 			setBankCodeLst(su.listCompListToString(lu.getTransGrpBankCodeList()));
