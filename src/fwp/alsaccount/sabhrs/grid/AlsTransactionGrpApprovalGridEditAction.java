@@ -275,7 +275,7 @@ public class AlsTransactionGrpApprovalGridEditAction extends ActionSupport{
 			ase.setAseWhenUploadedToSummary(null);
 			ase.setAseWhenUploadedToSumm(getUploadedToSumDt());
 			ase.setAsesSeqNo(null);
-			System.out.println("Update AlsSabhrsEntries");
+			//System.out.println("Update AlsSabhrsEntries");
 			aseAS.save(ase);
 		}else{
 			addActionError("No corresponding record found in Als_Sabhrs_Entries.");
@@ -287,7 +287,7 @@ public class AlsTransactionGrpApprovalGridEditAction extends ActionSupport{
 		
 		if(!asesLst.isEmpty()){
 			ases = asesLst.get(0);
-			System.out.println("Delete from AlsSabhrsEntriesSummary");
+			//System.out.println("Delete from AlsSabhrsEntriesSummary");
 			asesAS.delete(ases);
 		}else{
 			addActionError("No corresponding record found in Als_Sabhrs_Entries_Summary.");

@@ -190,10 +190,10 @@ public class IafaQueryBuildCsvAction extends ActionSupport {
 	private Boolean validColumn(ListComp listComp) {
 		try {
 			IafaDetailsDTO.class.getMethod("get" + StringUtils.capitalize(listComp.getItemVal()));
-			System.out.println("Found get" + StringUtils.capitalize(listComp.getItemVal()));
+			//System.out.println("Found get" + StringUtils.capitalize(listComp.getItemVal()));
 			return true;
 		} catch (NoSuchMethodException e) {
-			System.out.println("Cannot find get" + StringUtils.capitalize(listComp.getItemVal()));
+			//System.out.println("Cannot find get" + StringUtils.capitalize(listComp.getItemVal()));
 			return false;
 		}
 	}
