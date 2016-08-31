@@ -43,79 +43,15 @@ public class IafaQueryBuildCsvAction extends ActionSupport {
 		fileName="IAFADetail.csv";
 		StringBuilder titleLine = new StringBuilder();
 
-		String[] csvHeaders={"Issuing Provider No",
-							"Issuing Provider Name",
-							"ALX Provider Indicator",
-							"Data Entry Provider No",
-							"Billing Period From",
-							"Billing Period To",
-							"IAFA Seq No",
-							"Session Status",
-							"Usage Period From",
-							"Usage Period To",
-							"Item Type Code",
-							"Item Type Description",
-							"Amount",
-							"No Charge Reason",
-							"Item Indicator",
-							"Item Indicator Description",
-							"Item Status",
-							"Item Status Description",
-							"Item Catagory Code",
-							"Item Category Description",
-							"Application Disposition",
-							"Application Disposition Description",
-							"Bonus Points",
-							"ItemTcnInd",
-							"Seq No Within Item Transaction",
-							"Date of Birth",
-							"ALS No",
-							"Amount Type",
-							"Amount Type Description",
-							"Residency",
-							"Cost Group Code",
-							"Cost Group Description",
-							"Prerequisite Code",
-							"Prerequisite Description",
-							"Process Category Code",
-							"Process Category Description",
-							"Process Type Code",
-							"Process Type Description",
-							"Batch Reconcilation Date",
-							"Batch No",
-							"Sub-Batch No",
-							"Reason Type",
-							"Reason Code",
-							"Reason",
-							"Tribe Code",
-							"Transaction Group Identifier",
-							"Other Transaction Group",
-							"Hardware Type",
-							"Hardware Code (Device No)",
-							"Session Date",
-							"Session Origin",
-							"Session Void Date",
-							"Record Void Date",
-							"Seq No for Printed Item",
-							"Session Total",
-							"Mode of Payment",
-							"Check No",
-							"Check Writer",
-							"Summary Approval Status",
-							"Interface Approval Status",
-							"Remarks"};
-		for(int i=0;i<csvHeaders.length;i++){
-			titleLine.append(csvHeaders[i]+",");
-		}
-		/*SELECTED COLUMNS
-		 * for (ListComp listComp : this.columnNameValues) {
+
+		for (ListComp listComp : this.columnNameValues) {
 			if (validColumn(listComp)) {
 				if (titleLine.length() > 0) {
 					titleLine.append(",");
 				}
 				titleLine.append(StringEscapeUtils.escapeCsv(listComp.getItemLabel()));
 			}
-		}*/
+		}
 		titleLine.append("\n");
 		FileWriter fileWriter = new FileWriter(tempFile);
 		fileWriter.write("IAFA Detail Report\n\n");
@@ -126,17 +62,19 @@ public class IafaQueryBuildCsvAction extends ActionSupport {
 				Integer length = tmp.trim().split("=").length;
 				String column;
 				String value;
-				if(tmp.split("=")[0].contains("__checkbox_")){
-					column = tmp.split("=")[0].replace("__checkbox_", "");
-					value = tmp.split("=")[1];
-					if(value == "true"){
+				if(!tmp.contains("_widget")){
+					if(tmp.split("=")[0].contains("__checkbox_")){
+						column = tmp.split("=")[0].replace("__checkbox_", "");
+						value = tmp.split("=")[1];
+						if(value == "true"){
+							fileWriter.write(getColumnLabel(column)+" = "+value+"\n");
+						}
+					}else if(length > 1){
+						column = tmp.split("=")[0];
+						value = tmp.split("=")[1];
 						fileWriter.write(getColumnLabel(column)+" = "+value+"\n");
+						//System.out.println(column +" = "+value);
 					}
-				}else if(length > 1){
-					column = tmp.split("=")[0];
-					value = tmp.split("=")[1];
-					fileWriter.write(getColumnLabel(column)+" = "+value+"\n");
-					//System.out.println(column +" = "+value);
 				}
 			}
 			fileWriter.write("\n");

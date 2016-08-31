@@ -2,6 +2,7 @@ package fwp.alsaccount.sabhrs.grid;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.hibernate.HibernateException;
@@ -94,7 +95,7 @@ public class AlsSabhrsQueryGridAction extends ActionSupport{
     				srchStr.append("AND ase.ase_When_Entry_Posted > (TO_DATE('"+fromDt+"','YYYY-MM-DD')-1) AND ase.ase_When_Entry_Posted < (TO_DATE('"+fromDt+"','YYYY-MM-DD')+1) ");
             		search = true;
     			}else{
-    				srchStr.append("AND ase.ase_When_Entry_Posted BETWEEN TO_DATE('"+fromDt+"','YYYY-MM-DD') AND TO_DATE('"+toDt+"','YYYY-MM-DD') ");
+    				srchStr.append("AND ase.ase_When_Entry_Posted BETWEEN TO_DATE('"+fromDt+"','YYYY-MM-DD') AND (TO_DATE('"+toDt+"','YYYY-MM-DD')+1) ");
             		search = true;
     			}
         	}else{
@@ -452,5 +453,4 @@ public class AlsSabhrsQueryGridAction extends ActionSupport{
 	public void setUserdata(String userdata) {
 		this.userdata = userdata;
 	}
-
 }

@@ -46,7 +46,8 @@ public class AlsTransactionGrpStatusGridAction extends ActionSupport{
         	
         	setModel(new ArrayList<AlsTransactionGrpStatusDTO>());
         	AlsTransactionGrpStatusDTO tmp;
-        	
+        	AlsTransactionGrpStatusDTO tmp2 = null;
+        	String curDate = null;
         	for(AlsTransactionGrpStatus a : atgs){
         		tmp = new AlsTransactionGrpStatusDTO();
         		tmp.setGridKey(a.getIdPk().getAtgTransactionCd()+"_"+a.getIdPk().getAtgsGroupIdentifier());
@@ -54,7 +55,21 @@ public class AlsTransactionGrpStatusGridAction extends ActionSupport{
         		tmp.setDesc(atgsAS.getTransDesc(a.getIdPk().getAtgTransactionCd()));
         		tmp.setAtgsWhenCreated(a.getAtgsWhenCreated());
         		tmp.setAtgsNetDrCr(a.getAtgsNetDrCr());
-        		model.add(tmp);
+        		
+        		/*If transaction group of 8 exclude all but the last sequence number*/
+        		if(a.getIdPk().getAtgTransactionCd()!=8){
+        			model.add(tmp);
+        		}else{
+        			if(curDate == null){
+        				curDate = a.getIdPk().getAtgsGroupIdentifier().substring(8, 18);
+        			}else if(!curDate.equals(a.getIdPk().getAtgsGroupIdentifier().substring(8, 18))){
+        				model.add(tmp2);
+        				curDate = a.getIdPk().getAtgsGroupIdentifier().substring(8, 18);
+        			}else{
+        				tmp2=tmp;
+        			}
+        		}
+        		
         	}
         }
         catch (HibernateException re) {

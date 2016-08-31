@@ -72,7 +72,7 @@ public class IafaQueryGridAction extends ActionSupport{
     
     private String 				reasonCd;
     private String 				transGrpIdentifier;
-    private String 				nullTGI;
+    private Boolean 				nullTGI;
     
     private String 				ahmType;
     private String 				ahmCd;
@@ -359,16 +359,16 @@ public class IafaQueryGridAction extends ActionSupport{
 				search = true;
 			}
 		}
-		if(nullTGI != null && !"".equals(nullTGI)){
-			srchStr.append("AND ("+nullTGI+" <> 'Y' OR ("+nullTGI+" = 'Y' AND NOT EXISTS (SELECT 1 "
-																								+ "FROM als.als_transaction_grp_status atgs, "
-																								+ "als.als_sabhrs_entries ase "
-																								+ "WHERE ase.api_provider_no = als_item_appl_fee_acct.api_provider_no "
-																								+ "AND ase.apr_billing_from = als_item_appl_fee_acct.apr_billing_from "
-																								+ "AND ase.apr_billing_to = als_item_appl_fee_acct.apr_billing_to "
-																								+ "AND ase.aiafa_seq_no = als_item_appl_fee_acct.aiafa_seq_no "
-																								+ "AND atgs.atg_transaction_cd = ase.atg_transaction_cd "
-																								+ "AND atgs.atgs_group_identifier = ase.atgs_group_identifier) ");
+		if(nullTGI != null && nullTGI == true){
+			srchStr.append("AND NOT EXISTS (SELECT 1 "
+											+ "FROM als.als_transaction_grp_status atgs, "
+											+ "als.als_sabhrs_entries ase "
+											+ "WHERE ase.api_provider_no = als_item_appl_fee_acct.api_provider_no "
+											+ "AND ase.apr_billing_from = als_item_appl_fee_acct.apr_billing_from "
+											+ "AND ase.apr_billing_to = als_item_appl_fee_acct.apr_billing_to "
+											+ "AND ase.aiafa_seq_no = als_item_appl_fee_acct.aiafa_seq_no "
+											+ "AND atgs.atg_transaction_cd = ase.atg_transaction_cd "
+											+ "AND atgs.atgs_group_identifier = ase.atgs_group_identifier) ");
 			search = true;
 		}
 		/*ORDER*/
@@ -717,11 +717,11 @@ public class IafaQueryGridAction extends ActionSupport{
 		this.transGrpIdentifier = transGrpIdentifier;
 	}
 
-	public String getNullTGI() {
+	public Boolean getNullTGI() {
 		return nullTGI;
 	}
 
-	public void setNullTGI(String nullTGI) {
+	public void setNullTGI(Boolean nullTGI) {
 		this.nullTGI = nullTGI;
 	}
 

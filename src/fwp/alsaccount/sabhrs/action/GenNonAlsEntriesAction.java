@@ -30,15 +30,14 @@ public class GenNonAlsEntriesAction extends ActionSupport{
 	}
 	
 	public String input(){
-		FwpStringUtils su = new FwpStringUtils();
 		ListUtils lu = new ListUtils();
 		try {
-			setFundLst(su.listCompListToString(lu.getFundList(null)));
-			setSubClassLst(su.listCompListToString(lu.getSubclassList(null)));
-			setJlrLst(su.listCompListToString(lu.getJLRCurBudgYearList()));
+			setFundLst(FwpStringUtils.listCompListToString(lu.getFundList(null)));
+			setSubClassLst(FwpStringUtils.listCompListToString(lu.getSubclassList(null)));
+			setJlrLst(FwpStringUtils.listCompListToString(lu.getJLRBudgYearList(null)));
 			setProjectGrantLst(lu.getProjectGrantsListTxt(null, false));
-			setOrgLst(su.listCompListToString(lu.getOrgList(null)));
-			setAccountLst(su.listCompListToString(lu.getAccountList(null)));
+			setOrgLst(FwpStringUtils.listCompListToString(lu.getOrgList(null)));
+			setAccountLst(FwpStringUtils.listCompListToString(lu.getAccountList(null)));
 			setBudgetYearSel(lu.getBudgetYearList());
 			transGroupTypeLst = lu.getSabhrsTransGroupTypeLst();
 			providerLst = lu.getProviderList();

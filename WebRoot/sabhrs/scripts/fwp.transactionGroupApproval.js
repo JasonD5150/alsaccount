@@ -174,7 +174,7 @@ $.subscribe('transGroupSelected', function(event, data) {
 
 function submitTransGroupApproval(){
 	var row = $('#idPk.atgTransactionCd').val+"_"+$('#idPk.atgsGroupIdentifier').val;
-	alert(row);
+	//alert(row);
 	url = "alsAccount/transGroupApprovalGridEdit_execute.action";    
 	$.ajax({
       type: "POST",

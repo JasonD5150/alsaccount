@@ -165,12 +165,13 @@
 			<sjg:gridColumn name="aprBillingTo" index="aprBillingTo" title ="Billing Period To" width="70" sortable="false" editable="true" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }"/>
 			<sjg:gridColumn name="aiafaSeqNo" index="aiafaSeqNo" title ="IAFA Seq No" width="40" sortable="false" editable="true" align="right"/>
 			<sjg:gridColumn name="aiafaStatus" index="aiafaStatus" title ="Session Status" width="50" sortable="false" editable="true"/>
+			<sjg:gridColumn name="aictItemTypeCd" index="aictItemTypeCd" title ="Item Type Code" width="50" sortable="false" editable="true" hidden="false" align="right"/>
+			<sjg:gridColumn name="aiafaAmt" index="aiafaAmt" title ="Amount" width="40" sortable="false" editable="true" hidden="false" align="right" formatter= "number" formatoptions="{decimalPlaces: 2}"/>
+			<sjg:gridColumn name="sessionDt" index="sessionDt" title ="Session Date" width="70" sortable="false" editable="true" hidden="false" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y h:m:s' }"/>
 			<!-- HIDDEN COLUMNS-->
 			<sjg:gridColumn name="aictUsagePeriodFrom" index="aictUsagePeriodFrom" title ="Usage Period From" width="70" sortable="false" editable="true" hidden="true" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }"/>
 			<sjg:gridColumn name="aictUsagePeriodTo" index="aictUsagePeriodTo" title ="Usage Period To" width="70" sortable="false" editable="true" hidden="true" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }"/>
-			<sjg:gridColumn name="aictItemTypeCd" index="aictItemTypeCd" title ="Item Type Code" width="50" sortable="false" editable="true" hidden="true" align="right"/>
 			<sjg:gridColumn name="aitTypeDesc" index="aitTypeDesc" title ="Item Type Description" width="200" sortable="false" editable="true" hidden="true"/>
-			<sjg:gridColumn name="aiafaAmt" index="aiafaAmt" title ="Amount" width="40" sortable="false" editable="true" hidden="true" align="right" formatter= "number" formatoptions="{decimalPlaces: 2}"/>
 			<sjg:gridColumn name="astNochargeReason" index="astNochargeReason" title ="No Charge Reason" width="40" sortable="false" editable="true" hidden="true"/>
 			<sjg:gridColumn name="aiinItemIndCd" index="aiinItemIndCd" title ="Item Indicator" width="40" sortable="false" editable="true" hidden="true" align="right"/>
 			<sjg:gridColumn name="itemIndDesc" index="itemIndDesc" title ="Item Indicator Description" width="100" sortable="false" editable="true" hidden="true"/>
@@ -207,7 +208,6 @@
 			<sjg:gridColumn name="otherTxnGrp" index="otherTxnGrp" title ="Other Transaction Group" width="200" sortable="false" editable="true" hidden="true"/>
 			<sjg:gridColumn name="ahmType" index="ahmType" title ="Hardware Type" width="40" sortable="false" editable="true" hidden="true"/>
 			<sjg:gridColumn name="ahmCd" index="ahmCd" title ="Hardware Code (Device No)" width="40" sortable="false" editable="true" hidden="true" align="right"/>
-			<sjg:gridColumn name="sessionDt" index="sessionDt" title ="Session Date" width="70" sortable="false" editable="true" hidden="true" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y h:m:s' }"/>
 			<sjg:gridColumn name="sessionOrigin" index="sessionOrigin" title ="Session Origin" width="40" sortable="false" editable="true" hidden="true"/>
 			<sjg:gridColumn name="asSessionVoidDt" index="asSessionVoidDt" title ="Session Void Date" width="70" sortable="false" editable="true" hidden="true" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }"/> 
 			<sjg:gridColumn name="aiafaRecordVoidDt" index="aiafaRecordVoidDt" title ="Record Void Date" width="70" sortable="false" editable="true" hidden="true" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }"/> 

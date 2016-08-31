@@ -311,7 +311,7 @@
 				<td class="label">Transaction Group Identifier: </td>
 				<td><s:textfield id="transGrpIdentifier" name="transGrpIdentifier" theme="simple" title="Issuing Provider Name" /></td>
 				<td class="label">NULL TGI?: </td>
-				<td><s:textfield id="nullTGI" name="nullTGI" theme="simple" title="Issuing Provider Name" /></td>
+				<td><s:checkbox id="nullTGI" name="nullTGI" theme="simple" title="Issuing Provider Name"></s:checkbox></td>
 				<td class="label">Hardware Type/Code(Device No): </td>
 				<td><s:textfield id="ahmType" name="ahmType" theme="simple" title="Issuing Provider Name" size="2" maxlength="1"/><s:textfield id="ahmCd" name="ahmCd" theme="simple" title="Issuing Provider Name" />
     		</tr>

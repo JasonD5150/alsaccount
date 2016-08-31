@@ -8,7 +8,6 @@
 
 <fieldset style="border: black 1px solid; display: inline-block;margin: 0 5px;">
    	<legend style="font-weight: bold;font-size:larger">Search Criteria</legend>
-   	<s:actionerror/>
    	<form id='gridFrm'>
    		<table>
    			<tr>			
@@ -56,7 +55,7 @@
     		</tr>
     		<tr>
     			<td class="label">Budget Year: </td>
-    			<td class="autocompleter"><sj:autocompleter
+    			<td class="autocompleter"><%-- <sj:autocompleter
 									id="budgYear"
 									name="budgYear"
 									list="budgetYearSel"
@@ -67,7 +66,9 @@
 									forceValidOption="true"
 									loadMinimumCount="2"
 									theme="simple" 
-									/></td>
+									onChangeTopics="reloadLists"/> --%>
+									<s:select id="budgYear" name="budgYear" list="budgetYearSel" 
+									listKey="itemVal" listValue="itemLabel" onchange="budgetYearSelected();" label="Parks" theme="simple"/></td>
     			<td class="label">Program Year: </td>
     			<td><s:textfield id="progYear" name="progYear" theme="simple" title="Program Year" /></td>
     		</tr>

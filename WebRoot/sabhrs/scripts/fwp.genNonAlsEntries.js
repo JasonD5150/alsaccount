@@ -158,7 +158,7 @@ function exitNonAlsMasterDialog(){
                   type: "POST",
                   url: url,
                   dataType: "json",
-                  data: $('#gridFrm').serialize(),
+                  data: $('#alsSabhrsEntriesGridForm').serialize(),
                   success: function(result){
 	                  if(result.actionErrors){
 	                  	$('#html').html('<p style="color:red;font-size:14px"><b>'+ result.actionErrors +'</b></p>');

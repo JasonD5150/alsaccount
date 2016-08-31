@@ -62,6 +62,7 @@ public class AlsTransactionGrpApprovalGridEditAction extends ActionSupport{
 	
 	AlsTransactionGrpStatusAS atgsAS = new AlsTransactionGrpStatusAS();
 	AlsTransactionGrpStatusIdPk atgsIdPk = new AlsTransactionGrpStatusIdPk();
+	List<AlsTransactionGrpStatus> atgsLst = new ArrayList<AlsTransactionGrpStatus>();
 	AlsTransactionGrpStatus atgsOriginal = new AlsTransactionGrpStatus();
 	AlsTransactionGrpStatus atgs = new AlsTransactionGrpStatus();
 	
@@ -83,6 +84,7 @@ public class AlsTransactionGrpApprovalGridEditAction extends ActionSupport{
 		
 		String errMsg="";
 		
+		String ipTranGrp = null;
 		String curBudgYear = hh.getCurrentBudgetYear();
 		String by;
 		Integer seq;
@@ -101,23 +103,26 @@ public class AlsTransactionGrpApprovalGridEditAction extends ActionSupport{
 							type = "SW";
 							by = curBudgYear.substring(2, 3);
 							seq = hh.getAlsDepIdSeq(curBudgYear, type);
-							depId = String.format("%02d", Integer.parseInt(by))+String.format("%05d", seq);
+							depId = String.format("%02d", Integer.parseInt(by))+type+String.format("%05d", seq);
 						}else if(transGroupType == 3 && depId == null){
 							type = "FS";
 							by = curBudgYear.substring(2, 3);
 							seq = hh.getAlsDepIdSeq(curBudgYear, type);
-							depId = String.format("%02d", Integer.parseInt(by))+String.format("%05d", seq);
+							depId = String.format("%02d", Integer.parseInt(by))+type+String.format("%05d", seq);
 						}else if(transGroupType == 8 && depId == null){
+							ipTranGrp = transGroupIdentifier.substring(0, 18);
 							if(intAll == false){
 								Integer cnt = hh.getTransGroupCnt(transGroupIdentifier);
 								if(cnt > 0){
 									type = "IP";
 									by = curBudgYear.substring(2, 3);
 									seq = hh.getAlsDepIdSeq(curBudgYear, type);
-									depId = String.format("%02d", Integer.parseInt(by))+String.format("%05d", seq);
+									depId = String.format("%02d", Integer.parseInt(by))+type+String.format("%05d", seq);
 								}
 							}
 						}
+					}else{
+						ipTranGrp = transGroupIdentifier.substring(0, 18);
 					}
 				}
 				
@@ -191,6 +196,47 @@ public class AlsTransactionGrpApprovalGridEditAction extends ActionSupport{
 					atgs.setAtgsWhenModi(date);
 				}
 				atgsAS.save(atgs);
+				
+				if(transGroupType == 8){
+					if(ipTranGrp != null){
+						if("A".equals(intAppStat)){
+							type = "IP";
+							by = curBudgYear.substring(2, 3);
+							seq = hh.getAlsDepIdSeq(curBudgYear, type);
+							depId = String.format("%02d", Integer.parseInt(by))+type+String.format("%05d", seq);
+							hh.updateTransactionGrpStatus(depId, ipTranGrp,"min");
+							seq = hh.getAlsDepIdSeq(curBudgYear, type);
+							depId = String.format("%02d", Integer.parseInt(by))+type+String.format("%05d", seq);
+							hh.updateTransactionGrpStatus(depId, ipTranGrp,"max");
+						}
+					}
+					ipTranGrp = null;
+					String where = "WHERE idPk.atgTransactionCd = "+transGroupType+" AND substr(idPk.atgsGroupIdentifier,1,18) = 'substr("+transGroupIdentifier+",1,18)' ";
+					if(sumAll == true){
+						if("A".equals(sumAppStat)){
+							atgsLst = atgsAS.findAllByWhere(where);
+							for(AlsTransactionGrpStatus tmp : atgsLst){
+								tmp.setAtgsSummaryStatus(sumAppStat);
+								tmp.setAtgsSummaryApprovedBy(sumAppBy);
+								tmp.setAtgsSummaryDt(Timestamp.valueOf(sumAppDt));
+								tmp.setAtgsWhoModi(userInfo.getStateId());
+								tmp.setAtgsWhenModi(date);
+							}
+						}
+					}
+					if(intAll == true){
+						if("A".equals(intAppStat)){
+							atgsLst = atgsAS.findAllByWhere(where);
+							for(AlsTransactionGrpStatus tmp : atgsLst){
+								tmp.setAtgsInterfaceStatus(sumAppStat);
+								tmp.setAtgsInterfaceApprovedBy(sumAppBy);
+								tmp.setAtgsSummaryDt(Timestamp.valueOf(sumAppDt));
+								tmp.setAtgsWhoModi(userInfo.getStateId());
+								tmp.setAtgsWhenModi(date);
+							}
+						}
+					}
+				}
 			}else if(oper.equalsIgnoreCase("del")){
 				atgsAS.delete(atgs);
 			}
@@ -227,7 +273,7 @@ public class AlsTransactionGrpApprovalGridEditAction extends ActionSupport{
 		}
 		if(transGroupType == 8){
 			offlinePayment = hh.getAirOfflnPaymentApproved(transGroupIdentifier);
-			providerNo = Integer.parseInt(transGroupIdentifier.substring(3, 7));
+			providerNo = Integer.parseInt(transGroupIdentifier.substring(2, 7));
 			billingTo = transGroupIdentifier.substring(8, 18);
 			if(!"A".equals(atgsOriginal.getAtgsSummaryStatus()) && "A".equals(sumAppStat)){
 				if(!"Y".equals(offlinePayment)){

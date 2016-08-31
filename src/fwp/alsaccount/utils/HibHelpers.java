@@ -1193,5 +1193,54 @@ public class HibHelpers {
 		}
 		return rtn;
 	}
+	
+	public String updateTransactionGrpStatus(String depId, String ipTranGrp, String minMax) {
+		String tmp = "ERROR";
+		int rowCount = 0;
+		String updtString = "";
+		if("min".equals(minMax)){
+			updtString = "UPDATE als.als_transaction_grp_status "
+					+ "SET atgs_deposit_id = :depId "
+					+ "WHERE atg_transaction_cd = 8 "
+					+ "AND atgs_deposit_id IS NULL "
+					+ "AND atgs_group_identifier = (SELECT MIN(atgs_group_identifier) "
+													+ "FROM als.als_transaction_grp_status "
+													+ "WHERE atg_transaction_cd = 8 "
+													+ "AND atgs_group_identifier LIKE ':ipTranGrp%')";
+		}else if("max".equals(minMax)){
+			updtString = "UPDATE als.als_transaction_grp_status "
+					+ "SET atgs_deposit_id = :depId "
+					+ "WHERE atg_transaction_cd = 8 "
+					+ "AND atgs_deposit_id IS NULL "
+					+ "AND atgs_group_identifier = (SELECT MAX(atgs_group_identifier) "
+													+ "FROM als.als_transaction_grp_status "
+													+ "WHERE atg_transaction_cd = 8 "
+													+ "AND atgs_group_identifier LIKE ':ipTranGrp%')";
+		}
+		
+
+		try {
+			Session session = getSession();
+			Query query = session.createSQLQuery(updtString);
+
+			query.setString("depId", depId);
+			query.setString("ipTranGrp", ipTranGrp);
+
+			rowCount = query.executeUpdate();
+
+		} catch (RuntimeException re) {
+			tmp = "ERROR";
+		} finally {
+			if (rowCount == 0) {
+				tmp = "ERROR";
+			} else if (rowCount > 0) {
+				tmp = "SUCCESS";
+			}
+			getSession().close();
+		}
+
+		return tmp;
+	}
+	
 }
 

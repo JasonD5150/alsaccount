@@ -368,11 +368,15 @@ public class ListUtils {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<ListComp> getJLRCurBudgYearList() {
+	public List<ListComp> getJLRBudgYearList(String year) {
+		HibHelpers hh = new HibHelpers();
+		if(year == null || "".equals(year)){
+			year = hh.getCurrentBudgetYear();
+		}
 		List<ListComp> lst = new ArrayList<ListComp>();
 		
-		String queryString = "SELECT DISTINCT am_val_desc || SUBSTR((SELECT am.am_par_val FROM als_misc am WHERE am.am_key1 = 'BUDGET YEAR'),3,4)  itemVal, "
-						   + "am_val_desc || SUBSTR((SELECT am.am_par_val FROM als_misc am WHERE am.am_key1 = 'BUDGET YEAR'),3,4)  itemLabel "
+		String queryString = "SELECT DISTINCT am_val_desc || SUBSTR('"+year+"',3,4)  itemVal, "
+						   + "am_val_desc || SUBSTR('"+year+"',3,4)  itemLabel "
 						   + "FROM als.als_misc "
 						   + "WHERE am_key1 = 'JOURNAL_LINE_REFERENCE' "
 						   + "ORDER BY itemVal ";
