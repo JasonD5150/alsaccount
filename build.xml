@@ -137,6 +137,8 @@
     </target>
 
      <target name="war" depends="build">
+    	<replace file="WebRoot/changeLog.txt" token="build = xyz" value="build = ${env.BUILD_NUMBER}"/>
+    	<replace file="WebRoot/changeLog.txt" token="timeStamp = yyyyMMdd" value="timeStamp = ${TODAY_MY}"/>     	
 		<war destfile="${projName}.war" webxml="WebRoot/WEB-INF/web.xml" level="9">
 			<fileset dir="WebRoot"/>
 		</war>
