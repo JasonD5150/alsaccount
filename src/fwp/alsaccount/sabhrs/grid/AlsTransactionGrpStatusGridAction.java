@@ -65,11 +65,9 @@ public class AlsTransactionGrpStatusGridAction extends ActionSupport{
         			}else if(!curDate.equals(a.getIdPk().getAtgsGroupIdentifier().substring(8, 18))){
         				model.add(tmp2);
         				curDate = a.getIdPk().getAtgsGroupIdentifier().substring(8, 18);
-        			}else{
-        				tmp2=tmp;
         			}
+        			tmp2=tmp;
         		}
-        		
         	}
         }
         catch (HibernateException re) {
