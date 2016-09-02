@@ -47,7 +47,13 @@
 			href="%{transGrpAppQueryDivUrl}"
 			width="950">
 	</sj:div>
-	
+	<br>
+	<fieldset style="border: black 1px solid; display: inline-block;">
+    	<legend style="font-weight: bold;">Actions</legend>
+		<s:submit id="submitSearch" onclick="submitSearch()" value="Submit" theme="simple"></s:submit>
+		<s:submit id="resetSearch" onclick="resetSearch()" value="Reset" theme="simple"></s:submit>
+		<s:submit id="getRpt" onclick="getGenRpt()" value="Generate Deposit Ticket" theme="simple" disabled="true"></s:submit>
+	</fieldset>	
   	<br>
   	<br>
 	<s:url id="transGroupMaintGridURL" action="alsAccount/transGroupApprovalGrid_buildgrid" />
@@ -226,10 +232,5 @@
 		</s:form>
 		<input id="saveTransGrpApp" type="submit" value="Save" onclick="submitTransGroupApproval();">
 		<input type="submit" value="Back" onclick="$('#transGroupAppDiv').toggle(false);">
-	</div>
-	<input id="getRpt" 
-			   type="button"
-			   onclick="getGenRpt();" 
-			   value="Generate Deposit Ticket" disabled>
-	
+	</div>	
 </fwp:template>

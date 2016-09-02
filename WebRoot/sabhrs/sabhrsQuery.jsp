@@ -33,7 +33,13 @@
 			formIds="divFrm"
 			reloadTopics="reloadLists">
 	</sj:div>
-	
+	<br>
+	<fieldset style="border: black 1px solid; display: inline-block;">
+    	<legend style="font-weight: bold;">Actions</legend>
+			<s:submit id="submitSearch" onclick="submitSearch()" value="Submit" theme="simple"></s:submit>
+			<s:submit id="resetSearch" onclick="resetSearch()" value="Reset" theme="simple"></s:submit>
+			<s:submit id="getReport" onclick="exportToCSV()" theme="simple" value="Export CSV"></s:submit>
+	</fieldset>
   	<br>
   	<br>
 	<s:url id="alsSabhrsQueryGridURL" action="alsAccount/alsSabhrsQueryGrid_buildgrid" />  
@@ -41,8 +47,10 @@
 		id="alsSabhrsQueryTable"
 		caption="SABHRS Entries"
 		href="%{alsSabhrsQueryGridURL}"	
-		dataType="json"
+		dataType="local"
 		pager="true"
+		pagerButtons="true"
+		pagerInput="true"
 		navigator="true"
 		navigatorEdit="false"
 		navigatorView="false"
@@ -54,11 +62,11 @@
 	    gridModel="model"
 		rownumbers="true"
 		viewrecords="true"
-		scroll="true"
-		scrollrows="true"
+		scroll="false"
+		scrollrows="false"
 		height="100"
 		width="950"
-		rowNum="10000"
+		rowNum="25"
 		formIds="gridFrm"
 		reloadTopics="reloadAlsSabhrsEntriesTable"
 		onCompleteTopics="alsSabhrsQueryTableComplete"
@@ -80,9 +88,8 @@
 			<sjg:gridColumn name="aseDrCrCd" index="aseDrCrCd" title ="Dr/Cr Code" width="10" sortable="false" editable="true" edittype="select" formatter="select" editoptions="{value: {D: 'Debit', C: 'Credit'}}" />
 			<sjg:gridColumn name="aseSeqNo" index="aseSeqNo" title ="SABHRS Entries Seq No" width="10" sortable="false" editable="false"/>
 			<sjg:gridColumn name="aseLineDescription" index="aseLineDescription" title ="Line Desc" width="40" sortable="false" editable="true" edittype="textarea" />
-			
+			<sjg:gridColumn name="aseWhenEntryPosted" index="aseWhenEntryPosted" title ="When Entry Posted" width="40" sortable="false" editable="true" hidden="false" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y h:i:s' }"/>
 			<!-- HIDDEN COLUMNS-->
-			<sjg:gridColumn name="aseWhenEntryPosted" index="aseWhenEntryPosted" title ="When Entry Posted" width="40" sortable="false" editable="true" hidden="true" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y h:i:s' }"/>
 			<sjg:gridColumn name="aseAllowUploadToSummary" index="aseAllowUploadToSummary" title ="Allow Upload To Summary" width="40" sortable="false" editable="true" hidden="true"/>
 			<sjg:gridColumn name="upToSummDt" index="upToSummDt" title ="When Uploaded To Summary" width="40" sortable="false" editable="true" hidden="true" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }"/>
 			<sjg:gridColumn name="asesSeqNo" index="asesSeqNo" title ="SABHRS Entries Summary Seq No" width="40" sortable="false" editable="true" hidden="true"/>
@@ -99,6 +106,4 @@
 			<sjg:gridColumn name="intStat" index="intStat" title ="Interface Status" width="40" sortable="false" editable="true" hidden="true" formatter="select" editoptions="{value: {null:'',A: 'Approved', D: 'Disapproved', N: 'Not Applicable'}}"/>
 	
 	</sjg:grid>
-	<br>
-	<s:submit id="getReport" onclick="exportToCSV()" theme="simple" value="Export CSV"></s:submit>
 </fwp:template>

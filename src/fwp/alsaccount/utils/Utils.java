@@ -32,14 +32,6 @@ public class Utils {
 		Integer rtn = cal.get(Calendar.YEAR);
 		return rtn;
 	}
-
-	public static Date addDays(Date date, int days) {
-        GregorianCalendar cal = new GregorianCalendar();
-        cal.setTime(date);
-        cal.add(Calendar.DATE, days);
-                 
-        return cal.getTime();
-    }
 	
 	public static Timestamp StrToTimestamp(String inDate, String type){
 		DateFormat shortFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -280,4 +272,16 @@ public class Utils {
         if (in == null) return 0.0;
         else return in;
 	}
+	
+	public static String getOracleFormatedDate(java.util.Date date) {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyyy");
+	    return sdf.format(date);
+	} 
+	
+	public static Date addDays(java.util.Date date, Integer numberOfDays) {
+		Calendar c = Calendar.getInstance(); 
+		c.setTime(date); 
+		c.add(Calendar.DATE, numberOfDays);
+	    return c.getTime();
+	} 
 }

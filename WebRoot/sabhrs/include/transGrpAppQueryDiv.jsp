@@ -57,10 +57,18 @@
 						  	   formIds="lstFrm"
 						  	   reloadTopics="reloadTransGrpIdLst"/></td>
 			   	<td>Transaction Group Created: </td>
-	    	 	<td><sj:datepicker changeMonth="true" changeYear="true" id="srchTranGrpCreated"
+	    	 	<td><s:select 
+    					id="srchTranGrpCreated"
+						name="srchTranGrpCreated"
+						list="budgYearLst"
+						listKey="itemVal" 
+				  		listValue="itemLabel" 
+			       		headerKey=" "
+						headerValue=" " 
+			       		theme="simple"/><%-- <sj:datepicker changeMonth="true" changeYear="true" id="srchTranGrpCreated"
 				   name="srchTranGrpCreated" displayFormat="mm/dd/yy"
 				   cssStyle="width:80px" maxlength="10"  maxDate="+0" title="Transaction Group Created" 
-				   showOn="focus" onblur="testDate(this)" placeholder="mm/dd/yyyy"/></td>
+				   showOn="focus" onblur="testDate(this)" placeholder="mm/dd/yyyy"/> --%></td>
 				<td>Accounting Date: </td>
 	    		<td><sj:datepicker changeMonth="true" changeYear="true" id="srchAccDt"
 				   name="srchAccDt" displayFormat="mm/dd/yy"
@@ -117,6 +125,4 @@
     		</tr>    		
    		</table>
 	</form>	
-	<s:submit id="submitSearch" onclick="submitSearch()" value="Submit" theme="simple"></s:submit>
-	<s:submit id="resetSearch" onclick="resetSearch()" value="Reset" theme="simple"></s:submit>
 </fieldset>

@@ -49,23 +49,19 @@ public class AlsSabhrsQueryGridAction extends ActionSupport{
     private String 				transGrpType;
     
     private String 				userdata;
-	private Boolean 			search = false;
+
     
 	public String buildgrid(){ 
     	HibHelpers hh = new HibHelpers();
-    	String where = buildQueryStr();
         try{
-        	setModel(new ArrayList<AlsSabhrsEntriesDTO>());
-        	if (search) {
-        		Integer cnt = hh.getSabhrsQueryCount(where);
-        		if(cnt > 10000){
-            		setUserdata("Please narrow search. The search grid is limited to 10000 rows. There were " + cnt + " entries selected.");
-            	}else{
-            		model = hh.getSabhrsQueryRecords(where);
-            	}
-    		}
-        	
-        	
+        	model = hh.getSabhrsQueryRecords(providerNo, seqNo, bpFromDt, bpToDt, fromDt, 
+							        		 toDt, sumAppStat, intAppStat, jlr, account,  
+							        		 fund,  org,  subclass,  tribeCd, txnGrpIdentifier, 
+							        		 budgYear, progYear,  sysActTypeCd, transGrpType);
+    		if(model.size() > 50000){
+    			setModel(new ArrayList<AlsSabhrsEntriesDTO>());
+        		setUserdata("Please narrow search. The search grid is limited to 50000 rows. There were " + model.size() + " entries selected.");
+        	}
         }
         catch (HibernateException re) {
         	//System.out.println(re.toString());
@@ -73,114 +69,10 @@ public class AlsSabhrsQueryGridAction extends ActionSupport{
         }
         setRows(model.size());
         setRecords(model.size());
-
         setTotal(1);
 
 	    return SUCCESS;
     }
-
-	private String buildQueryStr(){
-		StringBuilder srchStr = new StringBuilder();
-		/*FROM*/
-		srchStr.append("FROM ALS.ALS_SABHRS_ENTRIES ase ");
-		if((sumAppStat != null && !"".equals(sumAppStat)) || (intAppStat != null && !"".equals(intAppStat))){
-			srchStr.append(", ALS.ALS_TRANSACTION_GRP_STATUS atgs ");
-		}
-		/*WHERE*/
-    	srchStr.append("WHERE 1=1 ");
-    	
-    	if(fromDt != null){
-    		if(toDt != null){
-    			if(fromDt.equals(toDt)){
-    				srchStr.append("AND ase.ase_When_Entry_Posted > (TO_DATE('"+fromDt+"','YYYY-MM-DD')-1) AND ase.ase_When_Entry_Posted < (TO_DATE('"+fromDt+"','YYYY-MM-DD')+1) ");
-            		search = true;
-    			}else{
-    				srchStr.append("AND ase.ase_When_Entry_Posted BETWEEN TO_DATE('"+fromDt+"','YYYY-MM-DD') AND (TO_DATE('"+toDt+"','YYYY-MM-DD')+1) ");
-            		search = true;
-    			}
-        	}else{
-        		srchStr.append("AND ase.ase_When_Entry_Posted BETWEEN TO_DATE('"+fromDt+"','YYYY-MM-DD') AND SYSDATE ");
-        		search = true;
-        	}
-    	}
-    	if(bpFromDt != null){
-    		srchStr.append("AND ase.apr_Billing_From = TO_DATE('"+bpFromDt+"','YYYY-MM-DD') ");
-    		search = true;
-    	}
-    	if(bpToDt != null){
-    		srchStr.append("AND ase.apr_Billing_To = TO_DATE('"+bpToDt+"','YYYY-MM-DD') ");
-    		search = true;
-    	}
-    	if(providerNo != null){
-    		srchStr.append("AND ase.api_Provider_No = "+providerNo+" ");
-    		search = true;
-    	}
-    	if(seqNo != null && providerNo != null && bpFromDt != null && bpToDt != null){
-    		srchStr.append("AND ase.aiafa_Seq_No = "+seqNo+" ");
-    		search = true;
-    	}
-    	if(jlr != null && !"".equals(jlr)){
-    		srchStr.append("AND ase.ASAC_REFERENCE = (SELECT AM_PAR_VAL||SUBSTR('"+jlr+"',-2) "
-    										   + "FROM ALS.ALS_MISC WHERE AM_KEY1 = 'JOURNAL_LINE_REFERENCE' "
-    										   + "AND LPAD(AM_VAL_DESC,28,'0') = SUBSTR(LPAD('"+jlr+"',30,'0'),1,28) "
-    										   + "AND ROWNUM <2) ");
-    		search = true;
-    	}
-    	if(account != null && !"".equals(account)){
-    		srchStr.append("AND ase.aam_Account = '"+account+"' ");
-    		search = true;
-    	}
-    	if(fund != null && !"".equals(fund)){
-    		srchStr.append("AND ase.aam_Fund = "+fund+" ");
-    		search = true;
-    	}
-    	if(org != null && !"".equals(org)){
-    		srchStr.append("AND ase.aoc_Org = '"+org+"' ");
-    		search = true;
-    	}
-    	if(subclass != null && !"".equals(subclass)){
-    		srchStr.append("AND ase.asac_Subclass = "+subclass+" ");
-    		search = true;
-    	}
-    	if(tribeCd != null && !"".equals(tribeCd)){
-    		srchStr.append("AND ase.ati_Tribe_Cd = '"+tribeCd+"' ");
-    		search = true;
-    	}
-    	if(txnGrpIdentifier != null && !"".equals(txnGrpIdentifier)){
-    		srchStr.append("AND ase.atgs_Group_Identifier = '"+txnGrpIdentifier+"' ");
-    		search = true;
-    	}
-    	if(budgYear != null && !"".equals(budgYear)){
-    		srchStr.append("AND ase.asac_Budget_Year = "+budgYear+" ");
-    		search = true;
-    	}
-    	if(progYear != null && !"".equals(progYear)){
-    		srchStr.append("AND ase.asac_Program = "+progYear+" ");
-    		search = true;
-    	}
-    	if(sysActTypeCd != null && !"".equals(sysActTypeCd)){
-    		srchStr.append("AND ase.asac_System_Activity_Type_Cd||asac_Txn_Cd = '"+sysActTypeCd.toUpperCase()+"' ");
-    		search = true;
-    	}
-    	if(transGrpType != null && !"".equals(transGrpType)){
-    		srchStr.append("AND ase.atg_Transaction_Cd = "+transGrpType+" ");
-    		search = true;
-    	}
-    	if((sumAppStat != null && !"".equals(sumAppStat)) || (intAppStat != null && !"".equals(intAppStat))){
-    		srchStr.append("AND ase.atg_transaction_cd = atgs.atg_transaction_cd "
-    					 + "AND ase.atgs_group_identifier = atgs.atgs_group_identifier ");
-    		search = true;
-    	}
-    	if(sumAppStat != null && !"".equals(sumAppStat)){
-    		srchStr.append("AND atgs.atgs_summary_status = '"+sumAppStat+"' ");
-    		search = true;
-    	}
-    	if(intAppStat != null && !"".equals(intAppStat)){
-    		srchStr.append("AND atgs.atgs_interface_status = '"+intAppStat+"' ");
-    		search = true;
-    	}
-		return srchStr.toString();
-	}
 
 	public Integer getProviderNo() {
 		return providerNo;

@@ -57,13 +57,17 @@ public class AlsTransactionGrpStatusGridAction extends ActionSupport{
         		tmp.setAtgsNetDrCr(a.getAtgsNetDrCr());
         		
         		/*If transaction group of 8 exclude all but the last sequence number*/
+        		
         		if(a.getIdPk().getAtgTransactionCd()!=8){
         			model.add(tmp);
         		}else{
         			if(curDate == null){
         				curDate = a.getIdPk().getAtgsGroupIdentifier().substring(8, 18);
         			}else if(!curDate.equals(a.getIdPk().getAtgsGroupIdentifier().substring(8, 18))){
-        				model.add(tmp2);
+        				String t = tmp2.getIdPk().getAtgsGroupIdentifier().subSequence(19, 22).toString();
+        				if(!"001".equals(tmp2.getIdPk().getAtgsGroupIdentifier().subSequence(19, 22))){
+        					model.add(tmp2);
+        				}
         				curDate = a.getIdPk().getAtgsGroupIdentifier().substring(8, 18);
         			}
         			tmp2=tmp;

@@ -24,6 +24,10 @@ function errorHandler(response, postdata) {
 };
 
 function submitSearch(){
+	$('#budgYear').val($('#budgYear_widget').val());
+	$('#provNo').val($('#provNo_widget').val());
+	$('#transGrpType').val($('#transGrpType_widget').val());
+	$('#transGrpIdentifier').val($('#transGrpIdentifier_widget').val());
 	$('#transGroupDtlsTable').jqGrid('setGridParam',{datatype:'json'});
 	$.publish('reloadTransGroupDtlsTable');
 }

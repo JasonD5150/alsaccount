@@ -38,6 +38,18 @@ public class HibHelpers {
 	public Session getSession() {
 		return HibernateSessionFactory.getSession();
 	}
+	public  boolean isNil(String stringVal){
+		if(stringVal == null || stringVal.equals("")) return true; else return false;
+	}
+	public  boolean isNil(Integer integerVal){
+		if(integerVal == null) return true; else return false;
+	}
+	public  boolean isNil(Double integerVal){
+		if(integerVal == null) return true; else return false;
+	}
+	public  boolean isNil(Date dateVal){
+		if(dateVal == null) return true; else return false;
+	}
 	
 	/*
 	 * FISCAL YEAR END PROCESS
@@ -710,27 +722,14 @@ public class HibHelpers {
 			
 		}
 	
-	public Integer getSabhrsQueryCount(String where) {
-		Integer rtn = 0;
-		String queryString = "SELECT COUNT(*) count "+where;
-		try {
-			Query query = getSession()
-					.createSQLQuery(queryString)
-					.addScalar("count", IntegerType.INSTANCE);
-			rtn = (Integer) query.uniqueResult();
-		} catch (RuntimeException re) {
-			System.out.println(re.toString());
-		}
-		finally {
-			getSession().close();
-		}
-		return rtn;
-	}
-	
 	@SuppressWarnings("unchecked")
-	public List<AlsSabhrsEntriesDTO> getSabhrsQueryRecords(String where) {
+	public List<AlsSabhrsEntriesDTO> getSabhrsQueryRecords(Integer providerNo, Integer seqNo, Date bpFromDt, Date bpToDt,
+															Date fromDt, Date toDt, String sumAppStat, String intAppStat, String jlr,
+															String account, String fund, String org, String subclass, String tribeCd,
+															String txnGrpIdentifier, Integer budgYear, Integer progYear, String sysActTypeCd,
+															String 	transGrpType) {
 		List<AlsSabhrsEntriesDTO> lst = new ArrayList<AlsSabhrsEntriesDTO>();
-		String queryStr = "SELECT ase.ase_When_Entry_Posted aseWhenEntryPosted, "
+		StringBuilder queryStr = new StringBuilder("SELECT ase.ase_When_Entry_Posted aseWhenEntryPosted, "
 						+ "ase.ase_Seq_No aseSeqNo, "
 						+ "ase.ase_Dr_Cr_Cd aseDrCrCd, "
 						+ "ase.ase_Txn_Cd_Seq_No aseTxnCdSeqNo, "
@@ -775,10 +774,80 @@ public class HibHelpers {
 							+ "FROM ALS.ALS_TRANSACTION_GRP_STATUS "
 							+ "WHERE ATG_TRANSACTION_CD = ase.atg_Transaction_Cd "
 							+ "AND ATGS_GROUP_IDENTIFIER = ase.atgs_Group_Identifier) intStat "
-							+ where;
+						+ "FROM ALS.ALS_SABHRS_ENTRIES ase ");
+						if((sumAppStat != null && !"".equals(sumAppStat)) || (intAppStat != null && !"".equals(intAppStat))){
+							queryStr.append(", ALS.ALS_TRANSACTION_GRP_STATUS atgs ");
+						}
+						queryStr.append("WHERE 1=1 ");
+				    	if(!isNil(fromDt)){
+				    		if(!isNil(toDt)){
+				    			queryStr.append("AND ase.ase_When_Entry_Posted BETWEEN :fromDt AND :toDt ");//plus one to todt
+				        	}else{
+				        		queryStr.append("AND ase.ase_When_Entry_Posted BETWEEN :fromDt AND SYSDATE ");
+				        	}
+				    	}
+				    	if(!isNil(bpFromDt)){
+				    		queryStr.append("AND ase.apr_Billing_From = :bpFromDt ");
+				    	}
+				    	if(!isNil(bpToDt)){
+				    		queryStr.append("AND ase.apr_Billing_To = :bpToDt ");
+				    	}
+				    	if(!isNil(providerNo)){
+				    		queryStr.append("AND ase.api_Provider_No = :providerNo ");
+				    	}
+				    	if(!isNil(seqNo)&& !isNil(providerNo)&& !isNil(bpFromDt)&& !isNil(bpToDt)){
+				    		queryStr.append("AND ase.aiafa_Seq_No = :seqNo ");
+				    		
+				    	}
+				    	if(!isNil(jlr)){
+				    		queryStr.append("AND ase.ASAC_REFERENCE = (SELECT AM_PAR_VAL||SUBSTR(:jlr,-2) "
+				    										   + "FROM ALS.ALS_MISC WHERE AM_KEY1 = 'JOURNAL_LINE_REFERENCE' "
+				    										   + "AND LPAD(AM_VAL_DESC,28,'0') = SUBSTR(LPAD(:jlr,30,'0'),1,28) "
+				    										   + "AND ROWNUM <2) ");
+				    	}
+				    	if(!isNil(account)){
+				    		queryStr.append("AND ase.aam_Account = :account ");
+				    	}
+				    	if(!isNil(fund)){
+				    		queryStr.append("AND ase.aam_Fund = :fund ");
+				    	}
+				    	if(!isNil(org)){
+				    		queryStr.append("AND ase.aoc_Org = :org ");
+				    	}
+				    	if(!isNil(subclass)){
+				    		queryStr.append("AND ase.asac_Subclass = :subclass ");
+				    	}
+				    	if(!isNil(tribeCd)){
+				    		queryStr.append("AND ase.ati_Tribe_Cd = :tribeCd ");
+				    	}
+				    	if(!isNil(txnGrpIdentifier)){
+				    		queryStr.append("AND ase.atgs_Group_Identifier = :txnGrpIdentifier ");
+				    	}
+				    	if(!isNil(budgYear)){
+				    		queryStr.append("AND ase.asac_Budget_Year = :budgYear ");
+				    	}
+				    	if(!isNil(progYear)){
+				    		queryStr.append("AND ase.asac_Program = :progYear ");
+				    	}
+				    	if(!isNil(sysActTypeCd)){
+				    		queryStr.append("AND ase.asac_System_Activity_Type_Cd||asac_Txn_Cd = :sysActTypeCd ");
+				    	}
+				    	if(!isNil(transGrpType)){
+				    		queryStr.append("AND ase.atg_Transaction_Cd = :transGrpType ");
+				    	}
+				    	if(!isNil(sumAppStat) || !isNil(intAppStat)){
+				    		queryStr.append("AND ase.atg_transaction_cd = atgs.atg_transaction_cd "
+				    					 + "AND ase.atgs_group_identifier = atgs.atgs_group_identifier ");
+				    	}
+				    	if(!isNil(sumAppStat)){
+				    		queryStr.append("AND atgs.atgs_summary_status = :sumAppStat ");
+				    	}
+				    	if(!isNil(intAppStat)){
+				    		queryStr.append("AND atgs.atgs_interface_status = :intAppStat ");
+				    	}
 		try {
 			Query query = getSession()
-					.createSQLQuery(queryStr)
+					.createSQLQuery(queryStr.toString())
 					.addScalar("aseWhenEntryPosted")
 					.addScalar("aseSeqNo", IntegerType.INSTANCE)
 					.addScalar("aseDrCrCd")
@@ -813,11 +882,48 @@ public class HibHelpers {
 					.addScalar("anatCd")
 					.addScalar("gridKey")
 					.addScalar("sumStat")
-					.addScalar("intStat")
-	
-					.setResultTransformer(
+					.addScalar("intStat");
+					
+					if(!isNil(providerNo))
+						query.setInteger("providerNo", providerNo);
+					if(!isNil(seqNo))
+						query.setInteger("seqNo", seqNo);
+					if(!isNil(bpFromDt))
+						query.setDate("bpFromDt", bpFromDt);
+					if(!isNil(bpToDt))
+						query.setDate("bpToDt", bpToDt);
+					if(!isNil(fromDt))
+						query.setDate("fromDt", fromDt);
+					if(!isNil(toDt))
+						query.setDate("toDt", fromDt.equals(toDt)?Utils.addDays(toDt, 1):toDt);
+					if(!isNil(sumAppStat))
+						query.setString("sumAppStat", sumAppStat);
+					if(!isNil(intAppStat))
+						query.setString("intAppStat", intAppStat);
+					if(!isNil(jlr))
+						query.setString("jlr", jlr);
+					if(!isNil(account))
+						query.setString("account", account);
+					if(!isNil(fund))
+						query.setString("fund", fund);
+					if(!isNil(org))
+						query.setString("org", org);
+					if(!isNil(subclass))
+						query.setString("subclass", subclass);
+					if(!isNil(tribeCd))
+						query.setString("tribeCd", tribeCd);
+					if(!isNil(txnGrpIdentifier))
+						query.setString("txnGrpIdentifier", txnGrpIdentifier);
+					if(!isNil(budgYear))
+						query.setInteger("budgYear", budgYear);
+					if(!isNil(progYear))
+						query.setInteger("progYear", progYear);
+					if(!isNil(sysActTypeCd))
+						query.setString("sysActTypeCd", sysActTypeCd.toUpperCase());
+					if(!isNil(transGrpType))
+						query.setString("transGrpType", transGrpType);
+					query.setResultTransformer(
 							Transformers.aliasToBean(AlsSabhrsEntriesDTO.class));
-
 			lst = query.list();
 		} catch (RuntimeException re) {
 			System.out.println(re.toString());
@@ -902,95 +1008,229 @@ public class HibHelpers {
 			
 		}
 	
-	public Integer getIafaQueryCount(String where) {
-		Integer rtn = 0;
-		String queryString = "SELECT COUNT(*) count "+where;
-		try {
-			Query query = getSession()
-					.createSQLQuery(queryString)
-					.addScalar("count", IntegerType.INSTANCE);
-			rtn = (Integer) query.uniqueResult();
-		} catch (RuntimeException re) {
-			System.out.println(re.toString());
-		}
-		finally {
-			getSession().close();
-		}
-		return rtn;
-	}
-	
 	@SuppressWarnings("unchecked")
-	public List<IafaDetailsDTO> getIafaQueryRecords(String where) throws HibernateException {
+	public List<IafaDetailsDTO> getIafaQueryRecords(Date fromDt, Date toDt, Integer issProvNo, Integer entProvNo, 
+													Date bpFromDt, Date bpToDt, Date upFromDt, Date upToDt,
+													String modeOfPayment, Integer chckNo, String chckWriter, String remarks,
+													Integer iafaSeqNo, Date dob, Integer alsNo, String transGrpIdentifier,
+													String sumAppStat, String intAppStat, String ahmType, String ahmCd,
+													Date recordVoidDt, String tribeCd, String appType, String amountTypeCd,
+													Double amount, Date sessDt, Date sessVoidDt, String sessStat, String reasonCd,
+													String itemTypeCd, String itemCatCd, String bonusPoints, String itemInd,
+													String itemStat, String costPrereqCd, String resIndicator, String appDis,
+													String procCatCd, String procTypeCd, Date batchRecDt, String noCharge, 
+													String itemTransInd, Integer seqNoInItemTrans, Boolean alxInd, Boolean nullTGI) throws HibernateException {
 		List<IafaDetailsDTO> lst = new ArrayList<IafaDetailsDTO>();
-		String queryStr = "SELECT DISTINCT ALS_ITEM_APPL_FEE_ACCT.API_PROVIDER_NO apiProviderNo, "
-				+ "ALS_ITEM_APPL_FEE_ACCT.API_PROVIDER_NO||'_'||ALS_ITEM_APPL_FEE_ACCT.APR_BILLING_FROM||'_'||ALS_ITEM_APPL_FEE_ACCT.APR_BILLING_TO||'_'||ALS_ITEM_APPL_FEE_ACCT.AIAFA_SEQ_NO gridKey, "
-				+ "ALS_PROVIDER_INFO.API_BUSINESS_NM apiBusinessNm, "
-				+ "ALS_PROVIDER_INFO.API_ALX_PROV_IND apiAlxProvInd, "
-				+ "ALS_ITEM_APPL_FEE_ACCT.APR_BILLING_FROM aprBillingFrom, "
-				+ "ALS_ITEM_APPL_FEE_ACCT.APR_BILLING_TO aprBillingTo, "
-				+ "ALS_ITEM_APPL_FEE_ACCT.AIAFA_SEQ_NO aiafaSeqNo, "
-				+ "ALS_SESSIONS.AS_DATA_ENTRY_PROVIDER_NO asDataEntryProviderNo, "
-				+ "ALS_SESSION_TRANS.AICT_USAGE_PERIOD_FROM aictUsagePeriodFrom, "
-				+ "ALS_SESSION_TRANS.AICT_USAGE_PERIOD_TO aictUsagePeriodTo, "
-				+ "ALS_SESSION_TRANS.AICT_ITEM_TYPE_CD aictItemTypeCd, "
-				+ "SUBSTR(ALS_SESSION_TRANS.AICT_ITEM_TYPE_CD,1,4) itemCatCd, "
-				+ "ALS_ITEM_TYPE.AIT_TYPE_DESC aitTypeDesc, "
-				+ "ALS_SESSION_TRANS.AII_ITEM_TXN_IND aiiItemTxnInd, "
-				+ "ALS_SESSION_TRANS.AII_SEQ_NO aiiSeqNo, "
-				+ "ALS_SESSION_TRANS.API_DOB dob, "
-				+ "ALS_SESSION_TRANS.API_ALS_NO  alsNo, "
-				+ "ALS_ITEM_INFORMATION.AIIN_ITEM_IND_CD aiinItemIndCd, "
-				+ "ALS_ITEM_INFORMATION.AIS_ITEM_STATUS_CD aisItemStatusCd, "
-				+ "ALS_APPLICATION_INFORMATION.AAI_DISPOSITION_CD aaiDispositionCd, "
-				+ "ALS_ITEM_CATEGORY.AIC_CATEGORY_DESC aicCategoryDesc, "
-				+ "NVL(ALS_ITEM_INFORMATION.APC_PREREQUISITE_COST_CD,ALS_APPLICATION_INFORMATION.APC_PREREQUISITE_COST_CD) apcPrerequisiteCostCd , "
-				+ "NVL(ALS_ITEM_INFORMATION.AII_RESIDENCY_STATUS,ALS_APPLICATION_INFORMATION.AAI_ITEM_RESIDENCY_IND) residency, "
-				+ "DECODE(NVL(ALS_ITEM_INFORMATION.AII_RESIDENCY_STATUS,ALS_APPLICATION_INFORMATION.AAI_ITEM_RESIDENCY_IND),'R','Residents','N','Nonresidents','Others') itemResidency, "
-				+ "NVL(ALS_ITEM_INFORMATION.ACG_COST_GROUP_SEQ_NO,ALS_APPLICATION_INFORMATION.ACG_SEQ_NO) acdCostGroupSeqNo, "
-				+ "ALS_ITEM_APPL_FEE_ACCT.AIAFA_AMT_TYPE aiafaAmtType, "
-				+ "ALS_ITEM_APPL_FEE_ACCT.AIAFA_AMT aiafaAmt, "
-				+ "DECODE(ALS_ITEM_APPL_FEE_ACCT.AIAFA_STATUS , 'A' ,ALS_ITEM_APPL_FEE_ACCT.AIAFA_AMT,0) sumIafa, "
-				+ "ALS_ITEM_APPL_FEE_ACCT.AIAFA_PROCESS_CATEGORY_CD aiafaProcessCategoryCd, "
-				+ "ALS_SESSION_TRANS.AST_PROCESS_TYPE_CD astProcessTypeCd, "
-				+ "ALS_ITEM_APPL_FEE_ACCT.AIAFA_REASON_CD aiafaReasonCd, "
-				+ "ALS_ITEM_APPL_FEE_ACCT.AHM_TYPE ahmType, "
-				+ "ALS_ITEM_APPL_FEE_ACCT.AHM_CD ahmCd, "
-				+ "DECODE(ALS_ITEM_APPL_FEE_ACCT.AIAFA_STATUS,'A', 'Active','V','Void') aiafaStatus, "
-				+ "ALS_ITEM_APPL_FEE_ACCT.AS_SESSION_DT asSessionDt, "
-				+ "ALS_SESSION_TRANS.AST_WHO_LOG  sessionOrigin, "
-				+ "ALS_SESSIONS.AS_SESSION_VOID_DT asSessionVoidDt, "
-				+ "ALS_SESSIONS.ABI_BATCH_NO  abiBatchNO, "
-				+ "ALS_SESSIONS.ASI_SUBBATCH_NO  asiSubatchNo, "
-				+ "ALS_ITEM_APPL_FEE_ACCT.AIAFA_RECORD_VOID_DT aiafaRecordVoidDt, "
-				+ "ALS_ITEM_APPL_FEE_ACCT.AIAFA_REMARKS aiafaRemarks, "
-				+ "ALS_BATCH_INFO.ABI_RECONCILED_ON abiReconciledOn, "
-				+ "ALS_ITEM_APPL_FEE_ACCT.AIAFA_WHEN_LOG aiafaWhenLog, "
-				+ "ALS_SESSIONS.AS_MODE_PAYMENT asModePayment, "
-				+ "ALS_SESSIONS.AS_CHECK_NO asCheckNo, "
-				+ "ALS_SESSIONS.AS_CHECK_WRITER  asCheckWriter, "
-				+ "ALS_APPLICATION_INFORMATION.AAI_BONUS_POINTS_IND aaiBonusPointsInd, "
-				+ "ALS_ITEM_APPL_FEE_ACCT.ATI_TRIBE_CD atiTribeCd, "
-				+ "ALS_TRANSACTION_GRP_STATUS.ATGS_GROUP_IDENTIFIER atgsGroupIdentifier, "
-				+ "ALS_TRANSACTION_GRP_STATUS.ATGS_SUMMARY_STATUS atgsSummaryStatus, "
-				+ "ALS_TRANSACTION_GRP_STATUS.ATGS_INTERFACE_STATUS atgsInterfaceStatus, "
-				+ "ALS_ITEM_APPL_FEE_ACCT.AIAFA_APP_TYPE aiafaAppType, "
-				+ "ALS_SESSION_TRANS.AST_NOCHARGE_REASON astNochargeReason, "
-				+ "(SELECT API_BUSINESS_NM FROM ALS.ALS_PROVIDER_INFO WHERE ALS_PROVIDER_INFO.API_PROVIDER_NO = ALS_ITEM_APPL_FEE_ACCT.API_PROVIDER_NO)  providerNm, "
-				+ "(SELECT AIT_TYPE_DESC FROM ALS.ALS_ITEM_TYPE WHERE AI_ITEM_ID||AIC_CATEGORY_ID||AIT_TYPE_ID = ALS_SESSION_TRANS.AICT_ITEM_TYPE_CD) itemTypeDesc, "
-				+ "(SELECT AM_KEY2 FROM ALS.ALS_MISC WHERE AM_KEY1 = 'ITEM INDICATOR' AND SUBSTR(LPAD(LTRIM(RTRIM(AM_PAR_VAL)),30,'0'),29,2) = LPAD(TO_CHAR(ALS_ITEM_INFORMATION.AIIN_ITEM_IND_CD),2,'0')) itemIndDesc, "
-				+ "(SELECT AM_KEY2 FROM ALS.ALS_MISC WHERE AM_KEY1 = 'ITEM STATUS' AND SUBSTR(LPAD(LTRIM(RTRIM(AM_PAR_VAL)),30,'0'),29,2) = LPAD(TO_CHAR(ALS_ITEM_INFORMATION.AIS_ITEM_STATUS_CD),2,'0')) itemStatusDesc, "
-				+ "(SELECT AM_KEY2 FROM ALS.ALS_MISC WHERE AM_KEY1 = 'APPLICATION DISPOSITION' AND SUBSTR(LPAD(LTRIM(RTRIM(AM_PAR_VAL)),30,'0'),29,2) = LPAD(TO_CHAR(ALS_APPLICATION_INFORMATION.AAI_DISPOSITION_CD),2,'0')) appDispositionDesc, "
-				+ "(SELECT APC_PREREQUISITE_DESC FROM ALS.ALS_PREREQUISITE_CD WHERE APC_PREREQUISITE_CD = NVL(ALS_ITEM_INFORMATION.APC_PREREQUISITE_COST_CD,ALS_APPLICATION_INFORMATION.APC_PREREQUISITE_COST_CD)) prereqDesc, "
-				+ "(SELECT AIC_CATEGORY_DESC FROM ALS.ALS_ITEM_CATEGORY WHERE AI_ITEM_ID||AIC_CATEGORY_ID = SUBSTR(ALS_SESSION_TRANS.AICT_ITEM_TYPE_CD,1,4)) itemCatDesc, "
-				+ "(SELECT AM_VAL_DESC FROM ALS.ALS_MISC WHERE AM_KEY1 = 'IAFA_AMOUNT_TYPE' AND SUBSTR(LPAD(LTRIM(RTRIM(AM_PAR_VAL)),30,'0'),27,4) = LPAD(TO_CHAR(ALS_ITEM_APPL_FEE_ACCT.AIAFA_AMT_TYPE),4,'0')) amtTypeDesc, "
-				+ "(SELECT AM_KEY2 FROM ALS.ALS_MISC WHERE AM_KEY1 = 'PROCESS_CATEGORY' AND AM_KEY2 <> 'SESSION VOID' AND SUBSTR(LPAD(LTRIM(RTRIM(AM_PAR_VAL)),30,'0'),28,3) = LPAD(TO_CHAR(ALS_ITEM_APPL_FEE_ACCT.AIAFA_PROCESS_CATEGORY_CD),3,'0')) processCatDesc, "
-				+ "(SELECT AM_KEY2 FROM ALS.ALS_MISC WHERE AM_KEY1 = 'PROCESS TYPE' AND AM_KEY2 <> 'SESSION VOID' AND SUBSTR(LPAD(LTRIM(RTRIM(AM_PAR_VAL)),30,'0'),27,4) = LPAD(TO_CHAR(ALS_SESSION_TRANS.AST_PROCESS_TYPE_CD),4,'0')) processTypeDesc, "
-				+ "(SELECT AM_DESC2 FROM ALS.ALS_MISC WHERE AM_KEY1 = 'PAE_REASON' AND SUBSTR(LPAD(LTRIM(RTRIM(AM_PAR_VAL)),30,'0'),27,4) = LPAD(TO_CHAR(ALS_ITEM_APPL_FEE_ACCT.AIAFA_REASON_CD),4,'0')) reasonDesc "
-				+ where;
 		try {
+			StringBuilder queryStr = new StringBuilder("SELECT DISTINCT a.API_PROVIDER_NO apiProviderNo, "
+					+ "e.API_BUSINESS_NM apiBusinessNm, "
+					+ "e.API_ALX_PROV_IND apiAlxProvInd, "
+					+ "a.APR_BILLING_FROM aprBillingFrom, "
+					+ "a.APR_BILLING_TO aprBillingTo, "
+					+ "a.AIAFA_SEQ_NO aiafaSeqNo, "
+					+ "b.AS_DATA_ENTRY_PROVIDER_NO asDataEntryProviderNo, "
+					+ "c.AICT_USAGE_PERIOD_FROM aictUsagePeriodFrom, "
+					+ "c.AICT_USAGE_PERIOD_TO aictUsagePeriodTo, "
+					+ "c.AICT_ITEM_TYPE_CD aictItemTypeCd, "
+					+ "SUBSTR(c.AICT_ITEM_TYPE_CD,1,4) itemCatCd, "
+					+ "g.AIT_TYPE_DESC aitTypeDesc, "
+					+ "c.AII_ITEM_TXN_IND aiiItemTxnInd, "
+					+ "c.AII_SEQ_NO aiiSeqNo, "
+					+ "c.API_DOB dob, "
+					+ "c.API_ALS_NO  alsNo, "
+					+ "d.AIIN_ITEM_IND_CD aiinItemIndCd, "
+					+ "d.AIS_ITEM_STATUS_CD aisItemStatusCd, "
+					+ "i.AAI_DISPOSITION_CD aaiDispositionCd, "
+					+ "h.AIC_CATEGORY_DESC aicCategoryDesc, "
+					+ "NVL(d.APC_PREREQUISITE_COST_CD,i.APC_PREREQUISITE_COST_CD) apcPrerequisiteCostCd , "
+					+ "NVL(d.AII_RESIDENCY_STATUS,i.AAI_ITEM_RESIDENCY_IND) residency, "
+					+ "DECODE(NVL(d.AII_RESIDENCY_STATUS,i.AAI_ITEM_RESIDENCY_IND),'R','Residents','N','Nonresidents','Others') itemResidency, "
+					+ "NVL(d.ACG_COST_GROUP_SEQ_NO,i.ACG_SEQ_NO) acdCostGroupSeqNo, "
+					+ "a.AIAFA_AMT_TYPE aiafaAmtType, "
+					+ "a.AIAFA_AMT aiafaAmt, "
+					+ "DECODE(a.AIAFA_STATUS , 'A' ,a.AIAFA_AMT,0) sumIafa, "
+					+ "a.AIAFA_PROCESS_CATEGORY_CD aiafaProcessCategoryCd, "
+					+ "c.AST_PROCESS_TYPE_CD astProcessTypeCd, "
+					+ "a.AIAFA_REASON_CD aiafaReasonCd, "
+					+ "a.AHM_TYPE ahmType, "
+					+ "a.AHM_CD ahmCd, "
+					+ "DECODE(a.AIAFA_STATUS,'A', 'Active','V','Void') aiafaStatus, "
+					+ "a.AS_SESSION_DT asSessionDt, "
+					+ "c.AST_WHO_LOG  sessionOrigin, "
+					+ "b.AS_SESSION_VOID_DT asSessionVoidDt, "
+					+ "b.ABI_BATCH_NO  abiBatchNO, "
+					+ "b.ASI_SUBBATCH_NO  asiSubatchNo, "
+					+ "a.AIAFA_RECORD_VOID_DT aiafaRecordVoidDt, "
+					+ "a.AIAFA_REMARKS aiafaRemarks, "
+					+ "f.ABI_RECONCILED_ON abiReconciledOn, "
+					+ "a.AIAFA_WHEN_LOG aiafaWhenLog, "
+					+ "b.AS_MODE_PAYMENT asModePayment, "
+					+ "b.AS_CHECK_NO asCheckNo, "
+					+ "b.AS_CHECK_WRITER  asCheckWriter, "
+					+ "i.AAI_BONUS_POINTS_IND aaiBonusPointsInd, "
+					+ "a.ATI_TRIBE_CD atiTribeCd, "
+					+ "k.ATGS_GROUP_IDENTIFIER atgsGroupIdentifier, "
+					+ "k.ATGS_SUMMARY_STATUS atgsSummaryStatus, "
+					+ "k.ATGS_INTERFACE_STATUS atgsInterfaceStatus, "
+					+ "a.AIAFA_APP_TYPE aiafaAppType, "
+					+ "c.AST_NOCHARGE_REASON astNochargeReason, "
+					+ "(SELECT AIT_TYPE_DESC FROM ALS.ALS_ITEM_TYPE WHERE AI_ITEM_ID||AIC_CATEGORY_ID||AIT_TYPE_ID = c.AICT_ITEM_TYPE_CD) itemTypeDesc, "
+					+ "(SELECT AM_KEY2 FROM ALS.ALS_MISC WHERE AM_KEY1 = 'ITEM INDICATOR' AND SUBSTR(LPAD(LTRIM(RTRIM(AM_PAR_VAL)),30,'0'),29,2) = LPAD(TO_CHAR(d.AIIN_ITEM_IND_CD),2,'0')) itemIndDesc, "
+					+ "(SELECT AM_KEY2 FROM ALS.ALS_MISC WHERE AM_KEY1 = 'ITEM STATUS' AND SUBSTR(LPAD(LTRIM(RTRIM(AM_PAR_VAL)),30,'0'),29,2) = LPAD(TO_CHAR(d.AIS_ITEM_STATUS_CD),2,'0')) itemStatusDesc, "
+					+ "(SELECT AM_KEY2 FROM ALS.ALS_MISC WHERE AM_KEY1 = 'APPLICATION DISPOSITION' AND SUBSTR(LPAD(LTRIM(RTRIM(AM_PAR_VAL)),30,'0'),29,2) = LPAD(TO_CHAR(i.AAI_DISPOSITION_CD),2,'0')) appDispositionDesc, "
+					+ "(SELECT APC_PREREQUISITE_DESC FROM ALS.ALS_PREREQUISITE_CD WHERE APC_PREREQUISITE_CD = NVL(d.APC_PREREQUISITE_COST_CD,i.APC_PREREQUISITE_COST_CD)) prereqDesc, "
+					+ "(SELECT AIC_CATEGORY_DESC FROM ALS.ALS_ITEM_CATEGORY WHERE AI_ITEM_ID||AIC_CATEGORY_ID = SUBSTR(c.AICT_ITEM_TYPE_CD,1,4)) itemCatDesc, "
+					+ "(SELECT AM_VAL_DESC FROM ALS.ALS_MISC WHERE AM_KEY1 = 'IAFA_AMOUNT_TYPE' AND SUBSTR(LPAD(LTRIM(RTRIM(AM_PAR_VAL)),30,'0'),27,4) = LPAD(TO_CHAR(a.AIAFA_AMT_TYPE),4,'0')) amtTypeDesc, "
+					+ "(SELECT AM_KEY2 FROM ALS.ALS_MISC WHERE AM_KEY1 = 'PROCESS_CATEGORY' AND AM_KEY2 <> 'SESSION VOID' AND SUBSTR(LPAD(LTRIM(RTRIM(AM_PAR_VAL)),30,'0'),28,3) = LPAD(TO_CHAR(a.AIAFA_PROCESS_CATEGORY_CD),3,'0')) processCatDesc, "
+					+ "(SELECT AM_KEY2 FROM ALS.ALS_MISC WHERE AM_KEY1 = 'PROCESS TYPE' AND AM_KEY2 <> 'SESSION VOID' AND SUBSTR(LPAD(LTRIM(RTRIM(AM_PAR_VAL)),30,'0'),27,4) = LPAD(TO_CHAR(c.AST_PROCESS_TYPE_CD),4,'0')) processTypeDesc, "
+					+ "(SELECT AM_DESC2 FROM ALS.ALS_MISC WHERE AM_KEY1 = 'PAE_REASON' AND SUBSTR(LPAD(LTRIM(RTRIM(AM_PAR_VAL)),30,'0'),27,4) = LPAD(TO_CHAR(a.AIAFA_REASON_CD),4,'0')) reasonDesc "
+					+ "FROM ALS.ALS_ITEM_APPL_FEE_ACCT a, "
+					+ "ALS.ALS_SESSIONS b, "
+					+ "ALS.ALS_SESSION_TRANS c, "
+					+ "ALS.ALS_ITEM_INFORMATION d, "
+					+ "ALS.ALS_PROVIDER_INFO e, "
+					+ "ALS.ALS_BATCH_INFO f, "
+					+ "ALS.ALS_ITEM_TYPE g, "
+					+ "ALS.ALS_ITEM_CATEGORY h, "
+					+ "ALS.ALS_APPLICATION_INFORMATION i, "
+					+ "ALS.ALS_SABHRS_ENTRIES j, "
+					+ "ALS.ALS_TRANSACTION_GRP_STATUS k "
+					/*WHERE*/
+					+ "WHERE ALS.a.AIAFA_WHEN_LOG >= :fromDt "
+					+ "AND ALS.a.AIAFA_WHEN_LOG < :toDt "
+					+ "AND a.AHM_TYPE = b.AHM_TYPE(+) "
+					+ "AND a.AHM_CD = b.AHM_CD(+) "
+					+ "AND a.AS_SESSION_DT = b.AS_SESSION_DT(+) "
+					+ "AND a.API_PROVIDER_NO = e.API_PROVIDER_NO "
+					+ "AND a.AHM_TYPE = c.AHM_TYPE(+) "
+					+ "AND a.AHM_CD = c.AHM_CD(+) "
+					+ "AND a.AS_SESSION_DT = c.AS_SESSION_DT(+) "
+					+ "AND a.AST_TRANSACTION_CD = c.AST_TRANSACTION_CD(+) "
+					+ "AND a.AST_TRANSACTION_SEQ_NO = c.AST_TRANSACTION_SEQ_NO(+) "
+					+ "AND b.ABI_LICENSE_YR = f.ABI_LICENSE_YR(+) "
+					+ "AND b.ABI_BATCH_NO = f.ABI_BATCH_NO(+) "
+					+ "AND SUBSTR(c.AICT_ITEM_TYPE_CD,1,2) = g.AI_ITEM_ID(+) "
+					+ "AND SUBSTR(c.AICT_ITEM_TYPE_CD,3,2) = g.AIC_CATEGORY_ID(+) "
+					+ "AND SUBSTR(c.AICT_ITEM_TYPE_CD,5,3) = g.AIT_TYPE_ID(+) "
+					+ "AND SUBSTR(c.AICT_ITEM_TYPE_CD,1,2) = h.AI_ITEM_ID(+) "
+					+ "AND SUBSTR(c.AICT_ITEM_TYPE_CD,3,2) = h.AIC_CATEGORY_ID(+) "
+					+ "AND c.AICT_USAGE_PERIOD_FROM = d.AICT_USAGE_PERIOD_FROM(+) "
+					+ "AND c.AICT_USAGE_PERIOD_TO = d.AICT_USAGE_PERIOD_TO(+) "
+					+ "AND c.AICT_ITEM_TYPE_CD = d.AICT_ITEM_TYPE_CD(+) "
+					+ "AND c.API_DOB = d.API_DOB(+) "
+					+ "AND c.API_ALS_NO = d.API_ALS_NO(+) "
+					+ "AND c.AII_ITEM_TXN_IND = d.AII_ITEM_TXN_IND(+) "
+					+ "AND c.AII_SEQ_NO = d.AII_SEQ_NO(+) "
+					+ "AND c.AAI_APP_IDENTIFICATION_NO = i.AAI_APP_IDENTIFICATION_NO(+) "
+					+ "AND a.API_PROVIDER_NO = j.API_PROVIDER_NO(+) "
+					+ "AND a.APR_BILLING_FROM = j.APR_BILLING_FROM(+) "
+					+ "AND a.APR_BILLING_TO = j.APR_BILLING_TO(+) "
+					+ "AND a.AIAFA_SEQ_NO = j.AIAFA_SEQ_NO(+) "
+					+ "AND j.ATG_TRANSACTION_CD = k.ATG_TRANSACTION_CD(+) "
+					+ "AND j.ATGS_GROUP_IDENTIFIER = k.ATGS_GROUP_IDENTIFIER(+) "
+					+ "AND NVL(ALS.j.ATGS_GROUP_IDENTIFIER,0) NOT LIKE 'DRWGRSLT%' ");
+					if(!isNil(issProvNo))
+						queryStr.append("AND a.API_PROVIDER_NO = NVL(:issProvNo , a.API_PROVIDER_NO) ");
+					if(!isNil(entProvNo))
+						queryStr.append("AND b.AS_DATA_ENTRY_PROVIDER_NO = NVL(:entProvNo, b.AS_DATA_ENTRY_PROVIDER_NO) ");
+					if(!isNil(bpFromDt))
+						queryStr.append("AND a.APR_BILLING_FROM = NVL(:bpFromDt,a.APR_BILLING_FROM) ");
+					if(!isNil(bpToDt))
+						queryStr.append("AND a.APR_BILLING_TO = NVL(:bpToDt,a.APR_BILLING_TO) ");
+					if(!isNil(upFromDt))
+						queryStr.append("AND NVL(c.AICT_USAGE_PERIOD_FROM,SYSDATE) = AND NVL(:upFromDt,NVL(c.AICT_USAGE_PERIOD_FROM,SYSDATE)) ");
+					if(!isNil(upToDt))
+						queryStr.append("AND NVL(c.AICT_USAGE_PERIOD_TO,SYSDATE) = AND NVL(:upToDt,AND NVL(c.AICT_USAGE_PERIOD_TO,SYSDATE)) ");
+					if(!isNil(modeOfPayment))
+						queryStr.append("AND b.AS_MODE_PAYMENT = NVL(:modeOfPayment,b.AS_MODE_PAYMENT) ");
+					if(!isNil(chckNo))
+						queryStr.append("AND b.AS_CHECK_NO = NVL(:chckNo,b.AS_CHECK_NO) ");
+					if(!isNil(chckWriter))
+						queryStr.append("AND b.AS_CHECK_WRITER = NVL(:chckWriter,b.AS_CHECK_WRITER) ");
+					if(!isNil(remarks))
+						queryStr.append("AND a.AIAFA_REMARKS LIKE NVL(:remarks,a.AIAFA_REMARKS) ");
+					if(!isNil(iafaSeqNo))
+						queryStr.append("AND a.AIAFA_SEQ_NO = NVL(:iafaSeqNo,a.AIAFA_SEQ_NO) ");
+					if(!isNil(dob))
+						queryStr.append("AND NVL(c.API_DOB,SYSDATE) = NVL(:dob,NVL(c.API_DOB,SYSDATE)) ");
+					if(!isNil(alsNo))
+						queryStr.append("AND c.API_ALS_NO = NVL(:alsNo,c.API_ALS_NO) ");
+					if(!isNil(transGrpIdentifier))
+						queryStr.append("AND k.ATGS_GROUP_IDENTIFIER = NVL(:transGrpIdentifier,k.ATGS_GROUP_IDENTIFIER) ");
+					if(!isNil(sumAppStat))
+						queryStr.append("AND k.ATGS_SUMMARY_STATUS = NVL(:sumAppStat,k.ATGS_SUMMARY_STATUS) ");
+					if(!isNil(intAppStat))
+						queryStr.append("AND k.ATGS_INTERFACE_STATUS = NVL(:intAppStat,k.ATGS_INTERFACE_STATUS) ");
+					if(!isNil(ahmType))
+						queryStr.append("AND a.AHM_TYPE = NVL(:ahmType,a.AHM_TYPE) ");
+					if(!isNil(ahmCd))
+						queryStr.append("AND a.AHM_CD = NVL(:ahmCd,a.AHM_CD) ");
+					if(!isNil(recordVoidDt))
+						queryStr.append("AND a.AIAFA_RECORD_VOID_DT = NVL(:recordVoidDt,a.AIAFA_RECORD_VOID_DT) ");
+					if(!isNil(tribeCd))
+						queryStr.append("AND a.ATI_TRIBE_CD = NVL(:tribeCd,a.ATI_TRIBE_CD) ");
+					if(!isNil(appType))
+						queryStr.append("AND a.AIAFA_APP_TYPE = NVL(:appType,a.AIAFA_APP_TYPE) ");
+					if(!isNil(amountTypeCd))
+						queryStr.append("AND a.AIAFA_AMT_TYPE = NVL(:amountTypeCd,a.AIAFA_AMT_TYPE) ");
+					if(!isNil(amount))
+						queryStr.append("AND a.AIAFA_AMT = NVL(:amount,a.AIAFA_AMT) ");
+					if(!isNil(sessDt))
+						queryStr.append("AND TRUNC(NVL(a.AS_SESSION_DT,SYSDATE)) = NVL(:sessDt,TRUNC(NVL(a.AS_SESSION_DT,SYSDATE))) ");
+					if(!isNil(sessVoidDt))
+						queryStr.append("AND TRUNC(NVL(b.AS_SESSION_VOID_DT,SYSDATE)) = NVL(:sessVoidDt,TRUNC(NVL(b.AS_SESSION_VOID_DT,SYSDATE))) ");
+					if(!isNil(sessStat))
+						queryStr.append("AND a.AIAFA_STATUS = NVL(:sessStat,a.AIAFA_STATUS) ");
+					if(!isNil(reasonCd))
+						queryStr.append("AND a.AIAFA_REASON_CD = NVL(:reasonCd,a.AIAFA_REASON_CD) ");
+					if(!isNil(itemTypeCd))
+						queryStr.append("AND c.AICT_ITEM_TYPE_CD = NVL(:itemTypeCd,c.AICT_ITEM_TYPE_CD) ");
+					if(!isNil(itemCatCd))
+						queryStr.append("AND SUBSTR(c.AICT_ITEM_TYPE_CD,1,4) = NVL(:itemCatCd,SUBSTR(c.AICT_ITEM_TYPE_CD,1,4)) ");
+					if(!isNil(bonusPoints))
+						queryStr.append("AND i.AAI_BONUS_POINTS_IND = NVL(:bonusPoints,i.AAI_BONUS_POINTS_IND) ");
+					if(!isNil(itemInd))
+						queryStr.append("AND d.AIIN_ITEM_IND_CD = NVL(:itemInd,d.AIIN_ITEM_IND_CD) ");
+					if(!isNil(itemStat))
+						queryStr.append("AND d.AIS_ITEM_STATUS_CD = NVL(:itemStat,d.AIS_ITEM_STATUS_CD) ");
+					if(!isNil(costPrereqCd))
+						queryStr.append("AND (d.APC_PREREQUISITE_COST_CD = :costPrereqCd OR i.APC_PREREQUISITE_COST_CD = :costPrereqCd) ");
+					if(!isNil(resIndicator))
+						queryStr.append("AND (d.AII_RESIDENCY_STATUS = :resIndicator OR i.AAI_ITEM_RESIDENCY_IND = :resIndicator) ");
+					if(!isNil(appDis))
+						queryStr.append("AND i.AAI_DISPOSITION_CD = NVL(:appDis,i.AAI_DISPOSITION_CD) ");
+					if(!isNil(procCatCd))
+						queryStr.append("AND a.AIAFA_PROCESS_CATEGORY_CD = NVL(:procCatCd,a.AIAFA_PROCESS_CATEGORY_CD) ");
+					if(!isNil(procTypeCd))
+						queryStr.append("AND c.AST_PROCESS_TYPE_CD = NVL(:procTypeCd,c.AST_PROCESS_TYPE_CD) ");
+					if(!isNil(batchRecDt))
+						queryStr.append("AND f.ABI_RECONCILED_ON = NVL(:batchRecDt,f.ABI_RECONCILED_ON) ");
+					if(!isNil(noCharge))
+						queryStr.append("AND Decode(NVL(c.AST_NOCHARGE_REASON,'N'),'N','N','Y') = Decode(:noCharge,'N','N','Y') ");
+					if(!isNil(itemTransInd))
+						queryStr.append("AND c.AII_ITEM_TXN_IND = NVL(:itemTransInd,c.AII_ITEM_TXN_IND) ");
+					if(!isNil(seqNoInItemTrans))
+						queryStr.append("AND c.AII_SEQ_NO = NVL(:seqNoInItemTrans,c.AII_SEQ_NO) ");
+							
+					if(alxInd != null){
+						if(alxInd == true){
+							queryStr.append("AND e.API_ALX_PROV_IND = 'Y' ");
+						}
+					}
+					if(nullTGI != null && nullTGI == true){
+						queryStr.append("AND NOT EXISTS (SELECT 1 "
+														+ "FROM als.k atgs, "
+														+ "als.ALS_SABHRS_ENTRIES ase "
+														+ "WHERE ase.api_provider_no = a.api_provider_no "
+														+ "AND ase.apr_billing_from = a.apr_billing_from "
+														+ "AND ase.apr_billing_to = a.apr_billing_to "
+														+ "AND ase.aiafa_seq_no = a.aiafa_seq_no "
+														+ "AND atgs.atg_transaction_cd = ase.atg_transaction_cd "
+														+ "AND atgs.atgs_group_identifier = ase.atgs_group_identifier) ");
+					}
+					queryStr.append("ORDER BY a.aiafa_seq_no, a.as_session_dt");
 			Query query = getSession()
-					.createSQLQuery(queryStr)
-					.addScalar("gridKey")
+					.createSQLQuery(queryStr.toString())
 					.addScalar("apiProviderNo", IntegerType.INSTANCE)
 					.addScalar("apiBusinessNm")
 					.addScalar("apiAlxProvInd")
@@ -1043,7 +1283,6 @@ public class HibHelpers {
 					.addScalar("atgsInterfaceStatus")
 					.addScalar("aiafaAppType")
 					.addScalar("astNochargeReason")
-					.addScalar("providerNm")
 					.addScalar("itemTypeDesc")
 					.addScalar("itemIndDesc")
 					.addScalar("itemStatusDesc")
@@ -1053,14 +1292,94 @@ public class HibHelpers {
 					.addScalar("amtTypeDesc")
 					.addScalar("processCatDesc")
 					.addScalar("processTypeDesc")
-					.addScalar("reasonDesc")
-	
-					.setResultTransformer(
+					.addScalar("reasonDesc");
+					query.setDate("fromDt", fromDt);
+					query.setDate("toDt", toDt);
+					if(!isNil(issProvNo))
+					query.setInteger("issProvNo", issProvNo);
+					if(!isNil(entProvNo))
+					query.setInteger("entProvNo", entProvNo);
+					if(!isNil(bpFromDt))
+					query.setDate("bpFromDt", bpFromDt);
+					if(!isNil(bpToDt))
+					query.setDate("bpToDt", bpToDt);
+					if(!isNil(upFromDt))
+					query.setDate("upFromDt", upFromDt);
+					if(!isNil(upToDt))
+					query.setDate("upToDt", upToDt);
+					if(!isNil(modeOfPayment))
+					query.setString("modeOfPayment", modeOfPayment);
+					if(!isNil(chckNo))
+					query.setInteger("chckNo", chckNo);
+					if(!isNil(chckWriter))
+					query.setString("chckWriter", chckWriter);
+					if(!isNil(remarks))
+					query.setString("remarks", remarks);
+					if(!isNil(iafaSeqNo))
+					query.setInteger("iafaSeqNo", iafaSeqNo);
+					if(!isNil(dob))
+					query.setDate("dob", dob);
+					if(!isNil(alsNo))
+					query.setInteger("alsNo", alsNo);
+					if(!isNil(transGrpIdentifier))
+					query.setString("transGrpIdentifier", transGrpIdentifier);
+					if(!isNil(sumAppStat))
+					query.setString("sumAppStat", sumAppStat);
+					if(!isNil(intAppStat))
+					query.setString("intAppStat", intAppStat);
+					if(!isNil(ahmType))
+					query.setString("ahmType", ahmType);
+					if(!isNil(ahmCd))
+					query.setString("ahmCd", ahmCd);
+					if(!isNil(recordVoidDt))
+					query.setDate("recordVoidDt", recordVoidDt);
+					if(!isNil(tribeCd))
+					query.setString("tribeCd", tribeCd);
+					if(!isNil(appType))
+					query.setString("appType", appType);
+					if(!isNil(amountTypeCd))
+					query.setString("amountTypeCd", amountTypeCd);
+					if(!isNil(amount))
+					query.setDouble("amount", amount);
+					if(!isNil(sessDt))
+					query.setDate("sessDt", sessDt);
+					if(!isNil(sessVoidDt))
+					query.setDate("sessVoidDt", sessVoidDt);
+					if(!isNil(sessStat))
+					query.setString("sessStat", sessStat);
+					if(!isNil(reasonCd))
+					query.setString("reasonCd", reasonCd);
+					if(!isNil(itemTypeCd))
+					query.setString("itemTypeCd", itemTypeCd);
+					if(!isNil(itemCatCd))
+					query.setString("itemCatCd", itemCatCd);
+					if(!isNil(bonusPoints))
+					query.setString("bonusPoints", bonusPoints);
+					if(!isNil(itemInd))
+					query.setString("itemInd", itemInd);
+					if(!isNil(itemStat))
+					query.setString("itemStat", itemStat);
+					if(!isNil(costPrereqCd))
+					query.setString("costPrereqCd", costPrereqCd);
+					if(!isNil(resIndicator))
+					query.setString("resIndicator", resIndicator);
+					if(!isNil(appDis))
+					query.setString("appDis", appDis);
+					if(!isNil(procCatCd))
+					query.setString("procCatCd", procCatCd);
+					if(!isNil(procTypeCd))
+					query.setString("procTypeCd", procTypeCd);
+					if(!isNil(batchRecDt))
+					query.setDate("batchRecDt", batchRecDt);
+					if(!isNil(noCharge))
+					query.setString("noCharge", noCharge);
+					if(!isNil(itemTransInd))
+					query.setString("itemTransInd", itemTransInd);
+					if(!isNil(seqNoInItemTrans))
+					query.setInteger("seqNoInItemTrans", seqNoInItemTrans);
+					query.setResultTransformer(
 							Transformers.aliasToBean(IafaDetailsDTO.class));
-
 			lst = query.list();
-		} catch (HibernateException he){
-			System.out.println(he.toString());
 		}
 		catch (RuntimeException re) {
 			System.out.println(re.toString());

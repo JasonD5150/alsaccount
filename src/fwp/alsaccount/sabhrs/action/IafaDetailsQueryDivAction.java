@@ -47,7 +47,7 @@ public class IafaDetailsQueryDivAction extends ActionSupport{
 			itemTypeLst = lu.getItemTypeCd(null);
 			amountTypeCdLst = lu.getMiscCodes("IAFA_AMOUNT_TYPE", null, null, null, null, null, null, true, true);
 			processCategoryCdLst = lu.getMiscCodes("PROCESS_CATEGORY", null, null, null, null, null, null, true, true);
-			processTypeCdLst = lu.getMiscCodes("PROCESS_TYPE", null, null, null, null, null, null, true, true);
+			processTypeCdLst = lu.getMiscCodes("PROCESS TYPE", null, null, null, null, null, null, true, true);
 			reasonTypeCdLst = lu.getMiscCodes("PAE_REASON", null, null, null, null, null, null, true, true);
 			tribeCdLst = lu.getTribeCdList();
 			itemCategoryCdLst = lu.getItemCategoryList();

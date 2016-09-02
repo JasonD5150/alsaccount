@@ -19,6 +19,7 @@ public class TransGrpAppQueryDivAction extends ActionSupport{
 	private List<ListComp> transGroupTypeLst;
 	private List<ListComp> providerLst;
 	private List<ListComp> bankCdLst;
+	private List<ListComp> budgYearLst;
 	
 
 	public TransGrpAppQueryDivAction(){
@@ -30,6 +31,7 @@ public class TransGrpAppQueryDivAction extends ActionSupport{
 			providerLst = lu.getTransGrpAppProviderList();
 			transGroupTypeLst = lu.getSabhrsTransGroupTypeLst();
 			bankCdLst = lu.getTransGrpBankCodeList();
+			budgYearLst = lu.getBudgetYearList();
 		} catch (Exception e) {
 			//System.out.println(e.getMessage());
 			log.debug(e.getMessage());
@@ -69,6 +71,20 @@ public class TransGrpAppQueryDivAction extends ActionSupport{
 	 */
 	public void setBankCdLst(List<ListComp> bankCdLst) {
 		this.bankCdLst = bankCdLst;
+	}
+
+	/**
+	 * @return the budgYearLst
+	 */
+	public List<ListComp> getBudgYearLst() {
+		return budgYearLst;
+	}
+
+	/**
+	 * @param budgYearLst the budgYearLst to set
+	 */
+	public void setBudgYearLst(List<ListComp> budgYearLst) {
+		this.budgYearLst = budgYearLst;
 	}
 
 }

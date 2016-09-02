@@ -101,13 +101,15 @@
 				$('#gridFrm')[0].reset();
 			}
 			
-
-	   	</script>
-	   	<style>
-	   		.label {
-			   text-align: right;
+			function searchTypeSelect(){
+				if($("#searchType").prop('value') == "Advanced Search"){
+					$("#searchType").prop('value', 'Basic Search');
+				}else{
+					$("#searchType").prop('value', 'Advanced Search')
+				}
+				$('#advancedSearchDiv').toggle();
 			}
-	   	</style>
+	   	</script>
     </fwp:head>
 	
 	<div id="errorMessage" style="font-weight:bold; color:#FF0000;" hidden="true"></div>
@@ -123,7 +125,14 @@
 			reloadTopics="reloadLists"
 			onCompleteTopics="searchDivComplete">
 	</sj:div>
-	
+	<br>
+	<fieldset style="border: black 1px solid; display: inline-block;">
+    	<legend style="font-weight: bold;">Actions</legend>
+		<s:submit id="submitSearch" onclick="submitSearch()" value="Submit" theme="simple"></s:submit>
+		<s:submit id="resetSearch" onclick="resetSearch()" value="Reset" theme="simple"></s:submit>
+		<s:submit id="searchType" onclick="searchTypeSelect();" value="Advanced Search" theme="simple"></s:submit>
+		<s:submit id="getReport" onclick="exportToCSV()" theme="simple" value="Export CSV"></s:submit>
+	</fieldset>
   	<br>
   	<br>
 	<s:url id="iafaQueryGridURL" action="alsAccount/iafaQueryGrid_buildgrid" />  
@@ -131,8 +140,10 @@
 		id="iafaQueryTable"
 		caption="IAFA Session"
 		href="%{iafaQueryGridURL}"	
-		dataType="json"
+		dataType="local"
 		pager="true"
+		pagerButtons="true"
+		pagerInput="true"
 		navigator="true"
 		navigatorEdit="false"
 		navigatorView="false"
@@ -144,13 +155,13 @@
 	    gridModel="model"
 		rownumbers="true"
 		viewrecords="true"
-		scroll="true"
-		scrollrows="true"
+		scroll="false"
+		scrollrows="false"
 		height="100"
 		shrinkToFit="false"
         autowidth="true"
         resizable="true"
-		rowNum="1000"
+		rowNum="25"
 		formIds="gridFrm"
 		reloadTopics="reloadIafaQueryTable"
 		onCompleteTopics="iafaQueryTableComplete"
@@ -221,6 +232,4 @@
 			<sjg:gridColumn name="aiafaRemarks" index="aiafaRemarks" title ="Remarks" width="100" sortable="false" editable="true" hidden="true"/>
 	
 	</sjg:grid>
-	<br>
-	<s:submit id="getReport" onclick="exportToCSV()" theme="simple" value="Export CSV"></s:submit>
 </fwp:template>

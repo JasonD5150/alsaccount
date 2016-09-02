@@ -1,11 +1,14 @@
 package fwp.alsaccount.sabhrs.action;
 
+import java.util.List;
+
 import org.apache.shiro.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionSupport;
 
+import fwp.ListComp;
 import fwp.alsaccount.utils.ListUtils;
 import fwp.security.user.UserDTO;
 import fwp.utils.FwpStringUtils;
@@ -25,11 +28,10 @@ public class TransactionGroupApprovalAction extends ActionSupport{
 	}
 	
 	public String input(){
-		FwpStringUtils su = new FwpStringUtils();
 		ListUtils lu = new ListUtils();
 		try {
-			setBankCodeLst(su.listCompListToString(lu.getTransGrpBankCodeList()));
-			setProviderLst(su.listCompListToString(lu.getProviderList()));
+			setBankCodeLst(FwpStringUtils.listCompListToString(lu.getTransGrpBankCodeList()));
+			setProviderLst(FwpStringUtils.listCompListToString(lu.getProviderList()));
 			
 			UserDTO userInfo = (UserDTO)SecurityUtils.getSubject().getSession().getAttribute("userInfo");
 			setUser(userInfo.getStateId().toString());

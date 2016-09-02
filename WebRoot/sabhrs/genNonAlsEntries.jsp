@@ -22,6 +22,13 @@
 	<s:hidden id="orgLst" name="orgLst"/>
 	<s:hidden id="accountLst" name="accountLst"/>
 	
+	<form id="alsSabhrsEntriesGridForm">
+		<s:hidden id="frmOper" name="oper"/>
+		<s:hidden id="frmTransGrp" name="transGrp"/>
+		<s:hidden id="frmTransIdentifier" name="transIdentifier"/>
+		<s:hidden id="frmNonAlsEntries" name="templates"/>
+	</form>
+	
     <div style="width:800px;text-align:center">
     	<h2 class="title">Generate Non Als Entries</h2>
    	</div>
@@ -77,18 +84,16 @@
 		    </tr>
 		    </table>
 		</form>	
+	</fieldset>
+	<br>
+	<br>
+	<fieldset style="border: black 1px solid; display: inline-block;">
+    	<legend style="font-weight: bold;">Actions</legend>
 		<s:submit id="submitSearch" onclick="submitSearch()" value="Submit" theme="simple"></s:submit>
 		<s:submit id="resetSearch" onclick="resetSearch()" value="Reset" theme="simple"></s:submit>
 	</fieldset>
-	<form id="alsSabhrsEntriesGridForm">
-		<s:hidden id="frmOper" name="oper"/>
-		<s:hidden id="frmTransGrp" name="transGrp"/>
-		<s:hidden id="frmTransIdentifier" name="transIdentifier"/>
-		<s:hidden id="frmNonAlsEntries" name="templates"/>
-	</form>
 	<br>
 	<br>
-	
    	<s:url id="transGroupDtlsGridURL" action="alsAccount/transGroupDtlsGrid_buildgrid" />
 	<s:url id="transGroupDtlsGridEditURL" action="alsAccount/transGroupDtlsGridEdit_execute" />    
 	<sjg:grid

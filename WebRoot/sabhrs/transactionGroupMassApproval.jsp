@@ -146,8 +146,14 @@
 	    		</tr>
     		</table>
 		</form>	
+	</fieldset>
+	<br>
+	<br>
+	<fieldset style="border: black 1px solid; display: inline-block;">
+    	<legend style="font-weight: bold;">Actions</legend>
 		<s:submit id="submitSearch" onclick="submitSearch()" value="Submit" theme="simple"></s:submit>
 		<s:submit id="resetSearch" onclick="resetSearch()" value="Reset" theme="simple"></s:submit>
+		<s:submit id="submitChanges" onclick="submitChanges()" value="Save" theme="simple"></s:submit>
 	</fieldset>
     <br>
     <br>
@@ -207,6 +213,4 @@
 			<sjg:gridColumn name="atgsNetDrCr" index="atgsNetDrCr" title ="Net Cash Dr/Cr" width="5" sortable="false" hidden="false" editable="true" formatter= "number" formatoptions="{decimalPlaces: 2}" align="right"/>
 			
 	</sjg:grid>	
-	<br>
-	<s:submit id="submitChanges" onclick="submitChanges()" value="Save" theme="simple"></s:submit>
 </fwp:template>

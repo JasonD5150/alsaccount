@@ -199,6 +199,4 @@
     		</tr>
    		</table>
 	</form>	
-	<s:submit id="submitSearch" onclick="submitSearch()" value="Submit" theme="simple"></s:submit>
-	<s:submit id="resetSearch" onclick="resetSearch()" value="Reset" theme="simple"></s:submit>
 </fieldset>

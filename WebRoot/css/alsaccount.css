@@ -4,3 +4,7 @@
 .autocompleter {
 	padding-right:35px;
 }   	
+
+.item-type-cd-div .s2j-combobox-input {
+  width: 500px;
+}

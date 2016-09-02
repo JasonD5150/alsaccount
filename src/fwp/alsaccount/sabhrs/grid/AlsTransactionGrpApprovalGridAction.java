@@ -31,7 +31,7 @@ public class AlsTransactionGrpApprovalGridAction extends ActionSupport{
     private boolean             loadonce         = false;
     private Integer 			srchTransGrpType;
     private String				srchTranGrpId;
-    private Date				srchTranGrpCreated;
+    private Integer				srchTranGrpCreated;
     private Date				srchAccDt;
     private String				srchSumAppStat;
     private Date				srchSumAppDt;
@@ -52,7 +52,7 @@ public class AlsTransactionGrpApprovalGridAction extends ActionSupport{
 		
 		
 		String srchStr = buildQueryStr();
-		String orderStr = " ORDER BY idPk.atgTransactionCd,idPk.atgsGroupIdentifier";
+		String orderStr = " ORDER BY atgsWhenCreated desc,idPk.atgTransactionCd,idPk.atgsGroupIdentifier";
 		
     	AlsTransactionGrpStatusAS atgsAS = new AlsTransactionGrpStatusAS();
     	List<AlsTransactionGrpStatus> atgs = new ArrayList<AlsTransactionGrpStatus>();
@@ -134,14 +134,13 @@ public class AlsTransactionGrpApprovalGridAction extends ActionSupport{
  
     	if(srchTransGrpType != null && !"".equals(srchTransGrpType)){
     		srchStr.append("AND idPk.atgTransactionCd = "+srchTransGrpType+" ");
-    		searchCreated = false;
     	}
 		if(srchTranGrpId != null && !" ".equals(srchTranGrpId)){
 			srchStr.append("AND idPk.atgsGroupIdentifier = '"+srchTranGrpId+"' ");
 			searchCreated = false;
 		}
 		if(srchTranGrpCreated != null){
-			srchStr.append("AND TO_CHAR(atgsWhenCreated,'MM/DD/YYYY') = '"+sdf.format(srchTranGrpCreated)+"' ");
+			srchStr.append("AND TO_CHAR(atgsWhenCreated,'YYYY') = "+srchTranGrpCreated+" ");
 			searchCreated = false;
 		}
 		if(srchAccDt != null){
@@ -290,11 +289,11 @@ public class AlsTransactionGrpApprovalGridAction extends ActionSupport{
 		this.srchTranGrpId = srchTranGrpId;
 	}
 
-	public Date getSrchTranGrpCreated() {
+	public Integer getSrchTranGrpCreated() {
 		return srchTranGrpCreated;
 	}
 
-	public void setSrchTranGrpCreated(Date srchTranGrpCreated) {
+	public void setSrchTranGrpCreated(Integer srchTranGrpCreated) {
 		this.srchTranGrpCreated = srchTranGrpCreated;
 	}
 

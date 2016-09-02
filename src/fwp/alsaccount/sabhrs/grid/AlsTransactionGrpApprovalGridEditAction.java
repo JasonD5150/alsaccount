@@ -211,16 +211,17 @@ public class AlsTransactionGrpApprovalGridEditAction extends ActionSupport{
 						}
 					}
 					ipTranGrp = null;
-					String where = "WHERE idPk.atgTransactionCd = "+transGroupType+" AND substr(idPk.atgsGroupIdentifier,1,18) = 'substr("+transGroupIdentifier+",1,18)' ";
+					String where = "WHERE idPk.atgTransactionCd = "+transGroupType+" AND substr(idPk.atgsGroupIdentifier,1,18) = substr('"+transGroupIdentifier+"',1,18) ";
 					if(sumAll == true){
 						if("A".equals(sumAppStat)){
 							atgsLst = atgsAS.findAllByWhere(where);
 							for(AlsTransactionGrpStatus tmp : atgsLst){
 								tmp.setAtgsSummaryStatus(sumAppStat);
 								tmp.setAtgsSummaryApprovedBy(sumAppBy);
-								tmp.setAtgsSummaryDt(Timestamp.valueOf(sumAppDt));
+								tmp.setAtgsSummaryDt(Utils.StrToTimestamp(sumAppDt, "long"));
 								tmp.setAtgsWhoModi(userInfo.getStateId());
 								tmp.setAtgsWhenModi(date);
+								atgsAS.save(tmp);
 							}
 						}
 					}
@@ -230,9 +231,10 @@ public class AlsTransactionGrpApprovalGridEditAction extends ActionSupport{
 							for(AlsTransactionGrpStatus tmp : atgsLst){
 								tmp.setAtgsInterfaceStatus(sumAppStat);
 								tmp.setAtgsInterfaceApprovedBy(sumAppBy);
-								tmp.setAtgsSummaryDt(Timestamp.valueOf(sumAppDt));
+								tmp.setAtgsInterfaceDt(Utils.StrToTimestamp(intAppDt, "long"));
 								tmp.setAtgsWhoModi(userInfo.getStateId());
 								tmp.setAtgsWhenModi(date);
+								atgsAS.save(tmp);
 							}
 						}
 					}
