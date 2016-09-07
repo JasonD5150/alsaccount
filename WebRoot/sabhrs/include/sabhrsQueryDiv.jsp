@@ -10,6 +10,25 @@
    	<legend style="font-weight: bold;font-size:larger">Search Criteria</legend>
    	<form id='gridFrm'>
    		<table>
+   			<tr>
+   				<td class="label">Budget Year: </td>
+    			<td class="autocompleter"><%-- <sj:autocompleter
+									id="budgYear"
+									name="budgYear"
+									list="budgetYearSel"
+									listValue="itemLabel"
+									listKey="itemVal"
+									selectBox="true"
+									selectBoxIcon="true"
+									forceValidOption="true"
+									loadMinimumCount="2"
+									theme="simple" 
+									onChangeTopics="reloadLists"/> --%>
+									<s:select id="budgYear" name="budgYear" list="budgetYearSel" 
+									listKey="itemVal" listValue="itemLabel" onchange="budgetYearSelected();" label="Parks" theme="simple"/></td>
+   			</tr>
+   			<tr><td colspan="4" style="border-bottom:1px solid black;"><br></td></tr>
+    		<tr><td><br></td></tr>
    			<tr>			
 				<td class="label">Provider No: </td>
 				<td class="autocompleter"><sj:autocompleter
@@ -52,25 +71,6 @@
 				   name="toDt" displayFormat="mm/dd/yy"
 				   cssStyle="width:80px" maxlength="10"  maxDate="+0" title="To Date" 
 				   showOn="focus" onblur="testDate(this)" placeholder="mm/dd/yyyy"/></td>
-    		</tr>
-    		<tr>
-    			<td class="label">Budget Year: </td>
-    			<td class="autocompleter"><%-- <sj:autocompleter
-									id="budgYear"
-									name="budgYear"
-									list="budgetYearSel"
-									listValue="itemLabel"
-									listKey="itemVal"
-									selectBox="true"
-									selectBoxIcon="true"
-									forceValidOption="true"
-									loadMinimumCount="2"
-									theme="simple" 
-									onChangeTopics="reloadLists"/> --%>
-									<s:select id="budgYear" name="budgYear" list="budgetYearSel" 
-									listKey="itemVal" listValue="itemLabel" onchange="budgetYearSelected();" label="Parks" theme="simple"/></td>
-    			<td class="label">Program Year: </td>
-    			<td><s:textfield id="progYear" name="progYear" theme="simple" title="Program Year" /></td>
     		</tr>
     		<tr>
     			<td class="label">Journal Line Reference: </td>
@@ -158,6 +158,8 @@
     		<tr>
     			<td class="label">Transaction Group Identifier: </td>
     			<td><s:textfield id="txnGrpIdentifier" name="txnGrpIdentifier" theme="simple" title="Transaction Group Identifier" /></td>
+    			<td class="label">Program Year: </td>
+    			<td><s:textfield id="progYear" name="progYear" theme="simple" title="Program Year" /></td>
     		</tr>
     		<tr>
     			<td class="label">System Activity Type Code: </td><!-- Example A3 -->
