@@ -110,27 +110,27 @@ public class IafaQueryGridAction extends ActionSupport{
 											itemStat, costPrereqCd, resIndicator, appDis,
 											procCatCd, procTypeCd, batchRecDt, noCharge, 
 											itemTransInd, seqNoInItemTrans, alxInd, nullTGI);
-    		if(iafaLst.size() > 50000){
-    			setModel(new ArrayList<IafaDetailsDTO>());
-    			setUserdata("Please narrow search. The search grid is limited to 15000 rows. There were " + iafaLst.size() + " entries selected.");
+    		setModel(new ArrayList<IafaDetailsDTO>());
+    		/*if(iafaLst.size() > 10000){
+    			setUserdata("Please narrow search. The search grid is limited to 10000 rows. There were " + iafaLst.size() + " entries selected.");
         	}else{
-    			for(IafaDetailsDTO tmp : iafaLst){
-        			iafa = tmp;
-        			iafa.setOtherTxnGrp(hh.getOtherTxnGrp(iafa.getApiProviderNo(), iafa.getAprBillingFrom(), iafa.getAprBillingTo(), iafa.getAiafaSeqNo(), iafa.getAtgsGroupIdentifier()));
-        			if(iafa.getAcdCostGroupSeqNo() != null){
-        				if(iafa.getAcdCostGroupSeqNo() == 0){
-            				iafa.setCostGrpDesc("INDIVIDUAL");
-            			}else{
-            				iafa.setCostGrpDesc(hh.getCostGrpDesc(iafa.getAictUsagePeriodFrom(), iafa.getAictUsagePeriodTo(), iafa.getAictItemTypeCd(), iafa.getResidency(), iafa.getAcdCostGroupSeqNo()));
-            			}
+    			
+    		}*/
+    		for(IafaDetailsDTO tmp : iafaLst){
+    			iafa = tmp;
+    			iafa.setOtherTxnGrp(hh.getOtherTxnGrp(iafa.getApiProviderNo(), iafa.getAprBillingFrom(), iafa.getAprBillingTo(), iafa.getAiafaSeqNo(), iafa.getAtgsGroupIdentifier()));
+    			if(iafa.getAcdCostGroupSeqNo() != null){
+    				if(iafa.getAcdCostGroupSeqNo() == 0){
+        				iafa.setCostGrpDesc("INDIVIDUAL");
+        			}else{
+        				iafa.setCostGrpDesc(hh.getCostGrpDesc(iafa.getAictUsagePeriodFrom(), iafa.getAictUsagePeriodTo(), iafa.getAictItemTypeCd(), iafa.getResidency(), iafa.getAcdCostGroupSeqNo()));
         			}
-        			iafa.setSessionTotal(hh.getSessionTotal(iafa.getAhmType(), iafa.getAhmCd(), iafa.getAsSessionDt(), fromDt, toDt));
-        			iafa.setSessionDt(iafa.getAsSessionDt());
-        			iafa.setSeqNoforPrintedItems(hh.getSeqNoForPrintedItems(iafa.getDob(), iafa.getAlsNo(), iafa.getAictUsagePeriodFrom(), iafa.getAictUsagePeriodTo(), iafa.getAictItemTypeCd(), iafa.getAiiItemTxnInd(), iafa.getAiiSeqNo()));
-        			model.add(iafa);
     			}
-    		}
-    		
+    			iafa.setSessionTotal(hh.getSessionTotal(iafa.getAhmType(), iafa.getAhmCd(), iafa.getAsSessionDt(), fromDt, toDt));
+    			iafa.setSessionDt(iafa.getAsSessionDt());
+    			iafa.setSeqNoforPrintedItems(hh.getSeqNoForPrintedItems(iafa.getDob(), iafa.getAlsNo(), iafa.getAictUsagePeriodFrom(), iafa.getAictUsagePeriodTo(), iafa.getAictItemTypeCd(), iafa.getAiiItemTxnInd(), iafa.getAiiSeqNo()));
+    			model.add(iafa);
+			}
         }
         catch (HibernateException re) {
         	//System.out.println(re.toString());

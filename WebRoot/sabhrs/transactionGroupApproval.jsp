@@ -21,8 +21,7 @@
 
 	<form id='rptFrm'>
       <s:hidden id="frmRptType" name="rptType" />
-      <s:hidden id="frmFilters" name="filters" />
-      
+      <s:hidden id="frmFilters" name="filters" /> 
     </form>
     
     <s:form id="pdfFrm" action="getTdtPdf">

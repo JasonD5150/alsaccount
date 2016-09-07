@@ -845,6 +845,7 @@ public class HibHelpers {
 				    	if(!isNil(intAppStat)){
 				    		queryStr.append("AND atgs.atgs_interface_status = :intAppStat ");
 				    	}
+				    	queryStr.append("AND ROWNUM < 10001 ");
 		try {
 			Query query = getSession()
 					.createSQLQuery(queryStr.toString())
@@ -1228,7 +1229,9 @@ public class HibHelpers {
 														+ "AND atgs.atg_transaction_cd = ase.atg_transaction_cd "
 														+ "AND atgs.atgs_group_identifier = ase.atgs_group_identifier) ");
 					}
-					queryStr.append("ORDER BY a.aiafa_seq_no, a.as_session_dt");
+					queryStr.append("AND ROWNUM < 10001 "
+								  + "ORDER BY a.aiafa_seq_no, a.as_session_dt ");
+
 			Query query = getSession()
 					.createSQLQuery(queryStr.toString())
 					.addScalar("apiProviderNo", IntegerType.INSTANCE)

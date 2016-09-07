@@ -58,10 +58,10 @@ public class AlsSabhrsQueryGridAction extends ActionSupport{
 							        		 toDt, sumAppStat, intAppStat, jlr, account,  
 							        		 fund,  org,  subclass,  tribeCd, txnGrpIdentifier, 
 							        		 budgYear, progYear,  sysActTypeCd, transGrpType);
-    		if(model.size() > 50000){
+    		/*if(model.size() > 10000){
     			setModel(new ArrayList<AlsSabhrsEntriesDTO>());
-        		setUserdata("Please narrow search. The search grid is limited to 50000 rows. There were " + model.size() + " entries selected.");
-        	}
+        		setUserdata("Please narrow search. The search grid is limited to 10000 rows. There were " + model.size() + " entries selected.");
+        	}*/
         }
         catch (HibernateException re) {
         	//System.out.println(re.toString());
