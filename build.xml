@@ -12,7 +12,7 @@
     <property name="build_parameter"  value="${env.BUILD_NUMBER}"/>
     <property name="deployServer"  value="${env.DPL_SVR}"/>
     <property name="projName"  value="${env.JOB_NAME}"/>              	
-    <property name="BCKUP_DIR"  value="${env.BCKUP_DIR}"/>   
+    <property name="WAR_DIR"  value="${env.WAR_DIR}"/>     
   	
     <path id="strutsXwork.userclasspath">
         <pathelement location="${deployServer}/modules/fwp/common/struts2/xwork/main/xwork-core-2.3.29.jar"/>
@@ -142,7 +142,7 @@
 		<war destfile="${projName}.war" webxml="WebRoot/WEB-INF/web.xml" level="9">
 			<fileset dir="WebRoot"/>
 		</war>
-       <copy file="${projName}.war" tofile="${BCKUP_DIR}/${projName}/${TODAY_MY}/${projName}.war.${build_parameter}"/>
+       <copy file="${projName}.war" tofile="${WAR_DIR}\${TODAY_MY}\${projName}.war"/>
 	</target>               
 
   <tstamp>
