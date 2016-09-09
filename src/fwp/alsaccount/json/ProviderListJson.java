@@ -21,7 +21,7 @@ public class ProviderListJson extends ActionSupport {
 		ListUtils lu = new ListUtils();
 		providerLst = new ArrayList<ListComp>();
 		if(txGrpType != null && txGrpType == 8){
-			providerLst = lu.getTransGrpAppProviderList();
+			providerLst = lu.getIntOnActProviderList();
 		}else{
 			providerLst = lu.getProviderList();
 		}

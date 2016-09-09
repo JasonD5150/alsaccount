@@ -13,10 +13,10 @@ import fwp.alsaccount.utils.ListUtils;
 import fwp.security.user.UserDTO;
 import fwp.utils.FwpStringUtils;
 
-public class TransactionGroupApprovalAction extends ActionSupport{
+public class TransGrpAppAction extends ActionSupport{
 	
 	private static final long serialVersionUID = 5217638596755074369L;
-	private static final Logger log = LoggerFactory.getLogger(TransactionGroupApprovalAction.class);
+	private static final Logger log = LoggerFactory.getLogger(TransGrpAppAction.class);
 
 	private String bankCodeLst;
 	private String providerLst;
@@ -24,7 +24,7 @@ public class TransactionGroupApprovalAction extends ActionSupport{
 	private String user;
 
 
-	public TransactionGroupApprovalAction(){
+	public TransGrpAppAction(){
 	}
 	
 	public String input(){

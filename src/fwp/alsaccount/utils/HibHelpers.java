@@ -37,20 +37,7 @@ import fwp.alsaccount.hibernate.HibernateSessionFactory;
 public class HibHelpers {
 	public Session getSession() {
 		return HibernateSessionFactory.getSession();
-	}
-	public  boolean isNil(String stringVal){
-		if(stringVal == null || stringVal.equals("")) return true; else return false;
-	}
-	public  boolean isNil(Integer integerVal){
-		if(integerVal == null) return true; else return false;
-	}
-	public  boolean isNil(Double integerVal){
-		if(integerVal == null) return true; else return false;
-	}
-	public  boolean isNil(Date dateVal){
-		if(dateVal == null) return true; else return false;
-	}
-	
+	}	
 	/*
 	 * FISCAL YEAR END PROCESS
 	 */
@@ -779,70 +766,70 @@ public class HibHelpers {
 							queryStr.append(", ALS.ALS_TRANSACTION_GRP_STATUS atgs ");
 						}
 						queryStr.append("WHERE 1=1 ");
-				    	if(!isNil(fromDt)){
-				    		if(!isNil(toDt)){
+				    	if(!Utils.isNil(fromDt)){
+				    		if(!Utils.isNil(toDt)){
 				    			queryStr.append("AND ase.ase_When_Entry_Posted BETWEEN :fromDt AND :toDt ");//plus one to todt
 				        	}else{
 				        		queryStr.append("AND ase.ase_When_Entry_Posted BETWEEN :fromDt AND SYSDATE ");
 				        	}
 				    	}
-				    	if(!isNil(bpFromDt)){
+				    	if(!Utils.isNil(bpFromDt)){
 				    		queryStr.append("AND ase.apr_Billing_From = :bpFromDt ");
 				    	}
-				    	if(!isNil(bpToDt)){
+				    	if(!Utils.isNil(bpToDt)){
 				    		queryStr.append("AND ase.apr_Billing_To = :bpToDt ");
 				    	}
-				    	if(!isNil(providerNo)){
+				    	if(!Utils.isNil(providerNo)){
 				    		queryStr.append("AND ase.api_Provider_No = :providerNo ");
 				    	}
-				    	if(!isNil(seqNo)&& !isNil(providerNo)&& !isNil(bpFromDt)&& !isNil(bpToDt)){
+				    	if(!Utils.isNil(seqNo)&& !Utils.isNil(providerNo)&& !Utils.isNil(bpFromDt)&& !Utils.isNil(bpToDt)){
 				    		queryStr.append("AND ase.aiafa_Seq_No = :seqNo ");
 				    		
 				    	}
-				    	if(!isNil(jlr)){
+				    	if(!Utils.isNil(jlr)){
 				    		queryStr.append("AND ase.ASAC_REFERENCE = (SELECT AM_PAR_VAL||SUBSTR(:jlr,-2) "
 				    										   + "FROM ALS.ALS_MISC WHERE AM_KEY1 = 'JOURNAL_LINE_REFERENCE' "
 				    										   + "AND LPAD(AM_VAL_DESC,28,'0') = SUBSTR(LPAD(:jlr,30,'0'),1,28) "
 				    										   + "AND ROWNUM <2) ");
 				    	}
-				    	if(!isNil(account)){
+				    	if(!Utils.isNil(account)){
 				    		queryStr.append("AND ase.aam_Account = :account ");
 				    	}
-				    	if(!isNil(fund)){
+				    	if(!Utils.isNil(fund)){
 				    		queryStr.append("AND ase.aam_Fund = :fund ");
 				    	}
-				    	if(!isNil(org)){
+				    	if(!Utils.isNil(org)){
 				    		queryStr.append("AND ase.aoc_Org = :org ");
 				    	}
-				    	if(!isNil(subclass)){
+				    	if(!Utils.isNil(subclass)){
 				    		queryStr.append("AND ase.asac_Subclass = :subclass ");
 				    	}
-				    	if(!isNil(tribeCd)){
+				    	if(!Utils.isNil(tribeCd)){
 				    		queryStr.append("AND ase.ati_Tribe_Cd = :tribeCd ");
 				    	}
-				    	if(!isNil(txnGrpIdentifier)){
+				    	if(!Utils.isNil(txnGrpIdentifier)){
 				    		queryStr.append("AND ase.atgs_Group_Identifier = :txnGrpIdentifier ");
 				    	}
-				    	if(!isNil(budgYear)){
+				    	if(!Utils.isNil(budgYear)){
 				    		queryStr.append("AND ase.asac_Budget_Year = :budgYear ");
 				    	}
-				    	if(!isNil(progYear)){
+				    	if(!Utils.isNil(progYear)){
 				    		queryStr.append("AND ase.asac_Program = :progYear ");
 				    	}
-				    	if(!isNil(sysActTypeCd)){
+				    	if(!Utils.isNil(sysActTypeCd)){
 				    		queryStr.append("AND ase.asac_System_Activity_Type_Cd||asac_Txn_Cd = :sysActTypeCd ");
 				    	}
-				    	if(!isNil(transGrpType)){
+				    	if(!Utils.isNil(transGrpType)){
 				    		queryStr.append("AND ase.atg_Transaction_Cd = :transGrpType ");
 				    	}
-				    	if(!isNil(sumAppStat) || !isNil(intAppStat)){
+				    	if(!Utils.isNil(sumAppStat) || !Utils.isNil(intAppStat)){
 				    		queryStr.append("AND ase.atg_transaction_cd = atgs.atg_transaction_cd "
 				    					 + "AND ase.atgs_group_identifier = atgs.atgs_group_identifier ");
 				    	}
-				    	if(!isNil(sumAppStat)){
+				    	if(!Utils.isNil(sumAppStat)){
 				    		queryStr.append("AND atgs.atgs_summary_status = :sumAppStat ");
 				    	}
-				    	if(!isNil(intAppStat)){
+				    	if(!Utils.isNil(intAppStat)){
 				    		queryStr.append("AND atgs.atgs_interface_status = :intAppStat ");
 				    	}
 				    	queryStr.append("AND ROWNUM < 10001 ");
@@ -885,43 +872,43 @@ public class HibHelpers {
 					.addScalar("sumStat")
 					.addScalar("intStat");
 					
-					if(!isNil(providerNo))
+					if(!Utils.isNil(providerNo))
 						query.setInteger("providerNo", providerNo);
-					if(!isNil(seqNo))
+					if(!Utils.isNil(seqNo))
 						query.setInteger("seqNo", seqNo);
-					if(!isNil(bpFromDt))
+					if(!Utils.isNil(bpFromDt))
 						query.setDate("bpFromDt", bpFromDt);
-					if(!isNil(bpToDt))
+					if(!Utils.isNil(bpToDt))
 						query.setDate("bpToDt", bpToDt);
-					if(!isNil(fromDt))
+					if(!Utils.isNil(fromDt))
 						query.setDate("fromDt", fromDt);
-					if(!isNil(toDt))
+					if(!Utils.isNil(toDt))
 						query.setDate("toDt", fromDt.equals(toDt)?Utils.addDays(toDt, 1):toDt);
-					if(!isNil(sumAppStat))
+					if(!Utils.isNil(sumAppStat))
 						query.setString("sumAppStat", sumAppStat);
-					if(!isNil(intAppStat))
+					if(!Utils.isNil(intAppStat))
 						query.setString("intAppStat", intAppStat);
-					if(!isNil(jlr))
+					if(!Utils.isNil(jlr))
 						query.setString("jlr", jlr);
-					if(!isNil(account))
+					if(!Utils.isNil(account))
 						query.setString("account", account);
-					if(!isNil(fund))
+					if(!Utils.isNil(fund))
 						query.setString("fund", fund);
-					if(!isNil(org))
+					if(!Utils.isNil(org))
 						query.setString("org", org);
-					if(!isNil(subclass))
+					if(!Utils.isNil(subclass))
 						query.setString("subclass", subclass);
-					if(!isNil(tribeCd))
+					if(!Utils.isNil(tribeCd))
 						query.setString("tribeCd", tribeCd);
-					if(!isNil(txnGrpIdentifier))
+					if(!Utils.isNil(txnGrpIdentifier))
 						query.setString("txnGrpIdentifier", txnGrpIdentifier);
-					if(!isNil(budgYear))
+					if(!Utils.isNil(budgYear))
 						query.setInteger("budgYear", budgYear);
-					if(!isNil(progYear))
+					if(!Utils.isNil(progYear))
 						query.setInteger("progYear", progYear);
-					if(!isNil(sysActTypeCd))
+					if(!Utils.isNil(sysActTypeCd))
 						query.setString("sysActTypeCd", sysActTypeCd.toUpperCase());
-					if(!isNil(transGrpType))
+					if(!Utils.isNil(transGrpType))
 						query.setString("transGrpType", transGrpType);
 					query.setResultTransformer(
 							Transformers.aliasToBean(AlsSabhrsEntriesDTO.class));
@@ -1130,87 +1117,92 @@ public class HibHelpers {
 					+ "AND j.ATG_TRANSACTION_CD = k.ATG_TRANSACTION_CD(+) "
 					+ "AND j.ATGS_GROUP_IDENTIFIER = k.ATGS_GROUP_IDENTIFIER(+) "
 					+ "AND NVL(ALS.j.ATGS_GROUP_IDENTIFIER,0) NOT LIKE 'DRWGRSLT%' ");
-					if(!isNil(issProvNo))
+					if(!Utils.isNil(issProvNo))
 						queryStr.append("AND a.API_PROVIDER_NO = NVL(:issProvNo , a.API_PROVIDER_NO) ");
-					if(!isNil(entProvNo))
+					if(!Utils.isNil(entProvNo))
 						queryStr.append("AND b.AS_DATA_ENTRY_PROVIDER_NO = NVL(:entProvNo, b.AS_DATA_ENTRY_PROVIDER_NO) ");
-					if(!isNil(bpFromDt))
+					if(!Utils.isNil(bpFromDt))
 						queryStr.append("AND a.APR_BILLING_FROM = NVL(:bpFromDt,a.APR_BILLING_FROM) ");
-					if(!isNil(bpToDt))
+					if(!Utils.isNil(bpToDt))
 						queryStr.append("AND a.APR_BILLING_TO = NVL(:bpToDt,a.APR_BILLING_TO) ");
-					if(!isNil(upFromDt))
+					if(!Utils.isNil(upFromDt))
 						queryStr.append("AND NVL(c.AICT_USAGE_PERIOD_FROM,SYSDATE) = AND NVL(:upFromDt,NVL(c.AICT_USAGE_PERIOD_FROM,SYSDATE)) ");
-					if(!isNil(upToDt))
+					if(!Utils.isNil(upToDt))
 						queryStr.append("AND NVL(c.AICT_USAGE_PERIOD_TO,SYSDATE) = AND NVL(:upToDt,AND NVL(c.AICT_USAGE_PERIOD_TO,SYSDATE)) ");
-					if(!isNil(modeOfPayment))
+					if(!Utils.isNil(modeOfPayment))
 						queryStr.append("AND b.AS_MODE_PAYMENT = NVL(:modeOfPayment,b.AS_MODE_PAYMENT) ");
-					if(!isNil(chckNo))
+					if(!Utils.isNil(chckNo))
 						queryStr.append("AND b.AS_CHECK_NO = NVL(:chckNo,b.AS_CHECK_NO) ");
-					if(!isNil(chckWriter))
+					if(!Utils.isNil(chckWriter))
 						queryStr.append("AND b.AS_CHECK_WRITER = NVL(:chckWriter,b.AS_CHECK_WRITER) ");
-					if(!isNil(remarks))
+					if(!Utils.isNil(remarks))
 						queryStr.append("AND a.AIAFA_REMARKS LIKE NVL(:remarks,a.AIAFA_REMARKS) ");
-					if(!isNil(iafaSeqNo))
+					if(!Utils.isNil(iafaSeqNo))
 						queryStr.append("AND a.AIAFA_SEQ_NO = NVL(:iafaSeqNo,a.AIAFA_SEQ_NO) ");
-					if(!isNil(dob))
+					if(!Utils.isNil(dob))
 						queryStr.append("AND NVL(c.API_DOB,SYSDATE) = NVL(:dob,NVL(c.API_DOB,SYSDATE)) ");
-					if(!isNil(alsNo))
+					if(!Utils.isNil(alsNo))
 						queryStr.append("AND c.API_ALS_NO = NVL(:alsNo,c.API_ALS_NO) ");
-					if(!isNil(transGrpIdentifier))
+					if(!Utils.isNil(transGrpIdentifier))
 						queryStr.append("AND k.ATGS_GROUP_IDENTIFIER = NVL(:transGrpIdentifier,k.ATGS_GROUP_IDENTIFIER) ");
-					if(!isNil(sumAppStat))
+					if(!Utils.isNil(sumAppStat))
 						queryStr.append("AND k.ATGS_SUMMARY_STATUS = NVL(:sumAppStat,k.ATGS_SUMMARY_STATUS) ");
-					if(!isNil(intAppStat))
+					if(!Utils.isNil(intAppStat))
 						queryStr.append("AND k.ATGS_INTERFACE_STATUS = NVL(:intAppStat,k.ATGS_INTERFACE_STATUS) ");
-					if(!isNil(ahmType))
+					if(!Utils.isNil(ahmType))
 						queryStr.append("AND a.AHM_TYPE = NVL(:ahmType,a.AHM_TYPE) ");
-					if(!isNil(ahmCd))
+					if(!Utils.isNil(ahmCd))
 						queryStr.append("AND a.AHM_CD = NVL(:ahmCd,a.AHM_CD) ");
-					if(!isNil(recordVoidDt))
+					if(!Utils.isNil(recordVoidDt))
 						queryStr.append("AND a.AIAFA_RECORD_VOID_DT = NVL(:recordVoidDt,a.AIAFA_RECORD_VOID_DT) ");
-					if(!isNil(tribeCd))
+					if(!Utils.isNil(tribeCd))
 						queryStr.append("AND a.ATI_TRIBE_CD = NVL(:tribeCd,a.ATI_TRIBE_CD) ");
-					if(!isNil(appType))
+					if(!Utils.isNil(appType))
 						queryStr.append("AND a.AIAFA_APP_TYPE = NVL(:appType,a.AIAFA_APP_TYPE) ");
-					if(!isNil(amountTypeCd))
+					if(!Utils.isNil(amountTypeCd))
 						queryStr.append("AND a.AIAFA_AMT_TYPE = NVL(:amountTypeCd,a.AIAFA_AMT_TYPE) ");
-					if(!isNil(amount))
+					if(!Utils.isNil(amount))
 						queryStr.append("AND a.AIAFA_AMT = NVL(:amount,a.AIAFA_AMT) ");
-					if(!isNil(sessDt))
+					if(!Utils.isNil(sessDt))
 						queryStr.append("AND TRUNC(NVL(a.AS_SESSION_DT,SYSDATE)) = NVL(:sessDt,TRUNC(NVL(a.AS_SESSION_DT,SYSDATE))) ");
-					if(!isNil(sessVoidDt))
+					if(!Utils.isNil(sessVoidDt))
 						queryStr.append("AND TRUNC(NVL(b.AS_SESSION_VOID_DT,SYSDATE)) = NVL(:sessVoidDt,TRUNC(NVL(b.AS_SESSION_VOID_DT,SYSDATE))) ");
-					if(!isNil(sessStat))
-						queryStr.append("AND a.AIAFA_STATUS = NVL(:sessStat,a.AIAFA_STATUS) ");
-					if(!isNil(reasonCd))
+					if(!Utils.isNil(sessStat)){
+						if("AV".equals(sessStat)){
+							queryStr.append("AND (a.AIAFA_STATUS = :sessStat OR a.AIAFA_STATUS = :sessStat2) ");
+						}else{
+							queryStr.append("AND a.AIAFA_STATUS = NVL(:sessStat,a.AIAFA_STATUS) ");
+						}
+					}
+					if(!Utils.isNil(reasonCd))
 						queryStr.append("AND a.AIAFA_REASON_CD = NVL(:reasonCd,a.AIAFA_REASON_CD) ");
-					if(!isNil(itemTypeCd))
+					if(!Utils.isNil(itemTypeCd))
 						queryStr.append("AND c.AICT_ITEM_TYPE_CD = NVL(:itemTypeCd,c.AICT_ITEM_TYPE_CD) ");
-					if(!isNil(itemCatCd))
+					if(!Utils.isNil(itemCatCd))
 						queryStr.append("AND SUBSTR(c.AICT_ITEM_TYPE_CD,1,4) = NVL(:itemCatCd,SUBSTR(c.AICT_ITEM_TYPE_CD,1,4)) ");
-					if(!isNil(bonusPoints))
+					if(!Utils.isNil(bonusPoints))
 						queryStr.append("AND i.AAI_BONUS_POINTS_IND = NVL(:bonusPoints,i.AAI_BONUS_POINTS_IND) ");
-					if(!isNil(itemInd))
+					if(!Utils.isNil(itemInd))
 						queryStr.append("AND d.AIIN_ITEM_IND_CD = NVL(:itemInd,d.AIIN_ITEM_IND_CD) ");
-					if(!isNil(itemStat))
+					if(!Utils.isNil(itemStat))
 						queryStr.append("AND d.AIS_ITEM_STATUS_CD = NVL(:itemStat,d.AIS_ITEM_STATUS_CD) ");
-					if(!isNil(costPrereqCd))
+					if(!Utils.isNil(costPrereqCd))
 						queryStr.append("AND (d.APC_PREREQUISITE_COST_CD = :costPrereqCd OR i.APC_PREREQUISITE_COST_CD = :costPrereqCd) ");
-					if(!isNil(resIndicator))
+					if(!Utils.isNil(resIndicator))
 						queryStr.append("AND (d.AII_RESIDENCY_STATUS = :resIndicator OR i.AAI_ITEM_RESIDENCY_IND = :resIndicator) ");
-					if(!isNil(appDis))
+					if(!Utils.isNil(appDis))
 						queryStr.append("AND i.AAI_DISPOSITION_CD = NVL(:appDis,i.AAI_DISPOSITION_CD) ");
-					if(!isNil(procCatCd))
+					if(!Utils.isNil(procCatCd))
 						queryStr.append("AND a.AIAFA_PROCESS_CATEGORY_CD = NVL(:procCatCd,a.AIAFA_PROCESS_CATEGORY_CD) ");
-					if(!isNil(procTypeCd))
+					if(!Utils.isNil(procTypeCd))
 						queryStr.append("AND c.AST_PROCESS_TYPE_CD = NVL(:procTypeCd,c.AST_PROCESS_TYPE_CD) ");
-					if(!isNil(batchRecDt))
+					if(!Utils.isNil(batchRecDt))
 						queryStr.append("AND f.ABI_RECONCILED_ON = NVL(:batchRecDt,f.ABI_RECONCILED_ON) ");
-					if(!isNil(noCharge))
+					if(!Utils.isNil(noCharge))
 						queryStr.append("AND Decode(NVL(c.AST_NOCHARGE_REASON,'N'),'N','N','Y') = Decode(:noCharge,'N','N','Y') ");
-					if(!isNil(itemTransInd))
+					if(!Utils.isNil(itemTransInd))
 						queryStr.append("AND c.AII_ITEM_TXN_IND = NVL(:itemTransInd,c.AII_ITEM_TXN_IND) ");
-					if(!isNil(seqNoInItemTrans))
+					if(!Utils.isNil(seqNoInItemTrans))
 						queryStr.append("AND c.AII_SEQ_NO = NVL(:seqNoInItemTrans,c.AII_SEQ_NO) ");
 							
 					if(alxInd != null){
@@ -1298,87 +1290,94 @@ public class HibHelpers {
 					.addScalar("reasonDesc");
 					query.setDate("fromDt", fromDt);
 					query.setDate("toDt", toDt);
-					if(!isNil(issProvNo))
+					if(!Utils.isNil(issProvNo))
 					query.setInteger("issProvNo", issProvNo);
-					if(!isNil(entProvNo))
+					if(!Utils.isNil(entProvNo))
 					query.setInteger("entProvNo", entProvNo);
-					if(!isNil(bpFromDt))
+					if(!Utils.isNil(bpFromDt))
 					query.setDate("bpFromDt", bpFromDt);
-					if(!isNil(bpToDt))
+					if(!Utils.isNil(bpToDt))
 					query.setDate("bpToDt", bpToDt);
-					if(!isNil(upFromDt))
+					if(!Utils.isNil(upFromDt))
 					query.setDate("upFromDt", upFromDt);
-					if(!isNil(upToDt))
+					if(!Utils.isNil(upToDt))
 					query.setDate("upToDt", upToDt);
-					if(!isNil(modeOfPayment))
+					if(!Utils.isNil(modeOfPayment))
 					query.setString("modeOfPayment", modeOfPayment);
-					if(!isNil(chckNo))
+					if(!Utils.isNil(chckNo))
 					query.setInteger("chckNo", chckNo);
-					if(!isNil(chckWriter))
+					if(!Utils.isNil(chckWriter))
 					query.setString("chckWriter", chckWriter);
-					if(!isNil(remarks))
+					if(!Utils.isNil(remarks))
 					query.setString("remarks", remarks);
-					if(!isNil(iafaSeqNo))
+					if(!Utils.isNil(iafaSeqNo))
 					query.setInteger("iafaSeqNo", iafaSeqNo);
-					if(!isNil(dob))
+					if(!Utils.isNil(dob))
 					query.setDate("dob", dob);
-					if(!isNil(alsNo))
+					if(!Utils.isNil(alsNo))
 					query.setInteger("alsNo", alsNo);
-					if(!isNil(transGrpIdentifier))
+					if(!Utils.isNil(transGrpIdentifier))
 					query.setString("transGrpIdentifier", transGrpIdentifier);
-					if(!isNil(sumAppStat))
+					if(!Utils.isNil(sumAppStat))
 					query.setString("sumAppStat", sumAppStat);
-					if(!isNil(intAppStat))
+					if(!Utils.isNil(intAppStat))
 					query.setString("intAppStat", intAppStat);
-					if(!isNil(ahmType))
+					if(!Utils.isNil(ahmType))
 					query.setString("ahmType", ahmType);
-					if(!isNil(ahmCd))
+					if(!Utils.isNil(ahmCd))
 					query.setString("ahmCd", ahmCd);
-					if(!isNil(recordVoidDt))
+					if(!Utils.isNil(recordVoidDt))
 					query.setDate("recordVoidDt", recordVoidDt);
-					if(!isNil(tribeCd))
+					if(!Utils.isNil(tribeCd))
 					query.setString("tribeCd", tribeCd);
-					if(!isNil(appType))
+					if(!Utils.isNil(appType))
 					query.setString("appType", appType);
-					if(!isNil(amountTypeCd))
+					if(!Utils.isNil(amountTypeCd))
 					query.setString("amountTypeCd", amountTypeCd);
-					if(!isNil(amount))
+					if(!Utils.isNil(amount))
 					query.setDouble("amount", amount);
-					if(!isNil(sessDt))
+					if(!Utils.isNil(sessDt))
 					query.setDate("sessDt", sessDt);
-					if(!isNil(sessVoidDt))
+					if(!Utils.isNil(sessVoidDt))
 					query.setDate("sessVoidDt", sessVoidDt);
-					if(!isNil(sessStat))
-					query.setString("sessStat", sessStat);
-					if(!isNil(reasonCd))
+					if(!Utils.isNil(sessStat)){
+						if("AV".equals(sessStat)){
+							query.setString("sessStat", "A");
+							query.setString("sessStat2", "V");
+						}else{
+							query.setString("sessStat", sessStat);
+						}
+						
+					}
+					if(!Utils.isNil(reasonCd))
 					query.setString("reasonCd", reasonCd);
-					if(!isNil(itemTypeCd))
+					if(!Utils.isNil(itemTypeCd))
 					query.setString("itemTypeCd", itemTypeCd);
-					if(!isNil(itemCatCd))
+					if(!Utils.isNil(itemCatCd))
 					query.setString("itemCatCd", itemCatCd);
-					if(!isNil(bonusPoints))
+					if(!Utils.isNil(bonusPoints))
 					query.setString("bonusPoints", bonusPoints);
-					if(!isNil(itemInd))
+					if(!Utils.isNil(itemInd))
 					query.setString("itemInd", itemInd);
-					if(!isNil(itemStat))
+					if(!Utils.isNil(itemStat))
 					query.setString("itemStat", itemStat);
-					if(!isNil(costPrereqCd))
+					if(!Utils.isNil(costPrereqCd))
 					query.setString("costPrereqCd", costPrereqCd);
-					if(!isNil(resIndicator))
+					if(!Utils.isNil(resIndicator))
 					query.setString("resIndicator", resIndicator);
-					if(!isNil(appDis))
+					if(!Utils.isNil(appDis))
 					query.setString("appDis", appDis);
-					if(!isNil(procCatCd))
+					if(!Utils.isNil(procCatCd))
 					query.setString("procCatCd", procCatCd);
-					if(!isNil(procTypeCd))
+					if(!Utils.isNil(procTypeCd))
 					query.setString("procTypeCd", procTypeCd);
-					if(!isNil(batchRecDt))
+					if(!Utils.isNil(batchRecDt))
 					query.setDate("batchRecDt", batchRecDt);
-					if(!isNil(noCharge))
+					if(!Utils.isNil(noCharge))
 					query.setString("noCharge", noCharge);
-					if(!isNil(itemTransInd))
+					if(!Utils.isNil(itemTransInd))
 					query.setString("itemTransInd", itemTransInd);
-					if(!isNil(seqNoInItemTrans))
+					if(!Utils.isNil(seqNoInItemTrans))
 					query.setInteger("seqNoInItemTrans", seqNoInItemTrans);
 					query.setResultTransformer(
 							Transformers.aliasToBean(IafaDetailsDTO.class));

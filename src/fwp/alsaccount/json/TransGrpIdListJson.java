@@ -6,40 +6,38 @@ import java.util.List;
 import com.opensymphony.xwork2.ActionSupport;
 
 import fwp.ListComp;
-import fwp.alsaccount.utils.ListUtils;
-
+import fwp.alsaccount.appservice.sabhrs.AlsTransactionGrpStatusAS;
 
 public class TransGrpIdListJson extends ActionSupport {
 
 	private static final long serialVersionUID = 1L;
 	public List<ListComp> transGrpIdLst;
 	public Integer provNo;
+	public Integer txGrpType;
 
 	public String getJSON(){
-		ListUtils lu = new ListUtils();
+		AlsTransactionGrpStatusAS atgsAS = new AlsTransactionGrpStatusAS();
 		transGrpIdLst = new ArrayList<ListComp>();
-		if(provNo != null){
-			transGrpIdLst = lu.getTransGrpIdList(provNo);
-		}else{
-			transGrpIdLst = lu.getTransGrpIdList(null);
-		}
+		transGrpIdLst = atgsAS.getTransGrpIdList(provNo,txGrpType);
 		return SUCCESS;
 	}
 
 	public List<ListComp> getTransGrpIdLst() {
 		return transGrpIdLst;
 	}
-
 	public void setTransGrpIdLst(List<ListComp> transGrpIdLst) {
 		this.transGrpIdLst = transGrpIdLst;
 	}
-	
 	public Integer getProvNo() {
 		return provNo;
 	}
-	
 	public void setProvNo(Integer provNo) {
 		this.provNo = provNo;
 	}
-	
+	public Integer getTxGrpType() {
+		return txGrpType;
+	}
+	public void setTxGrpType(Integer txGrpType) {
+		this.txGrpType = txGrpType;
+	}
 }

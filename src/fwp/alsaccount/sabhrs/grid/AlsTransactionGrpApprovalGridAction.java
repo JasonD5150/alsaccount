@@ -136,7 +136,7 @@ public class AlsTransactionGrpApprovalGridAction extends ActionSupport{
     		srchStr.append("AND idPk.atgTransactionCd = "+srchTransGrpType+" ");
     	}
 		if(srchTranGrpId != null && !" ".equals(srchTranGrpId)){
-			srchStr.append("AND idPk.atgsGroupIdentifier = '"+srchTranGrpId+"' ");
+			srchStr.append("AND idPk.atgsGroupIdentifier LIKE '"+srchTranGrpId+"%' ");
 			searchCreated = false;
 		}
 		if(srchTranGrpCreated != null){
@@ -149,8 +149,6 @@ public class AlsTransactionGrpApprovalGridAction extends ActionSupport{
 		}
 		if(srchSumAppStat != null && !"".equals(srchSumAppStat)){
 			srchStr.append("AND atgsSummaryStatus = '"+srchSumAppStat+"' ");
-		}else{
-			srchStr.append("AND atgsSummaryStatus IS NULL ");
 		}
 		if(srchSumAppDt != null ){
 			srchStr.append("AND TO_CHAR(atgsSummaryDt,'MM/DD/YYYY') = '"+sdf.format(srchSumAppDt)+"' ");
@@ -158,8 +156,6 @@ public class AlsTransactionGrpApprovalGridAction extends ActionSupport{
 		}
 		if(srchIntAppStat != null && !"".equals(srchIntAppStat)){
 			srchStr.append("AND atgsInterfaceStatus = '"+srchIntAppStat+"' ");
-		}else{
-			srchStr.append("AND atgsInterfaceStatus IS NULL ");
 		}
 		if(srchIntAppDt != null ){
 			srchStr.append("AND TO_CHAR(atgsInterfaceDt,'MM/DD/YYYY') = '"+sdf.format(srchIntAppDt)+"' ");
@@ -185,7 +181,7 @@ public class AlsTransactionGrpApprovalGridAction extends ActionSupport{
     		srchStr.append("AND atgsDepositId = '"+srchDepId+"' ");
     		
 		}
-		if(srchProviderNo != null && !"".equals(srchProviderNo)){
+		if(srchProviderNo != null && !" ".equals(srchProviderNo)){
     		srchStr.append("AND TRIM(TRIM(LEADING 0 FROM substr(idPk.atgsGroupIdentifier,3,6))) = '"+srchProviderNo+"' ");
     		
 		}

@@ -40,7 +40,7 @@
             <result name="error">sabhrs/include/nonAlsMasterDialog.jsp</result>
             <result name="input">sabhrs/include/nonAlsMasterDialog.jsp</result>         
       </action>
-      <action name="transGroupApproval_*" method="{1}" class="fwp.alsaccount.sabhrs.action.TransactionGroupApprovalAction">
+      <action name="transGroupApproval_*" method="{1}" class="fwp.alsaccount.sabhrs.action.TransGrpAppAction">
             <result>sabhrs/transactionGroupApproval.jsp</result>
             <result name="error">sabhrs/transactionGroupApproval.jsp</result>
             <result name="input">sabhrs/transactionGroupApproval.jsp</result>         
@@ -66,7 +66,7 @@
 			<result name="error">sabhrs/include/transGrpAppQueryDiv.jsp</result>
 			<result name="input">sabhrs/include/transGrpAppQueryDiv.jsp</result>        
 		</action>
-        <action name="internalProviderTdt_*" method="{1}" class="fwp.alsaccount.action.InternalProviderListAction">
+        <action name="internalProviderTdt_*" method="{1}" class="fwp.alsaccount.sabhrs.action.InternalProviderTdtAction">
 			<result>sabhrs/internalProviderTdt.jsp</result>
 			<result name="error">sabhrs/internalProviderTdt.jsp</result>
 			<result name="input">sabhrs/internalProviderTdt.jsp</result>        
@@ -140,11 +140,11 @@
 			   <param name="ignoreHierarchy">false</param>
 			</result>
 		</action>  
-		<action name="alsSabhrsQueryGrid_*" class="fwp.alsaccount.sabhrs.grid.AlsSabhrsQueryGridAction">
+		<action name="alsSabhrsQueryGrid_*" class="fwp.alsaccount.sabhrs.grid.SabhrsQueryGridAction">
             <result type="json" />
             <result type="json" name="input"></result>
         </action> 
-        <action name="internalProviderTdtGrid_*" class="fwp.alsaccount.sabhrs.grid.InternalProviderTdtGridAction">
+        <action name="internalProviderTdtGrid_*" class="fwp.alsaccount.sabhrs.grid.IntProvTdtGridAction">
 			<result type="json" />
 		</action>
 		<action name="iafaQueryGrid_*" class="fwp.alsaccount.sabhrs.grid.IafaQueryGridAction">

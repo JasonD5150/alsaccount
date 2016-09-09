@@ -40,7 +40,7 @@ public class GenNonAlsEntriesAction extends ActionSupport{
 			setAccountLst(FwpStringUtils.listCompListToString(lu.getAccountList(null)));
 			setBudgetYearSel(lu.getBudgetYearList());
 			transGroupTypeLst = lu.getSabhrsTransGroupTypeLst();
-			providerLst = lu.getProviderList();
+			providerLst = lu.getIntOnActProviderList();
 		} catch (Exception e) {
 			//System.out.println(e.getMessage());
 			log.debug(e.getMessage());

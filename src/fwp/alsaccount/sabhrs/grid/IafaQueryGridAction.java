@@ -98,6 +98,13 @@ public class IafaQueryGridAction extends ActionSupport{
     	
     	List<IafaDetailsDTO> iafaLst = new ArrayList<IafaDetailsDTO>();
     	IafaDetailsDTO iafa = null;
+    	 if("1".equals(sessStat))
+    		 sessStat = "A";
+    	 if("2".equals(sessStat))
+    		 sessStat = "V";
+    	 if("3".equals(sessStat))
+    		 sessStat = "AV";
+    	
         try{
     		iafaLst = hh.getIafaQueryRecords(fromDt, Utils.convertJavaDateToSqlDate(Utils.addDays(toDt, 1)), issProvNo, entProvNo, 
 											bpFromDt, bpToDt, upFromDt, upToDt,
@@ -111,11 +118,7 @@ public class IafaQueryGridAction extends ActionSupport{
 											procCatCd, procTypeCd, batchRecDt, noCharge, 
 											itemTransInd, seqNoInItemTrans, alxInd, nullTGI);
     		setModel(new ArrayList<IafaDetailsDTO>());
-    		/*if(iafaLst.size() > 10000){
-    			setUserdata("Please narrow search. The search grid is limited to 10000 rows. There were " + iafaLst.size() + " entries selected.");
-        	}else{
-    			
-    		}*/
+ 
     		for(IafaDetailsDTO tmp : iafaLst){
     			iafa = tmp;
     			iafa.setOtherTxnGrp(hh.getOtherTxnGrp(iafa.getApiProviderNo(), iafa.getAprBillingFrom(), iafa.getAprBillingTo(), iafa.getAiafaSeqNo(), iafa.getAtgsGroupIdentifier()));
@@ -126,7 +129,9 @@ public class IafaQueryGridAction extends ActionSupport{
         				iafa.setCostGrpDesc(hh.getCostGrpDesc(iafa.getAictUsagePeriodFrom(), iafa.getAictUsagePeriodTo(), iafa.getAictItemTypeCd(), iafa.getResidency(), iafa.getAcdCostGroupSeqNo()));
         			}
     			}
-    			iafa.setSessionTotal(hh.getSessionTotal(iafa.getAhmType(), iafa.getAhmCd(), iafa.getAsSessionDt(), fromDt, toDt));
+    			if(!Utils.isNil(iafa.getAhmType())&&!Utils.isNil(iafa.getAhmCd())&&!Utils.isNil(iafa.getAsSessionDt())&&!Utils.isNil(fromDt)&&!Utils.isNil(toDt)){
+    				iafa.setSessionTotal(hh.getSessionTotal(iafa.getAhmType(), iafa.getAhmCd(), iafa.getAsSessionDt(), fromDt, toDt));
+    			}
     			iafa.setSessionDt(iafa.getAsSessionDt());
     			iafa.setSeqNoforPrintedItems(hh.getSeqNoForPrintedItems(iafa.getDob(), iafa.getAlsNo(), iafa.getAictUsagePeriodFrom(), iafa.getAictUsagePeriodTo(), iafa.getAictItemTypeCd(), iafa.getAiiItemTxnInd(), iafa.getAiiSeqNo()));
     			model.add(iafa);

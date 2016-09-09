@@ -11,6 +11,11 @@
    	<s:actionerror/>
    	<form id='gridFrm'>
    		<table>
+   			<tr>
+   				<td class="label">Session Status: </td>
+				<td><s:select id="sessStat"  name="sessStat" theme="simple"
+						  list="#{'1':'Active', '2':'Voided', '3':'Both'}" value="1"/></td>
+   			</tr>
    			<tr>			
 				<td class="label">From Date: </td>
 				<td><sj:datepicker changeMonth="true" changeYear="true" id="fromDt"
@@ -179,10 +184,6 @@
 						  list="#{'Y':'YES', 'N':'NO'}"/></td>
     		</tr>
     		<tr>
-    			<td class="label">Session Status: </td>
-				<td><s:select id="sessStat"  name="sessStat"
-						  headerKey="" headerValue="" theme="simple"
-						  list="#{'A':'Active', 'V':'Voided'}"/></td>
 				<td class="label">Session Date: </td>
 				<td><sj:datepicker changeMonth="true" changeYear="true" id="sessDt"
 				   name="sessDt" displayFormat="mm/dd/yy"

@@ -284,4 +284,17 @@ public class Utils {
 		c.add(Calendar.DATE, numberOfDays);
 	    return c.getTime();
 	} 
+	
+	public static boolean isNil(String stringVal){
+		if(stringVal == null || stringVal.equals("")) return true; else return false;
+	}
+	public static boolean isNil(Integer integerVal){
+		if(integerVal == null) return true; else return false;
+	}
+	public static boolean isNil(Double integerVal){
+		if(integerVal == null) return true; else return false;
+	}
+	public static  boolean isNil(Date dateVal){
+		if(dateVal == null) return true; else return false;
+	}
 }

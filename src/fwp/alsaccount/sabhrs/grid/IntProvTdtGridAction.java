@@ -14,9 +14,9 @@ import com.opensymphony.xwork2.ActionSupport;
 import fwp.alsaccount.dto.sabhrs.AlsProviderBankDetailsDTO;
 import fwp.alsaccount.utils.HibHelpers;
 
-public class InternalProviderTdtGridAction extends ActionSupport{
+public class IntProvTdtGridAction extends ActionSupport{
     private static final long   serialVersionUID = 5078264277068533593L;
-    private static final Logger    log              = LoggerFactory.getLogger(InternalProviderTdtGridAction.class);
+    private static final Logger    log              = LoggerFactory.getLogger(IntProvTdtGridAction.class);
 
     private List<AlsProviderBankDetailsDTO>    model;
     private Integer             rows             = 0;

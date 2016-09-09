@@ -6,6 +6,8 @@
  */
 $(document).ready(function(){
 	menuSec("transGrpApp");
+	$('#txGrpType').val("");
+	$('#provNo').val("");
 });
 
 function errorHandler(response, postdata) {
@@ -174,7 +176,6 @@ $.subscribe('transGroupSelected', function(event, data) {
 
 function submitTransGroupApproval(){
 	var row = $('#idPk.atgTransactionCd').val+"_"+$('#idPk.atgsGroupIdentifier').val;
-	//alert(row);
 	url = "alsAccount/transGroupApprovalGridEdit_execute.action";    
 	$.ajax({
       type: "POST",
@@ -253,16 +254,31 @@ function intStatSelected(){
 	}
 }
 function transGrpTypeChanged(selected){
-	$('#txGrpType').val(selected.value);
-	$.publish('reloadProvLst');
+	var reload = false
+	if(selected.value == " "){
+		$('#txGrpType').val("");
+		if($('#provNo').val() != null){reload = true;}
+	}else{
+		$('#txGrpType').val(selected.value);
+		reload = true;
+	}
+	if(reload){
+		$.publish('reloadTransGrpIdLst');
+		$.publish('reloadProvLst');
+	}	
 }
 function provNoChanged(selected){
-	if(selected.value == null){
-		$('#provNo').val();
+	var reload = false
+	if(selected.value == " "){
+		$('#provNo').val("");
+		if($('#txGrpType').val() != null){reload = true;}
 	}else{
 		$('#provNo').val(selected.value);
+		reload = true;
 	}
-	$.publish('reloadTransGrpIdLst');
+	if(reload){
+		$.publish('reloadTransGrpIdLst');
+	}	
 }
 $.subscribe("transGroupComplete", function (event, data) {
 	var error = $("#transGroupApprovalTable").jqGrid('getGridParam', 'userData');

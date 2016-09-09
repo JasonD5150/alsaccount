@@ -265,7 +265,7 @@ public class ListUtils {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<ListComp> getTransGrpAppProviderList() {
+	public List<ListComp> getIntOnActProviderList() {
 		List<ListComp> lst = new ArrayList<ListComp>();
 
 		String queryString = "SELECT DISTINCT api.api_provider_no itemLabel, api.api_provider_no itemVal "
@@ -771,29 +771,6 @@ public class ListUtils {
 				.setResultTransformer(Transformers.aliasToBean(ListComp.class));
 
 		lst = query.list();
-		getSession().close();
-		return lst;
-	}
-	
-	@SuppressWarnings("unchecked")
-	public List<ListComp> getTransGrpIdList(Integer provNo) {
-		List<ListComp> lst = new ArrayList<ListComp>();
-		ListComp tmp;
-		StringBuilder where = new StringBuilder(" WHERE 1 = 1 ");
-		if(provNo != null){
-			where.append("AND TRIM(TRIM(LEADING 0 FROM substr(idPk.atgsGroupIdentifier,3,6))) = '"+provNo+"' ");
-		}
-		where.append("ORDER BY 1,2 DESC");;
-		
-		AlsTransactionGrpStatusAS appSer = new AlsTransactionGrpStatusAS();
-		List<AlsTransactionGrpStatus> atgsLst = appSer.findAllByWhere(where.toString());
-
-		for (AlsTransactionGrpStatus atgs : atgsLst) {
-			tmp = new ListComp();
-			tmp.setItemLabel(atgs.getIdPk().getAtgsGroupIdentifier());
-			tmp.setItemVal(atgs.getIdPk().getAtgsGroupIdentifier());
-			lst.add(tmp);
-		}
 		getSession().close();
 		return lst;
 	}

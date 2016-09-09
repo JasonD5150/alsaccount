@@ -28,7 +28,7 @@ public class TransGrpAppQueryDivAction extends ActionSupport{
 	public String input(){
 		ListUtils lu = new ListUtils();
 		try {
-			providerLst = lu.getTransGrpAppProviderList();
+			providerLst = lu.getIntOnActProviderList();
 			transGroupTypeLst = lu.getSabhrsTransGroupTypeLst();
 			bankCdLst = lu.getTransGrpBankCodeList();
 			budgYearLst = lu.getBudgetYearList();

@@ -55,7 +55,8 @@
 							   headerValue=" " 
 						  	   list="transGrpIdLst"
 						  	   formIds="lstFrm"
-						  	   reloadTopics="reloadTransGrpIdLst"/></td>
+						  	   reloadTopics="reloadTransGrpIdLst"
+						  	   deferredLoading="true"/></td>
 			   	<td>Transaction Group Created: </td>
 	    	 	<td><s:select 
     					id="srchTranGrpCreated"

@@ -14,9 +14,9 @@ import com.opensymphony.xwork2.ActionSupport;
 import fwp.alsaccount.dto.sabhrs.AlsSabhrsEntriesDTO;
 import fwp.alsaccount.utils.HibHelpers;
 
-public class AlsSabhrsQueryGridAction extends ActionSupport{
+public class SabhrsQueryGridAction extends ActionSupport{
     private static final long   serialVersionUID = 5078264277068533593L;
-    private static final Logger    log              = LoggerFactory.getLogger(AlsSabhrsQueryGridAction.class);
+    private static final Logger    log              = LoggerFactory.getLogger(SabhrsQueryGridAction.class);
 
     private List<AlsSabhrsEntriesDTO>    model;
     private Integer             rows             = 0;
@@ -58,10 +58,6 @@ public class AlsSabhrsQueryGridAction extends ActionSupport{
 							        		 toDt, sumAppStat, intAppStat, jlr, account,  
 							        		 fund,  org,  subclass,  tribeCd, txnGrpIdentifier, 
 							        		 budgYear, progYear,  sysActTypeCd, transGrpType);
-    		/*if(model.size() > 10000){
-    			setModel(new ArrayList<AlsSabhrsEntriesDTO>());
-        		setUserdata("Please narrow search. The search grid is limited to 10000 rows. There were " + model.size() + " entries selected.");
-        	}*/
         }
         catch (HibernateException re) {
         	//System.out.println(re.toString());

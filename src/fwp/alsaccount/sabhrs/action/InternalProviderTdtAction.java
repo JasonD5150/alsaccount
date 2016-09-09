@@ -1,4 +1,4 @@
-package fwp.alsaccount.action;
+package fwp.alsaccount.sabhrs.action;
 
 import java.util.List;
 
@@ -9,20 +9,20 @@ import com.opensymphony.xwork2.ActionSupport;
 import fwp.ListComp;
 import fwp.alsaccount.utils.ListUtils;
 
-public class InternalProviderListAction extends ActionSupport{
+public class InternalProviderTdtAction extends ActionSupport{
 	
 	private static final long serialVersionUID = 5217638596755074369L;
-	private static final Logger log = LoggerFactory.getLogger(InternalProviderListAction.class);
+	private static final Logger log = LoggerFactory.getLogger(InternalProviderTdtAction.class);
 
 	private List<ListComp> providerLst;
 
-	public InternalProviderListAction(){
+	public InternalProviderTdtAction(){
 	}
 	
 	public String input(){
 		ListUtils lu = new ListUtils();
 		try {
-			providerLst = lu.getTransGrpAppProviderList();
+			providerLst = lu.getIntOnActProviderList();
 		} catch (Exception e) {
 			//System.out.println(e.getMessage());
 			log.debug(e.getMessage());
