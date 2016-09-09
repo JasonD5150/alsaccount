@@ -59,8 +59,6 @@ public class GenDocCreate extends HttpServlet {
        		activityAccountLinkageCSV(request, response);
        	} else if (rptType.equals("appendixM")){
        		appendixMCSV(request, response);
-       	} else if (rptType.equals("accCodeControl")){
-       		accCodeControlCSV(request, response);
        	} else if (rptType.equals("orgControl")){
        		orgControlCSV(request, response);
        	} else if (rptType.equals("alsNonAlsTemplate")){
@@ -255,56 +253,6 @@ public class GenDocCreate extends HttpServlet {
 		}
 
 		genCSVCreate("appendixMCSV", hold, htmlResp);	
-		
-	}
-	
-	@SuppressWarnings("unchecked")
-	public void accCodeControlCSV(HttpServletRequest request,HttpServletResponse htmlResp) throws ParseException, IOException, JSONException {	
-
-		AlsAccCdControlAS appSer = new AlsAccCdControlAS();
-		List<AlsAccCdControl> tmpLst = new ArrayList<AlsAccCdControl>();
-		StringBuffer hold = new StringBuffer("");
-		
-		// Retrieve grid filters.
-		String filters = request.getParameter("filters");
-		String year = request.getParameter("budgYear");
-		
-		String srchStr = " where idPk.asacBudgetYear = "+year;
-    	String orderStr = " order by idPk.aaccAccCd, idPk.aaccSeqNo";
-    	
-		if(filters != null){
-			srchStr = buildStr(srchStr, filters);
-    	}
-		
-		tmpLst = appSer.findAllByWhere(srchStr+orderStr);
-		//header
-		
-		hold.append("Accounting Code Control Table");
-		hold.append(System.getProperty("line.separator"));
-		hold.append("Budget Year "+ year);
-		hold.append(System.getProperty("line.separator"));
-		hold.append("Account Code, Seq No, Account, Fund, Allocated Ammount, JLR Required, Org, Subclass, Multiple Orgs, Balancing Amt Flag, Remarks");
-		for(AlsAccCdControl tmp : tmpLst){
-			hold.append(System.getProperty("line.separator"));
-			hold.append(tmp.getIdPk().getAaccAccCd()+","+
-						tmp.getIdPk().getAaccSeqNo()+","+
-						tmp.getAamAccount()+","+
-						tmp.getAaccFund()+",");
-			if(tmp.getAaccAllocatedAmt() != null){
-				hold.append(tmp.getAaccAllocatedAmt().toString()+",");
-			}else{
-				hold.append(",");
-			}
-						
-			hold.append(tmp.getAaccJlrRequired()+","+
-						tmp.getAocOrg()+","+
-						Utils.nullFix(tmp.getAsacSubclass())+","+
-						tmp.getAaccOrgFlag()+","+
-						tmp.getAaccBalancingAmtFlag()+","+
-						Utils.nullFix(tmp.getAaccRemarks()));
-		}	
-
-		genCSVCreate("accCodeControlCSV", hold, htmlResp);	
 		
 	}
 	

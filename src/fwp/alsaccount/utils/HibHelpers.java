@@ -26,6 +26,7 @@ import org.hibernate.type.TimestampType;
 import fwp.als.hibernate.admin.dao.AlsMisc;
 import fwp.als.hibernate.provider.dao.AlsProviderInfo;
 import fwp.alsaccount.appservice.admin.AlsMiscAS;
+import fwp.alsaccount.dto.admin.AccCdDistByItemTypeDTO;
 import fwp.alsaccount.dto.admin.AlsTribeItemDTO;
 import fwp.alsaccount.dto.sabhrs.AlsProviderBankDetailsDTO;
 import fwp.alsaccount.dto.sabhrs.AlsSabhrsEntriesDTO;
@@ -1010,7 +1011,7 @@ public class HibHelpers {
 													String itemTransInd, Integer seqNoInItemTrans, Boolean alxInd, Boolean nullTGI) throws HibernateException {
 		List<IafaDetailsDTO> lst = new ArrayList<IafaDetailsDTO>();
 		try {
-			StringBuilder queryStr = new StringBuilder("SELECT DISTINCT a.API_PROVIDER_NO apiProviderNo, "
+			StringBuilder queryStr = new StringBuilder("SELECT /*+ RULE */ DISTINCT a.API_PROVIDER_NO apiProviderNo, "
 					+ "e.API_BUSINESS_NM apiBusinessNm, "
 					+ "e.API_ALX_PROV_IND apiAlxProvInd, "
 					+ "a.APR_BILLING_FROM aprBillingFrom, "
@@ -1559,8 +1560,111 @@ public class HibHelpers {
 			}
 			getSession().close();
 		}
-
 		return tmp;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<AccCdDistByItemTypeDTO> getAccCdDistByItemTypeRecords(Date upFromDt, Date upToDt,Integer budgYear, Integer accCd, 
+															  String itemTypeCd) throws HibernateException {
+		List<AccCdDistByItemTypeDTO> lst = new ArrayList<AccCdDistByItemTypeDTO>();
+		try {
+			StringBuilder queryStr = new StringBuilder("SELECT DISTINCT "
+					+ "aiat.aict_item_type_cd itemTypeCd, "
+					+ "aiat.aict_usage_period_from||'-'||aiat.aict_usage_period_to||'-'||aiat.aict_item_type_cd||'-'||aiat.asac_budget_yr||'-'||aiat.aiat_residency_ind||'-'||aiat.aict_seq_no gridKey,"
+					+ "ait.ait_type_desc itemTypeDesc, "
+					+ "TO_CHAR(aiat.aict_usage_period_from, 'MM/DD/YYYY') upFromDt, "
+					+ "TO_CHAR(aiat.aict_usage_period_to, 'MM/DD/YYYY') upToDt, "
+					+ "NVL(act.act_cost, 0) itemCost, "
+					+ "act.act_prerequisite_cd costPrereq, "
+					+ "apc.apc_prerequisite_desc costPrereqDesc, "
+					+ "aiat.aiat_residency_ind residency, "
+					+ "aiat.asac_budget_yr budgYear, "
+					+ "aiat.aiat_partial_cost_acc_cd partialCost, "
+					+ "aiat.aiat_drawing_fee_acc_cd drawFee, "
+					+ "aiat.aacc_acc_cd accCd, "
+					+ "aacc.aam_account account, "
+					+ "aacc.aacc_fund fund, "
+					+ "aacc.aacc_balancing_amt_flag balancing,"
+					+ "aacc.aacc_allocated_amt dist, "
+					+ "aacc.asac_subclass subclass, "
+					+ "aacc.aoc_org org, "
+					+ "aoc.aoc_org orgMult "
+					+ "FROM als.als_cost_table act, "
+						 + "als.als_item_type ait, "
+						 + "als.als_prerequisite_cd apc, "
+						 + "als.als_org_control aoc, "
+						 + "als.als_acc_cd_control aacc, "
+						 + "als.als_item_account_table aiat "
+					+ "WHERE aiat.asac_budget_yr = :budgYear "
+					+ "AND aacc.asac_budget_year = aiat.asac_budget_yr "
+					+ "AND aacc.aacc_acc_cd = aiat.aacc_acc_cd "
+					+ "AND aoc.asac_budget_year(+) = aiat.asac_budget_yr "
+					+ "AND aoc.aacc_acc_cd(+) = aiat.aacc_acc_cd "
+					+ "AND ai_item_id||aic_category_id||ait_type_id = aiat.aict_item_type_cd "
+					+ "AND TO_CHAR(aiat.aict_item_type_cd) IN "+itemTypeCd+" "
+					+ "AND act.aict_usage_period_from(+) = aiat.aict_usage_period_from "
+					+ "AND act.aict_usage_period_to(+) = aiat.aict_usage_period_to "
+					+ "AND act.aict_item_type_cd(+) = aiat.aict_item_type_cd "
+					+ "AND act.act_prerequisite_cd(+) = aiat.apc_prerequisite_cd "
+					+ "AND apc.apc_prerequisite_cd = aiat.apc_prerequisite_cd "
+					+ "AND (act.air_residency_ind = aiat.aiat_residency_ind "
+						 + "OR   act.air_residency_ind = 'B' "
+						 + "AND NOT EXISTS (SELECT 1 "
+										 + "FROM als.als_cost_table "
+										 + "WHERE aict_usage_period_from = aiat.aict_usage_period_from "
+										 + "AND aict_usage_period_to = aiat.aict_usage_period_from "
+										 + "AND aict_item_type_cd = aiat.aict_item_type_cd)) ");
+			if(!Utils.isNil(accCd))
+				queryStr.append("AND aiat.aacc_acc_cd = :accCd ");
+			if(!Utils.isNil(upFromDt))
+				queryStr.append("AND aiat.aict_usage_period_from = :upFromDt ");
+			if(!Utils.isNil(upToDt))
+				queryStr.append("AND aiat.aict_usage_period_to = :upToDt ");
+
+			queryStr.append("ORDER BY 1, 8 DESC, 6, 12, 15");
+			
+			Query query = getSession()
+					.createSQLQuery(queryStr.toString())
+					.addScalar("itemTypeCd")
+					.addScalar("gridKey")
+					.addScalar("itemTypeDesc")
+					.addScalar("upFromDt")
+					.addScalar("upToDt")
+					.addScalar("itemCost", DoubleType.INSTANCE)
+					.addScalar("costPrereq", IntegerType.INSTANCE)
+					.addScalar("costPrereqDesc")
+					.addScalar("residency")
+					.addScalar("budgYear", IntegerType.INSTANCE)
+					.addScalar("partialCost")
+					.addScalar("drawFee")
+					.addScalar("accCd", IntegerType.INSTANCE)
+					.addScalar("account", IntegerType.INSTANCE)
+					.addScalar("fund", IntegerType.INSTANCE)
+					.addScalar("balancing")
+					.addScalar("dist", DoubleType.INSTANCE)
+					.addScalar("subclass")
+					.addScalar("org")
+					.addScalar("orgMult")
+					.setInteger("budgYear",budgYear)
+					.setResultTransformer(
+							Transformers.aliasToBean(AccCdDistByItemTypeDTO.class));
+					if(!Utils.isNil(upFromDt))
+						query.setDate("upFromDt", upFromDt);
+					if(!Utils.isNil(upToDt))
+						query.setDate("upToDt", upToDt);
+					if(!Utils.isNil(accCd))
+						query.setInteger("accCd", accCd);
+						
+					
+			lst = query.list();
+		}
+		catch (RuntimeException re) {
+			System.out.println(re.toString());
+		}
+		finally {
+			getSession().close();
+		}
+		return lst;
 	}
 	
 }

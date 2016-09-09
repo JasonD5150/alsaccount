@@ -19,15 +19,15 @@
             <result name="error">admin/include/activityAccountLinkageTab.jsp</result>
             <result name="input">admin/include/activityAccountLinkageTab.jsp</result>            
       </action>
-      <action name="accCodeControl_*" method="{1}" class="fwp.alsaccount.admin.action.BudgetYearSelectAction">
+      <action name="accCodeControl_*" method="{1}" class="fwp.alsaccount.action.GenericAction">
             <result>admin/accountingCodeControl.jsp</result>
             <result name="error">admin/accountingCodeControl.jsp</result>
             <result name="input">admin/accountingCodeControl.jsp</result>            
       </action>
-      <action name="accCodeControlDiv_*" method="{1}" class="fwp.alsaccount.admin.action.AccountCodeControlDivAction">
-            <result>admin/include/accountingCodeControlDiv.jsp</result>
-            <result name="error">admin/include/accountingCodeControlDiv.jsp</result>
-            <result name="input">admin/include/accountingCodeControlDiv.jsp</result>            
+      <action name="accCodeControlQueryDiv_*" method="{1}" class="fwp.alsaccount.admin.action.AccountCodeControlQueryDivAction">
+            <result>admin/include/accountingCodeControlQueryDiv.jsp</result>
+            <result name="error">admin/include/accountingCodeControlQueryDiv.jsp</result>
+            <result name="input">admin/include/accountingCodeControlQueryDiv.jsp</result>            
       </action>
       <action name="orgControl_*" method="{1}" class="fwp.alsaccount.admin.action.BudgetYearSelectAction">
             <result>admin/orgControl.jsp</result>
@@ -164,6 +164,9 @@
                <param name="ignoreHierarchy">false</param>
             </result>
 		</action>
+		<action name="accCdDistByItemTypeGrid_*" class="fwp.alsaccount.admin.grid.AccCdDistByItemTypeGridAction">
+            <result type="json" />
+        </action> 
 		<action name="orgControlGrid_*" class="fwp.alsaccount.admin.grid.AlsOrgControlGridAction">
             <result type="json" />
         </action>       
@@ -268,6 +271,12 @@
             <result name="error_json" type="json" >
                <param name="ignoreHierarchy">false</param>
             </result>
+        </action>
+        <action name="accountingCodeControlBuildCsv" class="fwp.alsaccount.admin.json.AccountingCodeControlBuildCsvAction">
+            <interceptor-ref name="json">
+                <param name="enableSMD">true</param>
+            </interceptor-ref>
+            <result type="json"/>
         </action>
     </package>
     

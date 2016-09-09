@@ -21,11 +21,10 @@ public class OrgControlDivAction extends ActionSupport{
 	}
 	
 	public String input(){
-		FwpStringUtils su = new FwpStringUtils();
 		ListUtils lu = new ListUtils();
 		try {
-			setAccountCdLst(lu.getAccCdListTxt(budgYear, false));
-			setProviderLst(su.listCompListToString(lu.getProviderList()));
+			setAccountCdLst(FwpStringUtils.listCompListToString(lu.getAccCdListTxt(budgYear, false)));
+			setProviderLst(FwpStringUtils.listCompListToString(lu.getProviderList()));
 		} catch (Exception e) {
 			//System.out.println(e.getMessage());
 			log.debug(e.getMessage());

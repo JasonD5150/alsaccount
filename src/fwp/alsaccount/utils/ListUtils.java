@@ -32,6 +32,7 @@ import fwp.alsaccount.hibernate.HibernateSessionFactory;
 
 
 public class ListUtils {
+	HibHelpers hh = new HibHelpers();
 	public Session getSession() {
 		return HibernateSessionFactory.getSession();
 	}
@@ -509,33 +510,30 @@ public class ListUtils {
 	
 	/**
 	 * This method retrieves all account codes for a given year from the
-	 * database as formatted text for a jqgrid column select list.
+	 * database as listcomp.
 	 */
 	@SuppressWarnings("unchecked")
-	public String getAccCdListTxt(String year, boolean addSelectOne)
-			throws Exception {
-		String retVal = ": ";
-
-		if (addSelectOne) {
-			retVal = ":-- Select One --";
-		}
+	public List<ListComp> getAccCdListTxt(String year, boolean addSelectOne) throws Exception {
+		year = (year == null) ? hh.getCurrentBudgetYear() : year;
+		List<ListComp> lst = new ArrayList<ListComp>();
+		ListComp tmp;
 
 		String where = " WHERE idPk.asacBudgetYear = " + year
 				+ " ORDER BY idPk.aaccAccCd ";
-		AlsAccCdControlAS appSer = new AlsAccCdControlAS();
-		List<AlsAccCdControl> tmpLst = appSer.findAllByWhere(where);
+		AlsAccCdControlAS aaccAS = new AlsAccCdControlAS();
+		List<AlsAccCdControl> aaccLst = aaccAS.findAllByWhere(where);
 		String tmpCd = null;
-		for (AlsAccCdControl tmp : tmpLst) {
-			if (!tmp.getIdPk().getAaccAccCd().equals(tmpCd)) {
-				tmpCd = tmp.getIdPk().getAaccAccCd();
-				retVal += ";" + tmp.getIdPk().getAaccAccCd() + ":"
-						+ tmp.getIdPk().getAaccAccCd();
+		for (AlsAccCdControl aacc : aaccLst) {
+			if (!aacc.getIdPk().getAaccAccCd().equals(tmpCd)) {
+				tmp = new ListComp();
+				tmpCd = aacc.getIdPk().getAaccAccCd();
+				tmp.setItemLabel(aacc.getIdPk().getAaccAccCd());
+				tmp.setItemVal(aacc.getIdPk().getAaccAccCd());
+				lst.add(tmp);
 			}
 		}
-
 		getSession().close();
-
-		return retVal;
+		return lst;
 	}
 
 	/**
