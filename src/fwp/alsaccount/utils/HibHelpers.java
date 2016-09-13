@@ -1601,7 +1601,7 @@ public class HibHelpers {
 					+ "AND aoc.asac_budget_year(+) = aiat.asac_budget_yr "
 					+ "AND aoc.aacc_acc_cd(+) = aiat.aacc_acc_cd "
 					+ "AND ai_item_id||aic_category_id||ait_type_id = aiat.aict_item_type_cd "
-					+ "AND TO_CHAR(aiat.aict_item_type_cd) IN "+itemTypeCd+" "
+					+ "AND TO_CHAR(aiat.aict_item_type_cd) IN ("+itemTypeCd+") "
 					+ "AND act.aict_usage_period_from(+) = aiat.aict_usage_period_from "
 					+ "AND act.aict_usage_period_to(+) = aiat.aict_usage_period_to "
 					+ "AND act.aict_item_type_cd(+) = aiat.aict_item_type_cd "

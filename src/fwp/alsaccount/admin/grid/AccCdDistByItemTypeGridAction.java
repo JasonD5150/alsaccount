@@ -52,14 +52,13 @@ public class AccCdDistByItemTypeGridAction extends ActionSupport{
         		if(!aiatLst.isEmpty()){
         			for(AlsItemAccountTable aiat : aiatLst){
         				if(itemTypeCd == null || "".equals(itemTypeCd)){
-        					itemTypeCd = "('"+aiat.getIdPk().getAictItemTypeCd()+"'";
+        					itemTypeCd = "'"+aiat.getIdPk().getAictItemTypeCd()+"'";
         				}else{
         					if(!itemTypeCd.contains(aiat.getIdPk().getAictItemTypeCd())){
         						itemTypeCd += ",'"+aiat.getIdPk().getAictItemTypeCd()+"'";
             				}
         				}
         			}
-        			itemTypeCd += ")";
         		}
         	}
         	setAcdbitModel(hh.getAccCdDistByItemTypeRecords(upFromDt, upToDt, budgYear, accCd, itemTypeCd));
