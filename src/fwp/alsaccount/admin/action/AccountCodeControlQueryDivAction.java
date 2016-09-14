@@ -11,8 +11,6 @@ import fwp.ListComp;
 import fwp.alsaccount.utils.ListUtils;
 import fwp.utils.FwpStringUtils;
 
-
-
 public class AccountCodeControlQueryDivAction extends ActionSupport {
 
 	private static final long serialVersionUID = 1L;

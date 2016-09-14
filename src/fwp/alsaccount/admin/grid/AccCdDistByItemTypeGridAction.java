@@ -2,7 +2,6 @@ package fwp.alsaccount.admin.grid;
 
 
 import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,9 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionSupport;
-
-
-
 
 import fwp.als.hibernate.item.dao.AlsItemAccountTable;
 import fwp.alsaccount.appservice.item.AlsItemAccountTableAS;
@@ -64,7 +60,6 @@ public class AccCdDistByItemTypeGridAction extends ActionSupport{
         	setAcdbitModel(hh.getAccCdDistByItemTypeRecords(upFromDt, upToDt, budgYear, accCd, itemTypeCd));
         }
         catch (HibernateException re) {
-        	//System.out.println(re.toString());
             log.debug("AccCdDistByItemTypeGrid did not load " + re.getMessage());
         }
         setRows(acdbitModel.size());

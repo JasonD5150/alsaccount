@@ -1,7 +1,6 @@
 package fwp.alsaccount.admin.grid;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.hibernate.HibernateException;
@@ -30,14 +29,23 @@ public class AlsAccCodeControlGridAction extends ActionSupport{
     private boolean             loadonce         = false;
     private Integer budgYear;
     private Integer accCd;
+    private String itemTypeCd;
 
 	@SuppressWarnings("unchecked")
-	public String buildgrid(){    	
+	public String buildgrid(){
     	AlsAccCdControlAS aaccAS = new AlsAccCdControlAS();
     	List<AlsAccCdControl> aacc;
     	
         try{
-        	aacc = aaccAS.findAllByBudgYearAccCd(budgYear, accCd);
+        	//Sets the accounting code list, either adding the one entered on the query form 
+        	//or getting a list from the database based on the item type code.
+        	List<Integer> accCdLst = new ArrayList<Integer>();
+        	if(Utils.isNil(itemTypeCd)&&!Utils.isNil(accCd)){
+        		accCdLst.add(accCd);
+        	}else{
+        		accCdLst = aaccAS.getAccCdRelatedToItemType(budgYear, itemTypeCd);
+        	}
+        	aacc = aaccAS.findAllByBudgYearAccCd(budgYear, accCdLst);
         	
 			setModel(new ArrayList<AlsAccCdControlDTO>());
 			AlsAccCdControlDTO tmp;
@@ -162,5 +170,12 @@ public class AlsAccCodeControlGridAction extends ActionSupport{
 		this.accCd = accCd;
 	}
 
+	public String getItemTypeCd() {
+		return itemTypeCd;
+	}
+
+	public void setItemTypeCd(String itemTypeCd) {
+		this.itemTypeCd = itemTypeCd;
+	}
 }
 
