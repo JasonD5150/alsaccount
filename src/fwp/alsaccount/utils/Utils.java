@@ -12,7 +12,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -114,20 +113,6 @@ public class Utils {
     }
 	
 	/**
-	 * check a string to make sure it is an integer
-	 * @param str
-	 * @return boolean
-	 */
-	public boolean isInteger(String str) {
-	    try {
-	        Integer.parseInt(str);
-	        return true;
-	    } catch (NumberFormatException nfe) {
-	        return false;
-	    }
-	}
-	
-	/**
 	 * get the user id of the person logged in
 	 * @param request
 	 * @return int
@@ -194,8 +179,8 @@ public class Utils {
        else return in;
 	}
 
-	public static Integer nullFix(Integer in){
-       if (in == null) return 0;
+   public static Double nullFix(Double in){
+       if (in == null) return 0.0;
        else return in;
 	}
 	
@@ -268,10 +253,11 @@ public class Utils {
 	    return new java.sql.Date(date.getTime());
 	} 
 	
-	public static Double nullFix(Double in){
-        if (in == null) return 0.0;
-        else return in;
-	}
+	public static String createIntProvGroupIdentifier(Integer provNo, String bpTo, String seqNo){
+		String rtn = "";
+		rtn = "P"+String.format("%06d", provNo)+" "+bpTo+" "+seqNo;
+		return rtn;		
+	};
 	
 	public static String getOracleFormatedDate(java.util.Date date) {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyyy");

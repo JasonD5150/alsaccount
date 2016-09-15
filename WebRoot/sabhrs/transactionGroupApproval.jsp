@@ -11,7 +11,10 @@
         <sj:head locale="en" jqueryui="true" jquerytheme="smoothness" customBasepath="css/jquery"/>
         <script type="text/javascript" src= "/alsaccount/sabhrs/scripts/fwp.transactionGroupApproval.js"></script>  
     	<script type="text/javascript" src= "/alsaccount/scripts/fieldEdits.js"></script>  
-    	<script type="text/javascript" src= "/alsaccount/scripts/menuSecurity.js"></script>  
+    	<script type="text/javascript" src= "/alsaccount/scripts/menuSecurity.js"></script>
+    	<style type="text/css">
+			@import url("/alsaccount/css/alsaccount.css");
+	    </style>  
     </fwp:head>
 
     <s:hidden id="bankCodeLst" name="bankCodeLst"/>
@@ -22,6 +25,7 @@
 	<form id='rptFrm'>
       <s:hidden id="frmRptType" name="rptType" />
       <s:hidden id="frmFilters" name="filters" /> 
+
     </form>
     
     <s:form id="pdfFrm" action="getTdtPdf">
@@ -231,5 +235,5 @@
 		</s:form>
 		<input id="saveTransGrpApp" type="submit" value="Save" onclick="submitTransGroupApproval();">
 		<input type="submit" value="Back" onclick="$('#transGroupAppDiv').toggle(false);">
-	</div>	
+	</div>
 </fwp:template>

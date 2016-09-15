@@ -24,10 +24,8 @@ import fwp.alsaccount.appservice.admin.AlsAccountMasterAS;
 import fwp.alsaccount.appservice.admin.AlsItemCategoryAS;
 import fwp.alsaccount.appservice.admin.AlsSysActivityControlAS;
 import fwp.alsaccount.appservice.admin.AlsTribeInfoAS;
-import fwp.alsaccount.appservice.sabhrs.AlsTransactionGrpStatusAS;
 import fwp.alsaccount.dao.admin.AlsAccCdControl;
 import fwp.alsaccount.dao.admin.AlsAccountMaster;
-import fwp.alsaccount.dao.sabhrs.AlsTransactionGrpStatus;
 import fwp.alsaccount.hibernate.HibernateSessionFactory;
 
 
@@ -296,7 +294,7 @@ public class ListUtils {
 		List<ListComp> lst = new ArrayList<ListComp>();
 		ListComp tmp;
 		HibHelpers hh = new HibHelpers();
-		String year = (budgetYear == null) ? hh.getCurrentBudgetYear() : budgetYear;
+		String year = (budgetYear == null || "".equals(budgetYear)) ? hh.getCurrentBudgetYear() : budgetYear;
 
 		String where = " WHERE idPk.asacBudgetYear = " + year
 				+ " ORDER BY idPk.aamAccount ";
@@ -323,7 +321,7 @@ public class ListUtils {
 	public List<ListComp> getOrgList(String budgetYear) throws Exception {
 		List<ListComp> lst = new ArrayList<ListComp>();
 		HibHelpers hh = new HibHelpers();
-		String year = (budgetYear == null) ? hh.getCurrentBudgetYear() : budgetYear;
+		String year = (budgetYear == null || "".equals(budgetYear)) ? hh.getCurrentBudgetYear() : budgetYear;
 
 		String queryString = "SELECT aoc_org itemVal, "
 						   + "aoc_org itemLabel " 
@@ -369,11 +367,9 @@ public class ListUtils {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<ListComp> getJLRBudgYearList(String year) {
-		HibHelpers hh = new HibHelpers();
-		if(year == null || "".equals(year)){
-			year = hh.getCurrentBudgetYear();
-		}
+	public List<ListComp> getJLRBudgYearList(String budgetYear) {
+		String year = (budgetYear == null || "".equals(budgetYear)) ? hh.getCurrentBudgetYear() : budgetYear;
+
 		List<ListComp> lst = new ArrayList<ListComp>();
 		
 		String queryString = "SELECT DISTINCT am_val_desc || SUBSTR('"+year+"',3,4)  itemVal, "
@@ -418,7 +414,7 @@ public class ListUtils {
 	@SuppressWarnings("unchecked")
 	public List<ListComp> getFundList(String budgetYear) throws Exception {
 		HibHelpers hh = new HibHelpers();
-		String year = (budgetYear == null) ? hh.getCurrentBudgetYear() : budgetYear;
+		String year = (budgetYear == null || "".equals(budgetYear)) ? hh.getCurrentBudgetYear() : budgetYear;
 		
 		List<ListComp> lst = new ArrayList<ListComp>();
 
@@ -451,7 +447,7 @@ public class ListUtils {
 	@SuppressWarnings("unchecked")
 	public List<ListComp> getSubclassList(String budgetYear) throws Exception {
 		HibHelpers hh = new HibHelpers();
-		String year = (budgetYear == null) ? hh.getCurrentBudgetYear() : budgetYear;
+		String year = (budgetYear == null || "".equals(budgetYear)) ? hh.getCurrentBudgetYear() : budgetYear;
 
 		List<ListComp> lst = new ArrayList<ListComp>();
 
@@ -484,8 +480,7 @@ public class ListUtils {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<ListComp> getActTypeTranCdList(String budgetYear) {
-		HibHelpers hh = new HibHelpers();
-		String year = (budgetYear == null) ? hh.getCurrentBudgetYear() : budgetYear;
+		String year = (budgetYear == null || "".equals(budgetYear)) ? hh.getCurrentBudgetYear() : budgetYear;
 		
 		List<ListComp> lst = new ArrayList<ListComp>();
 		ListComp tmp;
@@ -648,11 +643,14 @@ public class ListUtils {
 	public List<ListComp> getProviderBankCodeList(Integer provNo) {
 		List<ListComp> lst = new ArrayList<ListComp>();
 		
-		String queryString = "SELECT DISTINCT abc.ABC_BANK_CD itemVal, "
-							+ "abc.ABC_BANK_CD itemLabel "
-							+ "FROM  ALS.ALS_BANK_CODE abc  "
-							//+ "WHERE abc.api"
-							+ "ORDER BY 1";
+		String queryString = "SELECT ABC_BANK_CD itemVal, "
+							+ "ABC_BANK_CD itemLabel "
+							+ "FROM ALS.ALS_BANK_CODE a, "
+							+ "als.als_provider_info b "
+							+ "WHERE a.azc_zip_cd = b.azc_business_zipcode "
+							+ "AND a.abc_active = 'Y' "
+							+ "AND b.api_provider_no = "+provNo+" "
+							+ "Order By ABC_BANK_CD";
 
 		Query query = getSession().createSQLQuery(queryString)
 				.addScalar("itemVal", StringType.INSTANCE)

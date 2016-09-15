@@ -9,7 +9,10 @@
 <fwp:template>
 <fwp:head>
     <sj:head locale="en" jqueryui="true" jquerytheme="smoothness" customBasepath="css/jquery"/>
-    <script type="text/javascript" src= "/alsaccount/scripts/fieldEdits.js"></script> 
+    <script type="text/javascript" src= "/alsaccount/scripts/fieldEdits.js"></script>
+    <style type="text/css">
+		@import url("/alsaccount/css/alsaccount.css");
+    </style> 
     <script>    	
     	$.subscribe('internalProviderTdtComplete', function(event, data) {				
 				$("#internalProviderTdtTable")
@@ -52,6 +55,7 @@
 					});			
 			});
 		
+		/* ACTIONS */
 		function submitSearch(){
 			$.publish('reloadInternalProviderTdtTable');
 		}
@@ -82,7 +86,7 @@
 		    	$('#depositIds').val(depositIdLst);
 				$('#pdfFrm').submit();
 		    }else{
-		    	alert("No record to print.");
+		    	alert("No record selected to print.");
 		    }
 		}
     </script> 
@@ -98,7 +102,7 @@
    	</div>
    	
    	<fieldset style="border: black 1px solid; display: inline-block;margin: 0 5px;">
-	   	<legend style="font-weight: bold;font-size:larger">Search Criteria</legend>
+	   	<legend style="font-weight: bold;">Search Criteria</legend>
 	   	<s:actionerror/>
 	   	<form id='gridFrm'>
 	   		<table>

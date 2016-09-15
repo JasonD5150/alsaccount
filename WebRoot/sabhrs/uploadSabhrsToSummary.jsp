@@ -8,6 +8,9 @@
 <fwp:template>
     <fwp:head>
         <sj:head locale="en" jqueryui="true" jquerytheme="smoothness" customBasepath="css/jquery"/>
+        <style type="text/css">
+			@import url("/alsaccount/css/alsaccount.css");
+	    </style>
 	   	<script type="text/javascript">
 	   		function upload() {			
 				$('#rtnHtml').html('');

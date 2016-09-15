@@ -19,11 +19,10 @@ public class ActivityAccountLinkageDivAction extends ActionSupport {
 	private String budgYear;
 
 	public String input(){
-		FwpStringUtils su = new FwpStringUtils();
 		ListUtils lu = new ListUtils();
 		try {
-			accountLst = su.listCompListToString(lu.getAccountList(budgYear));
-			sysActivityTypeTransCodeLst = su.listCompListToString(lu.getActTypeTranCdList(budgYear));
+			accountLst = FwpStringUtils.listCompListToString(lu.getAccountList(budgYear));
+			sysActivityTypeTransCodeLst = FwpStringUtils.listCompListToString(lu.getActTypeTranCdList(budgYear));
 		} catch (Exception e) {
 			//System.out.println(e.getMessage());
 			log.debug(e.getMessage());

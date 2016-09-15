@@ -84,74 +84,43 @@ public class GenNonAlsEntriesAction extends ActionSupport{
 		this.projectGrantLst = projectGrantLst;
 	}
 
-	/**
-	 * @return the orgLst
-	 */
 	public String getOrgLst() {
 		return orgLst;
 	}
 
-	/**
-	 * @param orgLst the orgLst to set
-	 */
 	public void setOrgLst(String orgLst) {
 		this.orgLst = orgLst;
 	}
 
-	/**
-	 * @return the accountLst
-	 */
 	public String getAccountLst() {
 		return accountLst;
 	}
 
-	/**
-	 * @param accountLst the accountLst to set
-	 */
 	public void setAccountLst(String accountLst) {
 		this.accountLst = accountLst;
 	}
 
-	/**
-	 * @return the transGroupTypeLst
-	 */
 	public List<ListComp> getTransGroupTypeLst() {
 		return transGroupTypeLst;
 	}
 
-	/**
-	 * @param transGroupTypeLst the transGroupTypeLst to set
-	 */
 	public void setTransGroupTypeLst(List<ListComp> transGroupTypeLst) {
 		this.transGroupTypeLst = transGroupTypeLst;
 	}
 
-	/**
-	 * @return the budgetYearSel
-	 */
 	public List<ListComp> getBudgetYearSel() {
 		return budgetYearSel;
 	}
 
-	/**
-	 * @param budgetYearSel the budgetYearSel to set
-	 */
 	public void setBudgetYearSel(List<ListComp> budgetYearSel) {
 		this.budgetYearSel = budgetYearSel;
 	}
 
-	/**
-	 * @return the providerLst
-	 */
 	public List<ListComp> getProviderLst() {
 		return providerLst;
 	}
 
-	/**
-	 * @param providerLst the providerLst to set
-	 */
 	public void setProviderLst(List<ListComp> providerLst) {
 		this.providerLst = providerLst;
 	}
-
 }

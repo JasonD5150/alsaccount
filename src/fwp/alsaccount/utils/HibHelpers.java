@@ -6,6 +6,7 @@ import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,12 +27,15 @@ import org.hibernate.type.TimestampType;
 import fwp.als.hibernate.admin.dao.AlsMisc;
 import fwp.als.hibernate.provider.dao.AlsProviderInfo;
 import fwp.alsaccount.appservice.admin.AlsMiscAS;
+import fwp.alsaccount.dao.sabhrs.AlsSabhrsEntries;
 import fwp.alsaccount.dto.admin.AccCdDistByItemTypeDTO;
 import fwp.alsaccount.dto.admin.AlsTribeItemDTO;
 import fwp.alsaccount.dto.sabhrs.AlsProviderBankDetailsDTO;
 import fwp.alsaccount.dto.sabhrs.AlsSabhrsEntriesDTO;
 import fwp.alsaccount.dto.sabhrs.AlsTransactionGrpMassCopyDTO;
 import fwp.alsaccount.dto.sabhrs.IafaDetailsDTO;
+import fwp.alsaccount.dto.sabhrs.IafaSummaryDTO;
+import fwp.alsaccount.dto.sabhrs.InternalProviderBankCdDepLinkDTO;
 import fwp.alsaccount.dto.sabhrs.InternalProviderTdtDTO;
 import fwp.alsaccount.hibernate.HibernateSessionFactory;
 
@@ -261,6 +265,27 @@ public class HibHelpers {
 			getSession().close();
 		}
 		return rtn.get(0);
+	}
+	
+	public String getProviderName(Integer providerNo) {
+		String rtn = null;
+
+		String queryString = "SELECT api_business_nm apiBusinessNm "+
+							 "FROM ALS.ALS_PROVIDER_INFO  "+
+							 "WHERE api_provider_no = "+providerNo;
+		try {
+			Query query = getSession()
+					.createSQLQuery(queryString)
+					.addScalar("apiBusinessNm", StringType.INSTANCE);
+
+			rtn = (String) query.uniqueResult();
+		} catch (RuntimeException re) {
+			System.out.println(re.toString());
+		}
+		finally {
+			getSession().close();
+		}
+		return rtn;
 	}
 	
 	public Date getBillPeriodEndDate(Integer year) {
@@ -1516,6 +1541,427 @@ public class HibHelpers {
 		return rtn;
 	}
 	
+	/*Internal Provider Bank Code Deposit Link*/
+	public Boolean isValidBPTo(Integer provNo, String bpTo) {		
+		Boolean rtrn = false;
+		Integer cnt = 0;
+		
+		String queryString =  "SELECT COUNT(*) cnt "
+							+ "FROM   ALS.ALS_PROVIDER_REMITTANCE "
+							+ "WHERE  API_PROVIDER_NO = "+provNo+" "
+							+ "AND    APR_BILLING_TO  = TO_DATE('"+bpTo+"','MM/DD/YYYY')";
+			try {
+			Query query = getSession()
+					.createSQLQuery(queryString)
+					.addScalar("cnt", IntegerType.INSTANCE);
+			cnt = (Integer) query.uniqueResult();
+			if(cnt>0){
+				rtrn=true;
+			}
+			} catch (RuntimeException re) {
+				System.out.println(re.toString());
+			} finally {
+			getSession().close();
+		}
+        return rtrn;
+	}	
+	
+	public Boolean getDepositApprovalFlag(Integer provNo, String bpTo, String bpFrom) {	
+		Boolean appFlag = false;
+		String app = null;
+		
+		String queryString =  "SELECT  Air_Bank_Dept_Approved approved "
+							+ "FROM Als.Als_Internal_Remittance "
+							+ "WHERE Api_Provider_No  = "+provNo+" "
+							+ "AND Air_Billing_To   = TO_DATE('"+bpTo+"','MM/DD/YYYY') "
+							+ "AND Air_Billing_From = TO_DATE('"+bpFrom+"','MM/DD/YYYY') "
+							+ "AND Rownum < 2 ";
+			try {
+			Query query = getSession()
+					.createSQLQuery(queryString)
+					.addScalar("approved", StringType.INSTANCE);
+			app = (String) query.uniqueResult();
+			
+			if("Y".equals(app)){
+				appFlag = true;
+			}
+
+			} catch (RuntimeException re) {
+				System.out.println(re.toString());
+			} finally {
+			getSession().close();
+		}
+        return appFlag;
+	}	
+	
+	public Boolean getDepositProviderDate(Integer provNo, String bpTo) {	
+		Boolean flag = false;
+		Date acp = null;
+		
+		String queryString =  "SELECT Air_Complete_Provider acp "
+							+ "FROM Als.Als_Internal_Remittance "
+							+ "WHERE Api_Provider_No = "+provNo+" "
+							+ "AND Air_Billing_To = TO_DATE('"+bpTo+"','MM/DD/YYYY') "
+							+ "AND ROWNUM < 2 ";
+			try {
+			Query query = getSession()
+					.createSQLQuery(queryString)
+					.addScalar("acp", DateType.INSTANCE);
+			acp = (Date) query.uniqueResult();
+			
+			if(acp != null){
+				flag = true;
+			}
+
+			} catch (RuntimeException re) {
+				System.out.println(re.toString());
+			} finally {
+			getSession().close();
+		}
+        return flag;
+	}	
+	
+	public Integer getProvBankDetailsNextNo(Integer provNo, Date bpFrom, Date bpTo) {	
+		Integer rtn = null;
+		
+		String queryString =  "SELECT NVL(MAX(APBD_SEQ_NO),0) + 1 seqNo "
+							+ "FROM ALS.ALS_PROVIDER_BANK_DETAILS "
+							+ "WHERE API_PROVIDER_NO = "+provNo+" "
+							+ "AND APBD_BILLING_TO = TO_DATE('"+bpTo+"','yyyy-mm-dd') "
+							+ "And APBD_BILLING_FROM = TO_DATE('"+bpFrom+"','yyyy-mm-dd') ";
+			try {
+			Query query = getSession()
+					.createSQLQuery(queryString)
+					.addScalar("seqNo", IntegerType.INSTANCE);
+			rtn =  (Integer) query.uniqueResult();
+			} catch (RuntimeException re) {
+				System.out.println(re.toString());
+			} finally {
+			getSession().close();
+		}
+        return rtn;
+	}	
+	
+	/*Internal Provider Bank Code Deposit Linkage & Internal Remittance*/
+	@SuppressWarnings("unchecked")
+	public List<InternalProviderBankCdDepLinkDTO> getIntProvBankCdDepLinkCSVRecords(Integer provNo) throws HibernateException {
+		List<InternalProviderBankCdDepLinkDTO> lst = new ArrayList<InternalProviderBankCdDepLinkDTO>();
+		String queryStr =  "SELECT ALS_PROVIDER_BANK_DETAILS.ABC_BANK_CD abcBankCd, "
+							+ "ABC_BANK_NM bankName, "
+							+ "APBD_AMOUNT_DEPOSIT apbdAmountDeposit, "
+							+ "APBD_DEPOSIT_DATE depositDate, "
+							+ "APBD_BILLING_TO apbdBillingTo, "
+							+ "APR_EFT_DEPOSIT_DEADLINE_DT deadlineDate, "
+							+ "APR_AMT_DUE amtDue, "
+							+ "APBD_DEPOSIT_ID apbdDepositId "
+							+ "FROM  ALS.ALS_PROVIDER_BANK_DETAILS, "
+							+ "ALS.ALS_BANK_CODE, ALS.ALS_PROVIDER_REMITTANCE "
+							+ "WHERE ALS_PROVIDER_BANK_DETAILS.API_PROVIDER_NO = "+provNo+" "
+							+ "AND ALS_PROVIDER_BANK_DETAILS.ABC_BANK_CD = ALS_BANK_CODE.ABC_BANK_CD "
+							+ "AND ALS_PROVIDER_BANK_DETAILS.API_PROVIDER_NO = ALS_PROVIDER_REMITTANCE.API_PROVIDER_NO "
+							+ "AND ALS_PROVIDER_BANK_DETAILS.APBD_BILLING_TO = ALS_PROVIDER_REMITTANCE.APR_BILLING_TO "
+							+ "ORDER BY APR_EFT_DEPOSIT_DEADLINE_DT";
+		
+		try {
+			Query query = getSession()
+								.createSQLQuery(queryStr)
+								.addScalar("abcBankCd")
+								.addScalar("bankName")
+								.addScalar("apbdAmountDeposit", DoubleType.INSTANCE)
+								.addScalar("depositDate", DateType.INSTANCE)
+								.addScalar("apbdBillingTo", DateType.INSTANCE)
+								.addScalar("deadlineDate", DateType.INSTANCE)
+								.addScalar("amtDue", DoubleType.INSTANCE)
+								.addScalar("apbdDepositId")
+								.setResultTransformer(
+										Transformers.aliasToBean(InternalProviderBankCdDepLinkDTO.class));
+
+			lst = query.list();
+		} catch (HibernateException he){
+			System.out.println(he.toString());
+		}
+		catch (RuntimeException re) {
+			System.out.println(re.toString());
+		} finally {
+			getSession().close();
+		}
+		return lst;
+	}
+	
+	public Integer getAlsNonAlsDetailsNextSeqNo(Integer provNo, Date bpFrom, Date bpTo) {	
+		Integer rtn = null;
+		
+		String queryString =  "Select	Nvl(Max(Anad_Seq_No),0) + 1 seqNo"
+							+ "FROM	Als.Als_Non_Als_Details "
+							+ "WHERE Api_Provider_No = "+provNo+" "
+							+ "AND Air_Billing_From = TO_DATE('"+bpFrom+"','yyyy-mm-dd') " 
+							+ "AND Air_Billing_To = TO_DATE('"+bpTo+"','yyyy-mm-dd')";
+				
+			try {
+			Query query = getSession()
+					.createSQLQuery(queryString)
+					.addScalar("seqNo", IntegerType.INSTANCE);
+			rtn =  (Integer) query.uniqueResult();
+			} catch (RuntimeException re) {
+				System.out.println(re.toString());
+			} finally {
+			getSession().close();
+		}
+        return rtn;
+	}
+	public Integer getAlsOverUnderNextSeqNo(Integer provNo, Date bpFrom, Date bpTo) {	
+		Integer rtn = null;
+		
+		String queryString =  "SELECT	Nvl(Max(Aousd_Seq_No),0) + 1 seqNo"
+							+ "FROM Als.Als_Over_Under_Sales_Dets"
+							+ "WHERE Api_Provider_No = "+provNo+" "
+							+ "AND Air_Billing_From = TO_DATE('"+bpFrom+"','yyyy-mm-dd') "
+							+ "AND Air_Billing_To = TO_DATE('"+bpTo+"','yyyy-mm-dd')";
+		
+			try {
+			Query query = getSession()
+					.createSQLQuery(queryString)
+					.addScalar("seqNo", IntegerType.INSTANCE);
+			rtn =  (Integer) query.uniqueResult();
+			} catch (RuntimeException re) {
+				System.out.println(re.toString());
+			} finally {
+			getSession().close();
+		}
+        return rtn;
+	}
+	
+	public Double getTotalBankDeposit(Integer provNo, Date bpFrom, Date bpTo) {	
+		Double rtn = null;
+		
+		String queryString =  "SELECT SUM(NVL(Apbd_Amount_Deposit,0)) tot "
+							+ "FROM Als.Als_Provider_Bank_Details "
+							+ "WHERE Api_Provider_No = "+provNo+" "
+							+ "AND Apbd_Billing_To = TO_DATE('"+bpTo+"','yyyy-mm-dd') "
+							+ "AND Apbd_Billing_From = TO_DATE('"+bpFrom+"','yyyy-mm-dd')";
+		
+			try {
+			Query query = getSession()
+					.createSQLQuery(queryString)
+					.addScalar("tot", DoubleType.INSTANCE);
+			rtn =  (Double) query.uniqueResult();
+			} catch (RuntimeException re) {
+				System.out.println(re.toString());
+			} finally {
+			getSession().close();
+		}
+        return rtn;
+	}
+	
+	public String getInterfaceFileGenerated(Integer provNo, Date bpTo) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+		String rtn = null;
+		
+		String queryString =  "SELECT 'YES' rtn "
+							+ "FROM Als.Als_Transaction_Grp_Status "
+							+ "WHERE Atg_Transaction_Cd = 8 "
+							+ "AND Substr(Atgs_Group_Identifier,1,18) = 'P'||Lpad(Substr("+provNo+",1,6),6,'0')||' "+sdf.format(bpTo)+"' "
+							+ "AND Atgs_File_Creation_Dt Is Not Null "
+							+ "AND ROWNUM < 2";
+					
+			try {
+			Query query = getSession()
+					.createSQLQuery(queryString)
+					.addScalar("rtn");
+			rtn =  (String) query.uniqueResult();
+			if(rtn == null){
+				rtn = "NO";
+			}
+			} catch (RuntimeException re) {
+				System.out.println(re.toString());
+			} finally {
+			getSession().close();
+		}
+        return rtn;
+	}
+	
+	public Integer postE42Entries(Double amtDep, 
+								  Integer provNo, 
+								  Timestamp bpFrom, 
+								  Timestamp bpTo, 
+								  Integer transGrpCd, 
+								  String grpIdentifier, 
+								  String cd, 
+								  String desc, 
+								  String amtType, 
+								  String shortSalesReason,
+								  String fund,
+								  String tribe) {		
+		Integer rtnCd = 0;
+		Integer curBudgYear = Integer.parseInt(getCurrentBudgetYear());
+        Connection conn = ((SessionImpl)getSession()).connection();
+        
+        try {
+			CallableStatement cs = conn.prepareCall("{? = call ALS.ALSU0421(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+			
+			cs.registerOutParameter(1,OracleTypes.NUMBER);
+			cs.setDouble(2,amtDep);
+            cs.setString(3, "N");
+            cs.setString(4, "Y");
+            cs.setString(5, cd);
+            cs.setInt(6, provNo);
+            cs.setNull(7, OracleTypes.VARCHAR);
+            cs.setNull(8, OracleTypes.VARCHAR);
+            cs.setNull(9, OracleTypes.VARCHAR);
+            cs.setNull(10, OracleTypes.VARCHAR);
+            cs.setNull(11, OracleTypes.VARCHAR);
+            cs.setNull(12, OracleTypes.VARCHAR);
+            cs.setNull(13, OracleTypes.VARCHAR);
+            cs.setNull(14, OracleTypes.VARCHAR);
+            cs.setString(15, "N");
+            cs.setInt(16, curBudgYear);
+            if(amtType != null){
+            	cs.setString(17, amtType);
+            }else{
+            	cs.setNull(17, OracleTypes.VARCHAR);
+            }
+            if(shortSalesReason != null){
+            	cs.setString(18, shortSalesReason);
+            }else{
+            	cs.setNull(18, OracleTypes.VARCHAR);
+            }
+            cs.setNull(19, OracleTypes.VARCHAR);
+            cs.setNull(20, OracleTypes.VARCHAR);
+            cs.setNull(21, OracleTypes.VARCHAR);
+            cs.setNull(22, OracleTypes.VARCHAR);
+            cs.setString(23, "Y");
+            cs.setString(24, desc);
+            cs.setTimestamp(25, bpFrom);
+            cs.setTimestamp(26, bpTo);
+            cs.setNull(27, OracleTypes.VARCHAR);
+            cs.setNull(28, OracleTypes.VARCHAR);
+            cs.setNull(29, OracleTypes.VARCHAR);
+            if(fund != null){
+            	cs.setString(30, fund);
+            }else{
+            	cs.setNull(30, OracleTypes.VARCHAR);
+            }
+            cs.setInt(31, transGrpCd);
+            cs.setString(32, grpIdentifier);
+            cs.setNull(33, OracleTypes.VARCHAR);
+            if(tribe != null){
+            	cs.setString(34, tribe);
+            }else{
+            	cs.setNull(34, OracleTypes.VARCHAR);
+            }
+            cs.setNull(35, OracleTypes.VARCHAR);
+            cs.execute();
+            
+            rtnCd = cs.getInt(1);
+            conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			
+			getSession().close();
+		}
+        
+        return rtnCd;
+	}
+	
+	public Double getSabhrsNetAmt(Integer transGrpCd, String grpIdentifier1,String cashAcc, String prvCashAcc) {
+		Number rtn = null;
+		
+		String queryString =  "Select	Nvl(Sum(Decode(Ase_Dr_Cr_Cd,'C',Ase_Amt*(-1),Ase_Amt)),0) rtn "
+							+ "FROM Als.Als_Sabhrs_Entries "
+							+ "WHERE Atg_Transaction_Cd = "+transGrpCd+" "
+							+ "AND Atgs_Group_Identifier = '"+grpIdentifier1+"' "
+							+ "AND ((Asac_Budget_Year =	"+getCurrentBudgetYear()+" "
+									+ "AND Aam_Account = '"+cashAcc+"') "
+									+ "OR "
+								 + "(Asac_Budget_Year =	"+(Integer.parseInt(getCurrentBudgetYear())-1)+" "
+								 	+ "And Aam_Account = '"+prvCashAcc+"'))";
+								
+			try {
+			Query query = getSession()
+					.createSQLQuery(queryString)
+					.addScalar("rtn");
+			rtn =  (Number) query.uniqueResult();
+			} catch (RuntimeException re) {
+				System.out.println(re.toString());
+			} finally {
+			getSession().close();
+		}
+        return Double.valueOf(rtn.toString());
+	}
+	
+	public String getPval(String param1, String param2, String param3) {		
+		String rtn = null;
+		
+        Connection conn = ((SessionImpl)getSession()).connection();
+        try {
+
+			CallableStatement cs = conn.prepareCall("{? = call Als.Als_Package.Get_Pval(?,?,?)}");
+			
+			cs.registerOutParameter(1,OracleTypes.VARCHAR);
+            cs.setString(2,param1);
+            if(param2 != null){
+            	cs.setString(3, param2);
+            }else{
+            	cs.setNull(3, OracleTypes.VARCHAR);
+            }
+            if(param3 != null){
+            	cs.setString(4, param3);
+            }else{
+            	cs.setNull(4, OracleTypes.VARCHAR);
+            }
+            
+
+            cs.execute();
+            
+            rtn = cs.getString(1);
+            
+            conn.close(); 
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			getSession().close();
+		}
+        
+        return rtn;
+	}
+	
+	public List<AlsSabhrsEntries> getFundTribeAccountReceivalbeEntries(Integer provNo, Timestamp bpFrom, Timestamp bpTo, String account) throws HibernateException {		
+		List<AlsSabhrsEntries> lst = new ArrayList<AlsSabhrsEntries>();
+		String queryStr =  "Select	Aam_Fund aamFund, "
+							+ "Ati_Tribe_Cd atiTribeCd, "
+							+ "Nvl(Sum(Decode(Ase_Dr_Cr_Cd,'D',Nvl(Ase_Amt,0),'C',-1 * Nvl(Ase_Amt, 0))),0) aseAmt "
+							+ "FROM Als.Als_Sabhrs_Entries "
+							+ "WHERE Api_Provider_No  = "+provNo+" "
+							+ "AND Apr_Billing_From = TO_TIMESTAMP('"+bpFrom+"', 'yyyy-MM-dd HH24:MI:SS.FF') "
+							+ "AND Apr_Billing_To   = TO_TIMESTAMP('"+bpTo+"', 'yyyy-MM-dd HH24:MI:SS.FF') "
+							+ "AND Aam_Account      = "+account+" "
+							+ "AND ASAC_SYSTEM_ACTIVITY_TYPE_CD||ASAC_TXN_CD not in ('E40','E42','E43') "
+							+ "Group By Aam_Fund,Ati_Tribe_Cd;";
+		
+		try {
+			Query query = getSession()
+								.createSQLQuery(queryStr)
+								.addScalar("aamFund")
+								.addScalar("atiTribeCd")
+								.addScalar("aseAmt", DoubleType.INSTANCE)
+								.setResultTransformer(
+										Transformers.aliasToBean(AlsSabhrsEntries.class));
+
+			lst = query.list();
+		} catch (HibernateException he){
+			System.out.println(he.toString());
+		}
+		catch (RuntimeException re) {
+			System.out.println(re.toString());
+		} finally {
+			getSession().close();
+		}
+		return lst;
+	}
+	
 	public String updateTransactionGrpStatus(String depId, String ipTranGrp, String minMax) {
 		String tmp = "ERROR";
 		int rowCount = 0;
@@ -1563,6 +2009,42 @@ public class HibHelpers {
 		return tmp;
 	}
 	
+
+	public List<AlsSabhrsEntries> getIntProvRemittanceSabhrsEntries(Integer provNo, Timestamp bpFrom, Timestamp bpTo) throws HibernateException {		
+		List<AlsSabhrsEntries> lst = new ArrayList<AlsSabhrsEntries>();
+		String queryStr =  "SELECT DISTINCT Api_Provider_No apiProviderNo, "
+											+ "Apr_Billing_From aprBillingFrom, "
+											+ "Apr_Billing_To aprBillingTo, "
+											+ "Aiafa_Seq_No aiafaSeqNo"
+							+ "FROM Als.Als_Sabhrs_Entries "
+							+ "WHERE Api_Provider_No = "+provNo+" "
+							+ "AND Apr_Billing_From = "+bpFrom+" "
+							+ "AND Apr_Billing_To = "+bpTo+" "
+							+ "AND Asac_System_Activity_Type_Cd = 'E'"
+							+ "AND Asac_Txn_Cd in (18,19)";
+		
+		try {
+			Query query = getSession()
+								.createSQLQuery(queryStr)
+								.addScalar("apiProviderNo")
+								.addScalar("aprBillingFrom", TimestampType.INSTANCE)
+								.addScalar("aprBillingTo", TimestampType.INSTANCE)
+								.addScalar("aiafaSeqNo", IntegerType.INSTANCE)
+								.setResultTransformer(
+										Transformers.aliasToBean(AlsSabhrsEntries.class));
+
+			lst = query.list();
+		} catch (HibernateException he){
+			System.out.println(he.toString());
+		}
+		catch (RuntimeException re) {
+			System.out.println(re.toString());
+		} finally {
+			getSession().close();
+		}
+		return lst;
+	}
+
 	@SuppressWarnings("unchecked")
 	public List<AccCdDistByItemTypeDTO> getAccCdDistByItemTypeRecords(Date upFromDt, Date upToDt,Integer budgYear, Integer accCd, 
 															  String itemTypeCd) throws HibernateException {
@@ -1622,7 +2104,6 @@ public class HibHelpers {
 				queryStr.append("AND aiat.aict_usage_period_to = :upToDt ");
 
 			queryStr.append("ORDER BY 1, 8 DESC, 6, 12, 15");
-			
 			Query query = getSession()
 					.createSQLQuery(queryStr.toString())
 					.addScalar("itemTypeCd")
@@ -1666,6 +2147,202 @@ public class HibHelpers {
 		}
 		return lst;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<IafaSummaryDTO> getIafaSummaryByItemTypeRecords(String where) throws HibernateException {
+		List<IafaSummaryDTO> lst = new ArrayList<IafaSummaryDTO>();
+		String queryStr = "SELECT ALS_ITEM_APPL_FEE_ACCT.API_PROVIDER_NO||'_'||ALS_ITEM_APPL_FEE_ACCT.APR_BILLING_FROM||'_'||ALS_ITEM_APPL_FEE_ACCT.AIAFA_SEQ_NO gridKey, "
+								+ "ALS_SESSION_TRANS.AICT_ITEM_TYPE_CD itemTypeCd, "
+								+ "Als_Item_type.Ait_Type_Desc itemTypeDesc, "
+								+ "Am_Key2 processTypeCd, "
+								+ "Decode(Am_Key2,'REPLACE',0,'EXCHANGE',0,'REFUND REQUEST',0,'RETURN',0,ALS_ITEM_APPL_FEE_ACCT.AIAFA_AMT) amount "
+						+ "FROM ALS.ALS_ITEM_APPL_FEE_ACCT, "
+							 + "ALS.ALS_SESSION_TRANS, "
+							 + "Als.Als_Misc, "
+							 + "Als.Als_Provider_Info, "
+							 + "Als.Als_Item_type, "
+							 + "ALS.ALS_ITEM_INFORMATION "
+						+ where
+						+ "AND  ((ALS_ITEM_APPL_FEE_ACCT.AST_TRANSACTION_SEQ_NO = ALS_SESSION_TRANS.AST_TRANSACTION_SEQ_NO) "
+						  + "AND (ALS_ITEM_APPL_FEE_ACCT.AST_TRANSACTION_CD = ALS_SESSION_TRANS.AST_TRANSACTION_CD) "
+						  + "AND (ALS_ITEM_APPL_FEE_ACCT.AS_SESSION_DT = ALS_SESSION_TRANS.AS_SESSION_DT) "
+						  + "AND (ALS_ITEM_APPL_FEE_ACCT.AHM_CD = ALS_SESSION_TRANS.AHM_CD) "
+						  + "AND (ALS_ITEM_APPL_FEE_ACCT.AHM_TYPE = ALS_SESSION_TRANS.AHM_TYPE)) "
+						+ "AND ALS_SESSION_TRANS.AST_PROCESS_TYPE_CD IS NOT NULL "
+						+ "AND Als_Item_Appl_Fee_Acct.Api_Provider_No = Als_Provider_Info.Api_Provider_No "
+						+ "AND Als_Session_Trans.AICT_ITEM_TYPE_CD = LPAD(Als_Item_type.AI_ITEM_ID,2,0)||LPAD(Als_Item_type.AIC_CATEGORY_ID,2,0)||LPAD(Als_Item_type.AIT_TYPE_ID,3,0)   "
+						+ "AND Am_Key1 = 'PROCESS TYPE' "
+						+ "And Am_Key2 IN ('ISSUE','OFFLINE ISSUE') "
+						+ "And to_number(Am_Par_Val) = ALS_SESSION_TRANS.AST_PROCESS_TYPE_CD "
+						+ "AND ALS_ITEM_INFORMATION.AICT_USAGE_PERIOD_FROM = ALS_SESSION_TRANS.AICT_USAGE_PERIOD_FROM "
+						+ "AND ALS_ITEM_INFORMATION.AICT_USAGE_PERIOD_TO = ALS_SESSION_TRANS.AICT_USAGE_PERIOD_TO "
+						+ "AND ALS_ITEM_INFORMATION.AICT_ITEM_TYPE_CD = ALS_SESSION_TRANS.AICT_ITEM_TYPE_CD "
+						+ "AND ALS_ITEM_INFORMATION.API_DOB = ALS_SESSION_TRANS.API_DOB "
+						+ "AND ALS_ITEM_INFORMATION.API_ALS_NO = ALS_SESSION_TRANS.API_ALS_NO "
+						+ "AND ALS_ITEM_INFORMATION.AII_ITEM_TXN_IND = ALS_SESSION_TRANS.AII_ITEM_TXN_IND "
+						+ "AND ALS_ITEM_INFORMATION.AII_SEQ_NO  = ALS_SESSION_TRANS.AII_SEQ_NO "
+						+ "AND ALS_ITEM_APPL_FEE_ACCT.AIAFA_STATUS='A' "
+						+ "AND ALS_ITEM_APPL_FEE_ACCT.AIAFA_AMT_TYPE <> (SELECT TO_NUMBER(AM_PAR_VAL) FROM ALS.ALS_MISC "
+																		+ "WHERE AM_KEY1 = 'IAFA_AMOUNT_TYPE' AND AM_KEY2 = 'PAE') "
+						+ "ORDER BY ALS_SESSION_TRANS.AICT_ITEM_TYPE_CD ASC";
+		try {
+			Query query = getSession()
+					.createSQLQuery(queryStr)
+					.addScalar("gridKey")
+					.addScalar("itemTypeCd", IntegerType.INSTANCE)
+					.addScalar("itemTypeDesc")
+					.addScalar("processTypeCd")
+					.addScalar("amount", DoubleType.INSTANCE)
+					.setResultTransformer(
+							Transformers.aliasToBean(IafaSummaryDTO.class));
+
+			lst = query.list();
+		} catch (HibernateException he){
+			System.out.println(he.toString());
+		}
+		catch (RuntimeException re) {
+			System.out.println(re.toString());
+		}
+		finally {
+			getSession().close();
+		}
+		return lst;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<IafaSummaryDTO> getIafaSummaryByAmountTypeRecords(String where) throws HibernateException {
+		List<IafaSummaryDTO> lst = new ArrayList<IafaSummaryDTO>();
+		String queryStr =  "SELECT DISTINCT ALS_ITEM_APPL_FEE_ACCT.API_PROVIDER_NO provNo, "
+							+ "ALS_ITEM_APPL_FEE_ACCT.API_PROVIDER_NO||'_'||ALS_ITEM_APPL_FEE_ACCT.APR_BILLING_FROM||'_'||sum(aiafa_amt) gridKey, "
+							+ "API_BUSINESS_NM provNm, "
+						 	+ "ALS_ITEM_APPL_FEE_ACCT.APR_BILLING_FROM bpFromDt, "
+						 	+ "ALS_ITEM_APPL_FEE_ACCT.APR_BILLING_TO bpToDt, "
+							+ "ALS_ITEM_APPL_FEE_ACCT.AIAFA_PROCESS_CATEGORY_CD procCatCd,  "
+							+ "ALS_SESSION_TRANS.AHM_TYPE|| Lpad(ALS_SESSION_TRANS.AHM_CD,6,0) deviceNo,  "
+							+ "ALS_ITEM_APPL_FEE_ACCT.AIAFA_AMT_TYPE amtType,   "
+							+ "Am_Key2 processTypeCd, "
+							+ "ALS_SESSION_TRANS.AICT_ITEM_TYPE_CD itemTypeCd, "
+							+ "ALS_SESSION_TRANS.AICT_USAGE_PERIOD_FROM upFromDt, "
+							+ "ALS_SESSION_TRANS.AICT_USAGE_PERIOD_TO upToDt,  "
+							//+ "ALS_ITEM_APPL_FEE_ACCT.AIAFA_AMT amount, "
+							+ "Als_Item_type.Ait_Type_Desc itemTypeDesc,  "
+							+ "ALS_ITEM_INFORMATION.AII_RESIDENCY_STATUS resStatus, "
+							+ "(SELECT acg.acg_supplement_cost_grp_desc "
+							 + "FROM ALS.ALS_COST_GROUP acg "
+							 + "WHERE acg.aict_usage_period_from = ALS_SESSION_TRANS.AICT_USAGE_PERIOD_FROM "
+							 + "AND acg.aict_usage_period_to = ALS_SESSION_TRANS.AICT_USAGE_PERIOD_TO "
+							 + "AND acg.aict_item_type_cd = ALS_SESSION_TRANS.AICT_ITEM_TYPE_CD "
+							 + "AND acg.air_residency_ind = ALS_ITEM_INFORMATION.AII_RESIDENCY_STATUS "
+							 + "AND acg.acg_seq_no = nvl(ALS_ITEM_INFORMATION.ACG_COST_GROUP_SEQ_NO,0)) costGrpDesc, "
+							+ "(SELECT apc_prerequisite_desc "
+							 + "FROM ALS.ALS_PREREQUISITE_CD apc "
+							 + "WHERE apc.apc_prerequisite_cd = nvl(ALS_ITEM_INFORMATION.APC_PREREQUISITE_COST_CD,0)) prereqCostDesc, "
+							+ "count(AIAFA_AMT) count,"
+							+ "sum(aiafa_amt) amount "
+							+ "FROM ALS.ALS_ITEM_APPL_FEE_ACCT, "
+									+ "ALS.ALS_SESSION_TRANS, "
+									+ "Als.Als_Misc, "
+									+ "Als.Als_Provider_Info, "
+									+ "Als.Als_Item_type, "
+									+ "ALS.ALS_ITEM_INFORMATION "
+							+ where
+							+ "AND ((ALS_ITEM_APPL_FEE_ACCT.AHM_TYPE = ALS_SESSION_TRANS.AHM_TYPE) "
+							 + "AND (ALS_ITEM_APPL_FEE_ACCT.AHM_CD = ALS_SESSION_TRANS.AHM_CD) "
+							 + "AND (ALS_ITEM_APPL_FEE_ACCT.AS_SESSION_DT = ALS_SESSION_TRANS.AS_SESSION_DT) "
+							 + "AND (ALS_ITEM_APPL_FEE_ACCT.AST_TRANSACTION_CD = ALS_SESSION_TRANS.AST_TRANSACTION_CD) "
+							 + "AND (ALS_ITEM_APPL_FEE_ACCT.AST_TRANSACTION_SEQ_NO = ALS_SESSION_TRANS.AST_TRANSACTION_SEQ_NO)) "
+							+ "AND ALS_SESSION_TRANS.AST_PROCESS_TYPE_CD IS NOT NULL "
+							+ "AND Als_Item_Appl_Fee_Acct.Api_Provider_No = Als_Provider_Info.Api_Provider_No "
+							+ "AND Als_Session_Trans.AICT_ITEM_TYPE_CD = LPAD(Als_Item_type.AI_ITEM_ID,2,0)||LPAD(Als_Item_type.AIC_CATEGORY_ID,2,0)||LPAD(Als_Item_type.AIT_TYPE_ID,3,0) "
+							+ "AND Am_Key1 = 'PROCESS TYPE' "
+							+ "AND Am_Key2 IN ('ISSUE','OFFLINE ISSUE') "
+							+ "AND to_number(Am_Par_Val)  = ALS_SESSION_TRANS.AST_PROCESS_TYPE_CD "
+							+ "AND ALS_ITEM_INFORMATION.AICT_USAGE_PERIOD_FROM = ALS_SESSION_TRANS.AICT_USAGE_PERIOD_FROM "
+							+ "AND ALS_ITEM_INFORMATION.AICT_USAGE_PERIOD_TO = ALS_SESSION_TRANS.AICT_USAGE_PERIOD_TO "
+							+ "AND ALS_ITEM_INFORMATION.AICT_ITEM_TYPE_CD = ALS_SESSION_TRANS.AICT_ITEM_TYPE_CD "
+							+ "AND ALS_ITEM_INFORMATION.API_DOB = ALS_SESSION_TRANS.API_DOB "
+							+ "AND ALS_ITEM_INFORMATION.API_ALS_NO = ALS_SESSION_TRANS.API_ALS_NO "
+							+ "AND ALS_ITEM_INFORMATION.AII_ITEM_TXN_IND = ALS_SESSION_TRANS.AII_ITEM_TXN_IND "
+							+ "AND ALS_ITEM_INFORMATION.AII_SEQ_NO  = ALS_SESSION_TRANS.AII_SEQ_NO "
+							+ "AND ALS_ITEM_APPL_FEE_ACCT.AIAFA_STATUS='A' "
+							+ "AND ALS_ITEM_APPL_FEE_ACCT.AIAFA_AMT_TYPE <> (SELECT TO_NUMBER(AM_PAR_VAL) FROM ALS.ALS_MISC  "
+																			+ "WHERE AM_KEY1 = 'IAFA_AMOUNT_TYPE' AND AM_KEY2 = 'PAE') "
+							+ "Group by ALS_ITEM_APPL_FEE_ACCT.API_PROVIDER_NO, "
+							+ "API_BUSINESS_NM, "
+							+ "ALS_ITEM_APPL_FEE_ACCT.APR_BILLING_FROM, "
+							+ "ALS_ITEM_APPL_FEE_ACCT.APR_BILLING_TO, "
+							+ "ALS_ITEM_APPL_FEE_ACCT.AIAFA_PROCESS_CATEGORY_CD,  "
+							+ "ALS_SESSION_TRANS.AHM_TYPE|| Lpad(ALS_SESSION_TRANS.AHM_CD,6,0),  "
+							+ "ALS_ITEM_APPL_FEE_ACCT.AIAFA_AMT_TYPE,   "
+							+ "Am_Key2, "
+							+ "ALS_SESSION_TRANS.AICT_ITEM_TYPE_CD , ALS_SESSION_TRANS.AICT_USAGE_PERIOD_FROM, "
+							+ "ALS_SESSION_TRANS.AICT_USAGE_PERIOD_TO,  "
+							+ "ALS_ITEM_APPL_FEE_ACCT.AIAFA_AMT,  "
+							+ "Als_Item_type.Ait_Type_Desc,  "
+							+ "ALS_ITEM_INFORMATION.AII_RESIDENCY_STATUS, "
+							+ "ALS_ITEM_INFORMATION.ACG_COST_GROUP_SEQ_NO, "
+							+ "ALS_ITEM_INFORMATION.APC_PREREQUISITE_COST_CD "
+							+ "ORDER BY  1,3,4,5,6 ";
+		
+		try {
+			Query query = getSession()
+					.createSQLQuery(queryStr)
+					.addScalar("gridKey")
+					.addScalar("provNo", IntegerType.INSTANCE)
+					.addScalar("provNm")
+					.addScalar("bpFromDt", DateType.INSTANCE)
+					.addScalar("bpToDt", DateType.INSTANCE)
+					.addScalar("procCatCd", IntegerType.INSTANCE)
+					.addScalar("deviceNo")
+					.addScalar("amtType", IntegerType.INSTANCE)
+					.addScalar("processTypeCd")
+					.addScalar("itemTypeCd", IntegerType.INSTANCE)
+					.addScalar("upFromDt", DateType.INSTANCE)
+					.addScalar("upToDt", DateType.INSTANCE)
+					.addScalar("itemTypeDesc")
+					.addScalar("resStatus")
+					.addScalar("costGrpDesc")
+					.addScalar("prereqCostDesc")
+					.addScalar("count", IntegerType.INSTANCE)
+					.addScalar("amount", DoubleType.INSTANCE)
+					.setResultTransformer(
+							Transformers.aliasToBean(IafaSummaryDTO.class));
+
+			lst = query.list();
+		} catch (HibernateException he){
+			System.out.println(he.toString());
+		}
+		catch (RuntimeException re) {
+			System.out.println(re.toString());
+		}
+		finally {
+			getSession().close();
+		}
+		return lst;
+	}
+	
+	public Integer getProvBankDetailsNextSeqNo(Integer provNo, Date bpFrom, Date bpTo) {	
+		Integer rtn = null;
+		
+		String queryString =  "SELECT NVL(MAX(APBD_SEQ_NO),0) + 1 seqNo "
+							+ "FROM ALS.ALS_PROVIDER_BANK_DETAILS "
+							+ "WHERE API_PROVIDER_NO = :provNo "
+							+ "AND APBD_BILLING_TO = :bpTo "
+							+ "And APBD_BILLING_FROM = :bpFrom ";
+			try {
+			Query query = getSession().createSQLQuery(queryString).addScalar("seqNo", IntegerType.INSTANCE)
+																  .setInteger("provNo", provNo)
+																  .setDate("bpTo", bpTo)
+																  .setDate("bpFrom", bpFrom);
+			
+			rtn =  (Integer) query.uniqueResult();
+			} catch (RuntimeException re) {
+				System.out.println(re.toString());
+			} finally {
+			getSession().close();
+		}
+        return rtn;
+	}	
 	
 }
 

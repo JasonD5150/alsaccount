@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -22,7 +23,6 @@ import fwp.als.hibernate.admin.dao.AlsSysActivityControl;
 import fwp.als.hibernate.admin.dao.AlsSysActivityTypeCodes;
 import fwp.als.hibernate.admin.dao.AlsSysActivityTypeTranCds;
 import fwp.als.hibernate.provider.dao.AlsProviderInfo;
-import fwp.alsaccount.appservice.admin.AlsAccCdControlAS;
 import fwp.alsaccount.appservice.admin.AlsAccountMasterAS;
 import fwp.alsaccount.appservice.admin.AlsActivityAccountLinkageAS;
 import fwp.alsaccount.appservice.admin.AlsNonAlsTemplateAS;
@@ -30,11 +30,12 @@ import fwp.alsaccount.appservice.admin.AlsOrgControlAS;
 import fwp.alsaccount.appservice.admin.AlsSysActivityControlAS;
 import fwp.alsaccount.appservice.admin.AlsSysActivityTypeCodesAS;
 import fwp.alsaccount.appservice.admin.AlsSysActivityTypeTranCdsAS;
-import fwp.alsaccount.dao.admin.AlsAccCdControl;
 import fwp.alsaccount.dao.admin.AlsAccountMaster;
 import fwp.alsaccount.dao.admin.AlsOrgControl;
+import fwp.alsaccount.dto.sabhrs.InternalProviderBankCdDepLinkDTO;
 import fwp.alsaccount.utils.HibHelpers;
 import fwp.alsaccount.utils.Utils;
+import fwp.utils.FwpNumberUtils;
 
 
 
@@ -67,6 +68,8 @@ public class GenDocCreate extends HttpServlet {
        		alsUpdateAccCdWord(request, response);
        	} else if (rptType.equals("transGrpStatHistory")){
        		alsTransGrpStatHistory(request, response);
+       	}else if (rptType.equals("intProvBankCdDepLink")){
+       		intProvBankCdDepLink(request, response);
        	}
       } catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -184,8 +187,8 @@ public class GenDocCreate extends HttpServlet {
 						tmp.getIdPk().getAaalDrCrCd()+","+
 						Utils.nullFix(tmp.getAamAccount())+",");
 			
-			if(Utils.nullFix(tmp.getAaalReference()) != 0){
-				hold.append(Utils.nullFix(tmp.getAaalReference()));
+			if(FwpNumberUtils.nullFix(tmp.getAaalReference()) != 0){
+				hold.append(FwpNumberUtils.nullFix(tmp.getAaalReference()));
 			}
 			
 			hold.append(","+
@@ -385,6 +388,42 @@ public class GenDocCreate extends HttpServlet {
 
 		genCSVCreate("TransactionGroupApprovalHistory", hold, htmlResp);
 		
+	}
+	
+	public void intProvBankCdDepLink(HttpServletRequest request,HttpServletResponse htmlResp) throws ParseException, IOException, JSONException {	
+		HibHelpers hh = new HibHelpers();
+		String filters = request.getParameter("filters");
+		String provNo = request.getParameter("provNo");
+		
+		StringBuffer hold = new StringBuffer("Internal Provider Bank Code and Deposit Linkage report\n");
+		hold.append("\n");
+		hold.append("Provider No: "+provNo+"\n");
+		hold.append("\n");
+		
+		hold.append("Deposit Deadline Date,Billing Period End Date,ALS Amount Due,Bank Code,Bank Name,Amount Deposited,Deposit Date,Deposit Id\n");
+
+		Date curDeadlineDt = null;
+		Double total = null;
+		List<InternalProviderBankCdDepLinkDTO> tmpLst = hh.getIntProvBankCdDepLinkCSVRecords(Integer.parseInt(provNo));
+		for(InternalProviderBankCdDepLinkDTO tmp : tmpLst){
+			if(tmp.getDeadlineDate() != null){
+				if(curDeadlineDt == null || tmp.getDeadlineDate().after(curDeadlineDt)){
+					if(curDeadlineDt != null&&tmp.getDeadlineDate().after(curDeadlineDt)){
+						hold.append(",,,,Total:,$"+total+"\n");
+					}
+					curDeadlineDt = tmp.getDeadlineDate();
+					total = tmp.getApbdAmountDeposit();
+					hold.append(tmp.getDeadlineDate()+","+tmp.getApbdBillingTo()+",$"+tmp.getAmtDue()+","+tmp.getAbcBankCd()+","+tmp.getBankName()+",$"+tmp.getApbdAmountDeposit()+","+tmp.getDepositDate()+","+tmp.getApbdDepositId()+"\n");
+				}else{
+					total += tmp.getApbdAmountDeposit();
+					hold.append(",,,"+tmp.getAbcBankCd()+","+tmp.getBankName()+",$"+tmp.getApbdAmountDeposit()+","+tmp.getDepositDate()+","+tmp.getApbdDepositId()+"\n");
+				}
+				if(tmpLst.indexOf(tmp) == (tmpLst.size()-1)){
+					hold.append(",,,,Total:,$"+total+"\n");
+				}
+			}
+		}
+		genCSVCreate("InternalProviderBankCodeDepositLinkage", hold, htmlResp);
 	}
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

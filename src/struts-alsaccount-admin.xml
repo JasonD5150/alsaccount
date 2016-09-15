@@ -4,12 +4,12 @@
 <constant name="struts.devMode" value="false" />
 
 	<package name="fwp.alsaccount.admin" namespace="" extends="struts-default">
-	  <action name="sysActivityAccountMaster_*" method="{1}" class="fwp.alsaccount.admin.action.BudgetYearSelectAction">
+	  <action name="sysActivityAccountMaster_*" method="{1}" class="fwp.alsaccount.action.BudgetYearListAction">
             <result>admin/systemActivityAccountMaster.jsp</result>
             <result name="error">admin/systemActivityAccountMaster.jsp</result>
             <result name="input">admin/systemActivityAccountMaster.jsp</result>            
       </action>
-       <action name="alsSysActivityTypeTranCdsDiv_*" method="{1}" class="fwp.alsaccount.admin.action.BudgetYearSelectAction">
+       <action name="alsSysActivityTypeTranCdsDiv_*" method="{1}" class="fwp.alsaccount.action.BudgetYearListAction">
             <result>admin/include/sysActivityTypeTranCdsDiv.jsp</result>
             <result name="error">admin/include/sysActivityTypeTranCdsDiv.jsp</result>
             <result name="input">admin/include/sysActivityTypeTranCdsDiv.jsp</result>            
@@ -29,7 +29,7 @@
             <result name="error">admin/include/accountingCodeControlQueryDiv.jsp</result>
             <result name="input">admin/include/accountingCodeControlQueryDiv.jsp</result>            
       </action>
-      <action name="orgControl_*" method="{1}" class="fwp.alsaccount.admin.action.BudgetYearSelectAction">
+      <action name="orgControl_*" method="{1}" class="fwp.alsaccount.action.BudgetYearListAction">
             <result>admin/orgControl.jsp</result>
             <result name="error">admin/orgControl.jsp</result>
             <result name="input">admin/orgControl.jsp</result>            
@@ -44,7 +44,7 @@
             <result name="error">admin/jlrMiscMaint.jsp</result>
             <result name="input">admin/jlrMiscMaint.jsp</result>            
       </action>
-      <action name="alsNonAlsTemplate_*" method="{1}" class="fwp.alsaccount.admin.action.BudgetYearSelectAction">
+      <action name="alsNonAlsTemplate_*" method="{1}" class="fwp.alsaccount.action.BudgetYearListAction">
             <result>admin/alsNonAlsTemplate.jsp</result>
             <result name="error">admin/alsNonAlsTemplate.jsp</result>
             <result name="input">admin/alsNonAlsTemplate.jsp</result>            

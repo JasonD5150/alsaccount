@@ -21,11 +21,10 @@ public class AlsNonAlsOrgControlDivAction extends ActionSupport{
 	}
 	
 	public String input(){
-		FwpStringUtils su = new FwpStringUtils();
 		try {
 			ListUtils lu = new ListUtils();
-			setOrgLst(su.listCompListToString(lu.getOrgList(null)));
-			setProviderLst(su.listCompListToString(lu.getProviderList()));
+			setOrgLst(FwpStringUtils.listCompListToString(lu.getOrgList(null)));
+			setProviderLst(FwpStringUtils.listCompListToString(lu.getProviderList()));
 		} catch (Exception e) {
 			//System.out.println(e.getMessage());
 			log.debug(e.getMessage());

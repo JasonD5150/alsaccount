@@ -7,7 +7,7 @@
 <%@ taglib prefix="sjg" uri="/struts-jquery-grid-tags" %>
 
 <fieldset style="border: black 1px solid; display: inline-block;margin: 0 5px;">
-   	<legend style="font-weight: bold;font-size:larger">Search Criteria</legend>
+   	<legend style="font-weight: bold">Search Criteria</legend>
    	<s:actionerror/>
    	<form id='gridFrm'>
    	<p>Defaults to the current budget year, if no date is used in the query.<br>

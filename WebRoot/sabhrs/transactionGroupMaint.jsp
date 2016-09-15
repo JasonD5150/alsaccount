@@ -24,6 +24,9 @@
 				return [rtrnstate,rtrnMsg]; 
 			};
 		</script>
+		<style type="text/css">
+			@import url("/alsaccount/css/alsaccount.css");
+    	</style>
     </fwp:head>
     <form id='gridFrm'>
 			<s:hidden id="frmBudgYear" name="budgYear"/>

@@ -23,23 +23,12 @@ function errorHandler(response, postdata) {
 	return [rtrnstate,rtrnMsg]; 
 };
 
-function submitSearch(){
-	$('#transGroupAppDiv').toggle(false);
-	$('#transGroupApprovalTable').jqGrid('setGridParam',{datatype:'json'});
-	$.publish('reloadTransGroupMaintTable')
-	
-}
-function resetSearch(){
-	$('#gridFrm')[0].reset();
-}
-
 function enableDisableElements() {
 	if(($('#transGroupType').val() == 1 || $('#transGroupType').val() == 3) && ($('#bankRefNo').val() != null && $('#bankRefNo').val() != "")){
 		$('#getRpt').prop({disabled:false});
 	}else{
 		$('#getRpt').prop({disabled:true});
 	}
-	
 	$('#transGroupType').prop({disabled:true});
 	$('#desc').prop({disabled:true});
 	$('#transGroupIdentifier').prop({disabled:true});
@@ -172,8 +161,6 @@ $.subscribe('transGroupSelected', function(event, data) {
 		$('#transGroupAppDiv').toggle(true);
 });
 
-
-
 function submitTransGroupApproval(){
 	var row = $('#idPk.atgTransactionCd').val+"_"+$('#idPk.atgsGroupIdentifier').val;
 	url = "alsAccount/transGroupApprovalGridEdit_execute.action";    
@@ -225,12 +212,6 @@ function submitTransGroupApproval(){
     });
 }
 
-function getGenRpt() {
-	$('#txIdentifier').val($('#transGroupIdentifier').val());
-	$('#transCd').val($('#transGroupType').val());
-	$('#pdfFrm').submit();
-}
-
 function sumAppStatSelected(){
 	var d = new Date();
 	var date = ("0"+(d.getMonth()+1)).slice(-2)+"/"+("0"+d.getDate()).slice(-2)+"/"+d.getFullYear()+" "+("0"+d.getHours()).slice(-2)+":"+("0"+d.getMinutes()).slice(-2)+":"+("0"+d.getSeconds()).slice(-2);
@@ -242,6 +223,7 @@ function sumAppStatSelected(){
 		$('#sumAppDt').val('');
 	}
 }
+
 function intStatSelected(){
 	var d = new Date();
 	var date = ("0"+(d.getMonth()+1)).slice(-2)+"/"+("0"+d.getDate()).slice(-2)+"/"+d.getFullYear()+" "+("0"+d.getHours()).slice(-2)+":"+("0"+d.getMinutes()).slice(-2)+":"+("0"+d.getSeconds()).slice(-2);
@@ -253,6 +235,7 @@ function intStatSelected(){
 		$('#intAppDt').val('');
 	}
 }
+
 function transGrpTypeChanged(selected){
 	var reload = false
 	if(selected.value == " "){
@@ -267,6 +250,7 @@ function transGrpTypeChanged(selected){
 		$.publish('reloadProvLst');
 	}	
 }
+
 function provNoChanged(selected){
 	var reload = false
 	if(selected.value == " "){
@@ -297,3 +281,21 @@ $.subscribe("transGroupComplete", function (event, data) {
 		});
 	}
 });
+
+/*ACTIONS*/
+function submitSearch(){
+	$('#transGroupAppDiv').toggle(false);
+	$('#transGroupApprovalTable').jqGrid('setGridParam',{datatype:'json'});
+	$.publish('reloadTransGroupMaintTable')
+	
+}
+
+function resetSearch(){
+	$('#gridFrm')[0].reset();
+}
+
+function getGenRpt() {
+	$('#txIdentifier').val($('#transGroupIdentifier').val());
+	$('#transCd').val($('#transGroupType').val());
+	$('#pdfFrm').submit();
+}

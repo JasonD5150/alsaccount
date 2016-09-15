@@ -25,13 +25,12 @@ public class AlsNonAlsTemplateDivAction extends ActionSupport{
 	}
 	
 	public String input(){
-		FwpStringUtils su = new FwpStringUtils();
 		ListUtils lu = new ListUtils();
 		try {
-			setAccountLst(su.listCompListToString(lu.getAccountList(budgYear)));
-			setFundLst(su.listCompListToString(lu.getFundList(null)));
-			setSubClassLst(su.listCompListToString(lu.getSubclassList(null)));
-			setJlrLst(su.listCompListToString(lu.getJLRList()));
+			setAccountLst(FwpStringUtils.listCompListToString(lu.getAccountList(budgYear)));
+			setFundLst(FwpStringUtils.listCompListToString(lu.getFundList(null)));
+			setSubClassLst(FwpStringUtils.listCompListToString(lu.getSubclassList(null)));
+			setJlrLst(FwpStringUtils.listCompListToString(lu.getJLRList()));
 			setProjectGrantLst(lu.getProjectGrantsListTxt(null,false));
 		} catch (Exception e) {
 			//System.out.println(e.getMessage());

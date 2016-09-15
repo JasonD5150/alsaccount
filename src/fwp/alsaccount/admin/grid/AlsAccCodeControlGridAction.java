@@ -1,5 +1,6 @@
 package fwp.alsaccount.admin.grid;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,8 +29,11 @@ public class AlsAccCodeControlGridAction extends ActionSupport{
     private String              filters;
     private boolean             loadonce         = false;
     private Integer budgYear;
-    private Integer accCd;
+    private Date upFromDt;
+    private Date upToDt;
     private String itemTypeCd;
+    private Integer accCd;
+
 
 	@SuppressWarnings("unchecked")
 	public String buildgrid(){
@@ -162,12 +166,20 @@ public class AlsAccCodeControlGridAction extends ActionSupport{
 		this.budgYear = budgYear;
 	}
 
-	public Integer getAccCd() {
-		return accCd;
+	public Date getUpFromDt() {
+		return upFromDt;
 	}
 
-	public void setAccCd(Integer accCd) {
-		this.accCd = accCd;
+	public void setUpFromDt(Date upFromDt) {
+		this.upFromDt = upFromDt;
+	}
+
+	public Date getUpToDt() {
+		return upToDt;
+	}
+
+	public void setUpToDt(Date upToDt) {
+		this.upToDt = upToDt;
 	}
 
 	public String getItemTypeCd() {
@@ -177,5 +189,14 @@ public class AlsAccCodeControlGridAction extends ActionSupport{
 	public void setItemTypeCd(String itemTypeCd) {
 		this.itemTypeCd = itemTypeCd;
 	}
+
+	public Integer getAccCd() {
+		return accCd;
+	}
+
+	public void setAccCd(Integer accCd) {
+		this.accCd = accCd;
+	}
+
 }
 

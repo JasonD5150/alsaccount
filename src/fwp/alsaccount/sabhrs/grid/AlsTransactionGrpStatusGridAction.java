@@ -1,7 +1,6 @@
 package fwp.alsaccount.sabhrs.grid;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 
 import org.hibernate.HibernateException;
@@ -34,7 +33,7 @@ public class AlsTransactionGrpStatusGridAction extends ActionSupport{
     private Integer transGrpType;
     private String transGrpIdentifier;
 
-	@SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
 	public String buildgrid(){  
     	String srchStr = buildQueryStr();
     	
@@ -103,10 +102,11 @@ public class AlsTransactionGrpStatusGridAction extends ActionSupport{
 			srchStr.append("AND idPk.atgTransactionCd = "+transGrpType+" ");		
 		}
 		if(transGrpIdentifier != null && !"".equals(transGrpIdentifier)){
-			srchStr.append("AND idPk.atgsGroupIdentifier like UPPER('"+transGrpIdentifier+"%') ");		
+			srchStr.append("AND idPk.atgsGroupIdentifier LIKE UPPER('"+transGrpIdentifier+"%') ");		
 		}
 		if(provNo != null && !"".equals(provNo)){
-			srchStr.append("AND TRIM(TRIM(LEADING 0 FROM substr(idPk.atgsGroupIdentifier,3,6))) = '"+provNo+"' ");
+			srchStr.append("AND idPk.atgsGroupIdentifier LIKE '%"+provNo+"%' ");
+			//srchStr.append("AND TRIM(TRIM(LEADING 0 FROM substr(idPk.atgsGroupIdentifier,3,6))) = '"+provNo+"' ");
 		}
 		
 		srchStr.append("ORDER BY idPk.atgTransactionCd,idPk.atgsGroupIdentifier");
@@ -118,101 +118,67 @@ public class AlsTransactionGrpStatusGridAction extends ActionSupport{
 	{
 		return buildgrid();
 	}
-	
-	
-    /**
-     * @return the rows
-     */
+
     public Integer getRows() {
         return rows;
     }
-    /**
-     * @param rows the rows to set
-     */
+    
     public void setRows(Integer rows) {
         this.rows = rows;
     }
-    /**
-     * @return the page
-     */
+
     public Integer getPage() {
         return page;
     }
-    /**
-     * @param page the page to set
-     */
+
     public void setPage(Integer page) {
         this.page = page;
     }
-    /**
-     * @return the total
-     */
+
     public Integer getTotal() {
         return total;
     }
-    /**
-     * @param total the total to set
-     */
+
     public void setTotal(Integer total) {
         this.total = total;
     }
-    /**
-     * @return the records
-     */
+
     public Integer getRecords() {
         return records;
     }
-    /**
-     * @param records the records to set
-     */
+
     public void setRecords(Integer records) {
         this.records = records;
     }
-    /**
-     * @return the sord
-     */
+
     public String getSord() {
         return sord;
     }
-    /**
-     * @param sord the sord to set
-     */
+
     public void setSord(String sord) {
         this.sord = sord;
     }
-    /**
-     * @return the sidx
-     */
+
     public String getSidx() {
         return sidx;
     }
-    /**
-     * @param sidx the sidx to set
-     */
+
     public void setSidx(String sidx) {
         this.sidx = sidx;
     }
-    /**
-     * @return the filters
-     */
+
     public String getFilters() {
         return filters;
     }
-    /**
-     * @param filters the filters to set
-     */
+
     public void setFilters(String filters) {
         this.filters = filters;
     }
-    /**
-     * @return the loadonce
-     */
+
     public boolean isLoadonce() {
         return loadonce;
     }
-    /**
-     * @param loadonce the loadonce to set
-     */
+
     public void setLoadonce(boolean loadonce) {
         this.loadonce = loadonce;
     }
@@ -225,18 +191,10 @@ public class AlsTransactionGrpStatusGridAction extends ActionSupport{
 		this.budgYear = budgYear;
 	}
 
-
-	/**
-	 * @return the model
-	 */
 	public List<AlsTransactionGrpStatusDTO> getModel() {
 		return model;
 	}
 
-
-	/**
-	 * @param model the model to set
-	 */
 	public void setModel(List<AlsTransactionGrpStatusDTO> model) {
 		this.model = model;
 	}
@@ -245,26 +203,21 @@ public class AlsTransactionGrpStatusGridAction extends ActionSupport{
 		return provNo;
 	}
 
-
 	public void setProvNo(Integer provNo) {
 		this.provNo = provNo;
 	}
-
 
 	public Integer getTransGrpType() {
 		return transGrpType;
 	}
 
-
 	public void setTransGrpType(Integer transGrpType) {
 		this.transGrpType = transGrpType;
 	}
 
-
 	public String getTransGrpIdentifier() {
 		return transGrpIdentifier;
 	}
-
 
 	public void setTransGrpIdentifier(String transGrpIdentifier) {
 		this.transGrpIdentifier = transGrpIdentifier;

@@ -5,9 +5,7 @@
  * @author cfa027
  */
 $(document).ready(function(){
-	$('#frmTransGrp').val('');
-	$('#frmTransIdentifier').val('');
-	$('#frmNonAlsEntries').val('');
+	resetSearch();
 });
 
 function errorHandler(response, postdata) {
@@ -21,27 +19,10 @@ function errorHandler(response, postdata) {
 		    } 
 		} 
 	return [rtrnstate,rtrnMsg]; 
-};
-
-function submitSearch(){
-	$('#budgYear').val($('#budgYear_widget').val());
-	$('#provNo').val($('#provNo_widget').val());
-	$('#transGrpType').val($('#transGrpType_widget').val());
-	$('#transGrpIdentifier').val($('#transGrpIdentifier_widget').val());
-	$('#transGroupDtlsTable').jqGrid('setGridParam',{datatype:'json'});
-	$.publish('reloadTransGroupDtlsTable');
-}
-function resetSearch(){
-	$('#budgYear').val('');
-	$('#provNo').val('');
-	$('#transGrpType').val('');
-	$('#budgYear_widget').val('');
-	$('#provNo_widget').val('');
-	$('#transGrpType_widget').val('');
-	$('#transGrpIdentifier').val('');
 }
 
-$.subscribe('transGroupDtlsSelected', function(event, data) {				
+$.subscribe('transGroupDtlsSelected', function(event, data) {	
+	$('#reverseAlsEntries').prop({disabled:false});
 	var sel_id = $("#transGroupDtlsTable").jqGrid('getGridParam', 'selrow');					    				  
 	$('#frmTransGrp').val($("#transGroupDtlsTable").jqGrid('getCell', sel_id, 'idPk.atgTransactionCd'));
 	$('#frmTransIdentifier').val($("#transGroupDtlsTable").jqGrid('getCell', sel_id, 'idPk.atgsGroupIdentifier'));
@@ -51,7 +32,14 @@ $.subscribe('transGroupDtlsSelected', function(event, data) {
 });
 
 
-$.subscribe('alsSabhrsEntriesComplete', function(event, data) {				
+$.subscribe('alsSabhrsEntriesComplete', function(event, data) {	
+		$('#del_alsSabhrsEntriesTable').bind( "click", function() {
+			$('#alerthd_alsSabhrsEntriesTable').closest('.ui-jqdialog').position({
+    			my: 'center',
+    			at: 'center',
+				of: $('#alsSabhrsEntriesTable').closest('div.ui-jqgrid')
+			});
+		});
 		$("#alsSabhrsEntriesTable")
 		.jqGrid({pager:'#alsSabhrsEntriesTable_pager'})
 		.jqGrid('navButtonAdd'
@@ -129,7 +117,7 @@ function deselectAll(){
     }
 }
 
-function exitNonAlsMasterDialog(){				
+function exitNonAlsMasterDialog(){	
 	var amountSet = true;
 	var templateSeleted = false;
 	var grid = $("#alsNonAlsTemplateTable");
@@ -179,4 +167,34 @@ function exitNonAlsMasterDialog(){
   			$('#accMasterDialog').dialog('close');
   		}
 	   	
+}
+
+/*ACTIONS*/
+function submitSearch(){
+	$('#reverseAlsEntries').prop({disabled:false});
+	$('#budgYear').val($('#budgYear_widget').val());
+	$('#provNo').val($('#provNo_widget').val());
+	$('#transGrpType').val($('#transGrpType_widget').val());
+	$('#transGrpIdentifier').val($('#transGrpIdentifier_widget').val());
+	$('#transGroupDtlsTable').jqGrid('setGridParam',{datatype:'json'});
+	$.publish('reloadTransGroupDtlsTable');
+}
+function resetSearch(){
+	$('#frmTransGrp').val('');
+	$('#frmTransIdentifier').val('');
+	$('#frmNonAlsEntries').val('');
+	
+	$('#gridFrm')[0].reset();
+	
+	$('#budgYear').val('');
+	$('#provNo').val('');
+	$('#transGrpType').val('');
+	$('#transGrpIdentifier').val('');
+}
+function reverseAlsEntries(){
+	var grid =  $('#transGroupDtlsTable');
+	var sel_id = grid.jqGrid('getGridParam', 'selrow'); 
+	var transCd = grid.jqGrid('getCell', sel_id, 'idPk.atgTransactionCd'); 
+	var groupId = grid.jqGrid('getCell', sel_id, 'idPk.atgsGroupIdentifier'); 
+	window.open("/alsaccount/manualProviderAdjEntries_input.action?transCd="+transCd+"&groupId="+groupId+"&prntMenu=ALSACCOUNT");
 }

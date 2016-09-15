@@ -66,7 +66,7 @@
 			<result name="error">sabhrs/include/transGrpAppQueryDiv.jsp</result>
 			<result name="input">sabhrs/include/transGrpAppQueryDiv.jsp</result>        
 		</action>
-        <action name="internalProviderTdt_*" method="{1}" class="fwp.alsaccount.sabhrs.action.InternalProviderTdtAction">
+        <action name="internalProviderTdt_*" method="{1}" class="fwp.alsaccount.action.InternalProviderListAction">
 			<result>sabhrs/internalProviderTdt.jsp</result>
 			<result name="error">sabhrs/internalProviderTdt.jsp</result>
 			<result name="input">sabhrs/internalProviderTdt.jsp</result>        
@@ -85,6 +85,36 @@
 			<result>sabhrs/iafaSummaryQuery.jsp</result>
 			<result name="error">sabhrs/iafaSummaryQuery.jsp</result>
 			<result name="input">sabhrs/iafaSummaryQuery.jsp</result>        
+		</action>
+		<action name="iafaSummaryQueryDiv_*" method="{1}" class="fwp.alsaccount.sabhrs.action.IafaSummaryQueryDivAction">
+			<result>sabhrs/include/iafaSummaryQueryDiv.jsp</result>
+			<result name="error">sabhrs/include/iafaSummaryQueryDiv.jsp</result>
+			<result name="input">sabhrs/include/iafaSummaryQueryDiv.jsp</result>        
+		</action>
+		<action name="intProvBankCdDepLink_*" method="{1}" class="fwp.alsaccount.action.InternalProviderListAction">
+			<result>sabhrs/intProvBankCdDepLink.jsp</result>
+			<result name="error">sabhrs/intProvBankCdDepLink.jsp</result>
+			<result name="input">sabhrs/intProvBankCdDepLink.jsp</result>        
+		</action>
+		<action name="intProvBankCdDepLinkDiv_*" method="{1}" class="fwp.alsaccount.sabhrs.action.IntProvBankCdDepLinkDivAction">
+			<result>sabhrs/include/intProvBankCdDepLinkDiv.jsp</result>
+			<result name="error">sabhrs/include/intProvBankCdDepLinkDiv.jsp</result>
+			<result name="input">sabhrs/include/intProvBankCdDepLinkDiv.jsp</result>        
+		</action>
+		<action name="intProvRemittance_*" method="{1}" class="fwp.alsaccount.action.InternalProviderListAction">
+			<result>sabhrs/intProvRemittance.jsp</result>
+			<result name="error">sabhrs/intProvRemittance.jsp</result>
+			<result name="input">sabhrs/intProvRemittance.jsp</result>        
+		</action>
+		<action name="intProvRemittanceQueryDiv_*" method="{1}" class="fwp.alsaccount.action.InternalProviderListAction">
+			<result>sabhrs/include/intProvRemittanceQueryDiv.jsp</result>
+			<result name="error">sabhrs/include/intProvRemittanceQueryDiv.jsp</result>
+			<result name="input">sabhrs/include/intProvRemittanceQueryDiv.jsp</result>        
+		</action>
+		<action name="manualProviderAdjEntries_*" method="{1}" class="fwp.alsaccount.sabhrs.action.ManualProviderAdjEntriesAction">
+			<result>sabhrs/manualProviderAdjEntries.jsp</result>
+			<result name="error">sabhrs/manualProviderAdjEntries.jsp</result>
+			<result name="input">sabhrs/manualProviderAdjEntries.jsp</result>        
 		</action>
 	</package>
  
@@ -151,6 +181,63 @@
             <result type="json" />
         	<result type="json" name="input"></result>   
         </action>
+        <action name="iafaSummaryGrid_*" class="fwp.alsaccount.sabhrs.grid.IafaSummaryQueryGridAction">
+            <result type="json" />
+        	<result type="json" name="input"></result>   
+        </action>
+        <action name="internalProviderBankCdDepLinkGrid_*" class="fwp.alsaccount.sabhrs.grid.InternalProviderBankCdDepLinkGridAction">
+			<result type="json" />
+		</action> 
+		<action name="internalProviderBankCdDepLinkGridEdit_*" class="fwp.alsaccount.sabhrs.grid.InternalProviderBankCdDepLinkGridEditAction">
+			<result type="json"></result>
+			<result type="json" name="input"></result>
+			<result name="error_json" type="json" >
+			   <param name="ignoreHierarchy">false</param>
+			</result>
+		</action>
+		<action name="alsInternalRemittanceGrid_*" class="fwp.alsaccount.sabhrs.grid.AlsInternalRemittanceGridAction">
+			<result type="json" />
+		</action> 
+		<action name="alsInternalRemittanceGridEdit_*" class="fwp.alsaccount.sabhrs.grid.AlsInternalRemittanceGridEditAction">
+			<result type="json"></result>
+			<result type="json" name="input"></result>
+			<result name="error_json" type="json" >
+			   <param name="ignoreHierarchy">false</param>
+			</result>
+		</action>
+		<action name="alsNonAlsDetailsGrid_*" class="fwp.alsaccount.sabhrs.grid.AlsNonAlsDetailsGridAction">
+			<result type="json" />
+		</action> 
+		<action name="alsNonAlsDetailsGridEdit_*" class="fwp.alsaccount.sabhrs.grid.AlsNonAlsDetialsGridEditAction">
+			<result type="json"></result>
+			<result type="json" name="input"></result>
+			<result name="error_json" type="json" >
+			   <param name="ignoreHierarchy">false</param>
+			</result>
+		</action> 
+		<action name="alsOverUnderSalesGrid_*" class="fwp.alsaccount.sabhrs.grid.AlsOverUnderSalesDetsGridAction">
+			<result type="json" />
+		</action> 
+		<action name="alsOverUnderSalesGridEdit_*" class="fwp.alsaccount.sabhrs.grid.AlsOverUnderSalesDetsGridEditAction">
+			<result type="json"></result>
+			<result type="json" name="input"></result>
+			<result name="error_json" type="json" >
+			   <param name="ignoreHierarchy">false</param>
+			</result>
+		</action> 
+		<action name="manualProviderAdjEntriesSABHRSGrid_*" class="fwp.alsaccount.sabhrs.grid.ManualProviderAdjEntriesSABHRSGridAction">
+            <result type="json" />
+        </action>
+        <action name="manualProviderAdjEntriesSABHRSGridEdit_*" class="fwp.alsaccount.sabhrs.grid.ManualProviderAdjEntriesSABHRSGridEditAction">
+			<result type="json"></result>
+            <result type="json" name="input"></result>
+            <result name="error_json" type="json" >
+               <param name="ignoreHierarchy">false</param>
+            </result>
+		</action>
+		<action name="manualProviderAdjEntriesIAFAGrid_*" class="fwp.alsaccount.sabhrs.grid.ManualProviderAdjEntriesIAFAGridAction">
+            <result type="json" />
+        </action>
    </package>
 
 	<package name="fwp.alsaccount.sabhrs.json" extends="json-default" >
@@ -181,6 +268,18 @@
 			<result name="success" type="json"></result>
 			<result name="input" type="json"></result>
 		</action>
+		<action name="iafaSummaryQueryBuildCsv" class="fwp.alsaccount.sabhrs.json.IafaSummaryQueryBuildCsvAction">
+            <interceptor-ref name="json">
+                <param name="enableSMD">true</param>
+            </interceptor-ref>
+            <result type="json"/>
+        </action>
+        <action name="intProvRemittanceBuildCsv" class="fwp.alsaccount.sabhrs.json.IntProvRemittanceBuildCsvAction">
+            <interceptor-ref name="json">
+                <param name="enableSMD">true</param>
+            </interceptor-ref>
+            <result type="json"/>
+        </action>
     </package>
 
 </struts>    

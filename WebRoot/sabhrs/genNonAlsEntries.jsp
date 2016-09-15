@@ -34,7 +34,7 @@
    	</div>
 
 	<fieldset style="border: black 1px solid; display: inline-block;margin: 0 5px;">
-	   	<legend style="font-weight: bold;font-size:larger">Search Criteria</legend>
+	   	<legend style="font-weight: bold;">Search Criteria</legend>
 	   	<form id='gridFrm'>
 	   		<table>
    			<tr>			
@@ -91,6 +91,7 @@
     	<legend style="font-weight: bold;">Actions</legend>
 		<s:submit id="submitSearch" onclick="submitSearch()" value="Submit" theme="simple"></s:submit>
 		<s:submit id="resetSearch" onclick="resetSearch()" value="Reset" theme="simple"></s:submit>
+		<s:submit id="reverseAlsEntries" onclick="reverseAlsEntries()" value="Reverse Als Entries" theme="simple" disabled="true"></s:submit>
 	</fieldset>
 	<br>
 	<br>
@@ -208,7 +209,6 @@
 	
 	</sjg:grid>
 
-	
 	<s:url id="accMasterDialogURL" action="accMasterDialog_input"/>
 	<sj:dialog 
     	id="accMasterDialog" 
@@ -230,5 +230,4 @@
        	    }
         }">
 	</sj:dialog>
-
 </fwp:template>

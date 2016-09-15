@@ -4,10 +4,10 @@
 <%@ taglib uri="/fwp/tags" prefix="fwp"%>
 <%@ taglib prefix="sj" uri="/struts-jquery-tags" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
-<%@ taglib prefix="sjg" uri="/struts-jquery-grid-tags" %>
 
 <fieldset style="border: black 1px solid; display: inline-block;margin: 0 5px;">
-   	<legend style="font-weight: bold;font-size:larger">Search Criteria</legend>
+   	<legend style="font-weight: bold;">Search Criteria</legend>
+
    	<form id='gridFrm'>
    		<table>
    			<tr>
@@ -71,6 +71,26 @@
 				   name="toDt" displayFormat="mm/dd/yy"
 				   cssStyle="width:80px" maxlength="10"  maxDate="+0" title="To Date" 
 				   showOn="focus" onblur="testDate(this)" placeholder="mm/dd/yyyy"/></td>
+    		</tr>
+    		<tr>
+    			<td class="label">Budget Year: </td>
+    			<td class="autocompleter"><%-- <sj:autocompleter
+									id="budgYear"
+									name="budgYear"
+									list="budgetYearSel"
+									listValue="itemLabel"
+									listKey="itemVal"
+									selectBox="true"
+									selectBoxIcon="true"
+									forceValidOption="true"
+									loadMinimumCount="2"
+									theme="simple" 
+									onchange="budgetYearSelected();"/>  --%>
+									<s:select id="budgYear" name="budgYear" list="budgetYearSel" 
+									listKey="itemVal" listValue="itemLabel" onchange="budgetYearSelected();" label="Parks" theme="simple"/> </td>
+									
+    			<td class="label">Program Year: </td>
+    			<td><s:textfield id="progYear" name="progYear" theme="simple" title="Program Year" /></td>
     		</tr>
     		<tr>
     			<td class="label">Journal Line Reference: </td>

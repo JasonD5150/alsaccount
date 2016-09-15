@@ -15,6 +15,7 @@ function exportGrid(gridName,dataLabel,queryForm){
 			});
 		}
 	});
+
 	/* Null empty strings in non-text fields */
 	_data["columnNameValues"] = _columns;
 	$.each(_data[dataLabel],function(index, item){
@@ -29,14 +30,9 @@ function exportGrid(gridName,dataLabel,queryForm){
 		var filters = $("#"+queryForm).serialize();
 		_data["filters"] =  filters;
 	}
-	
-	
-	
-
 	return _data;
-	
 }
-function exportMultipleGrids(gridList,dataLabelList){
+function exportMultipleGrids(gridList,dataLabelList,queryForm){
 	_data = {};	
 	_columnsList=[];
 	for (i=0;i<gridList.length;i++){
@@ -67,6 +63,11 @@ function exportMultipleGrids(gridList,dataLabelList){
 		});
 	}
 	_data["columnsList"]=_columnsList;
+	
+	if(queryForm != null && queryForm != ""){
+		var filters = $("#"+queryForm).serialize();
+		_data["filters"] =  filters;
+	}
 	return _data;
 	
 }

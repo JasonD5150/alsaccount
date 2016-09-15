@@ -15,7 +15,6 @@
 			@import url("/alsaccount/css/alsaccount.css");
         </style>
     </fwp:head>
-	
 	<div id="errorMessage" style="font-weight:bold; color:#FF0000;" hidden="true"></div>
 	
 	<form id='divFrm'>

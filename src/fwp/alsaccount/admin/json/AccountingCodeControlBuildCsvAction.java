@@ -4,22 +4,15 @@ import java.io.File;
 import java.io.FileWriter;
 import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
 
 import com.opensymphony.xwork2.ActionSupport;
 
 import fwp.ListComp;
-import fwp.als.hibernate.account.dao.AlsAccCdControl;
 import fwp.alsaccount.dto.admin.AccCdDistByItemTypeDTO;
 import fwp.alsaccount.dto.admin.AlsAccCdControlDTO;
-import fwp.alsaccount.dto.sabhrs.IafaDetailsDTO;
-import fwp.alsaccount.utils.Utils;
 
 /**
  * Action handler for the SABHRS Query search page to CSV export file.

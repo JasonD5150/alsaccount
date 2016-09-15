@@ -2,6 +2,51 @@
 <!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-reverse-engineering-3.0.dtd" >
 
 <hibernate-reverse-engineering>
+<table name="ALS_INTERNAL_REMITTANCE" schema="ALS" class="fwp.alsaccount.dao.sabhrs.AlsInternalRemittance"> 
+     <primary-key id-class="fwp.alsaccount.dao.sabhrs.AlsInternalRemittanceIdPk" property="idPk">
+       <column name="API_PROVIDER_NO" jdbc-type="NUMERIC" type="Integer"></column>
+       <column name="AIR_BILLING_FROM" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+       <column name="AIR_BILLING_TO" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     </primary-key>
+     <column name="AIR_EFTDDD" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="AIR_OTC_PHONE_SALES" jdbc-type="NUMERIC" type="Double"></column>
+     <column name="AIR_PAE" jdbc-type="NUMERIC" type="Double"></column>
+     <column name="AIR_NON_ALS_SALES" jdbc-type="NUMERIC" type="Double"></column>
+     <column name="AIR_CREDIT_SALES" jdbc-type="NUMERIC" type="Double"></column>
+     <column name="AIR_COMPLETE_PROVIDER" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="AIR_OFFLN_PAYMENT_APPROVED" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AIR_OFFLN_PAYMENT_APP_BY" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AIR_OFFLN_PAYMENT_APP_DT" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="AIR_OFFLN_PAYMENT_APP_COM" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AIR_BANK_DEPT_APPROVED" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AIR_BANK_DEPT_APP_BY" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AIR_BANK_DEPT_APP_DT" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="AIR_BANK_DEPT_APP_COM" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AIR_OVER_SALES" jdbc-type="NUMERIC" type="Double"></column>
+     <column name="AIR_SHORT_SALES" jdbc-type="NUMERIC" type="Double"></column>
+     <column name="AIR_WHO_LOG" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AIR_WHEN_LOG" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="AIR_SYSTEM_SALES" jdbc-type="NUMERIC" type="Double"></column>
+   </table>
+	 <table name="ALS_OVER_UNDER_SALES_DETS" schema="ALS" class="fwp.alsaccount.dao.sabhrs.AlsOverUnderSalesDets"> 
+     <primary-key id-class="fwp.alsaccount.dao.sabhrs.AlsOverUnderSalesDetsIdPk" property="idPk">
+       <column name="API_PROVIDER_NO" jdbc-type="NUMERIC" type="Integer"></column>
+       <column name="AIR_BILLING_FROM" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+       <column name="AIR_BILLING_TO" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+       <column name="AOUSD_SEQ_NO" jdbc-type="NUMERIC" type="Integer"></column>
+     </primary-key>
+     <column name="AOUSD_FLAG" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AOUSD_DESC" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AOUSD_AMOUNT" jdbc-type="NUMERIC" type="Double"></column>
+     <column name="AOUSD_WHO_LOG" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AOUSD_WHEN_LOG" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="AOUSD_CREATE_PERSONID" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AOUSD_CREATE_DBUSERS" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AOUSD_CREATE_DATE" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="AOUSD_LAST_MOD_PERSONID" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AOUSD_LAST_MOD_DBUSERS" jdbc-type="VARCHAR" type="String"></column>
+     <column name="AOUSD_LAST_MOD_DATE" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+   </table>
 	<table name="ALS_COST_GROUP" schema="ALS" class="fwp.alsaccount.dao.sabhrs.AlsCostGroup"> 
      <primary-key id-class="fwp.alsaccount.dao.sabhrs.AlsCostGroupIdPk" property="idPk">
        <column name="AICT_USAGE_PERIOD_FROM" jdbc-type="DATE" type="java.sql.Timestamp"></column>
