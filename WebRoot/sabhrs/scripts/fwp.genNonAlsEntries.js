@@ -169,6 +169,12 @@ function exitNonAlsMasterDialog(){
 	   	
 }
 
+function prePopulate(){
+    $('#aamBusinessUnit').val('52010');
+    $('#asacProgram').val($('#hidBudgYear').val());
+    $('#asacBudgetYear').val($('#hidBudgYear').val());
+}
+
 /*ACTIONS*/
 function submitSearch(){
 	$('#reverseAlsEntries').prop({disabled:false});

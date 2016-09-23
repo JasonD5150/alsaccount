@@ -45,6 +45,12 @@
 				$.publish('reloadSabhrsGrid');
 			});
 			
+			function prePopulate(){
+			    $('#aamBusinessUnit').val('52010');
+			    $('#asacProgram').val($('#budgYear').val());
+			    $('#asacBudgetYear').val($('#budgYear').val());
+			}
+			
 			/*ACTIONS*/
 			function submitSearch(){ 
 				$('#iafaGrid').jqGrid('setGridParam',{datatype:'json'});
@@ -57,7 +63,7 @@
 			
 			function reverseAlsEntries(){
 				$('#frmOper').val('reverseAlsEntries');
-				
+			
 				url = "alsAccount/manualProviderAdjEntriesSABHRSGridEdit_execute.action";    
         		$.ajax({
                   type: "POST",
@@ -84,6 +90,7 @@
 	<fieldset style="border: black 1px solid; display: inline-block;margin: 0 5px;">
 	   	<legend style="font-weight: bold;">Search Criteria</legend>
 	   	<form id='gridFrm'>
+	   	<s:hidden id="budgYear" name="budgYear"/>
 	   	<s:hidden id="frmOper" name="oper"/>
 	   	<s:hidden id="transCd" name="transCd"/>
 	   	<s:hidden id="groupId" name="groupId"/>
@@ -191,6 +198,7 @@
 		navigatorAddOptions="{width:950,reloadAfterSubmit:true,
     						  addedrow:'last',
  	    					  afterShowForm: function ($form) {
+ 	    					  	prePopulate();
                     			$form.closest('.ui-jqdialog').position({
                         			my: 'center',
                         			at: 'center',

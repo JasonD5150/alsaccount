@@ -70,6 +70,8 @@
 		navigatorView="false"
 		navigatorAdd="false"
 		navigatorDelete="false"
+		navigatorSearch="false"
+		navigatorRefresh="false"
 		navigatorSearchOptions="{sopt:['cn','bw','eq','ne','lt','gt','ew'],multipleSearch:true}"
 	    navigatorAddOptions="{width:500,reloadAfterSubmit:true,
 	    					  addedrow:'last',
@@ -246,11 +248,12 @@
 						dataType="local"
 						pager="true"
 						navigator="true"
-						navigatorEdit="false"
+						navigatorEdit="true"
 						navigatorView="true"
 						navigatorAdd="true"
 						navigatorDelete="true"
-						navigatorSearch="true"
+						navigatorSearch="false"
+						navigatorRefresh="false"
 						navigatorSearchOptions="{sopt:['cn','bw','eq','ne','lt','gt','ew'],multipleSearch:true}"
 					   	navigatorAddOptions="{width:600,reloadAfterSubmit:true,
 					   						  addedrow:'last',
@@ -316,20 +319,22 @@
 						navigatorView="false"
 						navigatorAdd="true"
 						navigatorDelete="true"
+						navigatorSearch="false"
+						navigatorRefresh="false"
 						navigatorAddOptions="{width:950,reloadAfterSubmit:true,
 				    						  addedrow:'last',
 				 	    					  afterShowForm: function ($form) {
 				                    			$form.closest('.ui-jqdialog').position({
 				                        			my: 'center',
 				                        			at: 'center',
-				        							of: $('#transGroupDtlsTable').closest('div.ui-jqgrid')
+				        							of: $('#alsInternalRemittance').closest('div.ui-jqgrid')
 				                    			});
 				                    		  },
 				    						  afterSubmit:errorHandler,
 				    	                      addCaption:'Add New Code Info',
 				    	                      closeAfterAdd:true,
 				    	                      processData:'Adding Row to Database'}"
-						navigatorEditOptions="{width:950,reloadAfterSubmit:false,
+						navigatorEditOptions="{width:950,reloadAfterSubmit:true,
 				    	                       editCaption:'Edit Code Info',    
 				    	                       closeAfterEdit:true,
 				    	                       afterSubmit:errorHandler,
@@ -356,20 +361,21 @@
 						onCompleteTopics="alsSabhrsEntriesComplete">
 							
 							<sjg:gridColumn name="gridKey" title ="id" width="55" hidden="true" key="true"/>
-							<sjg:gridColumn name="asacBudgetYear" index="asacBudgetYear" title ="Budget Year" width="10" sortable="false" editable="true" editrules="{number:true,required:true}" editoptions="{size:5,maxlength:4}" formoptions="{colpos:1,rowpos:1}"/>
-							<sjg:gridColumn name="asacReference" index="asacReference" title ="JLR" width="10" sortable="false" editable="true" formoptions="{colpos:2,rowpos:1}" edittype="select" formatter="select" editoptions="{value:','}"/>
-							<sjg:gridColumn name="aamAccount" index="aamAccount" title ="Account" width="10" sortable="false" editable="true" editrules="{number:true,required:true}" formoptions="{colpos:1,rowpos:2}" edittype="select" formatter="select" editoptions="{value:','}"/>
-							<sjg:gridColumn name="aamFund" index="aamFund" title ="Fund" width="10" sortable="false" editable="true" editrules="{number:true,required:true}" formoptions="{colpos:2,rowpos:2}" edittype="select" formatter="select" editoptions="{value:','}"/>
+							<sjg:gridColumn name="asacBudgetYear" index="asacBudgetYear" title ="Budget Year" width="10" sortable="false" editable="true" editrules="{number:true,required:true}" editoptions="{size:5,maxlength:4}" formoptions="{colpos:1,rowpos:1}" align="right"/>
+							<sjg:gridColumn name="asacReference" index="asacReference" title ="JLR" width="10" sortable="false" hidden="true" editable="true" formoptions="{colpos:2,rowpos:1}" edittype="select" formatter="select" editoptions="{edithidden: true,value:','}"/>
+							<sjg:gridColumn name="jlr" index="jlr" title ="JLR" width="10" sortable="false" editable="false"/>
+							<sjg:gridColumn name="aamAccount" index="aamAccount" title ="Account" width="10" sortable="false" editable="true" editrules="{number:true,required:true}" formoptions="{colpos:1,rowpos:2}" edittype="select" formatter="select" editoptions="{value:','}" align="right" />
+							<sjg:gridColumn name="aamFund" index="aamFund" title ="Fund" width="10" sortable="false" editable="true" editrules="{number:true,required:true}" formoptions="{colpos:2,rowpos:2}" edittype="select" formatter="select" editoptions="{value:','}" align="right"/>
 							<sjg:gridColumn name="aocOrg" index="aocOrg" title ="Org" width="10" sortable="false" editable="true" formoptions="{colpos:1,rowpos:3}"  edittype="select" formatter="select" editoptions="{value:','}"/>
-							<sjg:gridColumn name="asacProgram" index="asacProgram" title ="Program" width="10" sortable="false" editable="true" formoptions="{colpos:2,rowpos:3}" editoptions="{size:5,maxlength:4}"/>
+							<sjg:gridColumn name="asacProgram" index="asacProgram" title ="Program" width="10" sortable="false" editable="true" formoptions="{colpos:2,rowpos:3}" editoptions="{size:5,maxlength:4}" align="right"/>
 							<sjg:gridColumn name="asacSubclass" index="asacSubclass" title ="Subclass" width="10" sortable="false" editable="true" formoptions="{colpos:1,rowpos:4}" edittype="select" formatter="select" editoptions="{value:','}"/>
-							<sjg:gridColumn name="aamBusinessUnit" index="aamBusinessUnit" title ="Business Unit" width="10" sortable="false" editable="true" formoptions="{colpos:2,rowpos:4}" editrules="{required:true}"/>
+							<sjg:gridColumn name="aamBusinessUnit" index="aamBusinessUnit" title ="Business Unit" width="10" sortable="false" editable="true" formoptions="{colpos:2,rowpos:4}" editrules="{required:true}" align="right"/>
 							<sjg:gridColumn name="asacProjectGrant" index="asacProjectGrant" title ="Project Grant" width="10" sortable="false" editable="true" formoptions="{colpos:1,rowpos:5}"/>
-							<sjg:gridColumn name="aseAmt" index="aseAmt" title ="Amount" width="10" sortable="false" editable="true" formoptions="{colpos:2,rowpos:5}" editrules="{number:true,required:true}"/>
+							<sjg:gridColumn name="aseAmt" index="aseAmt" title ="Amount" width="10" sortable="false" editable="true" formatter="number" formatoptions="{decimalPlaces: 2}" formoptions="{colpos:2,rowpos:5}" editrules="{number:true,required:true}" align="right"/>
 							<sjg:gridColumn name="asacSystemActivityTypeCd" index="asacSystemActivityTypeCd" title ="Sys Activity Type Code" width="10" sortable="false" editable="false"/>
-							<sjg:gridColumn name="asacTxnCd" index="asacTxnCd" title ="Transaction Code" width="10" sortable="false" editable="false"/>
+							<sjg:gridColumn name="asacTxnCd" index="asacTxnCd" title ="Transaction Code" width="10" sortable="false" editable="false" align="right"/>
 							<sjg:gridColumn name="idPk.aseDrCrCd" index="idPk.aseDrCrCd" title ="Dr/Cr Code" width="10" sortable="false" editable="true" edittype="select" formatter="select" editoptions="{value: {D: 'Debit', C: 'Credit'}}" editrules="{required:true}" formoptions="{colpos:1,rowpos:6}"/>
-							<sjg:gridColumn name="idPk.aseSeqNo" index="idPk.aseSeqNo" title ="Seq No" width="10" sortable="false" editable="false"/>
+							<sjg:gridColumn name="idPk.aseSeqNo" index="idPk.aseSeqNo" title ="Seq No" width="10" sortable="false" editable="false" align="right"/>
 							<sjg:gridColumn name="aseLineDescription" index="aseLineDescription" title ="Line Desc" width="40" sortable="false" editable="true" edittype="textarea" formoptions="{colpos:2,rowpos:6}" editrules="{required:true}"/>
 					
 					</sjg:grid>	
@@ -426,12 +432,12 @@
 						dataType="local"
 						pager="true"
 						navigator="true"
-						navigatorEdit="false"
+						navigatorEdit="true"
 						navigatorView="true"
 						navigatorAdd="true"
 						navigatorDelete="true"
-						navigatorSearch="true"
-						navigatorSearchOptions="{sopt:['cn','bw','eq','ne','lt','gt','ew'],multipleSearch:true}"
+						navigatorSearch="false"
+						navigatorRefresh="false"
 					   	navigatorAddOptions="{width:600,reloadAfterSubmit:true,
 					   						  addedrow:'last',
 					   						  beforeSubmit:function(postData){

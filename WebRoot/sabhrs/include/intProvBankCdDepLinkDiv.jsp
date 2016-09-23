@@ -24,8 +24,8 @@
 	navigatorView="true"
 	navigatorAdd="true"
 	navigatorDelete="true"
-	navigatorSearch="true"
-	navigatorSearchOptions="{sopt:['cn','bw','eq','ne','lt','gt','ew'],multipleSearch:true}"
+	navigatorSearch="false"
+	navigatorRefresh="false"
    	navigatorAddOptions="{width:600,
    						  reloadAfterSubmit:true,
    						  addedrow:'last',

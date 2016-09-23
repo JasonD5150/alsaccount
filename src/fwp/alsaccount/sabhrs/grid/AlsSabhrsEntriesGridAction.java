@@ -43,27 +43,27 @@ public class AlsSabhrsEntriesGridAction extends ActionSupport{
 
 
 	public String buildgrid() throws ParseException{ 
-    	AlsSabhrsEntriesAS aaccAS = new AlsSabhrsEntriesAS();
-    	List<AlsSabhrsEntries> aacc = new ArrayList<AlsSabhrsEntries>();
+		HibHelpers hh = new HibHelpers();
+    	AlsSabhrsEntriesAS aseAS = new AlsSabhrsEntriesAS();
+    	List<AlsSabhrsEntries> aseLst = new ArrayList<AlsSabhrsEntries>();
     	if(!Utils.isNil(provNo) && !Utils.isNil(bpTo)){
     		if(transGrp == null){
         		transGrp = 8;
         	}
         	if(transIdentifier == null){
-        		HibHelpers hh = new HibHelpers();
         		transIdentifier = hh.getTransGrpIdMaxSeq(provNo, bpTo);
         	}
     	}
     	
         try{
         	if(!Utils.isNil(transIdentifier)&&!Utils.isNil(transGrp)){
-        		aacc = aaccAS.getRemittanceRecords(transIdentifier, transGrp);
+        		aseLst = aseAS.getRemittanceRecords(transIdentifier, transGrp);
         	}
         	
 			setModel(new ArrayList<AlsSabhrsEntriesDTO>());
 			AlsSabhrsEntriesDTO tmp;
 
-        	for(AlsSabhrsEntries aa : aacc){
+        	for(AlsSabhrsEntries aa : aseLst){
 				tmp = new AlsSabhrsEntriesDTO();
 
 				tmp.setGridKey(aa.getIdPk().getAseWhenEntryPosted()+"_"+aa.getIdPk().getAseSeqNo()+"_"+aa.getIdPk().getAseDrCrCd()+"_"+aa.getIdPk().getAseTxnCdSeqNo());
@@ -81,6 +81,7 @@ public class AlsSabhrsEntriesGridAction extends ActionSupport{
 				tmp.setAsacSystemActivityTypeCd(aa.getAsacSystemActivityTypeCd());
 				tmp.setAsacTxnCd(aa.getAsacTxnCd());
 				tmp.setAseLineDescription(aa.getAseLineDescription());
+				tmp.setJlr(aseAS.getReferenceDesc(aa.getAsacReference()));
 				
 				model.add(tmp);
 			}

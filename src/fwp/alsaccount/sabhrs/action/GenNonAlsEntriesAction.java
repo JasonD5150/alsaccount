@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.opensymphony.xwork2.ActionSupport;
 
 import fwp.ListComp;
+import fwp.alsaccount.utils.HibHelpers;
 import fwp.alsaccount.utils.ListUtils;
 import fwp.utils.FwpStringUtils;
 
@@ -16,6 +17,7 @@ public class GenNonAlsEntriesAction extends ActionSupport{
 	private static final long serialVersionUID = 5217638596755074369L;
 	private static final Logger log = LoggerFactory.getLogger(GenNonAlsEntriesAction.class);
 
+	private String hidBudgYear;
 	private String fundLst;
 	private String subClassLst;
 	private String jlrLst;
@@ -30,8 +32,10 @@ public class GenNonAlsEntriesAction extends ActionSupport{
 	}
 	
 	public String input(){
+		HibHelpers hh = new HibHelpers();
 		ListUtils lu = new ListUtils();
 		try {
+			hidBudgYear = hh.getCurrentBudgetYear();
 			setFundLst(FwpStringUtils.listCompListToString(lu.getFundList(null)));
 			setSubClassLst(FwpStringUtils.listCompListToString(lu.getSubclassList(null)));
 			setJlrLst(FwpStringUtils.listCompListToString(lu.getJLRBudgYearList(null)));
@@ -48,6 +52,14 @@ public class GenNonAlsEntriesAction extends ActionSupport{
 		return SUCCESS;
 	}
 	
+	public String getHidBudgYear() {
+		return hidBudgYear;
+	}
+
+	public void setHidBudgYear(String hidBudgYear) {
+		this.hidBudgYear = hidBudgYear;
+	}
+
 	public String execute(){
 		return SUCCESS;
 	}
