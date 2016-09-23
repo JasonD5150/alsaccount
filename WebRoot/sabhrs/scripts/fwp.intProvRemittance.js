@@ -464,9 +464,6 @@ function setVisibility(){
 		$('#remApp').prop({disabled:true});
 		$('#disAppCom').prop({disabled:true});
 	}
-	if(dtCompletedByProv.length != 1 && hasUserRole == 'true'){
-		$('#alsNonAlsDetails_pager_left').show();
-	}
 }
 
 function rtrnBankCdList() {return $("#bankCdLst").val();}
