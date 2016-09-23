@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -2343,6 +2344,34 @@ public class HibHelpers {
 		}
         return rtn;
 	}	
+	
+	public String getTransGrpIdMaxSeq(String provNo, String bpTo){
+		Integer maxSeq = null;
+		java.util.Date tmpDt = null;
+		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+			try {
+				tmpDt = sdf.parse(bpTo);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		sdf.applyPattern("yyyy/MM/dd");
+		String tmpTransGrpId = "P"+String.format("%1$6s", provNo).replace(" ", "0")+" "+sdf.format(tmpDt)+" ";
+		String queryString =  "SELECT MAX(SUBSTR(atgs.atgs_group_identifier,20,22)) num "
+							+ "FROM ALS.ALS_TRANSACTION_GRP_STATUS atgs "
+							+ "WHERE atgs.atgs_group_identifier like :transGrpId ";
+			try {
+			Query query = getSession().createSQLQuery(queryString).addScalar("num", IntegerType.INSTANCE)
+																  .setString("transGrpId", tmpTransGrpId+"%");
+			
+			maxSeq =  (Integer) query.uniqueResult();
+			} catch (RuntimeException re) {
+				System.out.println(re.toString());
+			} finally {
+			getSession().close();
+		}
+        return tmpTransGrpId+String.format("%03d", maxSeq);
+	}
 	
 }
 

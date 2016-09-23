@@ -72,7 +72,7 @@ public class AlsActivityAccountLinkGridEditAction extends ActionSupport{
 				tmp.setAaalWhoLog(userInfo.getStateId().toString());
 				tmp.setAaalWhenLog(date);
 				
-				//appSer.save(tmp);
+				appSer.save(tmp);
 				
 			}else if(oper.equalsIgnoreCase("del")){
 				appSer.delete(tmp);

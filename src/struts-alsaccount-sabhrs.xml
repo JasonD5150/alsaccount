@@ -13,7 +13,7 @@
             </result>
       </action>
       <action name="getTdtPdf_*" method="{1}" class="fwp.alsaccount.sabhrs.action.GetTdtPDFAction">
-               <result name="success" type="stream">
+            <result name="success" type="stream">
                 <param name="contentType">application/pdf</param>
                 <param name="contentDisposition">attachment;filename="${fileName}"</param>
                 <param name="inputName">inputStream</param>
@@ -101,7 +101,7 @@
 			<result name="error">sabhrs/include/intProvBankCdDepLinkDiv.jsp</result>
 			<result name="input">sabhrs/include/intProvBankCdDepLinkDiv.jsp</result>        
 		</action>
-		<action name="intProvRemittance_*" method="{1}" class="fwp.alsaccount.action.InternalProviderListAction">
+		<action name="intProvRemittance_*" method="{1}" class="fwp.alsaccount.sabhrs.action.IntProvRemittanceAction">
 			<result>sabhrs/intProvRemittance.jsp</result>
 			<result name="error">sabhrs/intProvRemittance.jsp</result>
 			<result name="input">sabhrs/intProvRemittance.jsp</result>        
@@ -274,7 +274,13 @@
             </interceptor-ref>
             <result type="json"/>
         </action>
-        <action name="intProvRemittanceBuildCsv" class="fwp.alsaccount.sabhrs.json.IntProvRemittanceBuildCsvAction">
+        <action name="internalRemittanceReport" class="fwp.alsaccount.sabhrs.json.InternalRemittanceReportAction">
+            <interceptor-ref name="json">
+                <param name="enableSMD">true</param>
+            </interceptor-ref>
+            <result type="json"/>
+        </action>
+        <action name="internalRemittanceGridsToCsv" class="fwp.alsaccount.sabhrs.json.InternalRemittanceGridsToCsvAction">
             <interceptor-ref name="json">
                 <param name="enableSMD">true</param>
             </interceptor-ref>

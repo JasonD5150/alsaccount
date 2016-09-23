@@ -3,16 +3,16 @@ package fwp.alsaccount.sabhrs.grid;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 
 import org.apache.shiro.SecurityUtils;
 
 import com.opensymphony.xwork2.ActionSupport;
 
-import fwp.alsaccount.appservice.sabhrs.AlsProviderBankDetailsAS;
-import fwp.alsaccount.dao.sabhrs.AlsProviderBankDetails;
-import fwp.alsaccount.dao.sabhrs.AlsProviderBankDetailsIdPk;
-import fwp.alsaccount.utils.HibHelpers;
+import fwp.als.hibernate.inventory.dao.AlsNonAlsDetailsIdPk;
+import fwp.alsaccount.appservice.sabhrs.AlsOverUnderSalesDetsAS;
+import fwp.alsaccount.dao.sabhrs.AlsOverUnderSalesDets;
+import fwp.alsaccount.dao.sabhrs.AlsOverUnderSalesDetsIdPk;
+import fwp.alsaccount.dto.sabhrs.AlsOverUnderSalesDetsDTO;
 import fwp.security.user.UserDTO;
 import fwp.utils.FwpDateUtils;
 
@@ -21,19 +21,14 @@ public class AlsOverUnderSalesDetsGridEditAction extends ActionSupport{
 	private static final long serialVersionUID = 1L;
 	private String oper;
 	
-	private AlsProviderBankDetailsIdPk idPk;
 	private String id;
-	private String abcBankCd;
-	private String bankName;
-	private Double apbdAmountDeposit;
-	private Date depositDate;
+	private Integer provNo;
 	private Date apbdBillingFrom;
 	private Date apbdBillingTo;
-	private Date deadlineDate;
-	private Double amtDue;
-	private String apbdDepositId;
-	private Integer provNo;
-	private Integer apbdSeqNo;
+	private String aousdFlag;
+	private String aousdDesc;
+	private Double aousdAmount;
+
 	
 	SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 	
@@ -42,55 +37,57 @@ public class AlsOverUnderSalesDetsGridEditAction extends ActionSupport{
 		Timestamp date = new Timestamp(System.currentTimeMillis());
 		String errMsg="";			
 		
-		HibHelpers hh = new HibHelpers();
-		AlsProviderBankDetailsAS appSer = new AlsProviderBankDetailsAS();
-		AlsProviderBankDetails tmp = null;
+		AlsOverUnderSalesDetsAS appSer = new AlsOverUnderSalesDetsAS();
+		AlsOverUnderSalesDets tmp = null;
 		try{
-			String curBudgYear = hh.getCurrentBudgetYear();
-			if (oper.equalsIgnoreCase("add")&&validation()) {
-				AlsProviderBankDetailsIdPk tmpIdPk = new AlsProviderBankDetailsIdPk(provNo,new Timestamp(apbdBillingTo.getTime()),hh.getProvBankDetailsNextSeqNo(provNo, apbdBillingFrom, apbdBillingTo));
-				tmp = new AlsProviderBankDetails();
+	
+			if (oper.equalsIgnoreCase("add")) {
+				AlsOverUnderSalesDetsIdPk tmpIdPk = new AlsOverUnderSalesDetsIdPk();
+				tmpIdPk.setApiProviderNo(provNo);
+				tmpIdPk.setAirBillingFrom(new Timestamp(apbdBillingFrom.getTime()));
+				tmpIdPk.setAirBillingTo(new Timestamp(apbdBillingTo.getTime()));
+				tmpIdPk.setAousdSeqNo(appSer.getNextSeqNo(tmpIdPk));
+				tmp = new AlsOverUnderSalesDets();
 				tmp.setIdPk(tmpIdPk);
-				tmp.setApbdBillingFrom(new Timestamp(apbdBillingFrom.getTime()));
-				tmp.setAbcBankCd(abcBankCd);
-				tmp.setApbdAmountDeposit(apbdAmountDeposit);
-				tmp.setApbdDepositDate(new Timestamp(depositDate.getTime()));
-				tmp.setApbdDepositId(curBudgYear.substring(2, 4)+"IP"+String.format("%5s",hh.getAlsDepIdSeq(curBudgYear, "IP")).replace(" ", "0"));
-				tmp.setCreatePersonid(userInfo.getUserId());
+				tmp.setAousdFlag(aousdFlag);
+				tmp.setAousdDesc(aousdDesc);
+				tmp.setAousdAmount(aousdAmount);
 				
-				tmp.setApbdWhoLog(userInfo.getStateId());
-				tmp.setApbdWhenLog(date);
+				tmp.setAousdWhoLog(userInfo.getStateId());
+				tmp.setAousdWhenLog(date);
+
+				tmp.setAousdCreatePersonid(userInfo.getStateId());
+				tmp.setAousdCreateDate(date);
 				
 				appSer.save(tmp);
-			} else if((oper.equalsIgnoreCase("edit")&&validation())){				
+			} else if((oper.equalsIgnoreCase("edit"))){				
 				String[] keys = id.split("_");
-				AlsProviderBankDetailsIdPk tmpIdPk = new AlsProviderBankDetailsIdPk();
-				tmpIdPk.setApiProviderNo(Integer.parseInt(keys[2]));
-				tmpIdPk.setApbdSeqNo(Integer.parseInt(keys[1]));
-				tmpIdPk.setApbdBillingTo(FwpDateUtils.getStrToTimestamp(keys[0]));
+				AlsOverUnderSalesDetsIdPk tmpIdPk = new AlsOverUnderSalesDetsIdPk();
+				tmpIdPk.setApiProviderNo(Integer.parseInt(keys[0]));
+				tmpIdPk.setAirBillingFrom(FwpDateUtils.getStrToTimestamp(keys[1]));
+				tmpIdPk.setAirBillingTo(FwpDateUtils.getStrToTimestamp(keys[2]));
+				tmpIdPk.setAousdSeqNo(Integer.parseInt(keys[3]));
+				
 				tmp = appSer.findById(tmpIdPk);
 				
-				tmp.setApbdBillingFrom(new Timestamp(apbdBillingFrom.getTime()));
-				tmp.setAbcBankCd(abcBankCd);
-				tmp.setApbdAmountDeposit(apbdAmountDeposit);
-				tmp.setApbdDepositDate(new Timestamp(depositDate.getTime()));
-				 
-				tmp.setModDate(date);
-				tmp.setModPersonid(userInfo.getUserId());
+				tmp.setAousdFlag(aousdFlag);
+				tmp.setAousdDesc(aousdDesc);
+				tmp.setAousdAmount(aousdAmount);
+				
+				tmp.setAousdLastModPersonid(userInfo.getStateId());
+				tmp.setAousdLastModDate(date);
 				appSer.save(tmp);
 			}else if (oper.equalsIgnoreCase("del")){
 				String[] keys = id.split("_");
-				if(hh.getDepositProviderDate(Integer.parseInt(keys[2]), sdf.format(sdf.parse(keys[0])))){
-					addActionError("Cannot delete record, Deposit already approved for this billing period.");
-					return "error_json";
-				}else{
-					AlsProviderBankDetailsIdPk tmpIdPk = new AlsProviderBankDetailsIdPk();
-					tmpIdPk.setApiProviderNo(Integer.parseInt(keys[2]));
-					tmpIdPk.setApbdSeqNo(Integer.parseInt(keys[1]));
-					tmpIdPk.setApbdBillingTo(new Timestamp(sdf.parse(keys[0]).getTime()));
-					tmp = appSer.findById(tmpIdPk);
-					appSer.delete(tmp);
-				}
+				AlsOverUnderSalesDetsIdPk tmpIdPk = new AlsOverUnderSalesDetsIdPk();
+				tmpIdPk.setApiProviderNo(Integer.parseInt(keys[0]));
+				tmpIdPk.setAirBillingFrom(FwpDateUtils.getStrToTimestamp(keys[1]));
+				tmpIdPk.setAirBillingTo(FwpDateUtils.getStrToTimestamp(keys[2]));
+				tmpIdPk.setAousdSeqNo(Integer.parseInt(keys[3]));
+				
+				tmp = appSer.findById(tmpIdPk);
+				
+				appSer.delete(tmp);
 			}else{
 				return "error_json";
 			}
@@ -110,41 +107,6 @@ public class AlsOverUnderSalesDetsGridEditAction extends ActionSupport{
 		}	
 		return SUCCESS;
 	}
-
-	private boolean validation(){
-		HibHelpers hh = new HibHelpers();
-		if(!hh.isValidBPTo(provNo, sdf.format(apbdBillingTo))){
-			addFieldError("name","The name is required");
-			addActionError("Invalid Billing Period End Date, List available.");
-		}
-		if("".equals(apbdAmountDeposit) || apbdAmountDeposit <= 0){
-			addActionError("Amount Deposited cannot be less than or equal to zero.");
-		}
-		if(depositDate.before(apbdBillingFrom)){
-			addActionError("Deposit Date cannot be less than current billing period.");
-		}
-		
-		Calendar cal = Calendar.getInstance();
-		int year = cal.get(Calendar.YEAR);
-		cal.setTime(depositDate);
-		int depositYear = cal.get(Calendar.YEAR);
-		if(depositYear < year){
-			addActionError("The Deposit Date entered is less than the current year.");
-		}
-		
-		if(hh.getDepositApprovalFlag(provNo, sdf.format(apbdBillingTo), sdf.format(apbdBillingFrom))){
-			addActionError("Cannot add record, Deposit already approved for this billing period.");
-		}
-		if(hh.getDepositProviderDate(provNo, sdf.format(apbdBillingTo))){
-			addActionError("Cannot add record, Deposit already approved for this billing period.");
-		}
-		
-		if(getActionErrors().size() > 0){
-			return false;
-		}else{
-			return true;
-		}
-	}
 	
 	public String getOper() {
 		return oper;
@@ -160,38 +122,6 @@ public class AlsOverUnderSalesDetsGridEditAction extends ActionSupport{
 
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	public String getAbcBankCd() {
-		return abcBankCd;
-	}
-
-	public void setAbcBankCd(String abcBankCd) {
-		this.abcBankCd = abcBankCd;
-	}
-
-	public String getBankName() {
-		return bankName;
-	}
-
-	public void setBankName(String bankName) {
-		this.bankName = bankName;
-	}
-
-	public Double getApbdAmountDeposit() {
-		return apbdAmountDeposit;
-	}
-
-	public void setApbdAmountDeposit(Double apbdAmountDeposit) {
-		this.apbdAmountDeposit = apbdAmountDeposit;
-	}
-
-	public Date getDepositDate() {
-		return depositDate;
-	}
-
-	public void setDepositDate(Date depositDate) {
-		this.depositDate = depositDate;
 	}
 
 	public Date getApbdBillingFrom() {
@@ -210,30 +140,6 @@ public class AlsOverUnderSalesDetsGridEditAction extends ActionSupport{
 		this.apbdBillingTo = apbdBillingTo;
 	}
 
-	public Date getDeadlineDate() {
-		return deadlineDate;
-	}
-
-	public void setDeadlineDate(Date deadlineDate) {
-		this.deadlineDate = deadlineDate;
-	}
-
-	public Double getAmtDue() {
-		return amtDue;
-	}
-
-	public void setAmtDue(Double amtDue) {
-		this.amtDue = amtDue;
-	}
-
-	public String getApbdDepositId() {
-		return apbdDepositId;
-	}
-
-	public void setApbdDepositId(String apbdDepositId) {
-		this.apbdDepositId = apbdDepositId;
-	}
-
 	public Integer getProvNo() {
 		return provNo;
 	}
@@ -242,19 +148,29 @@ public class AlsOverUnderSalesDetsGridEditAction extends ActionSupport{
 		this.provNo = provNo;
 	}
 
-	public AlsProviderBankDetailsIdPk getIdPk() {
-		return idPk;
+	public String getAousdFlag() {
+		return aousdFlag;
 	}
 
-	public void setIdPk(AlsProviderBankDetailsIdPk idPk) {
-		this.idPk = idPk;
+	public void setAousdFlag(String aousdFlag) {
+		this.aousdFlag = aousdFlag;
 	}
 
-	public Integer getApbdSeqNo() {
-		return apbdSeqNo;
+	public String getAousdDesc() {
+		return aousdDesc;
 	}
 
-	public void setApbdSeqNo(Integer apbdSeqNo) {
-		this.apbdSeqNo = apbdSeqNo;
+	public void setAousdDesc(String aousdDesc) {
+		this.aousdDesc = aousdDesc;
 	}
+
+	public Double getAousdAmount() {
+		return aousdAmount;
+	}
+
+	public void setAousdAmount(Double aousdAmount) {
+		this.aousdAmount = aousdAmount;
+	}
+	
+	
 }

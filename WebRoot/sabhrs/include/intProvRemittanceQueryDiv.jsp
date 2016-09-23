@@ -19,8 +19,7 @@
 			  			listValue="itemLabel" 
 		       			headerKey=""
 						headerValue=" " 
-		       			theme="simple"
-		       			/></td>
+		       			theme="simple"/></td>
 		    </tr>
 		    <tr>			
 				<td class="label">Billing Period From</td>
@@ -34,55 +33,37 @@
 									cssStyle="width:80px" maxlength="10"  maxDate="+0" title="Billing Period End Date" 
 									showOn="focus" onblur="testDate(this)" /></td>
 		    </tr>
-		    <tr>			
-				<td class="label">System Sales</td>
-				<td><s:textfield id="sysSales" name="sysSales" theme="simple" title="System Sales" type="number" step="any" min="0"/></td>
-				<td class="label">EFT DDD</td>
-				<td><sj:datepicker changeMonth="true" changeYear="true" id="eftDdd"
-									name="eftDdd" displayFormat="mm/dd/yy" placeholder="mm/dd/yyyy"
-									cssStyle="width:80px" maxlength="10"  maxDate="+0" title="Billing Period End Date" 
-									showOn="focus" onblur="testDate(this)" /></td>
-		    </tr>
-		    <tr>			
-				<td class="label">OTC Sales</td>
-				<td><s:textfield id="otcSales" name="otcSales" theme="simple" title="OTC Sales" type="number" step="any" min="0"/></td>
-				<td class="label">PAEs</td>
-				<td><s:textfield id="pae" name="pae" theme="simple" title="PAEs" type="number" step="any" min="0"/></td>
-		    </tr>
-		    
 		    <tr>	
-		    	<td class="label">Non ALS Sales</td>
-				<td><s:textfield id="nonAlsSales" name="nonAlsSales" theme="simple" title="Non ALS Sales" type="number" step="any" min="0"/></td>		
-				<td class="label">Credit Card Sales</td>
-				<td><s:textfield id="crCardSales" name="crCardSales" theme="simple" title="Credit Card Sales" type="number" step="any" min="0"/></td>
-		    </tr>
-		    <tr>			
-				<td class="label">Total Short of Sales</td>
-				<td><s:textfield id="totShortOfSales" name="totShortOfSales" theme="simple" title="Total Short of Sales" type="number" step="any" min="0"/></td>
-				<td class="label">Total Over Sales</td>
-				<td><s:textfield id="totOverSales" name="totOverSales" theme="simple" title="Total Over Sales" type="number" step="any" min="0"/></td>
-		    </tr>
-		   <tr>	
-				<td class="label">Date Completed by Provider</td>
+		    	<td class="label">Completed By Provider</td>
+				<td><s:radio id="comByProv" name="comByProv" theme="simple" label="Completed By Provider" list="#{'Y':'Yes','N':'No'}" /></td>
+				<td class="label">Date</td>
 				<td><sj:datepicker changeMonth="true" changeYear="true" id="comByProvDt"
 									name="comByProvDt" displayFormat="mm/dd/yy" placeholder="mm/dd/yyyy"
 									cssStyle="width:80px" maxlength="10"  maxDate="+0" title="Date Completed by Provider" 
 									showOn="focus" onblur="testDate(this)" /></td>	
-				<td class="label">Remittance Approved</td>
-				<td><s:checkbox id="app" name="app" theme="simple"/></td>
 		    </tr>
 		    <tr>
-		    	<td class="label">Approved By</td>
-				<td><s:textfield id="appBy" name="appBy" theme="simple" title="" /></td>
+		    	<td class="label">Remittance Approved</td>
+				<td><s:radio id="app" name="app" theme="simple" label="Remittance Approved" list="#{'Y':'Yes','N':'No'}" /></td>
+		    	<td class="label">By</td>
+				<td><s:textfield id="appBy" name="appBy" theme="simple" title="" maxlength="6" size="7"/></td>
 				<td class="label">Date</td>
 				<td><sj:datepicker changeMonth="true" changeYear="true" id="appDt"
 									name="appDt" displayFormat="mm/dd/yy" placeholder="mm/dd/yyyy"
 									cssStyle="width:80px" maxlength="10"  maxDate="+0" title="Date" 
 									showOn="focus" onblur="testDate(this)" /></td>
-		    </tr> 
-		    <tr>
 		    	<td class="label">Comments</td>
 				<td><s:textfield id="appCom" name="appCom" title="Comments" theme="simple"/></td>
+		    </tr> 
+		    </table>
+		    <table>
+		    <tr>
+		    	<td class="label">Has Non Als Details</td>
+				<td><s:checkbox id="hasNonAlsDetails" name="hasNonAlsDetails" theme="simple" label="Has Non Als Details"></s:checkbox></td>
+				<td class="label">Has Over/Short Details</td>
+				<td><s:checkbox id="hasOverShortDetails" name="hasOverShortDetails" theme="simple" label="Has Over/Short Details"></s:checkbox></td>
+				<td class="label">Has PAE Amount</td>
+				<td><s:checkbox id="hasPaeAmt" name="hasPaeAmt" theme="simple" label="Has PAE Amount"></s:checkbox></td>
 		    </tr>
 		    </table>
 		</form>	

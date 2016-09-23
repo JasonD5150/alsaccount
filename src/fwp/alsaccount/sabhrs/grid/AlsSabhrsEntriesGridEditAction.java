@@ -45,6 +45,8 @@ public class AlsSabhrsEntriesGridEditAction extends ActionSupport{
 	private String templates;
 	private Integer transGrp;
 	private String transIdentifier;
+	private String provNo;
+	private String bpTo;
 	
 	
 	
@@ -118,6 +120,9 @@ public class AlsSabhrsEntriesGridEditAction extends ActionSupport{
 				aseAS.save(ase);
 				
 			} else if (oper.equalsIgnoreCase("addTemplates")) {
+				if(transIdentifier == null){
+					transIdentifier = hh.getTransGrpIdMaxSeq(provNo, bpTo);
+				}
 				String[] templates = this.templates.split(",");
 				for(int i=0;i<templates.length;i++){
 			    	String[] values = templates[i].split("-");
@@ -382,5 +387,21 @@ public class AlsSabhrsEntriesGridEditAction extends ActionSupport{
 
 	public void setTransIdentifier(String transIdentifier) {
 		this.transIdentifier = transIdentifier;
+	}
+	
+	public String getProvNo() {
+		return provNo;
+	}
+
+	public void setProvNo(String provNo) {
+		this.provNo = provNo;
+	}
+
+	public String getBpTo() {
+		return bpTo;
+	}
+
+	public void setBpTo(String bpTo) {
+		this.bpTo = bpTo;
 	}
 }

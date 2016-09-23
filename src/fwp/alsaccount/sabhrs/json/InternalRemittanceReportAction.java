@@ -22,7 +22,7 @@ import fwp.alsaccount.dto.sabhrs.AlsInternalRemittanceDTO;
  *
  * @author cfa027
  */
-public class IntProvRemittanceBuildCsvAction extends ActionSupport {
+public class InternalRemittanceReportAction extends ActionSupport {
 
 	private static final long serialVersionUID = -198737835399515405L;
 

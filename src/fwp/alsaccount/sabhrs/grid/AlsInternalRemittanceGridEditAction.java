@@ -2,6 +2,7 @@ package fwp.alsaccount.sabhrs.grid;
 
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -44,24 +45,25 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 	
 	private Date airBillingFrom;
 	private Date airBillingTo;
+	private Boolean compByProv;
 	private Boolean airOfflnPaymentApproved;
 	private String airOfflnPaymentAppCom;
 	
-	public String getAirOfflnPaymentAppCom() {
-		return airOfflnPaymentAppCom;
-	}
+	private String provComp;
+	private String remApp;
+	private String 	disAppCom;
+	private String 	ccSales;
 
-	public void setAirOfflnPaymentAppCom(String airOfflnPaymentAppCom) {
-		this.airOfflnPaymentAppCom = airOfflnPaymentAppCom;
-	}
 
 	UserDTO userInfo = (UserDTO)SecurityUtils.getSubject().getSession().getAttribute("userInfo");
 	Timestamp date = new Timestamp(System.currentTimeMillis());
 	HibHelpers hh = new HibHelpers();
 	String curBudgYear = hh.getCurrentBudgetYear();
 
-	public String execute() throws Exception{	
-		String errMsg="";			
+	public String execute() throws Exception{
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		String errMsg="";		
+		
 		try{
 			if(oper.equalsIgnoreCase("edit")){				
 				AlsInternalRemittanceAS tmpAS = new AlsInternalRemittanceAS();
@@ -69,8 +71,8 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 				AlsInternalRemittance original = null;	
 				
 				Integer provNo = Integer.parseInt(id.split("_")[2]);
-				Timestamp bpFrom = Timestamp.valueOf(id.split("_")[0]+" 00:00:00");
-				Timestamp bpTo = Timestamp.valueOf(id.split("_")[1]+" 00:00:00");
+				Timestamp bpFrom = new Timestamp(sdf.parse(id.split("_")[0]).getTime());
+				Timestamp bpTo = new Timestamp(sdf.parse(id.split("_")[1]).getTime());
 				tmpIdPk.setApiProviderNo(provNo);
 				tmpIdPk.setAirBillingFrom(bpFrom);
 				tmpIdPk.setAirBillingTo(bpTo);
@@ -79,20 +81,38 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 					addActionError("Original record not found.");
 					 return "error_json";
 				}
-				/*Approved*/
-				if(!"Y".equals(original.getAirOfflnPaymentApproved())&&airOfflnPaymentApproved){
-					postEntries(original, provNo, bpFrom, bpTo);
-					updateProviderRemittance("A", provNo, bpTo, bpTo, null);
+				/*Credit Card Sales Changed*/
+				if(Double.compare(original.getAirCreditSales(), Double.valueOf(ccSales)) != 0){
+					original.setAirCreditSales(Double.valueOf(ccSales));
+					tmpAS.save(original);
+				}
+				/*Approved By Provider*/
+				if(original.getAirCompleteProvider() == null && "true".equals(provComp)){
+					original.setAirCompleteProvider(date);
+					tmpAS.save(original);
+				}else if(original.getAirCompleteProvider() != null && "false".equals(provComp)){
+					original.setAirCompleteProvider(null);
+					tmpAS.save(original);
+				}
+				/*Remittance Approved*/
+				if(!"Y".equals(original.getAirOfflnPaymentApproved())&&"true".equals(remApp)){
+					//postEntries(original, provNo, bpFrom, bpTo);
+					//updateProviderRemittance("A", provNo, bpTo, bpTo, null);
 					original.setAirOfflnPaymentApproved("Y");
 					original.setAirOfflnPaymentAppBy(userInfo.getStateId());
 					original.setAirOfflnPaymentAppDt(date);
-					original.setAirOfflnPaymentAppCom(airOfflnPaymentAppCom);
-					tmpAS.save(original);
+					original.setAirOfflnPaymentAppCom(disAppCom);
+					//tmpAS.save(original);
 				}
-				/*Disapproved*/
-				if("Y".equals(original.getAirOfflnPaymentApproved())&&!airOfflnPaymentApproved){
-					deleteEntries(original, provNo, bpTo, bpTo);
-					updateProviderRemittance("D", provNo, bpTo, bpTo, null);
+				/*Remittance Disapproved*/
+				if("Y".equals(original.getAirOfflnPaymentApproved())&&"false".equals(remApp)){
+					//deleteEntries(original, provNo, bpTo, bpTo);
+					//updateProviderRemittance("D", provNo, bpTo, bpTo, null);
+					original.setAirOfflnPaymentApproved("N");
+					original.setAirOfflnPaymentAppBy(null);
+					original.setAirOfflnPaymentAppDt(null);
+					original.setAirOfflnPaymentAppCom(disAppCom);
+					//tmpAS.save(original);
 				}
 			}else{
 				return "error_json";
@@ -559,6 +579,54 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 
 	public void setAirOfflnPaymentApproved(Boolean airOfflnPaymentApproved) {
 		this.airOfflnPaymentApproved = airOfflnPaymentApproved;
+	}
+	
+	public String getAirOfflnPaymentAppCom() {
+		return airOfflnPaymentAppCom;
+	}
+
+	public void setAirOfflnPaymentAppCom(String airOfflnPaymentAppCom) {
+		this.airOfflnPaymentAppCom = airOfflnPaymentAppCom;
+	}
+
+	public String getDisAppCom() {
+		return disAppCom;
+	}
+
+	public void setDisAppCom(String disAppCom) {
+		this.disAppCom = disAppCom;
+	}
+
+	public Boolean getCompByProv() {
+		return compByProv;
+	}
+
+	public void setCompByProv(Boolean compByProv) {
+		this.compByProv = compByProv;
+	}
+
+	public String getProvComp() {
+		return provComp;
+	}
+
+	public void setProvComp(String provComp) {
+		this.provComp = provComp;
+	}
+
+	public String getRemApp() {
+		return remApp;
+	}
+
+	public void setRemApp(String remApp) {
+		this.remApp = remApp;
+	}
+	
+	public String getCcSales() {
+		return ccSales;
+	}
+
+	public void setCcSales(String ccSales) {
+		this.ccSales = ccSales;
 	}
 	
 }

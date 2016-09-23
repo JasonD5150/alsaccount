@@ -1,6 +1,9 @@
 package fwp.alsaccount.sabhrs.grid;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.HibernateException;
@@ -12,7 +15,10 @@ import com.opensymphony.xwork2.ActionSupport;
 import fwp.alsaccount.appservice.sabhrs.AlsSabhrsEntriesAS;
 import fwp.alsaccount.dao.sabhrs.AlsSabhrsEntries;
 import fwp.alsaccount.dto.sabhrs.AlsSabhrsEntriesDTO;
+import fwp.alsaccount.utils.HibHelpers;
 import fwp.alsaccount.utils.Utils;
+
+import fwp.utils.FwpDateUtils;
 
 public class AlsSabhrsEntriesGridAction extends ActionSupport{
     private static final long   serialVersionUID = 5078264277068533593L;
@@ -31,27 +37,28 @@ public class AlsSabhrsEntriesGridAction extends ActionSupport{
     private Integer transGrp;
     private String transIdentifier;
     private String				nonAlsEntries;
+    private String provNo;
+    private String bpFrom;
+    private String bpTo;
 
-	@SuppressWarnings("unchecked")
-	public String buildgrid(){ 		
-    	String srchStr = "WHERE atgsGroupIdentifier ='"+transIdentifier+"'"+
-    					 "AND atgTransactionCd ="+transGrp+" "+
-    					 "AND NVL(ase_non_als_flag,'N')='Y'";
-    	String orderStr = "";
-    	
-    	if(filters != null && !"".equals(filters)){
-    		//srchStr = buildStr(srchStr);
-    		srchStr = Utils.buildStr(srchStr, filters);
-    		if(srchStr.contains("Build String Error:")){
-    			addActionError(srchStr);
-    		}
+
+	public String buildgrid() throws ParseException{ 
+    	AlsSabhrsEntriesAS aaccAS = new AlsSabhrsEntriesAS();
+    	List<AlsSabhrsEntries> aacc = new ArrayList<AlsSabhrsEntries>();
+    	if(!Utils.isNil(provNo) && !Utils.isNil(bpTo)){
+    		if(transGrp == null){
+        		transGrp = 8;
+        	}
+        	if(transIdentifier == null){
+        		HibHelpers hh = new HibHelpers();
+        		transIdentifier = hh.getTransGrpIdMaxSeq(provNo, bpTo);
+        	}
     	}
     	
-    	AlsSabhrsEntriesAS aaccAS = new AlsSabhrsEntriesAS();
-    	List<AlsSabhrsEntries> aacc;
-    	
         try{
-        	aacc = aaccAS.findAllByWhere(srchStr+orderStr);
+        	if(!Utils.isNil(transIdentifier)&&!Utils.isNil(transGrp)){
+        		aacc = aaccAS.getRemittanceRecords(transIdentifier, transGrp);
+        	}
         	
 			setModel(new ArrayList<AlsSabhrsEntriesDTO>());
 			AlsSabhrsEntriesDTO tmp;
@@ -91,7 +98,7 @@ public class AlsSabhrsEntriesGridAction extends ActionSupport{
     }
 
 	
-	public String getJSON()
+	public String getJSON() throws ParseException
 	{
 		return buildgrid();
 	}
@@ -200,4 +207,29 @@ public class AlsSabhrsEntriesGridAction extends ActionSupport{
 	public void setNonAlsEntries(String nonAlsEntries) {
 		this.nonAlsEntries = nonAlsEntries;
 	}
+	
+	public String getProvNo() {
+		return provNo;
+	}
+	
+	public void setProvNo(String provNo) {
+		this.provNo = provNo;
+	}
+
+	public String getBpTo() {
+		return bpTo;
+	}
+
+	public void setBpTo(String bpTo) {
+		this.bpTo = bpTo;
+	}
+
+	public String getBpFrom() {
+		return bpFrom;
+	}
+
+	public void setBpFrom(String bpFrom) {
+		this.bpFrom = bpFrom;
+	}
+	
 }

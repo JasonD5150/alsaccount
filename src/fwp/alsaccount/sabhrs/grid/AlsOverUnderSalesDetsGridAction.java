@@ -1,5 +1,6 @@
 package fwp.alsaccount.sabhrs.grid;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,12 +12,13 @@ import com.opensymphony.xwork2.ActionSupport;
 
 import fwp.alsaccount.appservice.sabhrs.AlsOverUnderSalesDetsAS;
 import fwp.alsaccount.dao.sabhrs.AlsOverUnderSalesDets;
+import fwp.alsaccount.dto.sabhrs.AlsOverUnderSalesDetsDTO;
 
 public class AlsOverUnderSalesDetsGridAction extends ActionSupport{
     private static final long   serialVersionUID = 5078264277068533593L;
     private static final Logger    log              = LoggerFactory.getLogger(AlsOverUnderSalesDetsGridAction.class);
 
-    private List<AlsOverUnderSalesDets>    model;
+    private List<AlsOverUnderSalesDetsDTO>    model;
     private Integer             rows             = 0;
     private Integer             page             = 0;
     private Integer             total            = 0;
@@ -32,13 +34,24 @@ public class AlsOverUnderSalesDetsGridAction extends ActionSupport{
     private Boolean				search = false;
     
 	public String buildgrid(){ 
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		String srchStr = buildQueryStr();
         try{
         	if(search){
+        		setModel(new ArrayList<AlsOverUnderSalesDetsDTO>());    
         		AlsOverUnderSalesDetsAS aousdAS = new AlsOverUnderSalesDetsAS();
-        		setModel(aousdAS.findAllByWhere(srchStr));    
-        	}else{
-        		setModel(new ArrayList<AlsOverUnderSalesDets>());    
+        		List<AlsOverUnderSalesDets> aousdLst = new ArrayList<AlsOverUnderSalesDets>();
+        		aousdLst = aousdAS.findAllByWhere(srchStr);  
+        		
+        		AlsOverUnderSalesDetsDTO tmp = null;
+        		for(AlsOverUnderSalesDets aousd : aousdLst){
+        			tmp = new AlsOverUnderSalesDetsDTO();
+        			tmp.setGridKey(aousd.getIdPk().getApiProviderNo()+"_"+sdf.format(aousd.getIdPk().getAirBillingFrom())+"_"+sdf.format(aousd.getIdPk().getAirBillingTo())+"_"+aousd.getIdPk().getAousdSeqNo());
+        			tmp.setAousdFlag(aousd.getAousdFlag());
+        			tmp.setAousdDesc(aousd.getAousdDesc());
+        			tmp.setAousdAmount(aousd.getAousdAmount());
+        			model.add(tmp);
+        		}
         	}
         }
         catch (HibernateException re) {
@@ -140,11 +153,11 @@ public class AlsOverUnderSalesDetsGridAction extends ActionSupport{
         this.loadonce = loadonce;
     }
 
-	public List<AlsOverUnderSalesDets> getModel() {
+	public List<AlsOverUnderSalesDetsDTO> getModel() {
 		return model;
 	}
 
-	public void setModel(List<AlsOverUnderSalesDets> model) {
+	public void setModel(List<AlsOverUnderSalesDetsDTO> model) {
 		this.model = model;
 	}
 

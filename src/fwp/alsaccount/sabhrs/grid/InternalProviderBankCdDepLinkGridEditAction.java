@@ -27,7 +27,7 @@ public class InternalProviderBankCdDepLinkGridEditAction extends ActionSupport{
 	private String bankName;
 	private Double apbdAmountDeposit;
 	private Date depositDate;
-	private Date apbdBillingFrom;
+	private Date BillingFrom;
 	private Date apbdBillingTo;
 	private Date deadlineDate;
 	private Double amtDue;
@@ -48,14 +48,16 @@ public class InternalProviderBankCdDepLinkGridEditAction extends ActionSupport{
 		try{
 			String curBudgYear = hh.getCurrentBudgetYear();
 			if (oper.equalsIgnoreCase("add")&&validation()) {
-				AlsProviderBankDetailsIdPk tmpIdPk = new AlsProviderBankDetailsIdPk(provNo,new Timestamp(apbdBillingTo.getTime()),hh.getProvBankDetailsNextSeqNo(provNo, apbdBillingFrom, apbdBillingTo));
+				StringBuilder trimmedProvNo = new StringBuilder(provNo.toString());
+				trimmedProvNo.deleteCharAt(2);
+				AlsProviderBankDetailsIdPk tmpIdPk = new AlsProviderBankDetailsIdPk(provNo,new Timestamp(apbdBillingTo.getTime()),hh.getProvBankDetailsNextSeqNo(provNo, BillingFrom, apbdBillingTo));
 				tmp = new AlsProviderBankDetails();
 				tmp.setIdPk(tmpIdPk);
-				tmp.setApbdBillingFrom(new Timestamp(apbdBillingFrom.getTime()));
+				tmp.setApbdBillingFrom(new Timestamp(BillingFrom.getTime()));
 				tmp.setAbcBankCd(abcBankCd);
 				tmp.setApbdAmountDeposit(apbdAmountDeposit);
 				tmp.setApbdDepositDate(new Timestamp(depositDate.getTime()));
-				tmp.setApbdDepositId(curBudgYear.substring(2, 4)+"IP"+String.format("%5s",hh.getAlsDepIdSeq(curBudgYear, "IP")).replace(" ", "0"));
+				tmp.setApbdDepositId(curBudgYear.substring(2, 4)+trimmedProvNo+String.format("%3s",hh.getAlsDepIdSeq(curBudgYear, "IP")).replace(" ", "0"));
 				tmp.setCreatePersonid(userInfo.getUserId());
 				
 				tmp.setApbdWhoLog(userInfo.getStateId());
@@ -70,7 +72,7 @@ public class InternalProviderBankCdDepLinkGridEditAction extends ActionSupport{
 				tmpIdPk.setApbdBillingTo(FwpDateUtils.getStrToTimestamp(keys[0]));
 				tmp = appSer.findById(tmpIdPk);
 				
-				tmp.setApbdBillingFrom(new Timestamp(apbdBillingFrom.getTime()));
+				tmp.setApbdBillingFrom(new Timestamp(BillingFrom.getTime()));
 				tmp.setAbcBankCd(abcBankCd);
 				tmp.setApbdAmountDeposit(apbdAmountDeposit);
 				tmp.setApbdDepositDate(new Timestamp(depositDate.getTime()));
@@ -120,7 +122,7 @@ public class InternalProviderBankCdDepLinkGridEditAction extends ActionSupport{
 		if("".equals(apbdAmountDeposit) || apbdAmountDeposit <= 0){
 			addActionError("Amount Deposited cannot be less than or equal to zero.");
 		}
-		if(depositDate.before(apbdBillingFrom)){
+		if(depositDate.before(BillingFrom)){
 			addActionError("Deposit Date cannot be less than current billing period.");
 		}
 		
@@ -132,7 +134,7 @@ public class InternalProviderBankCdDepLinkGridEditAction extends ActionSupport{
 			addActionError("The Deposit Date entered is less than the current year.");
 		}
 		
-		if(hh.getDepositApprovalFlag(provNo, sdf.format(apbdBillingTo), sdf.format(apbdBillingFrom))){
+		if(hh.getDepositApprovalFlag(provNo, sdf.format(apbdBillingTo), sdf.format(BillingFrom))){
 			addActionError("Cannot add record, Deposit already approved for this billing period.");
 		}
 		if(hh.getDepositProviderDate(provNo, sdf.format(apbdBillingTo))){
@@ -194,13 +196,7 @@ public class InternalProviderBankCdDepLinkGridEditAction extends ActionSupport{
 		this.depositDate = depositDate;
 	}
 
-	public Date getApbdBillingFrom() {
-		return apbdBillingFrom;
-	}
-
-	public void setApbdBillingFrom(Date apbdBillingFrom) {
-		this.apbdBillingFrom = apbdBillingFrom;
-	}
+	
 
 	public Date getApbdBillingTo() {
 		return apbdBillingTo;
@@ -256,5 +252,19 @@ public class InternalProviderBankCdDepLinkGridEditAction extends ActionSupport{
 
 	public void setApbdSeqNo(Integer apbdSeqNo) {
 		this.apbdSeqNo = apbdSeqNo;
+	}
+
+	/**
+	 * @return the billingFrom
+	 */
+	public Date getBillingFrom() {
+		return BillingFrom;
+	}
+
+	/**
+	 * @param billingFrom the billingFrom to set
+	 */
+	public void setBillingFrom(Date billingFrom) {
+		BillingFrom = billingFrom;
 	}
 }

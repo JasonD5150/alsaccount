@@ -1,5 +1,6 @@
 package fwp.alsaccount.sabhrs.grid;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,12 +12,13 @@ import com.opensymphony.xwork2.ActionSupport;
 
 import fwp.als.appservice.inventory.AlsNonAlsDetailsAS;
 import fwp.als.hibernate.inventory.dao.AlsNonAlsDetails;
+import fwp.alsaccount.dto.sabhrs.AlsNonAlsDetailsDTO;
 
 public class AlsNonAlsDetailsGridAction extends ActionSupport{
     private static final long   serialVersionUID = 5078264277068533593L;
     private static final Logger    log              = LoggerFactory.getLogger(AlsNonAlsDetailsGridAction.class);
 
-    private List<AlsNonAlsDetails>    model;
+    private List<AlsNonAlsDetailsDTO>    model;
     private Integer             rows             = 0;
     private Integer             page             = 0;
     private Integer             total            = 0;
@@ -33,13 +35,25 @@ public class AlsNonAlsDetailsGridAction extends ActionSupport{
     
 
 	public String buildgrid(){ 
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		String srchStr = buildQueryStr();
         try{
         	if(search){
+        		setModel(new ArrayList<AlsNonAlsDetailsDTO>());    
         		AlsNonAlsDetailsAS anadAS = new AlsNonAlsDetailsAS();
-        		setModel(anadAS.findAllByWhere(srchStr));    
-        	}else{
-        		setModel(new ArrayList<AlsNonAlsDetails>());    
+        		List<AlsNonAlsDetails> anadLst = new ArrayList<AlsNonAlsDetails>();
+        		anadLst = anadAS.findAllByWhere(srchStr);
+        		
+        		AlsNonAlsDetailsDTO tmp = null;
+        		for(AlsNonAlsDetails anad : anadLst){
+        			tmp = new AlsNonAlsDetailsDTO();
+        			tmp.setGridKey(anad.getIdPk().getApiProviderNo()+"_"+sdf.format(anad.getIdPk().getAirBillingFrom())+"_"+sdf.format(anad.getIdPk().getAirBillingTo())+"_"+anad.getIdPk().getAnadSeqNo());
+        			tmp.setAnatCd(anad.getAnatCd());
+        			tmp.setAnadDesc(anad.getAnadDesc());
+        			tmp.setAnadAmount(anad.getAnadAmount());
+        			model.add(tmp);
+        		}
+        		
         	}
         }
         catch (HibernateException re) {
@@ -141,11 +155,11 @@ public class AlsNonAlsDetailsGridAction extends ActionSupport{
         this.loadonce = loadonce;
     }
 
-	public List<AlsNonAlsDetails> getModel() {
+	public List<AlsNonAlsDetailsDTO> getModel() {
 		return model;
 	}
 
-	public void setModel(List<AlsNonAlsDetails> model) {
+	public void setModel(List<AlsNonAlsDetailsDTO> model) {
 		this.model = model;
 	}
 
