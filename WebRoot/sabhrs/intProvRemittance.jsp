@@ -24,6 +24,7 @@
 </fwp:head>
 <s:hidden id="hasUserRole" value="%{hasUserRole}"></s:hidden>
 <s:hidden id="hasIntProvRole" value="%{hasIntProvRole}"></s:hidden>
+<s:hidden id="curBudgYear" name="curBudgYear"/>
 <s:hidden id="fundLst" name="fundLst"/>
 <s:hidden id="subClassLst" name="subClassLst"/>
 <s:hidden id="jlrLst" name="jlrLst"/>
@@ -210,34 +211,42 @@
 			</tr>
 			<tr>
 				<td class="label">Comments: </td>
-				<td colspan="4"><s:textfield id="disAppCom" name="disAppCom" theme="simple"/></td>
+				<td colspan="4"><s:textfield id="disAppCom" name="disAppCom" theme="simple" cssStyle="width:100%;"/></td>
+			</tr>
+			<tr>
+				<td class="label">Interface File Created: </td>
+				<td><s:checkbox id="intFileCreated" name="intFileCreated" theme="simple" title="Interface File Created" disabled="true"></s:checkbox></td>
+				<td class="label">Date: </td>
+				<td><s:textfield id="intFileCreatedDt" name="intFileCreatedDt" theme="simple" title="Interface File Creation Date" disabled="true"/></td>
 			</tr>
 		</table>
-		<s:submit onclick="saveRemittance();" value="Save"></s:submit>
+		<s:submit id="saveRemittance" onclick="saveRemittance();" value="Save"></s:submit>
 		</fieldset>
 	</div>
 	<br>
 	<form id="subGridFrm">
+		<s:hidden id="frmOper" name="oper"/>
 		<s:hidden id="frmProvNo" name="provNo"/>
 		<s:hidden id="frmBPFrom" name="bpFrom"/>
 		<s:hidden id="frmBPTo" name="bpTo"/>
+		<s:hidden id="frmIafaSeqNo" name="iafaSeqNo"/>
 	</form>
-	<sj:tabbedpanel id="remittanceTabs" selectedTab="0" useSelectedTabCookie="false"  cssStyle="width:995px;position:inherit">
-				<sj:tab id="tab1" target="tone" title="Bank Deposits" label="Bank Deposits" tabindex="1" />
-				<sj:tab id="tab2" target="ttwo" title="Non Als Details" label="Non Als Details" tabindex="2" />
-				<sj:tab id="tab3" target="tthree" title="Non Als SABHRS Entries" label="Non Als SABHRS Entries" tabindex="3" />
-				<sj:tab id="tab4" target="tfour" title="Over / Short of Sales" label="Over / Short of Sales" tabindex="4" />
+	<sj:tabbedpanel id="intProvTabs" selectedTab="0" useSelectedTabCookie="false"  cssStyle="width:950px;position:inherit">
+				<sj:tab id="intProvTab1" target="intProvTOne" title="Bank Deposits" label="Bank Deposits" tabindex="1" />
+				<sj:tab id="intProvTab2" target="intProvTTwo" title="Non ALS Details" label="Non ALS Details" tabindex="2" />
+				<sj:tab id="intProvTab3" target="intProvTThree" title="Over / Short of Sales" label="Over / Short of Sales" tabindex="3" />				
 				
-				<div id="tone">
+				<div id="intProvTOne">
 			 		<s:url id="intProvBankCdDepLinkDivUrl" value="intProvBankCdDepLinkDiv_input.action" />
 					<sj:div id="intProvBankCdDepLinkDiv" 
 							href="%{intProvBankCdDepLinkDivUrl}"
 							width="950"
 							formIds="subGridFrm"
-							reloadTopics="reloadSubGrids">
+							reloadTopics="reloadSubGrids"
+							onChangeTopics="reloadBankDepositsGrid();">
 					</sj:div>
 				</div>
-				<div id="ttwo">
+				<div id="intProvTTwo">
 					<s:url id="alsNonAlsDetailsGridURL" action="alsAccount/alsNonAlsDetailsGrid_buildgrid" />
 					<s:url id="alsNonAlsDetailsGridEditURL" action="alsAccount/alsNonAlsDetailsGridEdit_execute" />    
 					<sjg:grid
@@ -266,7 +275,10 @@
 						    	                      			return[true, ''];
 						    	              },
 					   						  afterSubmit:errorHandler,
-					   						  afterShowForm:prePopulate,   
+					   						  afterShowForm:function(postData){
+					   						  					prePopulate(this.id)
+						    	                      			return[true, ''];
+						    	              },   
 					   	                      addCaption:'Add New Code Info',
 					   	                      closeAfterAdd:true,
 					   	                      processData:'Adding Row to Database'}"
@@ -288,7 +300,7 @@
 						scroll="true"
 						scrollrows="true"
 						height="75"
-						width="950"
+						width="910"
 						rowNum="1000"
 						formIds="subGridFrm"
 						reloadTopics="reloadSubGrids"
@@ -300,129 +312,8 @@
 							<sjg:gridColumn name="anadAmount" index="anadAmount" title="Amount" width="10" sortable="true" editable = "true" align="right" formatter="number" formatoptions="{decimalPlaces: 2}" editrules="{number:true,required:true}" editoptions="{minValue:0}"/>
 					</sjg:grid>
 				</div>
-				<div id="tthree">
-					<div id ='tempErrorDiv'>
-						<span id='tempError'></span>
-					</div>
-					<div id="nonAlsSabhrsEntriesDiv">
-					<s:url id="alsSabhrsEntriesGridURL" action="alsAccount/alsSabhrsEntriesGrid_buildgrid" />
-					<s:url id="alsSabhrsEntriesGridEditURL" action="alsAccount/alsSabhrsEntriesGridEdit_execute" />    
-					<sjg:grid
-						id="alsSabhrsEntriesTable"
-						caption="Non Als SABHRS Entries"
-						href="%{alsSabhrsEntriesGridURL}"
-						editurl="%{alsSabhrsEntriesGridEditURL}"		
-						dataType="local"
-						pager="true"
-						navigator="true"
-						navigatorEdit="true"
-						navigatorView="false"
-						navigatorAdd="true"
-						navigatorDelete="true"
-						navigatorSearch="false"
-						navigatorRefresh="false"
-						navigatorAddOptions="{width:950,reloadAfterSubmit:true,
-				    						  addedrow:'last',
-				 	    					  afterShowForm: function ($form) {
-				                    			$form.closest('.ui-jqdialog').position({
-				                        			my: 'center',
-				                        			at: 'center',
-				        							of: $('#alsInternalRemittance').closest('div.ui-jqgrid')
-				                    			});
-				                    		  },
-				    						  afterSubmit:errorHandler,
-				    	                      addCaption:'Add New Code Info',
-				    	                      closeAfterAdd:true,
-				    	                      processData:'Adding Row to Database'}"
-						navigatorEditOptions="{width:950,reloadAfterSubmit:true,
-				    	                       editCaption:'Edit Code Info',    
-				    	                       closeAfterEdit:true,
-				    	                       afterSubmit:errorHandler,
-				    	                       processData:'Updating to Database',
-				    	                       afterShowForm: function ($form) {
-				                    			$form.closest('.ui-jqdialog').position({
-				                        			my: 'center',
-				                        			at: 'center',
-				        							of: $('#transGroupDtlsTable').closest('div.ui-jqgrid')
-				                    			});
-				                    		   }}"
-						navigatorSearchOptions="{sopt:['cn','bw','eq','ne','lt','gt','ew'],multipleSearch:true}"
-					    navigatorViewOptions="{width:500,reloadAfterSubmit:false}"    	
-					    gridModel="model"
-						rownumbers="true"
-						viewrecords="true"
-						scroll="true"
-						scrollrows="true"
-						height="100"
-						width="950"
-						rowNum="1000"
-						formIds="subGridFrm"
-						reloadTopics="reloadSubGrids"
-						onCompleteTopics="alsSabhrsEntriesComplete">
-							
-							<sjg:gridColumn name="gridKey" title ="id" width="55" hidden="true" key="true"/>
-							<sjg:gridColumn name="asacBudgetYear" index="asacBudgetYear" title ="Budget Year" width="10" sortable="false" editable="true" editrules="{number:true,required:true}" editoptions="{size:5,maxlength:4}" formoptions="{colpos:1,rowpos:1}" align="right"/>
-							<sjg:gridColumn name="asacReference" index="asacReference" title ="JLR" width="10" sortable="false" hidden="true" editable="true" formoptions="{colpos:2,rowpos:1}" edittype="select" formatter="select" editoptions="{edithidden: true,value:','}"/>
-							<sjg:gridColumn name="jlr" index="jlr" title ="JLR" width="10" sortable="false" editable="false"/>
-							<sjg:gridColumn name="aamAccount" index="aamAccount" title ="Account" width="10" sortable="false" editable="true" editrules="{number:true,required:true}" formoptions="{colpos:1,rowpos:2}" edittype="select" formatter="select" editoptions="{value:','}" align="right" />
-							<sjg:gridColumn name="aamFund" index="aamFund" title ="Fund" width="10" sortable="false" editable="true" editrules="{number:true,required:true}" formoptions="{colpos:2,rowpos:2}" edittype="select" formatter="select" editoptions="{value:','}" align="right"/>
-							<sjg:gridColumn name="aocOrg" index="aocOrg" title ="Org" width="10" sortable="false" editable="true" formoptions="{colpos:1,rowpos:3}"  edittype="select" formatter="select" editoptions="{value:','}"/>
-							<sjg:gridColumn name="asacProgram" index="asacProgram" title ="Program" width="10" sortable="false" editable="true" formoptions="{colpos:2,rowpos:3}" editoptions="{size:5,maxlength:4}" align="right"/>
-							<sjg:gridColumn name="asacSubclass" index="asacSubclass" title ="Subclass" width="10" sortable="false" editable="true" formoptions="{colpos:1,rowpos:4}" edittype="select" formatter="select" editoptions="{value:','}"/>
-							<sjg:gridColumn name="aamBusinessUnit" index="aamBusinessUnit" title ="Business Unit" width="10" sortable="false" editable="true" formoptions="{colpos:2,rowpos:4}" editrules="{required:true}" align="right"/>
-							<sjg:gridColumn name="asacProjectGrant" index="asacProjectGrant" title ="Project Grant" width="10" sortable="false" editable="true" formoptions="{colpos:1,rowpos:5}"/>
-							<sjg:gridColumn name="aseAmt" index="aseAmt" title ="Amount" width="10" sortable="false" editable="true" formatter="number" formatoptions="{decimalPlaces: 2}" formoptions="{colpos:2,rowpos:5}" editrules="{number:true,required:true}" align="right"/>
-							<sjg:gridColumn name="asacSystemActivityTypeCd" index="asacSystemActivityTypeCd" title ="Sys Activity Type Code" width="10" sortable="false" editable="false"/>
-							<sjg:gridColumn name="asacTxnCd" index="asacTxnCd" title ="Transaction Code" width="10" sortable="false" editable="false" align="right"/>
-							<sjg:gridColumn name="idPk.aseDrCrCd" index="idPk.aseDrCrCd" title ="Dr/Cr Code" width="10" sortable="false" editable="true" edittype="select" formatter="select" editoptions="{value: {D: 'Debit', C: 'Credit'}}" editrules="{required:true}" formoptions="{colpos:1,rowpos:6}"/>
-							<sjg:gridColumn name="idPk.aseSeqNo" index="idPk.aseSeqNo" title ="Seq No" width="10" sortable="false" editable="false" align="right"/>
-							<sjg:gridColumn name="aseLineDescription" index="aseLineDescription" title ="Line Desc" width="40" sortable="false" editable="true" edittype="textarea" formoptions="{colpos:2,rowpos:6}" editrules="{required:true}"/>
-					
-					</sjg:grid>	
-					</div>
-					<div id="alsNonAlsTempDiv" style="display:none;">
-					<s:url id="alsNonAlsTemplateGrid" action="alsAccount/alsNonAlsTemplateGrid_buildgrid" /> 
-					<sjg:grid
-						autoencode="false"
-						id="alsNonAlsTemplateTable"
-						caption="Templates"
-						href="%{alsNonAlsTemplateGrid}"
-						editurl="clientArray"		
-						dataType="json"
-						pager="true"
-						navigator="true"
-						navigatorEdit="false"
-						navigatorView="false"
-						navigatorAdd="false"
-						navigatorDelete="false"
-						navigatorSearch="false"   
-						navigatorRefresh="false"  	
-					   	gridModel="model"
-						rownumbers="false"
-						editinline="true"
-						navigatorInlineEditButtons="false"
-						loadonce="true"
-						viewrecords="true"
-						scroll="true"
-						scrollrows="true"
-						height="200"
-						width="950"
-						rowNum="1000"
-						onCompleteTopics="alsNonAlsTemplateTableComplete">
-					
-							<sjg:gridColumn name="gridKey" title ="id" width="55" hidden="true" key="true"/>
-							<sjg:gridColumn name="idPk.anatBudgetYear" index="idPk.anatBudgetYear" title =" Budget Year" width="25" sortable="false" hidden="true"/>
-							<sjg:gridColumn name="idPk.anatCd" index="idPk.anatCd" title =" Template Code" width="15" sortable="false" hidden="false" editable="false" editrules="{required:true}"/>
-							<sjg:gridColumn name="anatDesc" index="anatDesc" title ="Description" width="55" sortable="false" editable="false" edittype="textarea" editrules="{required:true}"/>
-							
-							<sjg:gridColumn name="amount" index="amount" title ="Amount" width="15" sortable="true" editable = "true" editrules="{number:true}" formatter= "number" formatoptions="{decimalPlaces: 2}"/>
-							<sjg:gridColumn name="selected" index="selected" title ="Select" width="15" sortable="true" align="center" editable = "true" edittype="checkbox" editoptions="{ value: '1:0' }" formatter= "checkbox" formatoptions="{disabled : false}"/>
-							
-					</sjg:grid>	
-					</div>		
-				</div>
-				<div id="tfour">
-					<s:url id="alsOverUnderSalesGridURL" action="alsAccount/alsOverUnderSalesGrid_buildgrid" />
+				<div id="intProvTThree">
+						<s:url id="alsOverUnderSalesGridURL" action="alsAccount/alsOverUnderSalesGrid_buildgrid" />
 					<s:url id="alsOverUnderSalesGridEditURL" action="alsAccount/alsOverUnderSalesGridEdit_execute" />    
 					<sjg:grid
 						id="alsOverUnderSales"
@@ -449,7 +340,10 @@
 						    	                      	return[true, ''];
 						    	              },
 					   						  afterSubmit:errorHandler,
-					   						  afterShowForm:prePopulate,   
+					   						  afterShowForm:function(postData){
+					   						  					prePopulate(this.id)
+						    	                      			return[true, ''];
+						    	              },    
 					   	                      addCaption:'Add New Code Info',
 					   	                      closeAfterAdd:true,
 					   	                      processData:'Adding Row to Database'}"
@@ -471,7 +365,7 @@
 						scroll="true"
 						scrollrows="true"
 						height="75"
-						width="950"
+						width="910"
 						rowNum="1000"
 						formIds="subGridFrm"
 						reloadTopics="reloadSubGrids"
@@ -480,6 +374,227 @@
 							<sjg:gridColumn name="aousdFlag" index="aousdFlag" title="Over/Short of Sales" width="10" sortable="true" editable="true" edittype="select" formatter="select" editoptions="{value: {O: 'Over Sale', U: 'Short of Sales'}}" editrules="{required:true}"/>
 							<sjg:gridColumn name="aousdDesc" index="aousdDesc" title="Description" width="10" sortable="true" editable="true" editrules="{required:true}"/>
 							<sjg:gridColumn name="aousdAmount" index="aousdAmount" title="Amount" width="10" sortable="true" editable="true" align="right" formatter= "number" formatoptions="{decimalPlaces: 2}" editrules="{number:true,required:true}" editoptions="{minValue:0}"/>
+					</sjg:grid>	
+				</div>
+		 	</sj:tabbedpanel>
+		 	<br>
+		 	<sj:tabbedpanel id="userTabs" selectedTab="0" useSelectedTabCookie="false"  cssStyle="width:950px;position:inherit">
+				<sj:tab id="userTab1" target="utOne" title="ALS SABHRS Entries" label="ALS SABHRS Entries" tabindex="1" />
+				<sj:tab id="userTab2" target="utTwo" title="Reverse ALS Entries" label="Reverse ALS Entries" tabindex="2" />
+				
+				<div id="utOne">
+					<div id ='tempErrorDiv'>
+						<span id='tempError'></span>
+					</div>
+					<s:url id="alsSabhrsEntriesGridURL" action="alsAccount/alsSabhrsEntriesGrid_buildgrid" />
+					<s:url id="alsSabhrsEntriesGridEditURL" action="alsAccount/alsSabhrsEntriesGridEdit_execute" />    
+					<sjg:grid
+						id="alsSabhrsEntriesGrid"
+						caption="ALS SABHRS Entries"
+						href="%{alsSabhrsEntriesGridURL}"
+						editurl="%{alsSabhrsEntriesGridEditURL}"		
+						dataType="local"
+						pager="true"
+						navigator="true"
+						navigatorEdit="true"
+						navigatorView="false"
+						navigatorAdd="true"
+						navigatorDelete="true"
+						navigatorSearch="false"
+						navigatorRefresh="false"
+						navigatorAddOptions="{width:950,reloadAfterSubmit:true,
+				    						  addedrow:'last',
+				    						  afterSubmit:errorHandler,
+				    	                      addCaption:'Add New Code Info',
+				    	                      closeAfterAdd:true,
+				    	                      processData:'Adding Row to Database'}"
+						navigatorEditOptions="{width:950,reloadAfterSubmit:true,
+				    	                       editCaption:'Edit Code Info',    
+				    	                       closeAfterEdit:true,
+				    	                       afterSubmit:errorHandler,
+				    	                       processData:'Updating to Database'}"
+						navigatorSearchOptions="{sopt:['cn','bw','eq','ne','lt','gt','ew'],multipleSearch:true}"
+					    navigatorViewOptions="{width:500,reloadAfterSubmit:false}"    	
+					    gridModel="model"
+						rownumbers="true"
+						viewrecords="true"
+						scroll="true"
+						scrollrows="true"
+						height="100"
+						width="910"
+						rowNum="1000"
+						formIds="subGridFrm"
+						reloadTopics="reloadSubGrids"
+						onCompleteTopics="alsSabhrsEntriesComplete">
+							
+							<sjg:gridColumn name="gridKey" title ="id" width="55" hidden="true" key="true"/>
+							<sjg:gridColumn name="asacBudgetYear" index="asacBudgetYear" title ="Budget Year" width="10" sortable="false" editable="true" editrules="{number:true,required:true}" editoptions="{size:5,maxlength:4}" formoptions="{colpos:1,rowpos:1}" align="right"/>
+							<sjg:gridColumn name="asacReference" index="asacReference" title ="JLR" width="10" sortable="false" hidden="true" editable="true" formoptions="{colpos:2,rowpos:1}" edittype="select" formatter="select" editoptions="{edithidden: true,value:','}"/>
+							<sjg:gridColumn name="jlr" index="jlr" title ="JLR" width="10" sortable="false" editable="false"/>
+							<sjg:gridColumn name="aamAccount" index="aamAccount" title ="Account" width="10" sortable="false" editable="true" editrules="{number:true,required:true}" formoptions="{colpos:1,rowpos:2}" edittype="select" formatter="select" editoptions="{value:','}" align="right" />
+							<sjg:gridColumn name="aamFund" index="aamFund" title ="Fund" width="10" sortable="false" editable="true" editrules="{number:true,required:true}" formoptions="{colpos:2,rowpos:2}" edittype="select" formatter="select" editoptions="{value:','}" align="right"/>
+							<sjg:gridColumn name="aocOrg" index="aocOrg" title ="Org" width="10" sortable="false" editable="true" formoptions="{colpos:1,rowpos:3}"  edittype="select" formatter="select" editoptions="{value:','}"/>
+							<sjg:gridColumn name="asacProgram" index="asacProgram" title ="Program" width="10" sortable="false" editable="true" formoptions="{colpos:2,rowpos:3}" editoptions="{size:5,maxlength:4}" align="right"/>
+							<sjg:gridColumn name="asacSubclass" index="asacSubclass" title ="Subclass" width="10" sortable="false" editable="true" formoptions="{colpos:1,rowpos:4}" edittype="select" formatter="select" editoptions="{value:','}"/>
+							<sjg:gridColumn name="aamBusinessUnit" index="aamBusinessUnit" title ="Business Unit" width="10" sortable="false" editable="true" formoptions="{colpos:2,rowpos:4}" editrules="{required:true}" align="right"/>
+							<sjg:gridColumn name="asacProjectGrant" index="asacProjectGrant" title ="Project Grant" width="10" sortable="false" editable="true" formoptions="{colpos:1,rowpos:5}"/>
+							<sjg:gridColumn name="aseAmt" index="aseAmt" title ="Amount" width="10" sortable="false" editable="true" formatter="number" formatoptions="{decimalPlaces: 2}" formoptions="{colpos:2,rowpos:5}" editrules="{number:true,required:true}" align="right"/>
+							<sjg:gridColumn name="asacSystemActivityTypeCd" index="asacSystemActivityTypeCd" title ="Sys Activity Type Code" width="10" sortable="false" editable="false"/>
+							<sjg:gridColumn name="asacTxnCd" index="asacTxnCd" title ="Transaction Code" width="10" sortable="false" editable="false" align="right"/>
+							<sjg:gridColumn name="idPk.aseDrCrCd" index="idPk.aseDrCrCd" title ="Dr/Cr Code" width="10" sortable="false" editable="true" edittype="select" formatter="select" editoptions="{value: {D: 'Debit', C: 'Credit'}}" editrules="{required:true}" formoptions="{colpos:1,rowpos:6}"/>
+							<sjg:gridColumn name="idPk.aseSeqNo" index="idPk.aseSeqNo" title ="Seq No" width="10" sortable="false" editable="false" align="right"/>
+							<sjg:gridColumn name="aseLineDescription" index="aseLineDescription" title ="Line Desc" width="40" sortable="false" editable="true" edittype="textarea" formoptions="{colpos:2,rowpos:6}" editrules="{required:true}"/>
+					
+					</sjg:grid>	
+					<br>
+					<s:url id="alsNonAlsTemplateGrid" action="alsAccount/alsNonAlsTemplateGrid_buildgrid" /> 
+					<sjg:grid
+						autoencode="false"
+						id="alsNonAlsTemplateTable"
+						caption="Templates"
+						href="%{alsNonAlsTemplateGrid}"
+						editurl="clientArray"		
+						dataType="json"
+						pager="true"
+						navigator="true"
+						navigatorEdit="false"
+						navigatorView="false"
+						navigatorAdd="false"
+						navigatorDelete="false"
+						navigatorSearch="false"   
+						navigatorRefresh="false"  	
+					   	gridModel="model"
+						rownumbers="false"
+						editinline="true"
+						navigatorInlineEditButtons="false"
+						loadonce="true"
+						viewrecords="true"
+						scroll="true"
+						scrollrows="true"
+						height="100"
+						width="910"
+						rowNum="1000"
+						onCompleteTopics="alsNonAlsTemplateTableComplete">
+					
+							<sjg:gridColumn name="gridKey" title ="id" width="55" hidden="true" key="true"/>
+							<sjg:gridColumn name="idPk.anatBudgetYear" index="idPk.anatBudgetYear" title =" Budget Year" width="25" sortable="false" hidden="true"/>
+							<sjg:gridColumn name="idPk.anatCd" index="idPk.anatCd" title =" Template Code" width="15" sortable="false" hidden="false" editable="false" editrules="{required:true}"/>
+							<sjg:gridColumn name="anatDesc" index="anatDesc" title ="Description" width="55" sortable="false" editable="false" edittype="textarea" editrules="{required:true}"/>
+							
+							<sjg:gridColumn name="amount" index="amount" title ="Amount" width="15" sortable="true" editable = "true" editrules="{number:true}" formatter= "number" formatoptions="{decimalPlaces: 2}"/>
+							<sjg:gridColumn name="selected" index="selected" title ="Select" width="15" sortable="true" align="center" editable = "true" edittype="checkbox" editoptions="{ value: '1:0' }" formatter= "checkbox" formatoptions="{disabled : false}"/>
+							
+					</sjg:grid>	
+				</div>
+				<div id="utTwo">
+					<s:url id="manualProviderAdjEntriesIAFAGridURL" action="alsAccount/manualProviderAdjEntriesIAFAGrid_buildgrid" /> 
+					<sjg:grid
+						id="iafaGrid"
+						caption="IAFA Table"
+						href="%{manualProviderAdjEntriesIAFAGridURL}"		
+						dataType="local"
+						pager="true"
+						navigator="false"
+						navigatorEdit="false"
+						navigatorView="false"
+						navigatorAdd="false"
+						navigatorDelete="false"
+						
+					    gridModel="model"
+						rownumbers="true"
+						viewrecords="true"
+						scroll="true"
+						scrollrows="true"
+						height="100"
+						width="910"
+						rowNum="1000"
+						formIds="subGridFrm"
+						reloadTopics="reloadSubGrids"
+						onSelectRowTopics="iafaRecordSelected">
+							
+							<sjg:gridColumn name="gridKey" title ="id" width="55" hidden="true" key="true"/>
+							<sjg:gridColumn name="apiProviderNo" index="apiProviderNo" title ="Issuing Provider No" width="10" sortable="false" align="right"/>
+							<sjg:gridColumn name="aprBillingFrom" index="aprBillingFrom" title ="Billing Period From" width="10" sortable="false" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }"/>
+							<sjg:gridColumn name="aprBillingTo" index="aprBillingTo" title ="Billing Period To" width="10" sortable="false" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }"/>
+							<sjg:gridColumn name="aiafaSeqNo" index="aiafaSeqNo" title ="IAFA Seq No" width="10" sortable="false" align="right"/>	
+					
+					</sjg:grid>
+					<br>
+					<div id ='revErrorDiv'>
+						<span id='revError'></span>
+					</div>
+					<s:url id="iafaManualProviderAdjEntriesGridURL" action="alsAccount/manualProviderAdjEntriesSABHRSGrid_buildgrid" />
+					<s:url id="iafaManualProviderAdjEntriesGridEditURL" action="alsAccount/manualProviderAdjEntriesSABHRSGridEdit_execute" />    
+					<sjg:grid
+						id="revAlsSabhrsEntriesGrid"
+						caption="ALS SABHRS Entries"
+						href="%{iafaManualProviderAdjEntriesGridURL}"
+						editurl="%{iafaManualProviderAdjEntriesGridEditURL}"		
+						dataType="local"
+						pager="true"
+						navigator="true"
+						navigatorEdit="true"
+						navigatorView="false"
+						navigatorAdd="true"
+						navigatorDelete="true"
+						navigatorAddOptions="{width:950,reloadAfterSubmit:true,
+				    						  addedrow:'last',
+				 	    					  afterShowForm:function(postData){
+					   						  					prePopulate(this.id);
+						    	                      			return[true, ''];
+						    	              }, 
+				                    		  beforeSubmit: function (postData) {
+				                    		  		$('#revAlsSabhrsEntriesGrid').jqGrid('setGridParam',{datatype:'json'});
+				    						  		postData.transIdentifier = $('#frmTransIdentifier').val();
+				    						  		postData.transGrp = $('#frmTransGrp').val();
+				    						  		postData.bpFrom = $('#frmBPFrom').val();
+				    						  		postData.bpTo = $('#frmBPTo').val();
+				    						  		return[true, ''];
+				    						  },  
+				    						  afterSubmit:errorHandler,
+				    	                      addCaption:'Add New Code Info',
+				    	                      closeAfterAdd:true,
+				    	                      processData:'Adding Row to Database'}"
+						navigatorEditOptions="{width:950,reloadAfterSubmit:false,
+				    	                       editCaption:'Edit Code Info',    
+				    	                       closeAfterEdit:true,
+				    	                       beforeSubmit: function (postData) {
+				                    		  		$('#revAlsSabhrsEntriesGrid').jqGrid('setGridParam',{datatype:'json'});
+				    						  		return[true, ''];
+				    						  },  
+				    	                       afterSubmit:errorHandler,
+				    	                       processData:'Updating to Database'
+				    	                      }"
+						navigatorSearchOptions="{sopt:['cn','bw','eq','ne','lt','gt','ew'],multipleSearch:true}"
+					    navigatorViewOptions="{width:500,reloadAfterSubmit:false}"    	
+					    gridModel="model"
+						rownumbers="true"
+						viewrecords="true"
+						scroll="true"
+						scrollrows="true"
+						height="100"
+						width="910"
+						rowNum="1000"
+						formIds="subGridFrm"
+						reloadTopics="reloadRevAlsSabhrsEntriesGrid"
+						onCompleteTopics="revAlsSabhrsEntriesComplete">
+							
+							<sjg:gridColumn name="gridKey" title ="id" width="55" hidden="true" key="true"/>
+							<sjg:gridColumn name="aamBusinessUnit" index="aamBusinessUnit" title ="Business Unit" width="10" sortable="false" editable="true" formoptions="{colpos:2,rowpos:4}" align="right"/>
+							<sjg:gridColumn name="asacReference" index="asacReference" title ="JLR" width="10" sortable="false" editable="true" edittype="select" formatter="select" editoptions="{value:','}" formoptions="{colpos:2,rowpos:1}"/>
+							<sjg:gridColumn name="aamAccount" index="aamAccount" title ="Account" width="10" sortable="false" editable="true" edittype="select" formatter="select" editoptions="{value:','}" formoptions="{colpos:1,rowpos:2}"/>
+							<sjg:gridColumn name="aamFund" index="aamFund" title ="Fund" width="10" sortable="false" editable="true" edittype="select" formatter="select" editoptions="{value:','}" formoptions="{colpos:2,rowpos:2}" align="right"/>
+							<sjg:gridColumn name="aocOrg" index="aocOrg" title ="Org" width="10" sortable="false" editable="true" edittype="select" formatter="select" editoptions="{value:','}" formoptions="{colpos:1,rowpos:3}"/>
+							<sjg:gridColumn name="asacProgram" index="asacProgram" title ="Program" width="10" sortable="false" editable="true" editrules="{number:true,required:true}" editoptions="{size:5,maxlength:4}" formoptions="{colpos:2,rowpos:3}" align="right"/>
+							<sjg:gridColumn name="asacSubclass" index="asacSubclass" title ="Subclass" width="10" sortable="false" editable="true" edittype="select" formatter="select" editoptions="{value:','}" formoptions="{colpos:1,rowpos:4}"/>
+							<sjg:gridColumn name="asacBudgetYear" index="asacBudgetYear" title ="Budget Year" width="10" sortable="false" editable="true" editrules="{number:true,required:true}" editoptions="{size:5,maxlength:4}" formoptions="{colpos:1,rowpos:1}" align="right"/>
+							<sjg:gridColumn name="asacProjectGrant" index="asacProjectGrant" title ="Project Grant" width="10" sortable="false" editable="true" formoptions="{colpos:1,rowpos:5}"/>
+							<sjg:gridColumn name="aseAmt" index="aseAmt" title ="Amount" width="10" sortable="false" editable="true" formoptions="{colpos:2,rowpos:5}" formatter= "number" formatoptions="{decimalPlaces: 2}" align="right" editrules="{number:true,required:true}"/>
+							<sjg:gridColumn name="asacSystemActivityTypeCd" index="asacSystemActivityTypeCd" title ="Sys Activity Type Code" width="10" sortable="false" editable="false"/>
+							<sjg:gridColumn name="asacTxnCd" index="asacTxnCd" title ="Transaction Code" width="10" sortable="false" editable="false" align="right"/>
+							<sjg:gridColumn name="idPk.aseDrCrCd" index="idPk.aseDrCrCd" title ="Dr/Cr Code" width="10" sortable="false" editable="true" edittype="select" formatter="select" editoptions="{value: {D: 'Debit', C: 'Credit'}}" editrules="{required:true}" formoptions="{colpos:1,rowpos:6}"/>
+							<sjg:gridColumn name="idPk.aseSeqNo" index="aseSeqNo" title ="Seq No" width="10" sortable="false" editable="false" align="right"/>
+							<sjg:gridColumn name="aseLineDescription" index="aseLineDescription" title ="Line Desc" width="40" sortable="false" editable="true" formoptions="{colpos:2,rowpos:6}" edittype="textarea" editrules="{required:true}"/>
 					</sjg:grid>
 				</div>
 		 	</sj:tabbedpanel>

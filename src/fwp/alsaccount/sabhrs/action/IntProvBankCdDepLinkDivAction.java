@@ -21,7 +21,10 @@ public class IntProvBankCdDepLinkDivAction extends ActionSupport{
 	
 	public String input(){
 		ListUtils lu = new ListUtils();
-		bankCdLst = FwpStringUtils.listCompListToString(lu.getProviderBankCodeList(provNo));
+		if(provNo != null){
+			bankCdLst = FwpStringUtils.listCompListToString(lu.getProviderBankCodeList(provNo));
+		}
+		
 		return SUCCESS;
 	}
 	

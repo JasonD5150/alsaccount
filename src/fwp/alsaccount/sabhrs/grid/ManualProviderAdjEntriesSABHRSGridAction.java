@@ -28,42 +28,41 @@ public class ManualProviderAdjEntriesSABHRSGridAction extends ActionSupport{
     private String              filters;
     private boolean             loadonce         = false;
     
-    private Integer 			selProvNo;
-    private Integer 			selIafaSeqNo;
-    private Date				selBpToDt;
-    private Date				selBpFromDt;
-    private Integer 			transCd;
-    private String 				groupId;
+    private Integer 			provNo;
+    private Integer 			iafaSeqNo;
+    private Date				bpFrom;
+    private Date				bpTo;
+
 
 	@SuppressWarnings("unchecked")
 	public String buildgrid(){ 		
-    	AlsSabhrsEntriesAS aaccAS = new AlsSabhrsEntriesAS();
-    	List<AlsSabhrsEntries> aacc;
+    	AlsSabhrsEntriesAS aseAS = new AlsSabhrsEntriesAS();
+    	List<AlsSabhrsEntries> aseLst;
     	
         try{
-        	aacc = aaccAS.getManualProviderAdjEntriesRecords(transCd, groupId.substring(0, groupId.length()-3)+'%', selProvNo, selIafaSeqNo, selBpFromDt, selBpToDt);
+        	aseLst = aseAS.getManualProviderAdjEntriesRecords(provNo, iafaSeqNo, bpFrom, bpTo);
         	
 			setModel(new ArrayList<AlsSabhrsEntriesDTO>());
 			AlsSabhrsEntriesDTO tmp;
 
-        	for(AlsSabhrsEntries aa : aacc){
+        	for(AlsSabhrsEntries ase : aseLst){
 				tmp = new AlsSabhrsEntriesDTO();
 
-				tmp.setGridKey(aa.getIdPk().getAseWhenEntryPosted()+"_"+aa.getIdPk().getAseSeqNo()+"_"+aa.getIdPk().getAseDrCrCd()+"_"+aa.getIdPk().getAseTxnCdSeqNo());
-				tmp.setIdPk(aa.getIdPk());
-				tmp.setAsacBudgetYear(aa.getAsacBudgetYear());
-				tmp.setAsacReference(aa.getAsacReference());
-				tmp.setAamAccount(aa.getAamAccount());
-				tmp.setAamFund(aa.getAamFund());
-				tmp.setAocOrg(aa.getAocOrg());
-				tmp.setAsacProgram(aa.getAsacProgram());
-				tmp.setAsacSubclass(aa.getAsacSubclass());
-				tmp.setAamBusinessUnit(aa.getAamBusinessUnit());
-				tmp.setAsacProjectGrant(aa.getAsacProjectGrant());
-				tmp.setAseAmt(aa.getAseAmt());
-				tmp.setAsacSystemActivityTypeCd(aa.getAsacSystemActivityTypeCd());
-				tmp.setAsacTxnCd(aa.getAsacTxnCd());
-				tmp.setAseLineDescription(aa.getAseLineDescription());
+				tmp.setGridKey(ase.getIdPk().getAseWhenEntryPosted()+"_"+ase.getIdPk().getAseSeqNo()+"_"+ase.getIdPk().getAseDrCrCd()+"_"+ase.getIdPk().getAseTxnCdSeqNo());
+				tmp.setIdPk(ase.getIdPk());
+				tmp.setAsacBudgetYear(ase.getAsacBudgetYear());
+				tmp.setAsacReference(ase.getAsacReference());
+				tmp.setAamAccount(ase.getAamAccount());
+				tmp.setAamFund(ase.getAamFund());
+				tmp.setAocOrg(ase.getAocOrg());
+				tmp.setAsacProgram(ase.getAsacProgram());
+				tmp.setAsacSubclass(ase.getAsacSubclass());
+				tmp.setAamBusinessUnit(ase.getAamBusinessUnit());
+				tmp.setAsacProjectGrant(ase.getAsacProjectGrant());
+				tmp.setAseAmt(ase.getAseAmt());
+				tmp.setAsacSystemActivityTypeCd(ase.getAsacSystemActivityTypeCd());
+				tmp.setAsacTxnCd(ase.getAsacTxnCd());
+				tmp.setAseLineDescription(ase.getAseLineDescription());
 				
 				model.add(tmp);
 			}
@@ -158,65 +157,37 @@ public class ManualProviderAdjEntriesSABHRSGridAction extends ActionSupport{
 		this.model = model;
 	}
 
+	public Integer getProvNo() {
+		return provNo;
+	}
+
+	public void setProvNo(Integer provNo) {
+		this.provNo = provNo;
+	}
+
+	public Integer getIafaSeqNo() {
+		return iafaSeqNo;
+	}
+
+	public void setIafaSeqNo(Integer iafaSeqNo) {
+		this.iafaSeqNo = iafaSeqNo;
+	}
+
+	public Date getBpTo() {
+		return bpTo;
+	}
+
+	public void setBpTo(Date bpTo) {
+		this.bpTo = bpTo;
+	}
+
+	public Date getBpFrom() {
+		return bpFrom;
+	}
+
+	public void setBpFrom(Date bpFrom) {
+		this.bpFrom = bpFrom;
+	}
 	
-
-	public Integer getSelProvNo() {
-		return selProvNo;
-	}
-
-
-	public void setSelProvNo(Integer selProvNo) {
-		this.selProvNo = selProvNo;
-	}
-	
-	public Integer getSelIafaSeqNo() {
-		return selIafaSeqNo;
-	}
-
-
-	public void setSelIafaSeqNo(Integer selIafaSeqNo) {
-		this.selIafaSeqNo = selIafaSeqNo;
-	}
-
-
-	public Date getSelBpToDt() {
-		return selBpToDt;
-	}
-
-
-	public void setSelBpToDt(Date selBpToDt) {
-		this.selBpToDt = selBpToDt;
-	}
-
-
-	public Date getSelBpFromDt() {
-		return selBpFromDt;
-	}
-
-
-	public void setSelBpFromDt(Date selBpFromDt) {
-		this.selBpFromDt = selBpFromDt;
-	}
-
-
-	public Integer getTransCd() {
-		return transCd;
-	}
-
-
-	public void setTransCd(Integer transCd) {
-		this.transCd = transCd;
-	}
-
-
-	public String getGroupId() {
-		return groupId;
-	}
-
-
-	public void setGroupId(String groupId) {
-		this.groupId = groupId;
-	}
-    
 	
 }

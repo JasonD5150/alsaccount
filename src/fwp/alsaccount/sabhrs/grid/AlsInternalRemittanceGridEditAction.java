@@ -134,7 +134,7 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 	}
 	
 	private String postEntries(AlsInternalRemittance original, Integer provNo, Timestamp bpFrom, Timestamp bpTo){
-		String grpIdentifier = Utils.createIntProvGroupIdentifier(provNo, bpTo.toString().substring(0, 10).replace("-", "/"),"001");
+		String grpIdentifier = Utils.createIntProvGroupIdentifier(provNo, bpTo.toString().substring(0, 10).replace("-", "/"),001);
 		Integer transGrpCd = 8;
 		Double totBankDep = 0.0;
 		Integer seqNo = 2;
@@ -145,7 +145,7 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 		String where = "WHERE idPk.apiProviderNo = "+provNo+" AND idPk.apbdBillingTo = TO_TIMESTAMP('"+bpTo+"', 'yyyy-MM-dd HH24:MI:SS.FF')";
 		apbdLst = apbdAS.findAllByWhere(where);
 		for(AlsProviderBankDetails apbd : apbdLst){
-			String grpIdentifier1 = Utils.createIntProvGroupIdentifier(provNo, bpTo.toString().substring(0, 10).replace("-", "/"),String.format("%03d", seqNo));
+			String grpIdentifier1 = Utils.createIntProvGroupIdentifier(provNo, bpTo.toString().substring(0, 10).replace("-", "/"),seqNo);
 			
 			if(apbdLst.indexOf(apbd) == 0){
 				bankCd = apbd.getAbcBankCd();
@@ -182,7 +182,7 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 			seqNo += 1;
 		}
 		
-		String grpIdentifier2 = Utils.createIntProvGroupIdentifier(provNo, bpTo.toString().substring(0, 10).replace("-", "/"),String.format("%03d", seqNo));
+		String grpIdentifier2 = Utils.createIntProvGroupIdentifier(provNo, bpTo.toString().substring(0, 10).replace("-", "/"),seqNo);
 		if(totBankDep > 0){
 			insertTransGrpStatus(original, transGrpCd, grpIdentifier2, null, null);
 			if(hh.postE42Entries(totBankDep, provNo, bpFrom, bpTo, 8, grpIdentifier2,"E43","TOTAL BANK DEPOSIT",null,null,null,null)!= 1){
@@ -226,8 +226,8 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 	private String deleteEntries(AlsInternalRemittance original, Integer provNo, Timestamp bpFrom, Timestamp bpTo){
 		String where = null;
 		
-		String grpIdentifier = Utils.createIntProvGroupIdentifier(provNo, bpTo.toString().substring(0, 10).replace("-", "/"),"");
-		String grpIdentifier1 = Utils.createIntProvGroupIdentifier(provNo, bpTo.toString().substring(0, 10).replace("-", "/"),"001");
+		String grpIdentifier = Utils.createIntProvGroupIdentifier(provNo, bpTo.toString().substring(0, 10).replace("-", "/"),null);
+		String grpIdentifier1 = Utils.createIntProvGroupIdentifier(provNo, bpTo.toString().substring(0, 10).replace("-", "/"),001);
 		Integer transGrpCd = 8;
 		String interfaceStatus = null;
 	

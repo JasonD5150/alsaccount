@@ -253,10 +253,13 @@ public class Utils {
 	    return new java.sql.Date(date.getTime());
 	} 
 	
-	public static String createIntProvGroupIdentifier(Integer provNo, String bpTo, String seqNo){
-		String rtn = "";
-		rtn = "P"+String.format("%06d", provNo)+" "+bpTo+" "+seqNo;
-		return rtn;		
+	public static String createIntProvGroupIdentifier(Integer provNo, String bpTo, Integer seqNo){
+		StringBuilder sb = new StringBuilder("");
+		sb.append("P"+String.format("%06d", provNo)+" "+bpTo+" ");
+		if(seqNo != null){
+			sb.append(String.format("%03d", seqNo));
+		}
+		return sb.toString();		
 	};
 	
 	public static String getOracleFormatedDate(java.util.Date date) {

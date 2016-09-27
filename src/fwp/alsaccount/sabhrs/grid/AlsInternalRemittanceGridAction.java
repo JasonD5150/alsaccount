@@ -120,7 +120,7 @@ public class AlsInternalRemittanceGridAction extends ActionSupport{
             			
             			/*GET INTERFACE FILE CREATION DATE FROM ALS_TRANSACTION_GRP_STATUS*/
             			sdf.applyPattern("yyyy/MM/dd");
-            			String where = "WHERE idPk.atgsGroupIdentifier = '"+Utils.createIntProvGroupIdentifier(tmp.getApiProviderNo(), sdf.format(new Date(tmp.getAirBillingTo().getTime())),"001")+"' ";
+            			String where = "WHERE idPk.atgsGroupIdentifier = '"+Utils.createIntProvGroupIdentifier(tmp.getApiProviderNo(), sdf.format(new Date(tmp.getAirBillingTo().getTime())),001)+"' ";
             			atgsLst = atgsAS.findAllByWhere(where);
             			if(!atgsLst.isEmpty()){
             				airDTO.setIntFileCreateDt(atgsLst.get(0).getAtgsFileCreationDt());

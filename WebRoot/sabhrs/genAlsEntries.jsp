@@ -8,7 +8,7 @@
 <fwp:template loadJquery="false" useFwpJqueryUI="true">
     <fwp:head>
         <sj:head locale="en" jqueryui="true" jquerytheme="smoothness" customBasepath="css/jquery"/>
-	   	<script type="text/javascript" src= "/alsaccount/sabhrs/scripts/fwp.genNonAlsEntries.js"></script>  
+	   	<script type="text/javascript" src= "/alsaccount/sabhrs/scripts/fwp.genAlsEntries.js"></script>  
 		<script src='/alsaccount/scripts/menuSecurity.js' type='text/javascript'></script>
 		<style type="text/css">
 			@import url("/alsaccount/css/alsaccount.css");
@@ -30,7 +30,7 @@
 	</form>
 	
     <div style="width:800px;text-align:center">
-    	<h2 class="title">Generate Non Als Entries</h2>
+    	<h2 class="title">Generate ALS Entries</h2>
    	</div>
 
 	<fieldset style="border: black 1px solid; display: inline-block;margin: 0 5px;">
@@ -91,7 +91,6 @@
     	<legend style="font-weight: bold;">Actions</legend>
 		<s:submit id="submitSearch" onclick="submitSearch()" value="Submit" theme="simple"></s:submit>
 		<s:submit id="resetSearch" onclick="resetSearch()" value="Reset" theme="simple"></s:submit>
-		<s:submit id="reverseAlsEntries" onclick="reverseAlsEntries()" value="Reverse Als Entries" theme="simple" disabled="true"></s:submit>
 	</fieldset>
 	<br>
 	<br>
@@ -136,7 +135,7 @@
 	<s:url id="alsSabhrsEntriesGridEditURL" action="alsAccount/alsSabhrsEntriesGridEdit_execute" />    
 	<sjg:grid
 		id="alsSabhrsEntriesTable"
-		caption="Non Als SABHRS Entries"
+		caption="ALS SABHRS Entries"
 		href="%{alsSabhrsEntriesGridURL}"
 		editurl="%{alsSabhrsEntriesGridEditURL}"		
 		dataType="json"

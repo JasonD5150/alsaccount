@@ -5,6 +5,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 
@@ -12,10 +13,12 @@ import com.opensymphony.xwork2.ActionSupport;
 
 import fwp.alsaccount.appservice.admin.AlsNonAlsTemplateAS;
 import fwp.alsaccount.appservice.sabhrs.AlsSabhrsEntriesAS;
+import fwp.alsaccount.appservice.sabhrs.AlsTransactionGrpStatusAS;
 import fwp.alsaccount.dao.admin.AlsNonAlsTemplate;
 import fwp.alsaccount.dao.admin.AlsNonAlsTemplateIdPk;
 import fwp.alsaccount.dao.sabhrs.AlsSabhrsEntries;
 import fwp.alsaccount.dao.sabhrs.AlsSabhrsEntriesIdPk;
+import fwp.alsaccount.dao.sabhrs.AlsTransactionGrpStatus;
 import fwp.alsaccount.utils.HibHelpers;
 import fwp.security.user.UserDTO;
 
@@ -58,6 +61,11 @@ public class AlsSabhrsEntriesGridEditAction extends ActionSupport{
 		AlsSabhrsEntriesAS aseAS = new AlsSabhrsEntriesAS();
 		AlsSabhrsEntriesIdPk aseIdPk = new AlsSabhrsEntriesIdPk();
 		AlsSabhrsEntries ase = null;
+		
+		AlsTransactionGrpStatusAS atgsAS = new AlsTransactionGrpStatusAS();
+		String where = " WHERE idPk.atgsGroupIdentifier = '"+transIdentifier+"'";
+		List<AlsTransactionGrpStatus> atgsLst = atgsAS.findAllByWhere(where);
+		AlsTransactionGrpStatus atgs = null;
 		
 		HibHelpers hh = new HibHelpers();
 		UserDTO userInfo = (UserDTO)SecurityUtils.getSubject().getSession().getAttribute("userInfo");
@@ -118,6 +126,17 @@ public class AlsSabhrsEntriesGridEditAction extends ActionSupport{
 				ase.setAseWhenLog(date);
 				//********************************************************************
 				aseAS.save(ase);
+				
+				/*UPDATE ALS_TRANSACTION_GRP_STATUS*/
+				if(!atgsLst.isEmpty()){
+					atgs = atgsLst.get(0);
+					if("C".equals(ase.getIdPk().getAseDrCrCd())){
+						atgs.setAtgsNetDrCr(atgs.getAtgsNetDrCr()-aseAmt);
+					}else if("D".equals(ase.getIdPk().getAseDrCrCd())){
+						atgs.setAtgsNetDrCr(atgs.getAtgsNetDrCr()+aseAmt);
+					}
+					atgsAS.save(atgs);
+				}
 				
 			} else if (oper.equalsIgnoreCase("addTemplates")) {
 				if(transIdentifier == null){
@@ -196,6 +215,16 @@ public class AlsSabhrsEntriesGridEditAction extends ActionSupport{
 				aseAS.save(ase);
 			}else if(oper.equalsIgnoreCase("del")){
 				aseAS.delete(ase);
+				/*UPDATE ALS_TRANSACTION_GRP_STATUS*/
+				if(!atgsLst.isEmpty()){
+					atgs = atgsLst.get(0);
+					if("C".equals(ase.getIdPk().getAseDrCrCd())){
+						atgs.setAtgsNetDrCr(atgs.getAtgsNetDrCr()+aseAmt);
+					}else if("D".equals(ase.getIdPk().getAseDrCrCd())){
+						atgs.setAtgsNetDrCr(atgs.getAtgsNetDrCr()-aseAmt);
+					}
+					atgsAS.save(atgs);
+				}
 			}
 		}  catch(Exception ex) {
 			 if (ex.toString().contains("ORA-02292")){

@@ -128,27 +128,23 @@ public class ListUtils {
 	@SuppressWarnings("unchecked")
 	public List<ListComp> getItemTypeCd(String itemCd){
 		List<ListComp> lst = new ArrayList<ListComp>();
-		
-		String where = "";
-		
-		if (itemCd != null) {
-			where = " where LPAD(AI_ITEM_ID,2,0)||LPAD(AIC_CATEGORY_ID,2,0)||LPAD(AIT_TYPE_ID,3,0) = '" + itemCd +"' ";
-		}
-		
-		String queryString = 
-				" select LPAD(AI_ITEM_ID,2,0)||LPAD(AIC_CATEGORY_ID,2,0)||LPAD(AIT_TYPE_ID,3,0) itemVal, " +
-				" LPAD(AI_ITEM_ID,2,0)||LPAD(AIC_CATEGORY_ID,2,0)||LPAD(AIT_TYPE_ID,3,0)||' - '||ait_type_desc itemLabel " +
-				" from als.als_item_type " +
-				where +
-				" order by LPAD(AI_ITEM_ID,2,0)||LPAD(AIC_CATEGORY_ID,2,0)||LPAD(AIT_TYPE_ID,3,0)"; 
-		
-		Query query = getSession().createSQLQuery(queryString )
-				.addScalar("itemVal")
-				.addScalar("itemLabel")
-				
-				.setResultTransformer(Transformers.aliasToBean(ListComp.class));
 
-	
+		StringBuilder queryString = new StringBuilder("SELECT LPAD(AI_ITEM_ID,2,0)||LPAD(AIC_CATEGORY_ID,2,0)||LPAD(AIT_TYPE_ID,3,0) itemVal, " 
+													+ "LPAD(AI_ITEM_ID,2,0)||LPAD(AIC_CATEGORY_ID,2,0)||LPAD(AIT_TYPE_ID,3,0)||' - '||ait_type_desc itemLabel " 
+													+ "FROM als.als_item_type ");
+
+		if (!Utils.isNil(itemCd)) {
+			queryString.append("WHERE LPAD(AI_ITEM_ID,2,0)||LPAD(AIC_CATEGORY_ID,2,0)||LPAD(AIT_TYPE_ID,3,0) = :itemCd ");
+		}
+		queryString.append("ORDER BY LPAD(AI_ITEM_ID,2,0)||LPAD(AIC_CATEGORY_ID,2,0)||LPAD(AIT_TYPE_ID,3,0)");
+		Query query = getSession().createSQLQuery(queryString.toString())
+								  .addScalar("itemVal")
+								  .addScalar("itemLabel")
+								  .setResultTransformer(Transformers.aliasToBean(ListComp.class));
+
+		if (!Utils.isNil(itemCd)) {
+			query.setString("itemCd", itemCd);
+		}
 		lst = query.list();
 		getSession().close();
 		return lst;
@@ -181,16 +177,18 @@ public class ListUtils {
 						   + "FROM als.als_item_type "
 						   + "WHERE EXISTS (SELECT 1 "
 						   + "FROM als.als_item_control_table "
-						   + "WHERE aict_usage_period_from = to_date('"+upf+"','MM/DD/YYYY') "
-						   + "AND aict_usage_period_to = to_date('"+upt+"','MM/DD/YYYY') "
+						   + "WHERE aict_usage_period_from = :upf "
+						   + "AND aict_usage_period_to = :upt "
 						   + "AND aict_item_type_cd = ai_item_id||aic_category_id||ait_type_id) "
 						   + "ORDER BY "
 						   + "ai_item_id||aic_category_id||ait_type_id";
 
 		Query query = getSession().createSQLQuery(queryString)
-				.addScalar("itemVal", StringType.INSTANCE)
-				.addScalar("itemLabel", StringType.INSTANCE)
-				.setResultTransformer(Transformers.aliasToBean(ListComp.class));
+								  .addScalar("itemVal", StringType.INSTANCE)
+								  .addScalar("itemLabel", StringType.INSTANCE)
+								  .setString("upf", upf)
+								  .setString("upt", upt)
+								  .setResultTransformer(Transformers.aliasToBean(ListComp.class));
 
 		lst = query.list();
 		getSession().close(); 
@@ -297,7 +295,7 @@ public class ListUtils {
 		String year = (budgetYear == null || "".equals(budgetYear)) ? hh.getCurrentBudgetYear() : budgetYear;
 
 		String where = " WHERE idPk.asacBudgetYear = " + year
-				+ " ORDER BY idPk.aamAccount ";
+					 + " ORDER BY idPk.aamAccount ";
 		
 		AlsAccountMasterAS appSer = new AlsAccountMasterAS();
 		List<AlsAccountMaster> aamLst = appSer.findAllByWhere(where);
@@ -327,19 +325,20 @@ public class ListUtils {
 						   + "aoc_org itemLabel " 
 						   + "FROM als.als_activity_account_linkage "
 						   + "WHERE aoc_org IS NOT NULL "
-						   + "AND asac_budget_year ="+year+" "
+						   + "AND asac_budget_year = :year "
 						   + "UNION "
 						   + "SELECT aoc_org itemVal, "
 						   + "aoc_org itemLabel "
 						   + "FROM als.als_org_control "
 						   + "WHERE aoc_org IS NOT NULL "
-						   + "AND asac_budget_year ="+year+" "
+						   + "AND asac_budget_year = :year "
 						   + "ORDER BY 1";
 		
 		Query query = getSession().createSQLQuery(queryString)
-				.addScalar("itemVal", StringType.INSTANCE)
-				.addScalar("itemLabel", StringType.INSTANCE)
-				.setResultTransformer(Transformers.aliasToBean(ListComp.class));
+								  .addScalar("itemVal", StringType.INSTANCE)
+								  .addScalar("itemLabel", StringType.INSTANCE)
+								  .setString("year", year)
+								  .setResultTransformer(Transformers.aliasToBean(ListComp.class));
 
 		lst = query.list();
 		getSession().close(); 
@@ -368,20 +367,21 @@ public class ListUtils {
 	
 	@SuppressWarnings("unchecked")
 	public List<ListComp> getJLRBudgYearList(String budgetYear) {
-		String year = (budgetYear == null || "".equals(budgetYear)) ? hh.getCurrentBudgetYear() : budgetYear;
+		String year = (budgetYear == null || "".equals(budgetYear)) ? hh.getCurrentBudgetYear().substring(2, 4) : budgetYear.substring(2, 4);
 
 		List<ListComp> lst = new ArrayList<ListComp>();
 		
-		String queryString = "SELECT DISTINCT am_val_desc || SUBSTR('"+year+"',3,4)  itemVal, "
-						   + "am_val_desc || SUBSTR('"+year+"',3,4)  itemLabel "
+		String queryString = "SELECT DISTINCT am_val_desc || :year  itemVal, "
+						   + "am_val_desc || :year  itemLabel "
 						   + "FROM als.als_misc "
 						   + "WHERE am_key1 = 'JOURNAL_LINE_REFERENCE' "
 						   + "ORDER BY itemVal ";
 
 		Query query = getSession().createSQLQuery(queryString)
-				.addScalar("itemVal", StringType.INSTANCE)
-				.addScalar("itemLabel", StringType.INSTANCE)
-				.setResultTransformer(Transformers.aliasToBean(ListComp.class));
+								  .addScalar("itemVal", StringType.INSTANCE)
+								  .addScalar("itemLabel", StringType.INSTANCE)
+								  .setString("year", year)
+								  .setResultTransformer(Transformers.aliasToBean(ListComp.class));
 
 		lst = query.list();
 		getSession().close(); 
@@ -422,19 +422,20 @@ public class ListUtils {
 						   + "AAM_FUND itemLabel "
 						   + "FROM ALS.ALS_ACTIVITY_ACCOUNT_LINKAGE "
 						   + "WHERE aam_fund IS NOT NULL "
-						   + "AND asac_budget_year ="+year+" "
+						   + "AND asac_budget_year = :year "
 						   + "UNION "
 						   + "SELECT DISTINCT AACC_FUND itemVal, "
 						   + "AACC_FUND itemLabel "
 						   + "FROM ALS.ALS_ACC_CD_CONTROL "
 						   + "WHERE aacc_fund IS NOT NULL "
-						   + "AND asac_budget_year ="+year+" "
+						   + "AND asac_budget_year = :year "
 						   + "ORDER BY itemVal";
 						   
 		Query query = getSession().createSQLQuery(queryString)
-				.addScalar("itemVal", StringType.INSTANCE)
-				.addScalar("itemLabel", StringType.INSTANCE)
-				.setResultTransformer(Transformers.aliasToBean(ListComp.class));
+								  .addScalar("itemVal", StringType.INSTANCE)
+								  .addScalar("itemLabel", StringType.INSTANCE)
+								  .setString("year", year)
+								  .setResultTransformer(Transformers.aliasToBean(ListComp.class));
 
 		lst = query.list();
 		getSession().close(); 
@@ -455,19 +456,20 @@ public class ListUtils {
 						   + "ASAC_SUBCLASS itemLabel "
 						   + "FROM ALS.ALS_ACTIVITY_ACCOUNT_LINKAGE "
 						   + "WHERE ASAC_SUBCLASS IS NOT NULL "
-						   + "AND ASAC_BUDGET_YEAR="+year+" "
+						   + "AND ASAC_BUDGET_YEAR= :year "
 						   + "UNION "
 						   + "SELECT DISTINCT ASAC_SUBCLASS itemVal,"
 						   + "ASAC_SUBCLASS itemLabel "
 						   + "FROM ALS.ALS_ACC_CD_CONTROL "
 						   + "WHERE ASAC_SUBCLASS IS NOT NULL "
-						   + "AND ASAC_BUDGET_YEAR="+year+" "
+						   + "AND ASAC_BUDGET_YEAR= :year "
 						   + "ORDER BY itemVal";
 		
 		Query query = getSession().createSQLQuery(queryString)
-				.addScalar("itemVal", StringType.INSTANCE)
-				.addScalar("itemLabel", StringType.INSTANCE)
-				.setResultTransformer(Transformers.aliasToBean(ListComp.class));
+								  .addScalar("itemVal", StringType.INSTANCE)
+								  .addScalar("itemLabel", StringType.INSTANCE)
+								  .setString("year", year)
+								  .setResultTransformer(Transformers.aliasToBean(ListComp.class));
 
 		lst = query.list();
 		getSession().close(); 
@@ -550,10 +552,11 @@ public class ListUtils {
 		String queryString = "SELECT distinct ASAC_PROJECT_GRANT "
 						   + "FROM ALS.ALS_SYS_ACTIVITY_CONTROL "
 						   + "WHERE ASAC_PROJECT_GRANT IS NOT NULL "
-						   + "AND ASAC_BUDGET_YEAR ="+year+" "
+						   + "AND ASAC_BUDGET_YEAR = :year "
 						   + "ORDER BY ASAC_PROJECT_GRANT ";
 
-		Query query = getSession().createSQLQuery(queryString);
+		Query query = getSession().createSQLQuery(queryString)
+								  .setString("year", year);
 		tmpLst = query.list();
 		if (tmpLst.size() == 1) {
 			retVal = "";
@@ -649,13 +652,14 @@ public class ListUtils {
 							+ "als.als_provider_info b "
 							+ "WHERE a.azc_zip_cd = b.azc_business_zipcode "
 							+ "AND a.abc_active = 'Y' "
-							+ "AND b.api_provider_no = "+provNo+" "
+							+ "AND b.api_provider_no = :provNo "
 							+ "Order By ABC_BANK_CD";
 
 		Query query = getSession().createSQLQuery(queryString)
-				.addScalar("itemVal", StringType.INSTANCE)
-				.addScalar("itemLabel", StringType.INSTANCE)
-				.setResultTransformer(Transformers.aliasToBean(ListComp.class));
+								  .addScalar("itemVal", StringType.INSTANCE)
+								  .addScalar("itemLabel", StringType.INSTANCE)
+								  .setInteger("provNo", provNo)
+								  .setResultTransformer(Transformers.aliasToBean(ListComp.class));
 
 		lst = query.list();
 		getSession().close(); 
@@ -690,13 +694,14 @@ public class ListUtils {
 		String queryString = "SELECT AIR_BILLING_TO BILLING_DT||' - '||TO_CHAR(AIR_BILLING_TO,''MM/DD/YYYY'') itemVal,"
 							+ "AIR_BILLING_TO BILLING_DT||' - '||TO_CHAR(AIR_BILLING_TO,''MM/DD/YYYY'') itemLabel "
 		 	   	            +"FROM ALS.ALS_INTERNAL_REMITTANCE "
-		 	   	            +"WHERE API_PROVIDER_NO = "+provNo+" "
+		 	   	            +"WHERE API_PROVIDER_NO = :provNo "
 		 	                +"Order By  1 DESC";
 
 		Query query = getSession().createSQLQuery(queryString)
-				.addScalar("itemVal", StringType.INSTANCE)
-				.addScalar("itemLabel", StringType.INSTANCE)
-				.setResultTransformer(Transformers.aliasToBean(ListComp.class));
+								  .addScalar("itemVal", StringType.INSTANCE)
+								  .addScalar("itemLabel", StringType.INSTANCE)
+								  .setInteger("provNo", provNo)
+								  .setResultTransformer(Transformers.aliasToBean(ListComp.class));
 
 		lst = query.list();
 		getSession().close(); 

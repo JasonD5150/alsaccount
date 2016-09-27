@@ -31,9 +31,9 @@
             <result name="input">sabhrs/uploadSabhrsToSummary.jsp</result>         
       </action>    	
       <action name="genNonAlsEntries_*" method="{1}" class="fwp.alsaccount.sabhrs.action.GenNonAlsEntriesAction">
-            <result>sabhrs/genNonAlsEntries.jsp</result>
-            <result name="error">sabhrs/genNonAlsEntries.jsp</result>
-            <result name="input">sabhrs/genNonAlsEntries.jsp</result>         
+            <result>sabhrs/genAlsEntries.jsp</result>
+            <result name="error">sabhrs/genAlsEntries.jsp</result>
+            <result name="input">sabhrs/genAlsEntries.jsp</result>         
       </action>
       <action name="accMasterDialog_*" method="{1}" class="fwp.alsaccount.action.GenericAction">
             <result>sabhrs/include/nonAlsMasterDialog.jsp</result>
@@ -110,11 +110,6 @@
 			<result>sabhrs/include/intProvRemittanceQueryDiv.jsp</result>
 			<result name="error">sabhrs/include/intProvRemittanceQueryDiv.jsp</result>
 			<result name="input">sabhrs/include/intProvRemittanceQueryDiv.jsp</result>        
-		</action>
-		<action name="manualProviderAdjEntries_*" method="{1}" class="fwp.alsaccount.sabhrs.action.ManualProviderAdjEntriesAction">
-			<result>sabhrs/manualProviderAdjEntries.jsp</result>
-			<result name="error">sabhrs/manualProviderAdjEntries.jsp</result>
-			<result name="input">sabhrs/manualProviderAdjEntries.jsp</result>        
 		</action>
 	</package>
  

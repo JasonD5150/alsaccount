@@ -44,7 +44,7 @@
 							    $.publish('reloadInternalRemittance');
 							    return [true];
 						  },
-   						  afterShowForm:prePopulate,   
+   						  afterShowForm:prePopulate(this.id),   
    	                      addCaption:'Add New Code Info',
    	                      closeAfterAdd:true,
    	                      processData:'Adding Row to Database'}"
@@ -67,11 +67,12 @@
 	scroll="true"
 	scrollrows="true"
 	height="75"
-	width="950"
+	width="910"
 	rowNum="1000"
 	onBeforeTopics="setBankCdList"
 	onSelectRowTopics="intProvBankCdDepLinkSelected"
 	onCompleteTopics="depositsGridComplete"
+	reloadTopics="reloadDepositsGrid"
 	loadonce="true">
 		<sjg:gridColumn name="gridKey" title ="id" width="55" hidden="true" key="true"/>
 		<sjg:gridColumn name="genTDT" index="genTDT" title ="Generate Treasury Deposit Ticket" width="5" sortable="true" align="center" editable = "false" edittype="checkbox" editoptions="{ value: '1:0' }" formatter= "checkbox" formatoptions="{disabled : false}"/>
@@ -79,7 +80,7 @@
 		<sjg:gridColumn name="idPk.apbdSeqNo" index="apbdSeqNo" title="Seq No" width="5" sortable="true" align="right" editable="false"/>
 		<sjg:gridColumn name="abcBankCd" index="abcBankCd" title="Bank Code" width="10" sortable="true" align="right" editable="true" edittype="select" formatter="select" editoptions="{value:','}" editrules="{required:true}"/>
 		<sjg:gridColumn name="bankName" index="bankName" title="Bank Name" width="20" sortable="true" editable="false"/>
-		<sjg:gridColumn name="apbdAmountDeposit" index="apbdAmountDeposit" title="Amount Deposited" width="10" sortable="true" align="right" editable = "true" formatter= "number" formatoptions="{decimalPlaces: 2}" editrules="{required:true}"/>
+		<sjg:gridColumn name="apbdAmountDeposit" index="apbdAmountDeposit" title="Amount Deposited" width="10" sortable="true" align="right" editable = "true" formatter= "number" formatoptions="{decimalPlaces: 2}" editrules="{number:true,required:true}"/>
 		<sjg:gridColumn name="depositDate" index="depositDate" title="Deposit Date" width="10" sortable="true" editable = "true" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }" editrules="{required:true}" editoptions="{size:12, maxlength: 19, dataInit: function(elem){$(elem).datepicker({maxDate:'+0',dateFormat:'mm/dd/yy'});}}"/>
 		<sjg:gridColumn name="billingFrom" index="billingFrom" title="Billing Period From Date" width="10" sortable="true" editable = "false" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }" editrules="{required:true}" editoptions="{size:12, maxlength: 19, dataInit: function(elem){$(elem).datepicker({maxDate:'+0',dateFormat:'mm/dd/yy'});}}"/>
 		<sjg:gridColumn name="apbdBillingTo" index="apbdBillingTo" title="Billing Period To Date" width="10" sortable="true" editable = "false" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }" editrules="{required:true}" editoptions="{size:12, maxlength: 19, dataInit: function(elem){$(elem).datepicker({maxDate:'+0',dateFormat:'mm/dd/yy'});}}"/>

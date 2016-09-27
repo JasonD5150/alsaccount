@@ -1,6 +1,8 @@
 package fwp.alsaccount.sabhrs.grid;
 
 import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.HibernateException;
@@ -11,6 +13,7 @@ import com.opensymphony.xwork2.ActionSupport;
 
 import fwp.als.hibernate.item.dao.AlsItemApplFeeAcctIdPk;
 import fwp.alsaccount.appservice.sabhrs.AlsItemApplFeeAcctAS;
+import fwp.alsaccount.utils.Utils;
 
 public class ManualProviderAdjEntriesIAFAGridAction extends ActionSupport{
     private static final long   serialVersionUID = 5078264277068533593L;
@@ -27,17 +30,21 @@ public class ManualProviderAdjEntriesIAFAGridAction extends ActionSupport{
     private boolean             loadonce         = false;
     
     private Integer 			provNo;
-    private Integer 			iafaSeqNo;
+	private Integer 			iafaSeqNo;
     private Date				bpFromDt;
-    private Date				bpToDt;
+    private Date				bpTo;
     private Integer 			transCd;
     private String 				groupId;
 
-
 	public String buildgrid(){ 		
     	AlsItemApplFeeAcctAS aiafaAS = new AlsItemApplFeeAcctAS();
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
         try{
-        	setModel(aiafaAS.getManualProviderAdjEntriesRecords(transCd, groupId.substring(0, groupId.length()-3)+'%', provNo, iafaSeqNo, bpFromDt, bpToDt));
+        	setModel(new ArrayList<AlsItemApplFeeAcctIdPk>());
+        	if(provNo != null && !"".equals(provNo) && bpTo != null){
+        		groupId = Utils.createIntProvGroupIdentifier(provNo, sdf.format(bpTo), 000);
+            	setModel(aiafaAS.getManualProviderAdjEntriesRecords(groupId.substring(0, groupId.length()-3)+'%', provNo, iafaSeqNo, bpFromDt, bpTo));
+        	}
         }
         catch (HibernateException re) {
             log.debug("AlsSabhrsEntries did not load " + re.getMessage());
@@ -152,12 +159,12 @@ public class ManualProviderAdjEntriesIAFAGridAction extends ActionSupport{
 		this.bpFromDt = bpFromDt;
 	}
 
-	public Date getBpToDt() {
-		return bpToDt;
+	 public Date getBpTo() {
+		return bpTo;
 	}
 
-	public void setBpToDt(Date bpToDt) {
-		this.bpToDt = bpToDt;
+	public void setBpTo(Date bpTo) {
+		this.bpTo = bpTo;
 	}
 
 	public Integer getTransCd() {

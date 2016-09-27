@@ -197,10 +197,3 @@ function resetSearch(){
 	$('#transGrpType').val('');
 	$('#transGrpIdentifier').val('');
 }
-function reverseAlsEntries(){
-	var grid =  $('#transGroupDtlsTable');
-	var sel_id = grid.jqGrid('getGridParam', 'selrow'); 
-	var transCd = grid.jqGrid('getCell', sel_id, 'idPk.atgTransactionCd'); 
-	var groupId = grid.jqGrid('getCell', sel_id, 'idPk.atgsGroupIdentifier'); 
-	window.open("/alsaccount/manualProviderAdjEntries_input.action?transCd="+transCd+"&groupId="+groupId+"&prntMenu=ALSACCOUNT");
-}

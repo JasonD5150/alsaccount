@@ -8,11 +8,9 @@ var hasUserRole;
 var hasIntProvRole;
 var selectedRow;
 $(document).ready(function() {
-	$('#frmProvNo').val(null);
-	$('#frmBPFrom').val(null);
-	$('#frmBPTo').val(null);
 	hasUserRole = $('#hasUserRole').val();
 	hasIntProvRole = $('#hasIntProvRole').val();
+	resetSubGridForm();
 });
 
 function errorHandler(response, postdata) {
@@ -90,38 +88,27 @@ $.subscribe("depositsGridComplete", function(event, data) {
 });
 
 $.subscribe('alsSabhrsEntriesComplete', function(event, data) {	
-	$('#del_alsSabhrsEntriesTable').bind( "click", function() {
-		$('#alerthd_alsSabhrsEntriesTable').closest('.ui-jqdialog').position({
+	$('#del_alsSabhrsEntriesGrid').bind( "click", function() {
+		$('#alerthd_alsSabhrsEntriesGrid').closest('.ui-jqdialog').position({
 			my: 'center',
 			at: 'center',
-			of: $('#alsSabhrsEntriesTable').closest('div.ui-jqgrid')
+			of: $('#alsSabhrsEntriesGrid').closest('div.ui-jqgrid')
 		});
 	});
-	$("#alsSabhrsEntriesTable")
-	.jqGrid({pager:'#alsSabhrsEntriesTable_pager'})
-	.jqGrid('navButtonAdd'
-	,'#alsSabhrsEntriesTable_pager'
-	,{id:"addTemplate_alsSabhrsEntriesTable"
-	,caption:"Add Template"
-	,buttonicon:"ui-icon-circle-plus"
-	,onClickButton:function(){ 
-		autoSelectTemplates();
-		$('#nonAlsSabhrsEntriesDiv').hide();
-		$('#alsNonAlsTempDiv').show();
-	}
-	,position:"last"
-	,title:"Add Template"
-	,cursor:"pointer"
-	});
 	
-   if ( $("#alsSabhrsEntriesTable").length) {
-   		$("#alsSabhrsEntriesTable").jqGrid('setColProp','asacReference', { editoptions: { value: rtrnJLRList()}});
-   		$("#alsSabhrsEntriesTable").jqGrid('setColProp','aamFund', { editoptions: { value: rtrnFundList()}});
-   		$("#alsSabhrsEntriesTable").jqGrid('setColProp','asacSubclass', { editoptions: { value: rtrnSubClassList()}});
-   		$("#alsSabhrsEntriesTable").jqGrid('setColProp','aocOrg', { editoptions: { value: rtrnOrgList()}});
-   		$("#alsSabhrsEntriesTable").jqGrid('setColProp','aamAccount', { editoptions: { value: rtrnAccountList()}});
+	
+   if ( $("#alsSabhrsEntriesGrid").length) {
+   		$("#alsSabhrsEntriesGrid").jqGrid('setColProp','asacReference', { editoptions: { value: rtrnJLRList()}});
+   		$("#alsSabhrsEntriesGrid").jqGrid('setColProp','aamFund', { editoptions: { value: rtrnFundList()}});
+   		$("#alsSabhrsEntriesGrid").jqGrid('setColProp','asacSubclass', { editoptions: { value: rtrnSubClassList()}});
+   		$("#alsSabhrsEntriesGrid").jqGrid('setColProp','aocOrg', { editoptions: { value: rtrnOrgList()}});
+   		$("#alsSabhrsEntriesGrid").jqGrid('setColProp','aamAccount', { editoptions: { value: rtrnAccountList()}});
    }
 
+});
+
+$.subscribe("alsNonAlsDetailsComplete", function(event, data) {	
+	autoSelectTemplates();
 });
 
 $.subscribe("alsNonAlsTemplateTableComplete", function(event, data) {	
@@ -140,22 +127,6 @@ $.subscribe("alsNonAlsTemplateTableComplete", function(event, data) {
 	}
 	,position:"last"
 	,title:"Save"
-	,cursor:"pointer"
-	});
-	$("#alsNonAlsTemplateTable")
-	.jqGrid({pager:'#alsNonAlsTemplateTable_pager'})
-	.jqGrid('navButtonAdd'
-	,'#alsNonAlsTemplateTable_pager'
-	,{id:"exitTemplates_alsNonAlsTemplateTable"
-	,caption:"Exit"
-	,buttonicon:"ui-icon-close"
-	,onClickButton:function(){ 
-		$('#alsNonAlsTempDiv').hide();
-		$('#nonAlsSabhrsEntriesDiv').show();
-		
-	}
-	,position:"last"
-	,title:"Exit"
 	,cursor:"pointer"
 	});
 	$("#alsNonAlsTemplateTable")
@@ -208,8 +179,9 @@ $.subscribe("internalRemittanceSelected", function(event, data) {
 	
 	$('#depositsGrid').jqGrid('setGridParam',{datatype:'json'});
 	$('#alsNonAlsDetails').jqGrid('setGridParam',{datatype:'json'});
-	$('#alsSabhrsEntriesTable').jqGrid('setGridParam',{datatype:'json'});
+	$('#alsSabhrsEntriesGrid').jqGrid('setGridParam',{datatype:'json'});
 	$('#alsOverUnderSales').jqGrid('setGridParam',{datatype:'json'});
+	$('#iafaGrid').jqGrid('setGridParam',{datatype:'json'});
 	$.publish('reloadSubGrids');
 	
 	/*SET VISIBILITY*/
@@ -250,10 +222,69 @@ $.subscribe("internalRemittanceSelected", function(event, data) {
 	$('#disAppBy').val(grid.jqGrid('getCell', sel_id, 'airOfflnPaymentAppBy'));
 	$('#disAppDt').val(grid.jqGrid('getCell', sel_id, 'offlnPaymentAppDt'));
 	$('#disAppCom').val(grid.jqGrid('getCell', sel_id, 'airOfflnPaymentAppCom'));
+	if(grid.jqGrid('getCell', sel_id, 'intFileGenerated') == 'YES'){
+		$('#intFileCreated').prop('checked', true);
+	}else{
+		$('#intFileCreated').prop('checked', false);
+	}
+	$('#intFileCreatedDt').val(grid.jqGrid('getCell', sel_id, 'intFileCreateDt'));
 	
 	$('#displayRemittanceDiv').show();
 });
 
+$.subscribe("iafaRecordSelected", function (event, data) {
+	$('#revError').html('');
+	var grid =  $('#iafaGrid');
+	var sel_id = grid.jqGrid('getGridParam', 'selrow');  
+
+   	$('#frmIafaSeqNo').val(grid.jqGrid('getCell', sel_id, 'aiafaSeqNo'));
+   	
+   	$('#revAlsSabhrsEntriesGrid').jqGrid('setGridParam',{datatype:'json'});
+	$.publish('reloadRevAlsSabhrsEntriesGrid');
+});
+
+$.subscribe('revAlsSabhrsEntriesComplete', function(event, data) {
+	$("#revAlsSabhrsEntriesGrid")
+	.jqGrid({pager:'#revAlsSabhrsEntriesGrid_pager'})
+	.jqGrid('navButtonAdd'
+	,'#revAlsSabhrsEntriesGrid_pager'
+	,{id:"genReversals_revAlsSabhrsEntriesGrid"
+	,caption:"Reverse ALS SABHRS ENTRIES"
+	,buttonicon:"ui-icon-circle-minus"
+	,onClickButton:function(){ 
+		$('#frmOper').val('reverseAlsEntries');
+
+		url = "alsAccount/manualProviderAdjEntriesSABHRSGridEdit_execute.action";    
+		$.ajax({
+	      type: "POST",
+	      url: url,
+	      dataType: "json",
+	      data: $('#subGridFrm').serialize(),
+	      success: function(result){
+
+	          if(result.actionErrors){
+	          	$('#revError').html('<p style="color:red;font-size:14px"><b>'+ result.actionErrors +'</b></p>');
+	          }else{
+	          	$('#revError').html('');
+				$.publish('reloadRevAlsSabhrsEntriesGrid');
+	          }
+	     }
+	    });
+	}
+	,position:"last"
+	,title:"Reverse Entries"
+	,cursor:"pointer"
+	});
+	
+   if ( $("#revAlsSabhrsEntriesGrid").length) {
+   		$("#revAlsSabhrsEntriesGrid").jqGrid('setColProp','asacReference', { editoptions: { value: rtrnJLRList()}});
+   		$("#revAlsSabhrsEntriesGrid").jqGrid('setColProp','aamFund', { editoptions: { value: rtrnFundList()}});
+   		$("#revAlsSabhrsEntriesGrid").jqGrid('setColProp','asacSubclass', { editoptions: { value: rtrnSubClassList()}});
+   		$("#revAlsSabhrsEntriesGrid").jqGrid('setColProp','aocOrg', { editoptions: { value: rtrnOrgList()}});
+   		$("#revAlsSabhrsEntriesGrid").jqGrid('setColProp','aamAccount', { editoptions: { value: rtrnAccountList()}});
+   }
+
+});
 
 /*Non Als SABHRS Entries Grid*/
 function autoSelectTemplates() {	
@@ -364,6 +395,11 @@ function getTDT() {
     }
 }
 
+function reloadBankDepositsGrid() {
+	$('#depositsGrid').jqGrid('setGridParam',{datatype:'json'});
+	$.publish('reloadDepositsGrid');
+}
+
 /*REMITTANCE FORM*/
 function completedByProv(){
 	if($('#displayBalanced').val()== "Y"){
@@ -416,15 +452,22 @@ function saveRemittance(){
 };
 
 /*OTHERS*/
-function prePopulate(){
-	var grid = $("#intProvBankCdDepLinkGrid");
+function prePopulate(id){
+	var grid = $("#"+id);
 	var rows = grid.jqGrid("getDataIDs");
 	var length = grid.jqGrid("getDataIDs").length-1;
 
-    $('#abcBankCd').val(grid.jqGrid ('getCell', rows[length], 'abcBankCd'));
-    $('#billingFrom').val(grid.jqGrid ('getCell', rows[length], 'billingFrom'));
-    $('#apbdBillingTo').val(grid.jqGrid ('getCell', rows[length], 'apbdBillingTo'));
-    $('#amtDue').val(grid.jqGrid ('getCell', rows[length], 'amtDue'));
+	if(id == "depositsGrid"){
+		$('#abcBankCd').val(grid.jqGrid ('getCell', rows[length], 'abcBankCd'));
+	    $('#billingFrom').val(grid.jqGrid ('getCell', rows[length], 'billingFrom'));
+	    $('#apbdBillingTo').val(grid.jqGrid ('getCell', rows[length], 'apbdBillingTo'));
+	    $('#amtDue').val(grid.jqGrid ('getCell', rows[length], 'amtDue'));
+	}else if(id == "revAlsSabhrsEntriesGrid"){
+		$('#aamBusinessUnit').val("52010");
+	    $('#asacProgram').val($('#curBudgYear').val());
+	    $('#asacBudgetYear').val($('#curBudgYear').val());
+	}
+    
 }
 
 function setVisibility(){
@@ -432,38 +475,81 @@ function setVisibility(){
 	var sel_id = grid.jqGrid('getGridParam','selrow'); 
 	var dtCompletedByProv = grid.jqGrid('getCell', sel_id, 'completeProvider');
 	var remittanceApproved = grid.jqGrid('getCell', sel_id, 'airOfflnPaymentApproved');
-	if(dtCompletedByProv.length == 1 && hasIntProvRole == 'true'){
-		$('#alsNonAlsDetails_pager_left').show();
-		$('#alsOverUnderSales_pager_left').show();
-		$('#depositsGrid_pager_left').show();
-		$('#provComp').prop({disabled:false});
-		$('#displayCCSales').prop({disabled:false});
-	}else if(dtCompletedByProv.length != 1 && hasIntProvRole == 'true'){
-		$('#alsNonAlsDetails_pager_left').hide();
-		$('#alsOverUnderSales_pager_left').hide();
-		$('#depositsGrid_pager_left').hide();
-		if(remittanceApproved == 'true'){
-			$('#provComp').prop({disabled:true});
-		}else{
-			$('#provComp').prop({disabled:false});
-		}
-		$('#displayCCSales').prop({disabled:true});
+	var interfaced = grid.jqGrid('getCell', sel_id, 'intFileGenerated');
+	if(sel_id != null && interfaced != "YES"){
+			if(dtCompletedByProv.length == 1 && hasIntProvRole == 'true'){
+				$('#alsNonAlsDetails_pager_left').show();
+				$('#alsOverUnderSales_pager_left').show();
+				$('#add_depositsGrid').show();
+				$('#view_depositsGrid').show();
+				$('#del_depositsGrid').show();
+				$('#provComp').prop({disabled:false});
+				$('#displayCCSales').prop({disabled:false});
+			}else if(dtCompletedByProv.length != 1 && hasIntProvRole == 'true'){
+				$('#alsNonAlsDetails_pager_left').hide();
+				$('#alsOverUnderSales_pager_left').hide();
+				$('#add_depositsGrid').hide();
+				$('#view_depositsGrid').hide();
+				$('#del_depositsGrid').hide();
+				if(remittanceApproved == 'true'){
+					$('#provComp').prop({disabled:true});
+				}else{
+					$('#provComp').prop({disabled:false});
+				}
+				$('#displayCCSales').prop({disabled:true});
+			}else{
+				$('#alsNonAlsDetails_pager_left').hide();
+				$('#alsOverUnderSales_pager_left').hide();
+				$('#add_depositsGrid').hide();
+				$('#view_depositsGrid').hide();
+				$('#del_depositsGrid').hide();
+				$('#provComp').prop({disabled:true});
+				$('#displayCCSales').prop({disabled:true});
+			}
+			if(hasUserRole == 'true'){
+				$("#userTabs").show();
+				if(remittanceApproved == 'true'){
+					$('#remApp').prop({disabled:false});
+					$('#disAppCom').prop({disabled:true});
+					$('#alsSabhrsEntriesGrid_pager_left').hide();
+					$('#revAlsSabhrsEntriesGrid_pager_left').hide();
+					$('#alsNonAlsTemplateTable_pager_left').hide();
+				}else{
+					$('#remApp').prop({disabled:false});
+					$('#disAppCom').prop({disabled:false});
+					$('#alsSabhrsEntriesGrid_pager_left').show();
+					$('#revAlsSabhrsEntriesGrid_pager_left').show();
+					$('#alsNonAlsTemplateTable_pager_left').show();
+				}
+			}else{
+				$("#userTabs").hide();
+				$('#remApp').prop({disabled:true});
+				$('#disAppCom').prop({disabled:true});
+			}
+			
+			$('#saveRemittance').prop({disabled:false});
 	}else{
 		$('#alsNonAlsDetails_pager_left').hide();
 		$('#alsOverUnderSales_pager_left').hide();
-		$('#depositsGrid_pager_left').hide();
+		$('#add_depositsGrid').hide();
+		$('#view_depositsGrid').hide();
+		$('#del_depositsGrid').hide();
+		$('#alsSabhrsEntriesGrid_pager_left').hide();
+		$('#revAlsSabhrsEntriesGrid_pager_left').hide();
+		$('#alsNonAlsTemplateTable_pager_left').hide();
 		$('#provComp').prop({disabled:true});
 		$('#displayCCSales').prop({disabled:true});
-	}
-	if(hasUserRole == 'true'){
-		$("#tab3").show();
-		$('#remApp').prop({disabled:false});
-		$('#disAppCom').prop({disabled:false});
-	}else{
-		$("#tab3").hide();
 		$('#remApp').prop({disabled:true});
 		$('#disAppCom').prop({disabled:true});
+		$('#saveRemittance').prop({disabled:true});
 	}
+}
+
+function resetSubGridForm(){
+	$('#frmProvNo').val(null);
+	$('#frmBPFrom').val(null);
+	$('#frmBPTo').val(null);
+	$('#frmIafaSeqNo').val(null);
 }
 
 function rtrnBankCdList() {return $("#bankCdLst").val();}
@@ -485,13 +571,14 @@ function resetSearch(){
 	$('#frmProvNo').val(null);
 	$('#frmBPFrom').val(null);
 	$('#frmBPTo').val(null);
+	$('#frmIafaSeqNo').val(null);
 	$('#gridFrm')[0].reset();
 	$('#displayRemittanceDiv').hide();
 	$('#displayRemittanceDiv').find('input:text').val(''); 
 	submitSearch();
 	$('#depositsGrid').jqGrid('setGridParam',{datatype:'json'});
 	$('#alsNonAlsDetails').jqGrid('setGridParam',{datatype:'json'});
-	$('#alsSabhrsEntriesTable').jqGrid('setGridParam',{datatype:'json'});
+	$('#alsSabhrsEntriesGrid').jqGrid('setGridParam',{datatype:'json'});
 	$('#alsOverUnderSales').jqGrid('setGridParam',{datatype:'json'});
 	$.publish('reloadSubGrids');
 }

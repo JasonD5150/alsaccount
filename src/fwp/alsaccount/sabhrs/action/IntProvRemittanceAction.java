@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.opensymphony.xwork2.ActionSupport;
 
 import fwp.ListComp;
+import fwp.alsaccount.utils.HibHelpers;
 import fwp.alsaccount.utils.ListUtils;
 import fwp.alsaccount.utils.Utils;
 import fwp.utils.FwpStringUtils;
@@ -24,16 +25,19 @@ public class IntProvRemittanceAction extends ActionSupport{
 	private String projectGrantLst;
 	private String orgLst;
 	private String accountLst;
+	private String curBudgYear;
 	Boolean hasIntProvRole = false;
 	Boolean hasUserRole = false;
 
 	public IntProvRemittanceAction(){
 	}
-	
+
 	public String input(){
 		setRoles();
+		HibHelpers hh = new HibHelpers();
 		ListUtils lu = new ListUtils();
 		try {
+			curBudgYear = hh.getCurrentBudgetYear();
 			providerLst = lu.getIntOnActProviderList();
 			setFundLst(FwpStringUtils.listCompListToString(lu.getFundList(null)));
 			setSubClassLst(FwpStringUtils.listCompListToString(lu.getSubclassList(null)));
@@ -115,5 +119,10 @@ public class IntProvRemittanceAction extends ActionSupport{
 	public void setAccountLst(String accountLst) {
 		this.accountLst = accountLst;
 	}
-	
+	public String getCurBudgYear() {
+		return curBudgYear;
+	}
+	public void setCurBudgYear(String curBudgYear) {
+		this.curBudgYear = curBudgYear;
+	}
 }
