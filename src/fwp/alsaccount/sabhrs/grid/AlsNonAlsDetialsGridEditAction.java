@@ -39,6 +39,16 @@ public class AlsNonAlsDetialsGridEditAction extends ActionSupport{
 		AlsNonAlsDetailsAS appSer = new AlsNonAlsDetailsAS();
 		AlsNonAlsDetails tmp = null;
 		try{
+			if(oper.equalsIgnoreCase("edit") || oper.equalsIgnoreCase("del")){
+				String[] keys = id.split("_");
+				AlsNonAlsDetailsIdPk tmpIdPk = new AlsNonAlsDetailsIdPk();
+				tmpIdPk.setApiProviderNo(Integer.parseInt(keys[0]));
+				tmpIdPk.setAirBillingFrom(FwpDateUtils.getStrToTimestamp(keys[1]));
+				tmpIdPk.setAirBillingTo(FwpDateUtils.getStrToTimestamp(keys[2]));
+				tmpIdPk.setAnadSeqNo(Integer.parseInt(keys[3]));
+				
+				tmp = appSer.findById(tmpIdPk);
+			}
 			if (oper.equalsIgnoreCase("add")) {
 				AlsNonAlsDetailsIdPk tmpIdPk = new AlsNonAlsDetailsIdPk();
 				tmpIdPk.setApiProviderNo(provNo);
@@ -49,7 +59,7 @@ public class AlsNonAlsDetialsGridEditAction extends ActionSupport{
 				tmp.setIdPk(tmpIdPk);
 				tmp.setAnadAmount(anadAmount);
 				tmp.setAnadDesc(anadDesc);
-				tmp.setAnatCd(anatCd);
+				tmp.setAnatCd(anatCd.split("_")[0]);
 				
 				tmp.setAnadWhoLog(userInfo.getStateId());
 				tmp.setAnadWhenLog(date);
@@ -58,34 +68,15 @@ public class AlsNonAlsDetialsGridEditAction extends ActionSupport{
 				tmp.setCreateDate(date);
 				
 				appSer.save(tmp);
-			} else if((oper.equalsIgnoreCase("edit"))){				
-				String[] keys = id.split("_");
-				AlsNonAlsDetailsIdPk tmpIdPk = new AlsNonAlsDetailsIdPk();
-				tmpIdPk.setApiProviderNo(Integer.parseInt(keys[0]));
-				tmpIdPk.setAirBillingFrom(FwpDateUtils.getStrToTimestamp(keys[1]));
-				tmpIdPk.setAirBillingTo(FwpDateUtils.getStrToTimestamp(keys[2]));
-				tmpIdPk.setAnadSeqNo(Integer.parseInt(keys[3]));
-				
-				tmp = appSer.findById(tmpIdPk);
-				
+			} else if((oper.equalsIgnoreCase("edit"))){						
 				tmp.setAnadAmount(anadAmount);
 				tmp.setAnadDesc(anadDesc);
-				tmp.setAnatCd(anatCd);
+				tmp.setAnatCd(anatCd.split("_")[0]);
 				tmp.setModPersonid(userInfo.getUserId());
 				tmp.setModDate(date);
 				appSer.save(tmp);
 			}else if (oper.equalsIgnoreCase("del")){
-				String[] keys = id.split("_");
-				AlsNonAlsDetailsIdPk tmpIdPk = new AlsNonAlsDetailsIdPk();
-				tmpIdPk.setApiProviderNo(Integer.parseInt(keys[0]));
-				tmpIdPk.setAirBillingFrom(FwpDateUtils.getStrToTimestamp(keys[1]));
-				tmpIdPk.setAirBillingTo(FwpDateUtils.getStrToTimestamp(keys[2]));
-				tmpIdPk.setAnadSeqNo(Integer.parseInt(keys[3]));
-				
-				tmp = appSer.findById(tmpIdPk);
 				appSer.delete(tmp);
-			}else if (oper.equalsIgnoreCase("genNonAls")){
-				System.out.println("test");
 			}else{
 				return "error_json";
 			}

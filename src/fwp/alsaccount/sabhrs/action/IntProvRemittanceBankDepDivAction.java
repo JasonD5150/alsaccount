@@ -8,15 +8,15 @@ import com.opensymphony.xwork2.ActionSupport;
 import fwp.alsaccount.utils.ListUtils;
 import fwp.utils.FwpStringUtils;
 
-public class IntProvBankCdDepLinkDivAction extends ActionSupport{
+public class IntProvRemittanceBankDepDivAction extends ActionSupport{
 	
 	private static final long serialVersionUID = 5217638596755074369L;
-	private static final Logger log = LoggerFactory.getLogger(IntProvBankCdDepLinkDivAction.class);
+	private static final Logger log = LoggerFactory.getLogger(IntProvRemittanceBankDepDivAction.class);
 
 	private Integer provNo;
 	private String bankCdLst;
 	
-	public IntProvBankCdDepLinkDivAction(){
+	public IntProvRemittanceBankDepDivAction(){
 	}
 	
 	public String input(){

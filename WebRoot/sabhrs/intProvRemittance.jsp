@@ -126,7 +126,6 @@
 			<sjg:gridColumn name="airShortSales" index="airShortSales" title="Total Short of Sales" width="60" sortable="true" editable="false" align="right" formatter="number" formatoptions="{decimalPlaces: 2}" hidden="true"/>
 			<sjg:gridColumn name="airOverSales" index="airOverSales" title="Total Over Sales" width="60" sortable="true" editable="false" align="right" formatter="number" formatoptions="{decimalPlaces: 2}" hidden="true"/>
 			<sjg:gridColumn name="netOverShortOfSales" index="netOverShortOfSales" title="Net Over/Short of Sales" width="60" sortable="false" editable="false" align="right" formatter="number" formatoptions="{decimalPlaces: 2}" hidden="true"/>
-			<sjg:gridColumn name="airOfflnPaymentApproved" index="airOfflnPaymentApproved" title="Approved" width="60" sortable="true" editable="false" hidden="true"/>
 			<sjg:gridColumn name="airOfflnPaymentAppBy" index="airOfflnPaymentAppBy" title="Approved By" width="60" sortable="true" editable="false" hidden="true"/>
 			<sjg:gridColumn name="offlnPaymentAppDt" index="offlnPaymentAppDt" title="Date" width="70" sortable="true" editable="false" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }" hidden="true"/>
 			<sjg:gridColumn name="airOfflnPaymentAppCom" index="airOfflnPaymentAppCom" title="Comments" width="100" sortable="true" editable="true" hidden="true"/>
@@ -230,6 +229,7 @@
 		<s:hidden id="frmBPFrom" name="bpFrom"/>
 		<s:hidden id="frmBPTo" name="bpTo"/>
 		<s:hidden id="frmIafaSeqNo" name="iafaSeqNo"/>
+		<s:hidden id="frmBudgYear" name="budgYear"/>
 	</form>
 	<sj:tabbedpanel id="intProvTabs" selectedTab="0" useSelectedTabCookie="false"  cssStyle="width:950px;position:inherit">
 				<sj:tab id="intProvTab1" target="intProvTOne" title="Bank Deposits" label="Bank Deposits" tabindex="1" />
@@ -237,80 +237,23 @@
 				<sj:tab id="intProvTab3" target="intProvTThree" title="Over / Short of Sales" label="Over / Short of Sales" tabindex="3" />				
 				
 				<div id="intProvTOne">
-			 		<s:url id="intProvBankCdDepLinkDivUrl" value="intProvBankCdDepLinkDiv_input.action" />
-					<sj:div id="intProvBankCdDepLinkDiv" 
-							href="%{intProvBankCdDepLinkDivUrl}"
+			 		<s:url id="intProvRemittanceBankDepDivUrl" value="intProvRemittanceBankDepDiv_input.action" />
+					<sj:div id="intProvRemittanceBankDepDiv" 
+							href="%{intProvRemittanceBankDepDivUrl}"
 							width="950"
 							formIds="subGridFrm"
-							reloadTopics="reloadSubGrids"
+							reloadTopics="reloadBankDepGrids"
 							onChangeTopics="reloadBankDepositsGrid();">
 					</sj:div>
 				</div>
 				<div id="intProvTTwo">
-					<s:url id="alsNonAlsDetailsGridURL" action="alsAccount/alsNonAlsDetailsGrid_buildgrid" />
-					<s:url id="alsNonAlsDetailsGridEditURL" action="alsAccount/alsNonAlsDetailsGridEdit_execute" />    
-					<sjg:grid
-						id="alsNonAlsDetails"
-						caption="Non ALS Details"
-						href="%{alsNonAlsDetailsGridURL}"
-						editurl="%{alsNonAlsDetailsGridEditURL}"		
-						dataType="local"
-						pager="true"
-						navigator="true"
-						navigatorEdit="true"
-						navigatorView="true"
-						navigatorAdd="true"
-						navigatorDelete="true"
-						navigatorSearch="false"
-						navigatorRefresh="false"
-						navigatorSearchOptions="{sopt:['cn','bw','eq','ne','lt','gt','ew'],multipleSearch:true}"
-					   	navigatorAddOptions="{width:600,reloadAfterSubmit:true,
-					   						  addedrow:'last',
-					   						  beforeSubmit:function(postData){
-					   						  					var grid = $('#alsInternalRemittance');
-																var sel_id = grid.jqGrid('getGridParam','selrow'); 
-					    	                      				postData.provNo = $('#provNo').val();
-					    	                      				postData.apbdBillingFrom = grid.jqGrid('getCell', sel_id, 'idPk.airBillingFrom');
-					    	                      				postData.apbdBillingTo = grid.jqGrid('getCell', sel_id, 'idPk.airBillingTo');
-						    	                      			return[true, ''];
-						    	              },
-					   						  afterSubmit:errorHandler,
-					   						  afterShowForm:function(postData){
-					   						  					prePopulate(this.id)
-						    	                      			return[true, ''];
-						    	              },   
-					   	                      addCaption:'Add New Code Info',
-					   	                      closeAfterAdd:true,
-					   	                      processData:'Adding Row to Database'}"
-					   	navigatorEditOptions="{width:600,reloadAfterSubmit:false,
-					   	                       editCaption:'Edit Code Info',
-					   	                        beforeSubmit:function(postData){
-						    	                      	postData.provNo = $('#provNo').val();
-						    	                      	return[true, ''];
-						    	              },
-					   	                       closeAfterEdit:true,
-					   	                       afterSubmit:errorHandler,
-					   	                       processData:'Updating to Database'}"
-					   	navigatorViewOptions="{width:500,reloadAfterSubmit:false}"    	
-					   	navigatorDeleteOptions="{afterSubmit:errorHandler}"
-					    gridModel="model"
-						rownumbers="false"
-						editinline="false"
-						viewrecords="true"
-						scroll="true"
-						scrollrows="true"
-						height="75"
-						width="910"
-						rowNum="1000"
-						formIds="subGridFrm"
-						reloadTopics="reloadSubGrids"
-						onCompleteTopics="alsNonAlsDetailsComplete"
-						loadonce="true">
-							<sjg:gridColumn name="gridKey" title ="id" width="55" hidden="true" key="true"/>
-							<sjg:gridColumn name="anatCd" index="anatCd" title="Code" width="10" sortable="true" editable="true"/>
-							<sjg:gridColumn name="anadDesc" index="anadDesc" title="Description" width="10" sortable="true" editable = "true" editrules="{required:true}"/>
-							<sjg:gridColumn name="anadAmount" index="anadAmount" title="Amount" width="10" sortable="true" editable = "true" align="right" formatter="number" formatoptions="{decimalPlaces: 2}" editrules="{number:true,required:true}" editoptions="{minValue:0}"/>
-					</sjg:grid>
+					<s:url id="intProvRemittanceNonAlsDetDivUrl" value="intProvRemittanceNonAlsDetDiv_input.action" />
+					<sj:div id="intProvRemittanceNonAlsDetDiv" 
+							href="%{intProvRemittanceNonAlsDetDivUrl}"
+							width="950"
+							formIds="subGridFrm"
+							reloadTopics="reloadNonAlsDetGrids">
+					</sj:div>
 				</div>
 				<div id="intProvTThree">
 						<s:url id="alsOverUnderSalesGridURL" action="alsAccount/alsOverUnderSalesGrid_buildgrid" />
@@ -332,27 +275,29 @@
 					   	navigatorAddOptions="{width:600,reloadAfterSubmit:true,
 					   						  addedrow:'last',
 					   						  beforeSubmit:function(postData){
-						    	                      	var grid = $('#alsInternalRemittance');
-														var sel_id = grid.jqGrid('getGridParam','selrow'); 
-					    	                      		postData.provNo = $('#provNo').val();
-					    	                      		postData.apbdBillingFrom = grid.jqGrid('getCell', sel_id, 'idPk.airBillingFrom');
-					    	                      		postData.apbdBillingTo = grid.jqGrid('getCell', sel_id, 'idPk.airBillingTo');
-						    	                      	return[true, ''];
+				   						  			$('#alsOverUnderSales').jqGrid('setGridParam',{datatype:'json'});
+					    	                      	var grid = $('#alsInternalRemittance');
+													var sel_id = grid.jqGrid('getGridParam','selrow'); 
+				    	                      		postData.provNo = $('#provNo').val();
+				    	                      		postData.apbdBillingFrom = grid.jqGrid('getCell', sel_id, 'idPk.airBillingFrom');
+				    	                      		postData.apbdBillingTo = grid.jqGrid('getCell', sel_id, 'idPk.airBillingTo');
+					    	                      	return[true, ''];
 						    	              },
 					   						  afterSubmit:errorHandler,
 					   						  afterShowForm:function(postData){
-					   						  					prePopulate(this.id)
-						    	                      			return[true, ''];
+					   						  		prePopulate(this.id)
+						    	                    return[true, ''];
 						    	              },    
 					   	                      addCaption:'Add New Code Info',
 					   	                      closeAfterAdd:true,
 					   	                      processData:'Adding Row to Database'}"
 					   	navigatorEditOptions="{width:600,reloadAfterSubmit:false,
 					   	                       editCaption:'Edit Code Info',
-					   	                        beforeSubmit:function(postData){
-						    	                      	postData.provNo = $('#provNo').val();
-						    	                      	return[true, ''];
-						    	              },
+					   	                       beforeSubmit:function(postData){
+					   	                       $('#alsOverUnderSales').jqGrid('setGridParam',{datatype:'json'});
+						    	               		postData.provNo = $('#provNo').val();
+						    	                    return[true, ''];
+						    	               },
 					   	                       closeAfterEdit:true,
 					   	                       afterSubmit:errorHandler,
 					   	                       processData:'Updating to Database'}"
@@ -454,7 +399,7 @@
 						caption="Templates"
 						href="%{alsNonAlsTemplateGrid}"
 						editurl="clientArray"		
-						dataType="json"
+						dataType="local"
 						pager="true"
 						navigator="true"
 						navigatorEdit="false"
@@ -474,6 +419,8 @@
 						height="100"
 						width="910"
 						rowNum="1000"
+						formIds="subGridFrm"
+						reloadTopics="reloadSubGrids"
 						onCompleteTopics="alsNonAlsTemplateTableComplete">
 					
 							<sjg:gridColumn name="gridKey" title ="id" width="55" hidden="true" key="true"/>

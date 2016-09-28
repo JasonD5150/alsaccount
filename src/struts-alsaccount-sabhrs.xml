@@ -96,11 +96,7 @@
 			<result name="error">sabhrs/intProvBankCdDepLink.jsp</result>
 			<result name="input">sabhrs/intProvBankCdDepLink.jsp</result>        
 		</action>
-		<action name="intProvBankCdDepLinkDiv_*" method="{1}" class="fwp.alsaccount.sabhrs.action.IntProvBankCdDepLinkDivAction">
-			<result>sabhrs/include/intProvBankCdDepLinkDiv.jsp</result>
-			<result name="error">sabhrs/include/intProvBankCdDepLinkDiv.jsp</result>
-			<result name="input">sabhrs/include/intProvBankCdDepLinkDiv.jsp</result>        
-		</action>
+		
 		<action name="intProvRemittance_*" method="{1}" class="fwp.alsaccount.sabhrs.action.IntProvRemittanceAction">
 			<result>sabhrs/intProvRemittance.jsp</result>
 			<result name="error">sabhrs/intProvRemittance.jsp</result>
@@ -110,6 +106,16 @@
 			<result>sabhrs/include/intProvRemittanceQueryDiv.jsp</result>
 			<result name="error">sabhrs/include/intProvRemittanceQueryDiv.jsp</result>
 			<result name="input">sabhrs/include/intProvRemittanceQueryDiv.jsp</result>        
+		</action>
+		<action name="intProvRemittanceBankDepDiv_*" method="{1}" class="fwp.alsaccount.sabhrs.action.IntProvRemittanceBankDepDivAction">
+			<result>sabhrs/include/intProvRemittanceBankDepDiv.jsp</result>
+			<result name="error">sabhrs/include/intProvRemittanceBankDepDiv.jsp</result>
+			<result name="input">sabhrs/include/intProvRemittanceBankDepDiv.jsp</result>        
+		</action>
+		<action name="intProvRemittanceNonAlsDetDiv_*" method="{1}" class="fwp.alsaccount.sabhrs.action.IntProvRemittanceNonAlsDetDivAction">
+			<result>sabhrs/include/intProvRemittanceNonAlsDetDiv.jsp</result>
+			<result name="error">sabhrs/include/intProvRemittanceNonAlsDetDiv.jsp</result>
+			<result name="input">sabhrs/include/intProvRemittanceNonAlsDetDiv.jsp</result>        
 		</action>
 	</package>
  

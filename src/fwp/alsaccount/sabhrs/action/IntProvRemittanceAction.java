@@ -39,6 +39,7 @@ public class IntProvRemittanceAction extends ActionSupport{
 		try {
 			curBudgYear = hh.getCurrentBudgetYear();
 			providerLst = lu.getIntOnActProviderList();
+		
 			setFundLst(FwpStringUtils.listCompListToString(lu.getFundList(null)));
 			setSubClassLst(FwpStringUtils.listCompListToString(lu.getSubclassList(null)));
 			setJlrLst(FwpStringUtils.listCompListToString(lu.getJLRBudgYearList(null)));
@@ -51,7 +52,7 @@ public class IntProvRemittanceAction extends ActionSupport{
 		}
 		return SUCCESS;
 	}
-	
+
 	void setRoles() {
 		Utils utils = new Utils();
 		if (utils.hasAnyRole("ALSACCOUNT_USER")) {

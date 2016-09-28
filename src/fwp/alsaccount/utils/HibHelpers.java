@@ -910,7 +910,7 @@ public class HibHelpers {
 					if(!Utils.isNil(fromDt))
 						query.setDate("fromDt", fromDt);
 					if(!Utils.isNil(toDt))
-						query.setDate("toDt", fromDt.equals(toDt)?Utils.addDays(toDt, 1):toDt);
+						query.setDate("toDt", Utils.addDays(toDt, 1));
 					if(!Utils.isNil(sumAppStat))
 						query.setString("sumAppStat", sumAppStat);
 					if(!Utils.isNil(intAppStat))

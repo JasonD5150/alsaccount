@@ -17,7 +17,6 @@ function errorHandler(response, postdata) {
     rtrnstate = true; 
     rtrnMsg = ""; 
 	json = eval('(' + response.responseText + ')'); 
-	
 	if(json.actionErrors) {
 		rtrnstate = false; 
 	    for(i=0; i < json.actionErrors.length; i++) {
@@ -33,16 +32,13 @@ $.subscribe("internalRemittanceComplete", function(event, data) {
 	var grid = $('#alsInternalRemittance');
 	var error = grid.jqGrid('getGridParam', 'userData');
 
-	grid
-	.jqGrid({pager:'#alsInternalRemittance_pager'})
-	.jqGrid('navButtonAdd'
+	grid.jqGrid({pager:'#alsInternalRemittance_pager'}).jqGrid('navButtonAdd'
 	,'#alsInternalRemittance_pager'
 	,{id:"columnSelector_alsInternalRemittance"
 	,caption:""
 	,buttonicon:"ui-icon-extlink"
 	,onClickButton:function(){ 
-		grid.jqGrid('columnChooser',{caption: "Columns: CTRL-click select/deselect a column, CTRL-A select all",
-									 width: 500});
+		grid.jqGrid('columnChooser',{caption: "Columns: CTRL-click select/deselect a column, CTRL-A select all",width: 500});
 	}
 	,position:"last"
 	,title:"Add/Remove Columns"
@@ -68,107 +64,6 @@ $.subscribe("internalRemittanceComplete", function(event, data) {
 	}
 });
 
-$.subscribe("depositsGridComplete", function(event, data) {	
-	$("#depositsGrid")
-	.jqGrid({pager:'#depositsGrid_pager'})
-	.jqGrid('navButtonAdd'
-	,'#depositsGrid_pager'
-	,{id:"addTemplate_depositsGrid"
-	,caption:"Generate Deposit Tickets"
-	,buttonicon:"ui-icon-document"
-	,onClickButton:function(){ 
-		getTDT();
-	}
-	,position:"last"
-	,title:"Generate Deposit Tickets"
-	,cursor:"pointer"
-	});
-	$("#depositsGrid").jqGrid('setColProp','abcBankCd', { editoptions: { value: rtrnBankCdList()}});
-	setVisibility();
-});
-
-$.subscribe('alsSabhrsEntriesComplete', function(event, data) {	
-	$('#del_alsSabhrsEntriesGrid').bind( "click", function() {
-		$('#alerthd_alsSabhrsEntriesGrid').closest('.ui-jqdialog').position({
-			my: 'center',
-			at: 'center',
-			of: $('#alsSabhrsEntriesGrid').closest('div.ui-jqgrid')
-		});
-	});
-	
-	
-   if ( $("#alsSabhrsEntriesGrid").length) {
-   		$("#alsSabhrsEntriesGrid").jqGrid('setColProp','asacReference', { editoptions: { value: rtrnJLRList()}});
-   		$("#alsSabhrsEntriesGrid").jqGrid('setColProp','aamFund', { editoptions: { value: rtrnFundList()}});
-   		$("#alsSabhrsEntriesGrid").jqGrid('setColProp','asacSubclass', { editoptions: { value: rtrnSubClassList()}});
-   		$("#alsSabhrsEntriesGrid").jqGrid('setColProp','aocOrg', { editoptions: { value: rtrnOrgList()}});
-   		$("#alsSabhrsEntriesGrid").jqGrid('setColProp','aamAccount', { editoptions: { value: rtrnAccountList()}});
-   }
-
-});
-
-$.subscribe("alsNonAlsDetailsComplete", function(event, data) {	
-	autoSelectTemplates();
-});
-
-$.subscribe("alsNonAlsTemplateTableComplete", function(event, data) {	
-	$("#alsNonAlsTemplateTable")
-	.jqGrid({pager:'#alsNonAlsTemplateTable_pager'})
-	.jqGrid('navButtonAdd'
-	,'#alsNonAlsTemplateTable_pager'
-	,{id:"saveTemplates_alsNonAlsTemplateTable"
-	,caption:"Save"
-	,buttonicon:"ui-icon-check"
-	,onClickButton:function(){ 
-		saveTemplates();
-		$('#alsNonAlsTempDiv').hide();
-		$('#nonAlsSabhrsEntriesDiv').show();
-		
-	}
-	,position:"last"
-	,title:"Save"
-	,cursor:"pointer"
-	});
-	$("#alsNonAlsTemplateTable")
-	.jqGrid({pager:'#alsNonAlsTemplateTable_pager'})
-	.jqGrid('navButtonAdd'
-	,'#alsNonAlsTemplateTable_pager'
-	,{id:"selectAllTemplates_alsNonAlsTemplateTable"
-	,caption:"Select All"
-	,buttonicon:"ui-icon-circle-plus"
-	,onClickButton:function(){ 
-		var grid = $("#alsNonAlsTemplateTable");
-	    var rows = grid.jqGrid("getDataIDs");
-	    for (i = 0; i < rows.length; i++)
-	    {
-			$('#alsNonAlsTemplateTable').jqGrid('setCell',rows[i],'selected',1);
-	    }
-	}
-	,position:"last"
-	,title:"Add Template"
-	,cursor:"pointer"
-	});
-	$("#alsNonAlsTemplateTable")
-	.jqGrid({pager:'#alsNonAlsTemplateTable_pager'})
-	.jqGrid('navButtonAdd'
-	,'#alsNonAlsTemplateTable_pager'
-	,{id:"deselectAllTemplates_alsNonAlsTemplateTable"
-	,caption:"Deselect All"
-	,buttonicon:"ui-icon-circle-minus"
-	,onClickButton:function(){ 
-		var grid = $("#alsNonAlsTemplateTable");
-	    var rows = grid.jqGrid("getDataIDs");
-	    for (i = 0; i < rows.length; i++)
-	    {
-			$('#alsNonAlsTemplateTable').jqGrid('setCell',rows[i],'selected',0);
-	    }
-	}
-	,position:"last"
-	,title:"Add Template"
-	,cursor:"pointer"
-	});
-});
-
 $.subscribe("internalRemittanceSelected", function(event, data) {	
 	/*LOAD SUBGRIDS*/
 	var grid = $('#alsInternalRemittance');
@@ -176,12 +71,16 @@ $.subscribe("internalRemittanceSelected", function(event, data) {
 	$('#frmProvNo').val(grid.jqGrid('getCell', sel_id, 'idPk.apiProviderNo'));
 	$('#frmBPFrom').val(grid.jqGrid('getCell', sel_id, 'idPk.airBillingFrom'));
 	$('#frmBPTo').val(grid.jqGrid('getCell', sel_id, 'idPk.airBillingTo'));
+	$('#frmBudgYear').val(grid.jqGrid('getCell', sel_id, 'idPk.airBillingTo').substring(6,10));
 	
 	$('#depositsGrid').jqGrid('setGridParam',{datatype:'json'});
 	$('#alsNonAlsDetails').jqGrid('setGridParam',{datatype:'json'});
 	$('#alsSabhrsEntriesGrid').jqGrid('setGridParam',{datatype:'json'});
 	$('#alsOverUnderSales').jqGrid('setGridParam',{datatype:'json'});
 	$('#iafaGrid').jqGrid('setGridParam',{datatype:'json'});
+	$('#alsNonAlsTemplateTable').jqGrid('setGridParam',{datatype:'json'});
+	$.publish('reloadBankDepGrids');
+	$.publish('reloadNonAlsDetGrids');
 	$.publish('reloadSubGrids');
 	
 	/*SET VISIBILITY*/
@@ -231,6 +130,107 @@ $.subscribe("internalRemittanceSelected", function(event, data) {
 	
 	$('#displayRemittanceDiv').show();
 });
+
+$.subscribe("depositsGridComplete", function(event, data) {	
+	$("#depositsGrid").jqGrid({pager:'#depositsGrid_pager'}).jqGrid('navButtonAdd'
+	,'#depositsGrid_pager'
+	,{id:"addTemplate_depositsGrid"
+	,caption:"Generate Deposit Tickets"
+	,buttonicon:"ui-icon-document"
+	,onClickButton:function(){ 
+		getTDT();
+	}
+	,position:"last"
+	,title:"Generate Deposit Tickets"
+	,cursor:"pointer"
+	});
+	
+	$("#depositsGrid").jqGrid('setColProp','abcBankCd', { editoptions: { value: rtrnBankCdList()}});
+	setVisibility();
+});
+
+$.subscribe('alsSabhrsEntriesComplete', function(event, data) {	
+	$('#del_alsSabhrsEntriesGrid').bind( "click", function() {
+		$('#alerthd_alsSabhrsEntriesGrid').closest('.ui-jqdialog').position({
+			my: 'center',
+			at: 'center',
+			of: $('#alsSabhrsEntriesGrid').closest('div.ui-jqgrid')
+		});
+	});
+	
+	if ( $("#alsSabhrsEntriesGrid").length) {
+   		$("#alsSabhrsEntriesGrid").jqGrid('setColProp','asacReference', { editoptions: { value: rtrnJLRList()}});
+   		$("#alsSabhrsEntriesGrid").jqGrid('setColProp','aamFund', { editoptions: { value: rtrnFundList()}});
+   		$("#alsSabhrsEntriesGrid").jqGrid('setColProp','asacSubclass', { editoptions: { value: rtrnSubClassList()}});
+   		$("#alsSabhrsEntriesGrid").jqGrid('setColProp','aocOrg', { editoptions: { value: rtrnOrgList()}});
+   		$("#alsSabhrsEntriesGrid").jqGrid('setColProp','aamAccount', { editoptions: { value: rtrnAccountList()}});
+	}
+});
+
+$.subscribe("alsNonAlsDetailsComplete", function(event, data) {	
+	autoSelectTemplates();
+	if ( $("#alsNonAlsDetails").length) {
+   		$("#alsNonAlsDetails").jqGrid('setColProp','anatCd', { editoptions: { value: rtrnTmpCdList()}});
+   }
+});
+
+$.subscribe("alsNonAlsTemplateTableComplete", function(event, data) {
+	var grid = $("#alsNonAlsTemplateTable");
+
+	grid.jqGrid({pager:'#alsNonAlsTemplateTable_pager'}).jqGrid('navButtonAdd'
+	,'#alsNonAlsTemplateTable_pager'
+	,{id:"saveTemplates_alsNonAlsTemplateTable"
+	,caption:"Save"
+	,buttonicon:"ui-icon-check"
+	,onClickButton:function(){ 
+		saveTemplates();
+		$('#alsNonAlsTempDiv').hide();
+		$('#nonAlsSabhrsEntriesDiv').show();
+		
+	}
+	,position:"last"
+	,title:"Save"
+	,cursor:"pointer"
+	});
+
+	grid.jqGrid({pager:'#alsNonAlsTemplateTable_pager'}).jqGrid('navButtonAdd'
+	,'#alsNonAlsTemplateTable_pager'
+	,{id:"selectAllTemplates_alsNonAlsTemplateTable"
+	,caption:"Select All"
+	,buttonicon:"ui-icon-circle-plus"
+	,onClickButton:function(){ 
+		var grid = $("#alsNonAlsTemplateTable");
+	    var rows = grid.jqGrid("getDataIDs");
+	    for (i = 0; i < rows.length; i++)
+	    {
+			$('#alsNonAlsTemplateTable').jqGrid('setCell',rows[i],'selected',1);
+	    }
+	}
+	,position:"last"
+	,title:"Add Template"
+	,cursor:"pointer"
+	});
+
+	grid.jqGrid({pager:'#alsNonAlsTemplateTable_pager'}).jqGrid('navButtonAdd'
+	,'#alsNonAlsTemplateTable_pager'
+	,{id:"deselectAllTemplates_alsNonAlsTemplateTable"
+	,caption:"Deselect All"
+	,buttonicon:"ui-icon-circle-minus"
+	,onClickButton:function(){ 
+		var grid = $("#alsNonAlsTemplateTable");
+	    var rows = grid.jqGrid("getDataIDs");
+	    for (i = 0; i < rows.length; i++)
+	    {
+			$('#alsNonAlsTemplateTable').jqGrid('setCell',rows[i],'selected',0);
+	    }
+	}
+	,position:"last"
+	,title:"Add Template"
+	,cursor:"pointer"
+	});
+});
+
+
 
 $.subscribe("iafaRecordSelected", function (event, data) {
 	$('#revError').html('');
@@ -395,11 +395,6 @@ function getTDT() {
     }
 }
 
-function reloadBankDepositsGrid() {
-	$('#depositsGrid').jqGrid('setGridParam',{datatype:'json'});
-	$.publish('reloadDepositsGrid');
-}
-
 /*REMITTANCE FORM*/
 function completedByProv(){
 	if($('#displayBalanced').val()== "Y"){
@@ -553,6 +548,7 @@ function resetSubGridForm(){
 }
 
 function rtrnBankCdList() {return $("#bankCdLst").val();}
+function rtrnTmpCdList() {return $("#tmpCdLst").val();}
 function rtrnAccountList() {return $("#accountLst").val();}
 function rtrnOrgList() {return $("#orgLst").val();}
 function rtrnJLRList() {return $("#jlrLst").val();}
@@ -584,53 +580,9 @@ function resetSearch(){
 }
 
 function gridToCSV(){
-	var gridList = ["alsInternalRemittance","depositsGrid","alsNonAlsDetails","alsOverUnderSales"];
-	var dataLabelList = ["alsInternalRemittanceEntries","depositsEntries","alsNonAlsEntries","alsOverUnderSalesEntries"];
-	
-	_data = {};	
-	_columnsList=[];
-	for (i=0;i<gridList.length;i++){
-		var _jqGrid=$("#"+gridList[i]);
-		var _rowNum = _jqGrid.jqGrid("getGridParam", "rowNum"),
-		_columnModel = _jqGrid.jqGrid("getGridParam", "colModel"),
-		_columnNames = _jqGrid.jqGrid("getGridParam", "colNames"),
-		_columns = [];
-		_data[dataLabelList[i]] = _jqGrid.jqGrid("getGridParam", "data");
-		
-		$.each(_columnModel, function (index) {
-			if (!_columnModel[index].hidden) {
-				_columns.push({
-					"itemVal": _columnModel[index].name,
-					"itemLabel": _columnNames[index]
-				});
-			}
-		});
-		if(gridList[i] == "alsInternalRemittance"){
-			_data["alsIntRemittanceSelectedColumns"] = _columns;
-		}else{
-			_data["columnNameValues"] = _columns;
-		}
-		/* Null empty strings in non-text fields */
-		_columnsList.push(_columns);
-		$.each(_data[dataLabelList[i]],function(index, item){
-			$.each(_columnModel, function(cidx, citem){
-				if(_columnModel[cidx].sorttype !=="text" &&
-					item[_columnModel[cidx].name]==="") {
-					item[_columnModel[cidx].name] = null;
-				}
-			});
-		});
-	}
-	_data["columnsList"]=_columnsList;
-	
-	var filters = $('#gridFrm').serialize();
-	_data["filters"] =  filters;
-	_data["selRow"] = $('#alsInternalRemittance').jqGrid("getGridParam", "selrow");
-	
-	
 	$.ajax({
 		type: "POST",
-	data: JSON.stringify(_data),
+	data: JSON.stringify(exportGrid("alsInternalRemittance","remittanceRecords","gridFrm")),
 	dataType: "json",
 	cache: false,
 	contentType: "application/json",

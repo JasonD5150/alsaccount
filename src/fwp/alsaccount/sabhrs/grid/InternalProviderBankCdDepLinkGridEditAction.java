@@ -47,6 +47,15 @@ public class InternalProviderBankCdDepLinkGridEditAction extends ActionSupport{
 		AlsProviderBankDetails tmp = null;
 		try{
 			String curBudgYear = hh.getCurrentBudgetYear();
+			if(oper.equalsIgnoreCase("edit") || oper.equalsIgnoreCase("del")){
+				String[] keys = id.split("_");
+				AlsProviderBankDetailsIdPk tmpIdPk = new AlsProviderBankDetailsIdPk();
+				tmpIdPk.setApiProviderNo(Integer.parseInt(keys[2]));
+				tmpIdPk.setApbdSeqNo(Integer.parseInt(keys[1]));
+				tmpIdPk.setApbdBillingTo(new Timestamp(sdf.parse(keys[0]).getTime()));
+				
+				tmp = appSer.findById(tmpIdPk);
+			}
 			if (oper.equalsIgnoreCase("add")&&validation()) {
 				StringBuilder trimmedProvNo = new StringBuilder(provNo.toString());
 				trimmedProvNo.deleteCharAt(2);
@@ -65,13 +74,6 @@ public class InternalProviderBankCdDepLinkGridEditAction extends ActionSupport{
 				
 				appSer.save(tmp);
 			} else if((oper.equalsIgnoreCase("edit")&&validation())){				
-				String[] keys = id.split("_");
-				AlsProviderBankDetailsIdPk tmpIdPk = new AlsProviderBankDetailsIdPk();
-				tmpIdPk.setApiProviderNo(Integer.parseInt(keys[2]));
-				tmpIdPk.setApbdSeqNo(Integer.parseInt(keys[1]));
-				tmpIdPk.setApbdBillingTo(FwpDateUtils.getStrToTimestamp(keys[0]));
-				tmp = appSer.findById(tmpIdPk);
-				
 				tmp.setApbdBillingFrom(new Timestamp(BillingFrom.getTime()));
 				tmp.setAbcBankCd(abcBankCd);
 				tmp.setApbdAmountDeposit(apbdAmountDeposit);
@@ -86,11 +88,6 @@ public class InternalProviderBankCdDepLinkGridEditAction extends ActionSupport{
 					addActionError("Cannot delete record, Deposit already approved for this billing period.");
 					return "error_json";
 				}else{
-					AlsProviderBankDetailsIdPk tmpIdPk = new AlsProviderBankDetailsIdPk();
-					tmpIdPk.setApiProviderNo(Integer.parseInt(keys[2]));
-					tmpIdPk.setApbdSeqNo(Integer.parseInt(keys[1]));
-					tmpIdPk.setApbdBillingTo(new Timestamp(sdf.parse(keys[0]).getTime()));
-					tmp = appSer.findById(tmpIdPk);
 					appSer.delete(tmp);
 				}
 			}else{

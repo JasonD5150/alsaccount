@@ -32,16 +32,10 @@ public class InternalRemittanceGridsToCsvAction extends ActionSupport {
 
 	private static final long serialVersionUID = -198737835399515405L;
 
-	private List<AlsInternalRemittanceDTO> alsInternalRemittanceEntries = new ArrayList<>();
-	private List<InternalProviderBankCdDepLinkDTO> depositsEntries = new ArrayList<>();
-	private List<AlsNonAlsDetails> alsNonAlsEntries = new ArrayList<>();
-	private List<AlsOverUnderSalesDets> alsOverUnderSalesEntries = new ArrayList<>();
+	private List<AlsInternalRemittanceDTO> remittanceRecords = new ArrayList<>();
 	private List<ListComp> columnNameValues = new ArrayList<>();
-	private List<ListComp> alsIntRemittanceSelectedColumns = new ArrayList<>();
-	
 
 	private String filters;
-	private String selRow;
 	private String csvFileName;
 	private String fileName;
 
@@ -50,7 +44,6 @@ public class InternalRemittanceGridsToCsvAction extends ActionSupport {
 		return SUCCESS;
 	}
 
-	@SuppressWarnings("unchecked")
 	private void buildcsv() throws Exception {
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 		File tempFile = File.createTempFile("remittancerecords", "csv");
@@ -81,7 +74,7 @@ public class InternalRemittanceGridsToCsvAction extends ActionSupport {
 		}
 		
 		StringBuilder titleLine = new StringBuilder();
-		for (ListComp listComp : this.alsIntRemittanceSelectedColumns) {
+		for (ListComp listComp : this.columnNameValues) {
 			if (validColumn(listComp)) {
 				if (titleLine.length() > 0) {
 					titleLine.append(",");
@@ -92,82 +85,48 @@ public class InternalRemittanceGridsToCsvAction extends ActionSupport {
 		fileWriter.write(titleLine.toString());
 		fileWriter.write("\n");
 		
-		for (AlsInternalRemittanceDTO air : alsInternalRemittanceEntries) {	
-			if(air.getGridKey().equals(selRow)){
-				AlsInternalRemittanceIdPk airIdPk = new AlsInternalRemittanceIdPk();
-				airIdPk.setApiProviderNo(Integer.parseInt(air.getGridKey().split("_")[2]));
-				airIdPk.setAirBillingFrom(Utils.StrToTimestamp(air.getGridKey().split("_")[0], "short"));
-				airIdPk.setAirBillingTo(Utils.StrToTimestamp(air.getGridKey().split("_")[0], "short"));
-				air.setIdPk(airIdPk);
-				StringBuilder line = new StringBuilder();
-				Boolean firstColumn = true;
-				for (ListComp listComp : this.alsIntRemittanceSelectedColumns) {
-					if (validColumn(listComp)) {
-						if (!firstColumn) {
-							if("amtRec".equals(listComp.getItemVal())){
-								line.append(",$");
-							}else{
-								line.append(",");
-							}
-						} else {
-							firstColumn = false;
+		for (AlsInternalRemittanceDTO air : remittanceRecords) {	
+			AlsInternalRemittanceIdPk airIdPk = new AlsInternalRemittanceIdPk();
+			airIdPk.setApiProviderNo(Integer.parseInt(air.getGridKey().split("_")[2]));
+			airIdPk.setAirBillingFrom(Utils.StrToTimestamp(air.getGridKey().split("_")[0], "short"));
+			airIdPk.setAirBillingTo(Utils.StrToTimestamp(air.getGridKey().split("_")[0], "short"));
+			air.setIdPk(airIdPk);
+			StringBuilder line = new StringBuilder();
+			Boolean firstColumn = true;
+			for (ListComp listComp : this.columnNameValues) {
+				if (validColumn(listComp)) {
+					if (!firstColumn) {
+						if("amtRec".equals(listComp.getItemVal())){
+							line.append(",$");
+						}else{
+							line.append(",");
 						}
-						Object gotten;
-						
-						switch(listComp.getItemVal()){
-						case "idPk.apiProviderNo":
-							gotten = air.getIdPk().getApiProviderNo();break;
-						case "idPk.airBillingFrom":
-							gotten = air.getIdPk().getAirBillingFrom();break;
-						case "idPk.airBillingTo":
-							gotten = air.getIdPk().getAirBillingTo();break;
-						default:
-							gotten = air.getClass().getMethod("get" + StringUtils.capitalize(listComp.getItemVal())).invoke(air);
-						}	
-						
-						if (gotten != null && gotten instanceof Date) {
-							line.append(StringEscapeUtils.escapeCsv(DateFormatUtils.format((Date) gotten, "MM/dd/yyyy")));
-						} else {
-							line.append(StringEscapeUtils.escapeCsv(ObjectUtils.toString(gotten)));
-						}
+					} else {
+						firstColumn = false;
+					}
+					Object gotten;
+					
+					switch(listComp.getItemVal()){
+					case "idPk.apiProviderNo":
+						gotten = air.getIdPk().getApiProviderNo();break;
+					case "idPk.airBillingFrom":
+						gotten = air.getIdPk().getAirBillingFrom();break;
+					case "idPk.airBillingTo":
+						gotten = air.getIdPk().getAirBillingTo();break;
+					default:
+						gotten = air.getClass().getMethod("get" + StringUtils.capitalize(listComp.getItemVal())).invoke(air);
+					}	
+					
+					if (gotten != null && gotten instanceof Date) {
+						line.append(StringEscapeUtils.escapeCsv(DateFormatUtils.format((Date) gotten, "MM/dd/yyyy")));
+					} else {
+						line.append(StringEscapeUtils.escapeCsv(ObjectUtils.toString(gotten)));
 					}
 				}
-				line.append("\n");
-				fileWriter.write(line.toString());
 			}
-		}
-		fileWriter.write("\n\n");
-		
-		fileWriter.write("Bank Details\n");
-		fileWriter.write("Seq No,Bank Code,Bank Name,Amount Deposited,Deposit Date,Billing Period From,Billing Period To,Amount Due,Deposit Id\n");
-		for (InternalProviderBankCdDepLinkDTO ipbcdl : depositsEntries) {	
-			StringBuilder line = new StringBuilder();
-			String seqNo = ipbcdl.getGridKey().split("_")[1];
-			line.append(seqNo+","+ipbcdl.getAbcBankCd()+","+ipbcdl.getBankName()+",$"+
-						ipbcdl.getApbdAmountDeposit()+","+sdf.format(ipbcdl.getDepositDate())+","+sdf.format(ipbcdl.getBillingFrom())+","+
-						sdf.format(ipbcdl.getApbdBillingTo())+",$"+ipbcdl.getAmtDue()+","+ipbcdl.getApbdDepositId());
 			line.append("\n");
 			fileWriter.write(line.toString());
-		}
-		fileWriter.write("\n\n");
-		
-		fileWriter.write("Non Als Details\n");
-		fileWriter.write("Code,Description,Amount\n");
-		for (AlsNonAlsDetails anad : alsNonAlsEntries) {	
-			StringBuilder line = new StringBuilder();
-			line.append(anad.getAnatCd()+","+anad.getAnadDesc()+",$"+anad.getAnadAmount());
-			line.append("\n");
-			fileWriter.write(line.toString());
-		}
-		fileWriter.write("\n\n");
-		
-		fileWriter.write("Total Funds Received Over / Short of Sales - Details\n");
-		fileWriter.write("Over/Short of Sales,Description,Amount\n");
-		for (AlsOverUnderSalesDets aousd : alsOverUnderSalesEntries) {	
-			StringBuilder line = new StringBuilder();
-			line.append(Utils.nullFix(aousd.getAousdFlag())+","+aousd.getAousdDesc()+",$"+aousd.getAousdAmount());
-			line.append("\n");
-			fileWriter.write(line.toString());
+			
 		}
 		
 		fileWriter.close();
@@ -181,11 +140,8 @@ public class InternalRemittanceGridsToCsvAction extends ActionSupport {
 			}else{
 				AlsInternalRemittanceDTO.class.getMethod("get" + StringUtils.capitalize(listComp.getItemVal()));
 			}
-			
-			//System.out.println("Found get" + StringUtils.capitalize(listComp.getItemVal()));
 			return true;
 		} catch (NoSuchMethodException e) {
-			//System.out.println("Cannot find get" + StringUtils.capitalize(listComp.getItemVal()));
 			return false;
 		}
 	}
@@ -197,7 +153,25 @@ public class InternalRemittanceGridsToCsvAction extends ActionSupport {
 		case "bpFrom":
 			return "Billing Period From ";	
 		case "bpTo":
-			return "Billing Period To ";	
+			return "Billing Period To ";
+		case "comByProv":
+			return "Completed By Provider ";
+		case "comByProvDt":
+			return "Completed By Provider Date ";
+		case "app":
+			return "Remittance Approved ";
+		case "appBy":
+			return "Remittance Approved By ";
+		case "appDt":
+			return "Remittance Approved Date ";
+		case "appCom":
+			return "Comments ";
+		case "hasNonAlsDetails":
+			return "Has Non ALS Details ";
+		case "hasOverShortDetails":
+			return "Has Over/Short Details ";
+		case "hasPaeAmt":
+			return "Has PAE Amount ";
 		default:
 			return "N/A";
 		}	
@@ -215,54 +189,19 @@ public class InternalRemittanceGridsToCsvAction extends ActionSupport {
 		return columnNameValues;
 	}
 
-	public List<AlsInternalRemittanceDTO> getAlsInternalRemittanceEntries() {
-		return alsInternalRemittanceEntries;
+	public List<AlsInternalRemittanceDTO> getRemittanceRecords() {
+		return remittanceRecords;
 	}
 
-	public void setAlsInternalRemittanceEntries(
-			List<AlsInternalRemittanceDTO> alsInternalRemittanceEntries) {
-		this.alsInternalRemittanceEntries = alsInternalRemittanceEntries;
-	}
-
-	public List<InternalProviderBankCdDepLinkDTO> getDepositsEntries() {
-		return depositsEntries;
-	}
-
-	public void setDepositsEntries(
-			List<InternalProviderBankCdDepLinkDTO> depositsEntries) {
-		this.depositsEntries = depositsEntries;
-	}
-
-	public List<AlsNonAlsDetails> getAlsNonAlsEntries() {
-		return alsNonAlsEntries;
-	}
-
-	public void setAlsNonAlsEntries(List<AlsNonAlsDetails> alsNonAlsEntries) {
-		this.alsNonAlsEntries = alsNonAlsEntries;
-	}
-
-	public List<AlsOverUnderSalesDets> getAlsOverUnderSalesEntries() {
-		return alsOverUnderSalesEntries;
-	}
-
-	public void setAlsOverUnderSalesEntries(
-			List<AlsOverUnderSalesDets> alsOverUnderSalesEntries) {
-		this.alsOverUnderSalesEntries = alsOverUnderSalesEntries;
+	public void setRemittanceRecords(
+			List<AlsInternalRemittanceDTO> remittanceRecords) {
+		this.remittanceRecords = remittanceRecords;
 	}
 
 	public void setColumnNameValues(List<ListComp> columnNameValues) {
 		this.columnNameValues = columnNameValues;
 	}
 	
-	public List<ListComp> getAlsIntRemittanceSelectedColumns() {
-		return alsIntRemittanceSelectedColumns;
-	}
-
-	public void setAlsIntRemittanceSelectedColumns(
-			List<ListComp> alsIntRemittanceSelectedColumns) {
-		this.alsIntRemittanceSelectedColumns = alsIntRemittanceSelectedColumns;
-	}
-
 	public String getFileName() {
 		return fileName;
 	}
@@ -279,12 +218,5 @@ public class InternalRemittanceGridsToCsvAction extends ActionSupport {
 		this.filters = filters;
 	}
 	
-	public String getSelRow() {
-		return selRow;
-	}
-
-	public void setSelRow(String selRow) {
-		this.selRow = selRow;
-	}
 }
 

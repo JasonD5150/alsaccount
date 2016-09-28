@@ -8,11 +8,9 @@ import org.apache.shiro.SecurityUtils;
 
 import com.opensymphony.xwork2.ActionSupport;
 
-import fwp.als.hibernate.inventory.dao.AlsNonAlsDetailsIdPk;
 import fwp.alsaccount.appservice.sabhrs.AlsOverUnderSalesDetsAS;
 import fwp.alsaccount.dao.sabhrs.AlsOverUnderSalesDets;
 import fwp.alsaccount.dao.sabhrs.AlsOverUnderSalesDetsIdPk;
-import fwp.alsaccount.dto.sabhrs.AlsOverUnderSalesDetsDTO;
 import fwp.security.user.UserDTO;
 import fwp.utils.FwpDateUtils;
 
@@ -40,6 +38,16 @@ public class AlsOverUnderSalesDetsGridEditAction extends ActionSupport{
 		AlsOverUnderSalesDetsAS appSer = new AlsOverUnderSalesDetsAS();
 		AlsOverUnderSalesDets tmp = null;
 		try{
+			if(oper.equalsIgnoreCase("edit") || oper.equalsIgnoreCase("del")){
+				String[] keys = id.split("_");
+				AlsOverUnderSalesDetsIdPk tmpIdPk = new AlsOverUnderSalesDetsIdPk();
+				tmpIdPk.setApiProviderNo(Integer.parseInt(keys[0]));
+				tmpIdPk.setAirBillingFrom(FwpDateUtils.getStrToTimestamp(keys[1]));
+				tmpIdPk.setAirBillingTo(FwpDateUtils.getStrToTimestamp(keys[2]));
+				tmpIdPk.setAousdSeqNo(Integer.parseInt(keys[3]));
+				
+				tmp = appSer.findById(tmpIdPk);
+			}
 	
 			if (oper.equalsIgnoreCase("add")) {
 				AlsOverUnderSalesDetsIdPk tmpIdPk = new AlsOverUnderSalesDetsIdPk();
@@ -61,15 +69,6 @@ public class AlsOverUnderSalesDetsGridEditAction extends ActionSupport{
 				
 				appSer.save(tmp);
 			} else if((oper.equalsIgnoreCase("edit"))){				
-				String[] keys = id.split("_");
-				AlsOverUnderSalesDetsIdPk tmpIdPk = new AlsOverUnderSalesDetsIdPk();
-				tmpIdPk.setApiProviderNo(Integer.parseInt(keys[0]));
-				tmpIdPk.setAirBillingFrom(FwpDateUtils.getStrToTimestamp(keys[1]));
-				tmpIdPk.setAirBillingTo(FwpDateUtils.getStrToTimestamp(keys[2]));
-				tmpIdPk.setAousdSeqNo(Integer.parseInt(keys[3]));
-				
-				tmp = appSer.findById(tmpIdPk);
-				
 				tmp.setAousdFlag(aousdFlag);
 				tmp.setAousdDesc(aousdDesc);
 				tmp.setAousdAmount(aousdAmount);
@@ -78,15 +77,6 @@ public class AlsOverUnderSalesDetsGridEditAction extends ActionSupport{
 				tmp.setAousdLastModDate(date);
 				appSer.save(tmp);
 			}else if (oper.equalsIgnoreCase("del")){
-				String[] keys = id.split("_");
-				AlsOverUnderSalesDetsIdPk tmpIdPk = new AlsOverUnderSalesDetsIdPk();
-				tmpIdPk.setApiProviderNo(Integer.parseInt(keys[0]));
-				tmpIdPk.setAirBillingFrom(FwpDateUtils.getStrToTimestamp(keys[1]));
-				tmpIdPk.setAirBillingTo(FwpDateUtils.getStrToTimestamp(keys[2]));
-				tmpIdPk.setAousdSeqNo(Integer.parseInt(keys[3]));
-				
-				tmp = appSer.findById(tmpIdPk);
-				
 				appSer.delete(tmp);
 			}else{
 				return "error_json";
