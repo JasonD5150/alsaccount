@@ -8,6 +8,9 @@ import org.apache.shiro.SecurityUtils;
 
 import com.opensymphony.xwork2.ActionSupport;
 
+import fwp.als.hibernate.inventory.dao.AlsInternalRemittance;
+import fwp.als.hibernate.inventory.dao.AlsInternalRemittanceIdPk;
+import fwp.alsaccount.appservice.sabhrs.AlsInternalRemittanceAS;
 import fwp.alsaccount.appservice.sabhrs.AlsOverUnderSalesDetsAS;
 import fwp.alsaccount.dao.sabhrs.AlsOverUnderSalesDets;
 import fwp.alsaccount.dao.sabhrs.AlsOverUnderSalesDetsIdPk;
@@ -37,6 +40,11 @@ public class AlsOverUnderSalesDetsGridEditAction extends ActionSupport{
 		
 		AlsOverUnderSalesDetsAS appSer = new AlsOverUnderSalesDetsAS();
 		AlsOverUnderSalesDets tmp = null;
+		
+		AlsInternalRemittanceAS airAS = new AlsInternalRemittanceAS();
+		AlsInternalRemittanceIdPk airIdPk = null;
+		AlsInternalRemittance air = null;
+		
 		try{
 			if(oper.equalsIgnoreCase("edit") || oper.equalsIgnoreCase("del")){
 				String[] keys = id.split("_");
@@ -47,6 +55,12 @@ public class AlsOverUnderSalesDetsGridEditAction extends ActionSupport{
 				tmpIdPk.setAousdSeqNo(Integer.parseInt(keys[3]));
 				
 				tmp = appSer.findById(tmpIdPk);
+				
+				airIdPk = new AlsInternalRemittanceIdPk(tmp.getIdPk().getApiProviderNo(), tmp.getIdPk().getAirBillingFrom(), tmp.getIdPk().getAirBillingTo());
+				air = airAS.findById(airIdPk);
+			}else{
+				airIdPk = new AlsInternalRemittanceIdPk(provNo, new Timestamp(apbdBillingFrom.getTime()), new Timestamp(apbdBillingTo.getTime()));
+				air = airAS.findById(airIdPk);
 			}
 	
 			if (oper.equalsIgnoreCase("add")) {
@@ -68,15 +82,38 @@ public class AlsOverUnderSalesDetsGridEditAction extends ActionSupport{
 				tmp.setAousdCreateDate(date);
 				
 				appSer.save(tmp);
-			} else if((oper.equalsIgnoreCase("edit"))){				
+				
+				//Update Als_Internal_Remittance
+				if("O".equals(aousdFlag)){
+					air.setAirOverSales(air.getAirOverSales()+aousdAmount);
+				}else if("U".equals(aousdFlag)){
+					air.setAirShortSales(air.getAirShortSales()+aousdAmount);
+				}
+				airAS.save(air);
+			} else if((oper.equalsIgnoreCase("edit"))){	
+				//Update Als_Internal_Remittance
+				if("O".equals(tmp.getAousdFlag())){
+					air.setAirOverSales(air.getAirOverSales()-tmp.getAousdAmount()+aousdAmount);
+				}else if("U".equals(tmp.getAousdFlag())){
+					air.setAirShortSales(air.getAirShortSales()-tmp.getAousdAmount()+aousdAmount);
+				}
+				airAS.save(air);
+
 				tmp.setAousdFlag(aousdFlag);
 				tmp.setAousdDesc(aousdDesc);
 				tmp.setAousdAmount(aousdAmount);
-				
 				tmp.setAousdLastModPersonid(userInfo.getStateId());
 				tmp.setAousdLastModDate(date);
 				appSer.save(tmp);
 			}else if (oper.equalsIgnoreCase("del")){
+				//Update Als_Internal_Remittance
+				if("O".equals(tmp.getAousdFlag())){
+					air.setAirOverSales(air.getAirOverSales()-tmp.getAousdAmount());
+				}else if("U".equals(tmp.getAousdFlag())){
+					air.setAirShortSales(air.getAirShortSales()-tmp.getAousdAmount());
+				}
+				airAS.save(air);
+				
 				appSer.delete(tmp);
 			}else{
 				return "error_json";

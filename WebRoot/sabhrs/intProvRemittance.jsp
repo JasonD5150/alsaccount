@@ -106,11 +106,11 @@
 			<sjg:gridColumn name="provNm" index="provNm" title="Provider Name" width="100" sortable="true" editable="false" align="right"/>
 			<sjg:gridColumn name="idPk.airBillingFrom" index="airBillingFrom" title="Billing Period From" width="70" sortable="true" editable="false" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }"/>
 			<sjg:gridColumn name="idPk.airBillingTo" index="airBillingTo" title="Billing Period To" width="70" sortable="true" editable="false" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }"/>
-			<sjg:gridColumn name="amtRec" index="amtRec" title="Amount Received" width="60" sortable="true" editable="false" align="right" formatter="number" formatoptions="{decimalPlaces: 2}"/>
 			<sjg:gridColumn name="completeProvider" index="completeProvider" title="Date Completed by Provider" width="70" sortable="true" editable="false" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }"/>
 			<sjg:gridColumn name="airOfflnPaymentApproved" index="airOfflnPaymentApproved" title="RemittanceApproved" width="15" sortable="true" editable="true" formatter="checkbox" align="center" edittype="checkbox" editoptions="{ value: 'true:false' }"/>
 			
 			<!-- HIDDEN -->
+			<sjg:gridColumn name="amtRec" index="amtRec" title="Amount Received" width="60" sortable="true" editable="false" align="right" formatter="number" formatoptions="{decimalPlaces: 2}" hidden="true"/>
 			<sjg:gridColumn name="airSystemSales" index="airSystemSales" title="System Sales" width="60" sortable="true" editable="false" align="right" formatter= "number" formatoptions="{decimalPlaces: 2}" hidden="true"/>
 			<sjg:gridColumn name="eftddd" index="eftddd" title="EFT DDD" width="70" sortable="true" editable="false" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }" hidden="true"/>
 			<sjg:gridColumn name="airOtcPhoneSales" index="airOtcPhoneSales" title="OTC SALES" width="60" sortable="true" editable="false" align="right" formatter="number" formatoptions="{decimalPlaces: 2}" hidden="true"/>
@@ -242,8 +242,7 @@
 							href="%{intProvRemittanceBankDepDivUrl}"
 							width="950"
 							formIds="subGridFrm"
-							reloadTopics="reloadBankDepGrids"
-							onChangeTopics="reloadBankDepositsGrid();">
+							reloadTopics="reloadBankDepGrids">
 					</sj:div>
 				</div>
 				<div id="intProvTTwo">
@@ -284,6 +283,11 @@
 					    	                      	return[true, ''];
 						    	              },
 					   						  afterSubmit:errorHandler,
+					   						  afterSubmit: function () {
+												    $('#alsInternalRemittance').jqGrid('setGridParam',{datatype:'json'});
+												    $.publish('reloadInternalRemittance');
+												    return [true];
+											  },
 					   						  afterShowForm:function(postData){
 					   						  		prePopulate(this.id)
 						    	                    return[true, ''];
@@ -300,9 +304,20 @@
 						    	               },
 					   	                       closeAfterEdit:true,
 					   	                       afterSubmit:errorHandler,
+					   	                       afterSubmit: function () {
+												    $('#alsInternalRemittance').jqGrid('setGridParam',{datatype:'json'});
+												    $.publish('reloadInternalRemittance');
+												    return [true];
+											   },
 					   	                       processData:'Updating to Database'}"
 					   	navigatorViewOptions="{width:500,reloadAfterSubmit:false}"    	
-					   	navigatorDeleteOptions="{afterSubmit:errorHandler}"
+					   	navigatorDeleteOptions="{afterSubmit:errorHandler,
+					   	 						 afterSubmit: function () {
+												    $('#alsInternalRemittance').jqGrid('setGridParam',{datatype:'json'});
+												    $.publish('reloadInternalRemittance');
+												    return [true];
+											   	 }
+											   	}"
 					    gridModel="model"
 						rownumbers="false"
 						editinline="false"

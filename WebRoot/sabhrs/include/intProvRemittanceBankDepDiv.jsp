@@ -26,12 +26,11 @@
 	navigatorDelete="true"
 	navigatorSearch="false"
 	navigatorRefresh="false"
-   	navigatorAddOptions="{width:600,
-   						  reloadAfterSubmit:true,
+   	navigatorAddOptions="{width:600,reloadAfterSubmit:false,
    						  addedrow:'last',
    						  beforeSubmit:function(postData){
    						  			var grid = $('#alsInternalRemittance');
-									var sel_id = grid.jqGrid('getGridParam','selrow'); 
+									var sel_id = grid.jqGrid('getGridParam','selrow');
 	    	                      	postData.provNo = $('#provNo').val();
 	    	                      	postData.billingFrom = grid.jqGrid('getCell', sel_id, 'idPk.airBillingFrom');
 	    	                      	postData.apbdBillingTo = grid.jqGrid('getCell', sel_id, 'idPk.airBillingTo');
@@ -39,7 +38,6 @@
 	    	              },
    						  afterSubmit:errorHandler,
    						  afterSubmit: function () {
-							    $(this).jqGrid('setGridParam', {datatype: 'json'});
 							    $('#alsInternalRemittance').jqGrid('setGridParam',{datatype:'json'});
 							    $.publish('reloadInternalRemittance');
 							    return [true];
@@ -50,15 +48,25 @@
    	                      processData:'Adding Row to Database'}"
    	navigatorEditOptions="{width:600,reloadAfterSubmit:false,
    	                       editCaption:'Edit Code Info',
-   	                        beforeSubmit:function(postData){
+   	                       beforeSubmit:function(postData){
 	    	                      	postData.provNo = $('#provNo').val();
 	    	                      	return[true, ''];
-	    	              },
+	    	               },
    	                       closeAfterEdit:true,
    	                       afterSubmit:errorHandler,
+   	                       afterSubmit: function () {
+							    $('#alsInternalRemittance').jqGrid('setGridParam',{datatype:'json'});
+							    $.publish('reloadInternalRemittance');
+							    return [true];
+						   },
    	                       processData:'Updating to Database'}"
    	navigatorViewOptions="{width:500,reloadAfterSubmit:false}"    	
-   	navigatorDeleteOptions="{afterSubmit:errorHandler}"
+   	navigatorDeleteOptions="{afterSubmit:errorHandler,
+   							 afterSubmit: function () {
+							    $('#alsInternalRemittance').jqGrid('setGridParam',{datatype:'json'});
+							    $.publish('reloadInternalRemittance');
+							    return [true];
+						  	}}"
    	gridModel="model"
    	formIds="subGridFrm"
 	rownumbers="false"

@@ -39,6 +39,11 @@
   	                      			return[true, ''];
 	    	              },
    						  afterSubmit:errorHandler,
+   						  afterSubmit: function () {
+							    $('#alsInternalRemittance').jqGrid('setGridParam',{datatype:'json'});
+							    $.publish('reloadInternalRemittance');
+							    return [true];
+						  },
    						  afterShowForm:function(postData){
 						  					prePopulate(this.id);
   	                      			return[true, ''];
@@ -55,9 +60,19 @@
 	    	               },
    	                       closeAfterEdit:true,
    	                       afterSubmit:errorHandler,
+   	                       afterSubmit: function () {
+							    $('#alsInternalRemittance').jqGrid('setGridParam',{datatype:'json'});
+							    $.publish('reloadInternalRemittance');
+							    return [true];
+						   },
    	                       processData:'Updating to Database'}"
    	navigatorViewOptions="{width:500,reloadAfterSubmit:false}"    	
-   	navigatorDeleteOptions="{afterSubmit:errorHandler}"
+   	navigatorDeleteOptions="{afterSubmit:errorHandler,
+   							 afterSubmit: function () {
+							    $('#alsInternalRemittance').jqGrid('setGridParam',{datatype:'json'});
+							    $.publish('reloadInternalRemittance');
+							    return [true];
+						  	}}"
     gridModel="model"
 	rownumbers="false"
 	editinline="false"
@@ -68,7 +83,6 @@
 	width="910"
 	rowNum="1000"
 	formIds="subGridFrm"
-	reloadTopics="reloadSubGrids"
 	onCompleteTopics="alsNonAlsDetailsComplete"
 	loadonce="true">
 		<sjg:gridColumn name="gridKey" title ="id" width="55" hidden="true" key="true"/>
@@ -81,8 +95,7 @@
 																																								    	}else{
 																																								    		$('#anadDesc').prop({disabled:false});     
 																																								    	}
-																																								    	
-																																								    }}] }" editrules="{required:true}"/>
+																																								    }}] }"/>
 		<sjg:gridColumn name="anadDesc" index="anadDesc" title="Description" width="10" sortable="true" editable = "true" editrules="{required:true}"/>
 		<sjg:gridColumn name="anadAmount" index="anadAmount" title="Amount" width="10" sortable="true" editable = "true" align="right" formatter="number" formatoptions="{decimalPlaces: 2}" editrules="{number:true,required:true}" editoptions="{minValue:0}"/>
 </sjg:grid>

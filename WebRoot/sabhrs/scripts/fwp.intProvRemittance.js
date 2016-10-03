@@ -67,7 +67,8 @@ $.subscribe("internalRemittanceComplete", function(event, data) {
 $.subscribe("internalRemittanceSelected", function(event, data) {	
 	/*LOAD SUBGRIDS*/
 	var grid = $('#alsInternalRemittance');
-	var sel_id = grid.jqGrid('getGridParam','selrow'); 
+	var sel_id = grid.jqGrid('getGridParam','selrow');
+	selectedRow = sel_id;
 	$('#frmProvNo').val(grid.jqGrid('getCell', sel_id, 'idPk.apiProviderNo'));
 	$('#frmBPFrom').val(grid.jqGrid('getCell', sel_id, 'idPk.airBillingFrom'));
 	$('#frmBPTo').val(grid.jqGrid('getCell', sel_id, 'idPk.airBillingTo'));
@@ -557,9 +558,9 @@ function rtrnSubClassList() {return $("#subClassLst").val();}
 
 /*ACTIONS*/
 function submitSearch(){
+		selectedRow = null;
 		$('#alsInternalRemittance').jqGrid('setGridParam',{datatype:'json'});
 		$.publish('reloadInternalRemittance');
-
 }
 
 function resetSearch(){
@@ -576,6 +577,8 @@ function resetSearch(){
 	$('#alsNonAlsDetails').jqGrid('setGridParam',{datatype:'json'});
 	$('#alsSabhrsEntriesGrid').jqGrid('setGridParam',{datatype:'json'});
 	$('#alsOverUnderSales').jqGrid('setGridParam',{datatype:'json'});
+	$.publish('reloadBankDepGrids');
+	$.publish('reloadNonAlsDetGrids');
 	$.publish('reloadSubGrids');
 }
 
@@ -610,7 +613,6 @@ function intRemittanceRptCSV(){
 	success: function (data) {
 		window.location = "downloadCsv.action?csvFileName=" + data.csvFileName+"&fileName="+data.fileName;
 	}, complete: function () {
-		$('#details').prop({disabled:true}); 
 		$('#alsInternalRemittance').jqGrid('setGridParam',{datatype:'json'});
 		$('#alsInternalRemittance').trigger("reloadGrid");
 	},
