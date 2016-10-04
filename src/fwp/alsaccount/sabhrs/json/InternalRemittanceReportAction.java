@@ -73,8 +73,8 @@ public class InternalRemittanceReportAction extends ActionSupport {
 		List<AlsOverUnderSalesDets> aousdLst = null;
 		for (AlsInternalRemittanceDTO rr : remittanceRecords) {	
 			String where = "WHERE idPk.apiProviderNo = "+rr.getGridKey().split("_")[2]+" "
-					+ "AND idPk.airBillingFrom = TO_DATE('"+rr.getGridKey().split("_")[0]+"','yyyy/mm/dd') "
-					+ "AND idPk.airBillingTo = TO_DATE('"+rr.getGridKey().split("_")[1]+"','yyyy/mm/dd') ";
+					+ "AND idPk.airBillingFrom = TO_DATE('"+rr.getGridKey().split("_")[0]+"','dd/mm/yyyy') "
+					+ "AND idPk.airBillingTo = TO_DATE('"+rr.getGridKey().split("_")[1]+"','dd/mm/yyyy') ";
 			
 			StringBuilder line = new StringBuilder();
 			line.append("Provider No:, "+rr.getGridKey().split("_")[2]+",Provider Name:,"+rr.getProvNm()+"\n");

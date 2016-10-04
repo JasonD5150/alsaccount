@@ -525,6 +525,7 @@ function setVisibility(){
 			
 			$('#saveRemittance').prop({disabled:false});
 	}else{
+		$("#userTabs").hide();
 		$('#alsNonAlsDetails_pager_left').hide();
 		$('#alsOverUnderSales_pager_left').hide();
 		$('#add_depositsGrid').hide();
