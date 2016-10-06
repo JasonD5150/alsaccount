@@ -428,7 +428,6 @@ function remittanceApproved(){
 function saveRemittance(){
 	var grid = $('#alsInternalRemittance');
 	selectedRow = grid.jqGrid('getGridParam','selrow'); 
-	alert(selectedRow);
 	url = "alsAccount/alsInternalRemittanceGridEdit_execute.action";    
 	$.ajax({
       type: "POST",
