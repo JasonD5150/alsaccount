@@ -1,4 +1,4 @@
-function exportGrid(gridName,dataLabel,queryForm){
+function exportGrid(gridName,dataLabel,queryForm,selectedRow){
 	var _jqGrid=$("#"+gridName);
 	_jqGrid.jqGrid("setGridParam", {rowNum: 999999999, autowidth: true, shrinkToFit: false}).trigger("reloadGrid");
 	var _rowNum = _jqGrid.jqGrid("getGridParam", "rowNum"),
@@ -29,6 +29,9 @@ function exportGrid(gridName,dataLabel,queryForm){
 	if(queryForm != null && queryForm != ""){
 		var filters = $("#"+queryForm).serialize();
 		_data["filters"] =  filters;
+	}
+	if(selectedRow){
+		_data["selectedRow"] =  _jqGrid.jqGrid('getGridParam', 'selrow');
 	}
 	return _data;
 }

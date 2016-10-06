@@ -27,15 +27,12 @@
 	navigatorSearch="false"
 	navigatorRefresh="false"
 	navigatorSearchOptions="{sopt:['cn','bw','eq','ne','lt','gt','ew'],multipleSearch:true}"
-   	navigatorAddOptions="{width:600,reloadAfterSubmit:true,
+   	navigatorAddOptions="{width:600,reloadAfterSubmit:false,
    						  addedrow:'last',
    						  beforeSubmit:function(postData){
-						  					$('#alsNonAlsDetails').jqGrid('setGridParam',{datatype:'json'});
-					  						var grid = $('#alsInternalRemittance');
-								var sel_id = grid.jqGrid('getGridParam','selrow'); 
- 	                      				postData.provNo = $('#provNo').val();
- 	                      				postData.apbdBillingFrom = grid.jqGrid('getCell', sel_id, 'idPk.airBillingFrom');
- 	                      				postData.apbdBillingTo = grid.jqGrid('getCell', sel_id, 'idPk.airBillingTo');
+					  				postData.provNo = $('#provNo').val();
+	    	                    	postData.apbdBillingFrom = $('#frmBPFrom').val();
+	    	                    	postData.apbdBillingTo = $('#frmBPTo').val();
   	                      			return[true, ''];
 	    	              },
    						  afterSubmit:errorHandler,
@@ -54,8 +51,9 @@
    	navigatorEditOptions="{width:600,reloadAfterSubmit:false,
    	                       editCaption:'Edit Code Info',
    	                       beforeSubmit:function(postData){
-   	                        	$('#alsNonAlsDetails').jqGrid('setGridParam',{datatype:'json'});
 	    	                    postData.provNo = $('#provNo').val();
+	    	                    postData.apbdBillingFrom = $('#frmBPFrom').val();
+	    	                    postData.apbdBillingTo = $('#frmBPTo').val();
 	    	                    return[true, ''];
 	    	               },
    	                       closeAfterEdit:true,
@@ -83,16 +81,19 @@
 	width="910"
 	rowNum="1000"
 	formIds="subGridFrm"
-	onCompleteTopics="alsNonAlsDetailsComplete"
-	loadonce="true">
+
+	reloadTopics="reloadNonAlsDetailsGrid"
+	onBeforeTopics="alsNonAlsDetailsComplete">
 		<sjg:gridColumn name="gridKey" title ="id" width="55" hidden="true" key="true"/>
 		<sjg:gridColumn name="anatCd" index="anatCd" title="Code" width="10" sortable="true" editable="true" edittype="select" formatter="select" editoptions="{value:',',dataEvents: [{type: 'change', fn: function(e) 
 																																								    {
-																																								    	var desc = this.options[this.selectedIndex].innerHTML.split('  -  ')[1].replace('amp;','');
-																																								    	$('#anadDesc').val(desc);
-																																								    	if(desc != null){
+																																								    	var index = this.selectedIndex;
+																																								    	if(index != 0){
+																																								    		var desc = this.options[this.selectedIndex].innerHTML.split('  -  ')[1].replace('amp;','');
+																																								    		$('#anadDesc').val(desc);
 																																								    		$('#anadDesc').prop({disabled:true});     
 																																								    	}else{
+																																								    		$('#anadDesc').val('');
 																																								    		$('#anadDesc').prop({disabled:false});     
 																																								    	}
 																																								    }}] }"/>

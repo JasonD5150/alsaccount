@@ -120,7 +120,7 @@ public class GetTdtPDFAction extends ActionSupport {
 					 builder.append(buildHead(tmp));
 				 }
 				 totAmt += tmp.getDepAmt();
-				 builder.append("<tr><td>"+tmp.getBankCd()+"</td><td>"+tmp.getBankNm()+"</td><td>"+sdf.format(tmp.getDepDt())+"</td><td>$"+df.format(tmp.getDepAmt())+"</td><td>"+tmp.getDepId()+"</td></tr>");
+				 builder.append("<tr><td>"+(tmp.getCashInd()!=null?tmp.getCashInd():"N")+"</td><td>"+tmp.getBankCd()+"</td><td>"+tmp.getBankNm()+"</td><td>"+sdf.format(tmp.getDepDt())+"</td><td>$"+df.format(tmp.getDepAmt())+"</td><td>"+tmp.getDepId()+"</td></tr>");
 			 }
 			 builder.append(buildFoot(totAmt));
 			 worker.parseXHtml(writer, document, new StringReader(builder.toString()));
@@ -151,7 +151,7 @@ public class GetTdtPDFAction extends ActionSupport {
 		builder.append("<tr><td>Billing Period End Date: </td><td>"+sdf.format(intProvTDT.getBpe())+"</td></tr>");
 		builder.append("</table>");
 		builder.append("<table cellpadding='10'>");
-		builder.append("<thead><tr><th>Bank Code</th><th>Bank Name</th><th>Deposit Date</th><th>Amount</th><th>Deposit Id</th></tr></thead>");
+		builder.append("<thead><tr><th>Cash</th><th>Bank Code</th><th>Bank Name</th><th>Deposit Date</th><th>Amount</th><th>Deposit Id</th></tr></thead>");
 		
 		return builder.toString();
 	}

@@ -990,7 +990,8 @@ public class HibHelpers {
 									+ "apbd.apbd_amount_deposit depAmt, "
 									+ "(SELECT abc_bank_nm FROM als.als_bank_code abc WHERE abc.abc_bank_cd = apbd.abc_bank_cd) bankNm, "
 									+ "(SELECT api_business_nm FROM als.als_provider_info api WHERE api.api_provider_no = apbd.api_provider_no) businessNm,"
-									+ "(als.als_package.get_pval('SABHRS BUSINESS UNIT', (SELECT atg_interface_file FROM als.als_transaction_group WHERE atg_transaction_cd = 8))) businessUnit "
+									+ "(als.als_package.get_pval('SABHRS BUSINESS UNIT', (SELECT atg_interface_file FROM als.als_transaction_group WHERE atg_transaction_cd = 8))) businessUnit, "
+									+ "apbd_cash_ind cashInd "
 									+ "FROM	als.als_provider_bank_details apbd "
 									+ "WHERE apbd_deposit_id IN ("+ids+") "
 									+ "ORDER BY 1, 2, 3, 4";
@@ -1007,6 +1008,7 @@ public class HibHelpers {
 						.addScalar("bankNm", StringType.INSTANCE)
 						.addScalar("businessNm", StringType.INSTANCE)
 						.addScalar("businessUnit", StringType.INSTANCE)
+						.addScalar("cashInd", StringType.INSTANCE)
 	
 		
 						.setResultTransformer(

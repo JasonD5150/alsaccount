@@ -29,6 +29,7 @@ public class InternalRemittanceReportAction extends ActionSupport {
 	private List<AlsInternalRemittanceDTO> remittanceRecords = new ArrayList<>();
 	private List<ListComp> columnNameValues = new ArrayList<>();
 	private String filters;
+	private String selectedRow;
 
 	private String csvFileName;
 	private String fileName;
@@ -72,50 +73,62 @@ public class InternalRemittanceReportAction extends ActionSupport {
 		AlsOverUnderSalesDetsAS aousdAS = new AlsOverUnderSalesDetsAS();
 		List<AlsOverUnderSalesDets> aousdLst = null;
 		for (AlsInternalRemittanceDTO rr : remittanceRecords) {	
+			Boolean print = false;
 			String where = "WHERE idPk.apiProviderNo = "+rr.getGridKey().split("_")[2]+" "
 					+ "AND idPk.airBillingFrom = TO_DATE('"+rr.getGridKey().split("_")[0]+"','dd/mm/yyyy') "
 					+ "AND idPk.airBillingTo = TO_DATE('"+rr.getGridKey().split("_")[1]+"','dd/mm/yyyy') ";
 			
-			StringBuilder line = new StringBuilder();
-			line.append("Provider No:, "+rr.getGridKey().split("_")[2]+",Provider Name:,"+rr.getProvNm()+"\n");
-			line.append("Billing Period From:, "+rr.getGridKey().split("_")[0]+",Billing Period To:,"+rr.getGridKey().split("_")[1]+"\n");
-			line.append(",Amount, Total\n");
-			line.append("System Sales:,$"+rr.getAirSystemSales()+"\n");
-			line.append("OTC Sales:,$"+rr.getAirOtcPhoneSales()+"\n");
-			line.append("PAEs:,$"+rr.getAirPae()+"\n");
-			line.append("Total ALS Sales:,,$"+rr.getAmtDue()+"\n");
-			
-			/*NON ALS SALES DETAILS*/
-			anadLst = new ArrayList<AlsNonAlsDetails>();
-			anadLst = anadAS.findAllByWhere(where);
-			if(!anadLst.isEmpty()){
-				line.append("Non ALS Sales Details\n");
-				line.append("Description\n");
-				for(AlsNonAlsDetails anadTmp : anadLst){
-					line.append(StringEscapeUtils.escapeCsv(anadTmp.getAnadDesc())+",$"+anadTmp.getAnadAmount()+"\n");
-				}
+			if(selectedRow == null && "".equals(selectedRow)){
+				print = true;
+			}else if(selectedRow.equals(rr.getGridKey())){
+				print = true;
+			}else{
+				print = false;
 			}
 			
-			line.append("Total Non ALS Sales:,,$"+rr.getAirNonAlsSales()+"\n");
-			line.append("Total Sales:,,$"+rr.getAirTotSales()+"\n");
-			line.append("Total Bank Deposits:,$"+rr.getTotBankDep()+"\n");
-			line.append("Credit Card Sales:,$"+rr.getAirCreditSales()+"\n");
-			line.append("Total Funds Received:,,$"+rr.getTotFundsRec()+"\n");
-			line.append("Difference:,,$"+rr.getAirDifference()+"\n");
-			
-			/*TOTAL FUNDS RECEIVED SHORT OF SALES*/
-			aousdLst = new ArrayList<AlsOverUnderSalesDets>();
-			aousdLst = aousdAS.findAllByWhere(where);
-			if(!aousdLst.isEmpty()){
-				line.append("Total Funds Received Short of Sales -\n");
-				line.append("Details\n");
-				for(AlsOverUnderSalesDets aousdTmp : aousdLst){
-					line.append(StringEscapeUtils.escapeCsv(aousdTmp.getAousdDesc())+",$"+aousdTmp.getAousdAmount()+"\n");
+			if(print){
+				StringBuilder line = new StringBuilder();
+				line.append("Provider No:, "+rr.getGridKey().split("_")[2]+",Provider Name:,"+rr.getProvNm()+"\n");
+				line.append("Billing Period From:, "+rr.getGridKey().split("_")[0]+",Billing Period To:,"+rr.getGridKey().split("_")[1]+"\n");
+				line.append(",Amount, Total\n");
+				line.append("System Sales:,$"+rr.getAirSystemSales()+"\n");
+				line.append("OTC Sales:,$"+rr.getAirOtcPhoneSales()+"\n");
+				line.append("PAEs:,$"+rr.getAirPae()+"\n");
+				line.append("Total ALS Sales:,,$"+rr.getAmtDue()+"\n");
+				
+				/*NON ALS SALES DETAILS*/
+				anadLst = new ArrayList<AlsNonAlsDetails>();
+				anadLst = anadAS.findAllByWhere(where);
+				if(!anadLst.isEmpty()){
+					line.append("Non ALS Sales Details\n");
+					line.append("Description\n");
+					for(AlsNonAlsDetails anadTmp : anadLst){
+						line.append(StringEscapeUtils.escapeCsv(anadTmp.getAnadDesc())+",$"+anadTmp.getAnadAmount()+"\n");
+					}
 				}
-				line.append("Net Over/Short of Sales:,,$"+rr.getNetOverShortOfSales());
+				
+				line.append("Total Non ALS Sales:,,$"+rr.getAirNonAlsSales()+"\n");
+				line.append("Total Sales:,,$"+rr.getAirTotSales()+"\n");
+				line.append("Total Bank Deposits:,$"+rr.getTotBankDep()+"\n");
+				line.append("Credit Card Sales:,$"+rr.getAirCreditSales()+"\n");
+				line.append("Total Funds Received:,,$"+rr.getTotFundsRec()+"\n");
+				line.append("Difference:,,$"+rr.getAirDifference()+"\n");
+				
+				/*TOTAL FUNDS RECEIVED SHORT OF SALES*/
+				aousdLst = new ArrayList<AlsOverUnderSalesDets>();
+				aousdLst = aousdAS.findAllByWhere(where);
+				if(!aousdLst.isEmpty()){
+					line.append("Total Funds Received Short of Sales -\n");
+					line.append("Details\n");
+					for(AlsOverUnderSalesDets aousdTmp : aousdLst){
+						line.append(StringEscapeUtils.escapeCsv(aousdTmp.getAousdDesc())+",$"+aousdTmp.getAousdAmount()+"\n");
+					}
+					line.append("Net Over/Short of Sales:,,$"+rr.getNetOverShortOfSales());
+				}
+				line.append("\n\n");
+				fileWriter.write(line.toString());
 			}
-			line.append("\n\n");
-			fileWriter.write(line.toString());
+			
 		}
 		
 		fileWriter.close();
@@ -175,5 +188,16 @@ public class InternalRemittanceReportAction extends ActionSupport {
 	public void setFilters(String filters) {
 		this.filters = filters;
 	}
+
+	public String getSelectedRow() {
+		return selectedRow;
+	}
+
+	public void setSelectedRow(String selectedRow) {
+		this.selectedRow = selectedRow;
+	}
+
+
+	
 }
 

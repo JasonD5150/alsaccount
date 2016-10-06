@@ -9,8 +9,11 @@ import org.apache.shiro.SecurityUtils;
 import com.opensymphony.xwork2.ActionSupport;
 
 import fwp.als.appservice.inventory.AlsNonAlsDetailsAS;
+import fwp.als.hibernate.inventory.dao.AlsInternalRemittance;
+import fwp.als.hibernate.inventory.dao.AlsInternalRemittanceIdPk;
 import fwp.als.hibernate.inventory.dao.AlsNonAlsDetails;
 import fwp.als.hibernate.inventory.dao.AlsNonAlsDetailsIdPk;
+import fwp.alsaccount.appservice.sabhrs.AlsInternalRemittanceAS;
 import fwp.security.user.UserDTO;
 import fwp.utils.FwpDateUtils;
 
@@ -38,6 +41,10 @@ public class AlsNonAlsDetialsGridEditAction extends ActionSupport{
 		
 		AlsNonAlsDetailsAS appSer = new AlsNonAlsDetailsAS();
 		AlsNonAlsDetails tmp = null;
+		
+		AlsInternalRemittanceAS airAS = new AlsInternalRemittanceAS();
+		AlsInternalRemittanceIdPk airIdPk = null;
+		AlsInternalRemittance air = null;
 		try{
 			if(oper.equalsIgnoreCase("edit") || oper.equalsIgnoreCase("del")){
 				String[] keys = id.split("_");
@@ -48,7 +55,14 @@ public class AlsNonAlsDetialsGridEditAction extends ActionSupport{
 				tmpIdPk.setAnadSeqNo(Integer.parseInt(keys[3]));
 				
 				tmp = appSer.findById(tmpIdPk);
+				
+				airIdPk = new AlsInternalRemittanceIdPk(tmp.getIdPk().getApiProviderNo(), tmp.getIdPk().getAirBillingFrom(), tmp.getIdPk().getAirBillingTo());
+				air = airAS.findById(airIdPk);
+			}else{
+				airIdPk = new AlsInternalRemittanceIdPk(provNo, new Timestamp(apbdBillingFrom.getTime()), new Timestamp(apbdBillingTo.getTime()));
+				air = airAS.findById(airIdPk);
 			}
+			
 			if (oper.equalsIgnoreCase("add")) {
 				AlsNonAlsDetailsIdPk tmpIdPk = new AlsNonAlsDetailsIdPk();
 				tmpIdPk.setApiProviderNo(provNo);
@@ -68,7 +82,19 @@ public class AlsNonAlsDetialsGridEditAction extends ActionSupport{
 				tmp.setCreateDate(date);
 				
 				appSer.save(tmp);
-			} else if((oper.equalsIgnoreCase("edit"))){						
+				
+				//Update Als_Internal_Remittance
+				if(air.getAirNonAlsSales() != null){
+					air.setAirNonAlsSales(air.getAirNonAlsSales()+anadAmount);
+				}else{
+					air.setAirNonAlsSales(anadAmount);
+				}
+				airAS.save(air);
+			} else if((oper.equalsIgnoreCase("edit"))){	
+				//Update Als_Internal_Remittance
+				air.setAirNonAlsSales(air.getAirNonAlsSales()-tmp.getAnadAmount()+anadAmount);
+				airAS.save(air);
+
 				tmp.setAnadAmount(anadAmount);
 				tmp.setAnadDesc(anadDesc);
 				tmp.setAnatCd(anatCd.split("_")[0]);
@@ -76,6 +102,9 @@ public class AlsNonAlsDetialsGridEditAction extends ActionSupport{
 				tmp.setModDate(date);
 				appSer.save(tmp);
 			}else if (oper.equalsIgnoreCase("del")){
+				//Update Als_Internal_Remittance
+				air.setAirNonAlsSales(air.getAirNonAlsSales()-tmp.getAnadAmount());
+				airAS.save(air);
 				appSer.delete(tmp);
 			}else{
 				return "error_json";

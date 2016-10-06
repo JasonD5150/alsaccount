@@ -160,7 +160,7 @@ $.subscribe('alsSabhrsEntriesComplete', function(event, data) {
 			of: $('#alsSabhrsEntriesGrid').closest('div.ui-jqgrid')
 		});
 	});
-	
+	autoSelectTemplates();
 	if ( $("#alsSabhrsEntriesGrid").length) {
    		$("#alsSabhrsEntriesGrid").jqGrid('setColProp','asacReference', { editoptions: { value: rtrnJLRList()}});
    		$("#alsSabhrsEntriesGrid").jqGrid('setColProp','aamFund', { editoptions: { value: rtrnFundList()}});
@@ -171,10 +171,9 @@ $.subscribe('alsSabhrsEntriesComplete', function(event, data) {
 });
 
 $.subscribe("alsNonAlsDetailsComplete", function(event, data) {	
-	autoSelectTemplates();
 	if ( $("#alsNonAlsDetails").length) {
-   		$("#alsNonAlsDetails").jqGrid('setColProp','anatCd', { editoptions: { value: rtrnTmpCdList()}});
-   }
+		$("#alsNonAlsDetails").jqGrid('setColProp','anatCd', { editoptions: { value: rtrnTmpCdList()}});  
+	}
 });
 
 $.subscribe("alsNonAlsTemplateTableComplete", function(event, data) {
@@ -608,21 +607,26 @@ function gridToCSV(){
 }
 
 function intRemittanceRptCSV(){
-	$.ajax({
-		type: "POST",
-	data: JSON.stringify(exportGrid("alsInternalRemittance","remittanceRecords","gridFrm")),
-	dataType: "json",
-	cache: false,
-	contentType: "application/json",
-	url: 'internalRemittanceReport.action',
-	success: function (data) {
-		window.location = "downloadCsv.action?csvFileName=" + data.csvFileName+"&fileName="+data.fileName;
-	}, complete: function () {
-		$('#alsInternalRemittance').jqGrid('setGridParam',{datatype:'json'});
-		$('#alsInternalRemittance').trigger("reloadGrid");
-	},
-	error: function (x, e) {
-		ajaxErrorHandler(x, e, "Save", null, null);
-		}
-	});
+	if(selectedRow != null){
+		$.ajax({
+			type: "POST",
+		data: JSON.stringify(exportGrid("alsInternalRemittance","remittanceRecords","gridFrm", true)),
+		dataType: "json",
+		cache: false,
+		contentType: "application/json",
+		url: 'internalRemittanceReport.action',
+		success: function (data) {
+			window.location = "downloadCsv.action?csvFileName=" + data.csvFileName+"&fileName="+data.fileName;
+		}, complete: function () {
+			$('#alsInternalRemittance').jqGrid('setGridParam',{datatype:'json'});
+			$('#alsInternalRemittance').trigger("reloadGrid");
+		},
+		error: function (x, e) {
+			ajaxErrorHandler(x, e, "Save", null, null);
+			}
+		});
+	}else{
+		alert("A record must be selected from the Internal Remittance Grid.");
+	}
+	
 }

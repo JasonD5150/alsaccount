@@ -85,9 +85,17 @@ public class AlsOverUnderSalesDetsGridEditAction extends ActionSupport{
 				
 				//Update Als_Internal_Remittance
 				if("O".equals(aousdFlag)){
-					air.setAirOverSales(air.getAirOverSales()+aousdAmount);
+					if(air.getAirOverSales() != null){
+						air.setAirOverSales(air.getAirOverSales()+aousdAmount);
+					}else{
+						air.setAirOverSales(aousdAmount);
+					}
 				}else if("U".equals(aousdFlag)){
-					air.setAirShortSales(air.getAirShortSales()+aousdAmount);
+					if(air.getAirShortSales() != null){
+						air.setAirShortSales(air.getAirShortSales()+aousdAmount);
+					}else{
+						air.setAirOverSales(aousdAmount);
+					}
 				}
 				airAS.save(air);
 			} else if((oper.equalsIgnoreCase("edit"))){	
