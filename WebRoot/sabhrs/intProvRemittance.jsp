@@ -130,7 +130,8 @@
 			<sjg:gridColumn name="offlnPaymentAppDt" index="offlnPaymentAppDt" title="Date" width="70" sortable="true" editable="false" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }" hidden="true"/>
 			<sjg:gridColumn name="airOfflnPaymentAppCom" index="airOfflnPaymentAppCom" title="Comments" width="100" sortable="true" editable="true" hidden="true"/>
 			<sjg:gridColumn name="intFileCreateDt" index="intFileCreateDt" title="SABHRS Interface File Created" width="70" sortable="true" editable="false" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }" hidden="true"/>
-			<sjg:gridColumn name="intFileGenerated" index="intFileGenerated" title="Interface File Created" hidden="true" editable="false"/>
+			<sjg:gridColumn name="intFileGenerated" index="intFileGenerated" title="" hidden="true" editable="false"/>
+			<sjg:gridColumn name="bankDepEditOnly" index="bankDepEditOnly" title="" hidden="true" editable="false"/>
 	</sjg:grid>
 	<br>
 	<div id="displayRemittanceDiv" style="display:none;">

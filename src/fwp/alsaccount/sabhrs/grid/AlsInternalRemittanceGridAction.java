@@ -133,6 +133,7 @@ public class AlsInternalRemittanceGridAction extends ActionSupport{
             			airDTO.setNetOverShortOfSales(Utils.nullFix(tmp.getAirOverSales())-Utils.nullFix(tmp.getAirShortSales()));
             			airDTO.setBillingBallanced((Double.compare(airDTO.getAirDifference(), airDTO.getNetOverShortOfSales()) == 0 ? "Y" : "N"));
             			
+            			airDTO.setBankDepEditOnly(tmp.getBankDepEditOnly());
             			model.add(airDTO);
             		}
         		}

@@ -80,6 +80,7 @@ $.subscribe("internalRemittanceSelected", function(event, data) {
 	$('#alsOverUnderSales').jqGrid('setGridParam',{datatype:'json'});
 	$('#iafaGrid').jqGrid('setGridParam',{datatype:'json'});
 	$('#alsNonAlsTemplateTable').jqGrid('setGridParam',{datatype:'json'});
+	$.publish('reloadRevAlsSabhrsEntriesGrid');
 	$.publish('reloadBankDepGrids');
 	$.publish('reloadNonAlsDetGrids');
 	$.publish('reloadSubGrids');
@@ -145,8 +146,9 @@ $.subscribe("depositsGridComplete", function(event, data) {
 	,title:"Generate Deposit Tickets"
 	,cursor:"pointer"
 	});
-	
-	$("#depositsGrid").jqGrid('setColProp','abcBankCd', { editoptions: { value: rtrnBankCdList()}});
+	if ( $("#depositsGrid").length) {
+		$("#depositsGrid").jqGrid('setColProp','abcBankCd', { editoptions: { value: rtrnBankCdList()}});
+	}
 	setVisibility();
 });
 
@@ -426,6 +428,7 @@ function remittanceApproved(){
 function saveRemittance(){
 	var grid = $('#alsInternalRemittance');
 	selectedRow = grid.jqGrid('getGridParam','selrow'); 
+	alert(selectedRow);
 	url = "alsAccount/alsInternalRemittanceGridEdit_execute.action";    
 	$.ajax({
       type: "POST",
@@ -441,18 +444,26 @@ function saveRemittance(){
           if(result.actionErrors){
           	$('#remError').html('<p style="color:red;font-size:14px"><b>'+ result.actionErrors +'</b></p>');
           }else{
-        	  submitSearch();
+        	  $('#alsInternalRemittance').jqGrid('setGridParam',{datatype:'json'});
+      		  $.publish('reloadInternalRemittance');
           }
      }
     });
 };
 
 /*OTHERS*/
+function setEnabledFields(id){
+	if(hasUserRole == 'true'){
+		$("input[name='apbdCashInd']").prop({disabled:true});
+	   	$("select[name='abcBankCd']").prop({disabled:true});
+	   	$("input[name='apbdAmountDeposit']").prop({disabled:true});
+	}
+}
+
 function prePopulate(id){
 	var grid = $("#"+id);
 	var rows = grid.jqGrid("getDataIDs");
 	var length = grid.jqGrid("getDataIDs").length-1;
-
 	if(id == "depositsGrid"){
 		$('#abcBankCd').val(grid.jqGrid ('getCell', rows[length], 'abcBankCd'));
 	    $('#billingFrom').val(grid.jqGrid ('getCell', rows[length], 'billingFrom'));
@@ -472,74 +483,68 @@ function setVisibility(){
 	var dtCompletedByProv = grid.jqGrid('getCell', sel_id, 'completeProvider');
 	var remittanceApproved = grid.jqGrid('getCell', sel_id, 'airOfflnPaymentApproved');
 	var interfaced = grid.jqGrid('getCell', sel_id, 'intFileGenerated');
-	if(sel_id != null && interfaced != "YES"){
-			if(dtCompletedByProv.length == 1 && hasIntProvRole == 'true'){
-				$('#alsNonAlsDetails_pager_left').show();
-				$('#alsOverUnderSales_pager_left').show();
+	var bankDepEditOnly = grid.jqGrid('getCell', sel_id, 'bankDepEditOnly');
+	
+	disableEditable();
+	if(sel_id != null && interfaced != "YES" && hasIntProvRole == 'true'){
+			if(dtCompletedByProv.length == 1){
 				$('#add_depositsGrid').show();
 				$('#view_depositsGrid').show();
 				$('#del_depositsGrid').show();
-				$('#provComp').prop({disabled:false});
-				$('#displayCCSales').prop({disabled:false});
-			}else if(dtCompletedByProv.length != 1 && hasIntProvRole == 'true'){
-				$('#alsNonAlsDetails_pager_left').hide();
-				$('#alsOverUnderSales_pager_left').hide();
-				$('#add_depositsGrid').hide();
-				$('#view_depositsGrid').hide();
-				$('#del_depositsGrid').hide();
-				if(remittanceApproved == 'true'){
-					$('#provComp').prop({disabled:true});
-				}else{
+				$('#edit_depositsGrid').show();
+				if(bankDepEditOnly == 'false'){
+					$('#alsNonAlsDetails_pager_left').show();
+					$('#alsOverUnderSales_pager_left').show();
+					$('#provComp').prop({disabled:false});
+					$('#displayCCSales').prop({disabled:false});
+				}
+			}else{
+				if(remittanceApproved == 'false'){
 					$('#provComp').prop({disabled:false});
 				}
-				$('#displayCCSales').prop({disabled:true});
-			}else{
-				$('#alsNonAlsDetails_pager_left').hide();
-				$('#alsOverUnderSales_pager_left').hide();
-				$('#add_depositsGrid').hide();
-				$('#view_depositsGrid').hide();
-				$('#del_depositsGrid').hide();
-				$('#provComp').prop({disabled:true});
-				$('#displayCCSales').prop({disabled:true});
 			}
-			if(hasUserRole == 'true'){
-				$("#userTabs").show();
-				if(remittanceApproved == 'true'){
-					$('#remApp').prop({disabled:false});
-					$('#disAppCom').prop({disabled:true});
-					$('#alsSabhrsEntriesGrid_pager_left').hide();
-					$('#revAlsSabhrsEntriesGrid_pager_left').hide();
-					$('#alsNonAlsTemplateTable_pager_left').hide();
-				}else{
+	}
+	if(sel_id != null && hasUserRole == 'true'){
+		$("#userTabs").show();
+		if(interfaced != "YES"){
+			if(remittanceApproved == 'true'){
+				$('#remApp').prop({disabled:false});
+			}else{
+				if(dtCompletedByProv.length != 1){
+					$('#edit_depositsGrid').show();
 					$('#remApp').prop({disabled:false});
 					$('#disAppCom').prop({disabled:false});
 					$('#alsSabhrsEntriesGrid_pager_left').show();
 					$('#revAlsSabhrsEntriesGrid_pager_left').show();
 					$('#alsNonAlsTemplateTable_pager_left').show();
 				}
-			}else{
-				$("#userTabs").hide();
-				$('#remApp').prop({disabled:true});
-				$('#disAppCom').prop({disabled:true});
 			}
-			
-			$('#saveRemittance').prop({disabled:false});
-	}else{
-		$("#userTabs").hide();
-		$('#alsNonAlsDetails_pager_left').hide();
-		$('#alsOverUnderSales_pager_left').hide();
-		$('#add_depositsGrid').hide();
-		$('#view_depositsGrid').hide();
-		$('#del_depositsGrid').hide();
-		$('#alsSabhrsEntriesGrid_pager_left').hide();
-		$('#revAlsSabhrsEntriesGrid_pager_left').hide();
-		$('#alsNonAlsTemplateTable_pager_left').hide();
-		$('#provComp').prop({disabled:true});
-		$('#displayCCSales').prop({disabled:true});
-		$('#remApp').prop({disabled:true});
-		$('#disAppCom').prop({disabled:true});
-		$('#saveRemittance').prop({disabled:true});
+		}		
 	}
+	if(interfaced != "YES" && bankDepEditOnly == 'false'){
+		$('#saveRemittance').prop({disabled:false});
+	}	
+}
+
+function disableEditable(){
+	//User
+	$("#userTabs").hide();
+	$('#alsSabhrsEntriesGrid_pager_left').hide();
+	$('#revAlsSabhrsEntriesGrid_pager_left').hide();
+	$('#alsNonAlsTemplateTable_pager_left').hide();
+	$('#remApp').prop({disabled:true});
+	$('#disAppCom').prop({disabled:true});
+	//Int Prov
+	$('#alsNonAlsDetails_pager_left').hide();
+	$('#alsOverUnderSales_pager_left').hide();
+	$('#add_depositsGrid').hide();
+	$('#view_depositsGrid').hide();
+	$('#del_depositsGrid').hide();
+	$('#edit_depositsGrid').hide();
+	$('#provComp').prop({disabled:true});
+	$('#displayCCSales').prop({disabled:true});
+	
+	$('#saveRemittance').prop({disabled:true});
 }
 
 function resetSubGridForm(){

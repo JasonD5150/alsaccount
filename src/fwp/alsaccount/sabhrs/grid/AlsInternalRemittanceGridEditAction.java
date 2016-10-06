@@ -94,25 +94,30 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 					original.setAirCompleteProvider(null);
 					tmpAS.save(original);
 				}
+				/*Remittance NOT Approved, Comments Changed*/
+				if(original.getAirOfflnPaymentAppCom() == null || !original.getAirOfflnPaymentAppCom().equals(disAppCom)){
+					original.setAirOfflnPaymentAppCom(disAppCom);
+					tmpAS.save(original);
+				}
 				/*Remittance Approved*/
 				if(!"Y".equals(original.getAirOfflnPaymentApproved())&&"true".equals(remApp)){
-					//postEntries(original, provNo, bpFrom, bpTo);
-					//updateProviderRemittance("A", provNo, bpTo, bpTo, null);
+					postEntries(original, provNo, bpFrom, bpTo);
+					updateProviderRemittance("A", provNo, bpTo, bpTo, null);
 					original.setAirOfflnPaymentApproved("Y");
 					original.setAirOfflnPaymentAppBy(userInfo.getStateId());
 					original.setAirOfflnPaymentAppDt(date);
 					original.setAirOfflnPaymentAppCom(disAppCom);
-					//tmpAS.save(original);
+					tmpAS.save(original);
 				}
 				/*Remittance Disapproved*/
 				if("Y".equals(original.getAirOfflnPaymentApproved())&&"false".equals(remApp)){
-					//deleteEntries(original, provNo, bpTo, bpTo);
-					//updateProviderRemittance("D", provNo, bpTo, bpTo, null);
+					deleteEntries(original, provNo, bpTo, bpTo);
+					updateProviderRemittance("D", provNo, bpTo, bpTo, null);
 					original.setAirOfflnPaymentApproved("N");
 					original.setAirOfflnPaymentAppBy(null);
 					original.setAirOfflnPaymentAppDt(null);
 					original.setAirOfflnPaymentAppCom(disAppCom);
-					//tmpAS.save(original);
+					tmpAS.save(original);
 				}
 			}else{
 				return "error_json";

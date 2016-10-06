@@ -85,6 +85,7 @@ public class InternalProviderBankCdDepLinkGridAction extends ActionSupport{
         			tmp.setBillingFrom(apbd.getApbdBillingFrom());
         			tmp.setApbdBillingTo(apbd.getIdPk().getApbdBillingTo());
         			tmp.setApbdDepositId(apbd.getApbdDepositId());
+        			tmp.setApbdCashInd(apbd.getApbdCashInd());
         			model.add(tmp);
         		}
     		}

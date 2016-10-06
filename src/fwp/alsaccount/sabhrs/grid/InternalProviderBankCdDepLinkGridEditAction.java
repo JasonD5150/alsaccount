@@ -34,6 +34,7 @@ public class InternalProviderBankCdDepLinkGridEditAction extends ActionSupport{
 	private String apbdDepositId;
 	private Integer provNo;
 	private Integer apbdSeqNo;
+	private String apbdCashInd;
 	
 	SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 	
@@ -67,17 +68,18 @@ public class InternalProviderBankCdDepLinkGridEditAction extends ActionSupport{
 				tmp.setApbdAmountDeposit(apbdAmountDeposit);
 				tmp.setApbdDepositDate(new Timestamp(depositDate.getTime()));
 				tmp.setApbdDepositId(curBudgYear.substring(2, 4)+trimmedProvNo+String.format("%3s",hh.getAlsDepIdSeq(curBudgYear, "IP")).replace(" ", "0"));
-				tmp.setCreatePersonid(userInfo.getUserId());
+				tmp.setApbdCashInd(apbdCashInd);
 				
+				tmp.setCreatePersonid(userInfo.getUserId());
 				tmp.setApbdWhoLog(userInfo.getStateId());
 				tmp.setApbdWhenLog(date);
 				
 				appSer.save(tmp);
 			} else if((oper.equalsIgnoreCase("edit")&&validation())){				
-				tmp.setApbdBillingFrom(new Timestamp(BillingFrom.getTime()));
-				tmp.setAbcBankCd(abcBankCd);
-				tmp.setApbdAmountDeposit(apbdAmountDeposit);
 				tmp.setApbdDepositDate(new Timestamp(depositDate.getTime()));
+				tmp.setApbdCashInd(apbdCashInd);
+				tmp.setApbdAmountDeposit(apbdAmountDeposit);
+				tmp.setAbcBankCd(abcBankCd);
 				 
 				tmp.setModDate(date);
 				tmp.setModPersonid(userInfo.getUserId());
@@ -264,4 +266,14 @@ public class InternalProviderBankCdDepLinkGridEditAction extends ActionSupport{
 	public void setBillingFrom(Date billingFrom) {
 		BillingFrom = billingFrom;
 	}
+
+	public String getApbdCashInd() {
+		return apbdCashInd;
+	}
+
+	public void setApbdCashInd(String apbdCashInd) {
+		this.apbdCashInd = apbdCashInd;
+	}
+	
+	
 }
