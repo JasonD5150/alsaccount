@@ -83,7 +83,8 @@
 	formIds="subGridFrm"
 
 	reloadTopics="reloadNonAlsDetailsGrid"
-	onBeforeTopics="alsNonAlsDetailsComplete">
+	onBeforeTopics="alsNonAlsDetailsComplete"
+	onCompleteTopics="autoSelectTemplates">
 		<sjg:gridColumn name="gridKey" title ="id" width="55" hidden="true" key="true"/>
 		<sjg:gridColumn name="anatCd" index="anatCd" title="Code" width="10" sortable="true" editable="true" edittype="select" formatter="select" editoptions="{value:',',dataEvents: [{type: 'change', fn: function(e) 
 																																								    {

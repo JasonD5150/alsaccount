@@ -3,7 +3,9 @@ package fwp.alsaccount.sabhrs.json;
 import java.io.File;
 import java.io.FileWriter;
 import java.net.URLDecoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -72,6 +74,8 @@ public class InternalRemittanceReportAction extends ActionSupport {
 		List<AlsNonAlsDetails> anadLst = null;
 		AlsOverUnderSalesDetsAS aousdAS = new AlsOverUnderSalesDetsAS();
 		List<AlsOverUnderSalesDets> aousdLst = null;
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/mm/yyyy");
 		for (AlsInternalRemittanceDTO rr : remittanceRecords) {	
 			Boolean print = false;
 			String where = "WHERE idPk.apiProviderNo = "+rr.getGridKey().split("_")[2]+" "
@@ -88,8 +92,11 @@ public class InternalRemittanceReportAction extends ActionSupport {
 			
 			if(print){
 				StringBuilder line = new StringBuilder();
+				Date bpFrom = sdf.parse(rr.getGridKey().split("_")[0]);
+				Date bpTo = sdf.parse(rr.getGridKey().split("_")[1]);
+				sdf.applyPattern("mm/dd/yyyy");
 				line.append("Provider No:, "+rr.getGridKey().split("_")[2]+",Provider Name:,"+rr.getProvNm()+"\n");
-				line.append("Billing Period From:, "+rr.getGridKey().split("_")[0]+",Billing Period To:,"+rr.getGridKey().split("_")[1]+"\n");
+				line.append("Billing Period From:, "+sdf.format(bpFrom)+",Billing Period To:,"+sdf.format(bpTo)+"\n");
 				line.append(",Amount, Total\n");
 				line.append("System Sales:,$"+rr.getAirSystemSales()+"\n");
 				line.append("OTC Sales:,$"+rr.getAirOtcPhoneSales()+"\n");
@@ -142,7 +149,25 @@ public class InternalRemittanceReportAction extends ActionSupport {
 		case "bpFrom":
 			return "Billing Period From ";	
 		case "bpTo":
-			return "Billing Period To ";	
+			return "Billing Period To ";
+		case "comByProv":
+			return "Completed By Provider ";
+		case "comByProvDt":
+			return "Completed By Provider Date ";
+		case "app":
+			return "Remittance Approved ";
+		case "appBy":
+			return "Remittance Approved By ";
+		case "appDt":
+			return "Remittance Approved Date ";
+		case "appCom":
+			return "Comments ";
+		case "hasNonAlsDetails":
+			return "Has Non ALS Details ";
+		case "hasOverShortDetails":
+			return "Has Over/Short Details ";
+		case "hasPaeAmt":
+			return "Has PAE Amount ";
 		default:
 			return "N/A";
 		}	

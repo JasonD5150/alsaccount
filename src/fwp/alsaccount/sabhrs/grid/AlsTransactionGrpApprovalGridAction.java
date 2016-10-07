@@ -48,10 +48,6 @@ public class AlsTransactionGrpApprovalGridAction extends ActionSupport{
     
     private String 				userdata;
     
-    private String srchStr = null;
-    private List<Object> strParms = new ArrayList<Object>();
-    
-	@SuppressWarnings("unchecked")
 	public String buildgrid(){  
 		HibHelpers hh = new HibHelpers();
 		
@@ -64,16 +60,14 @@ public class AlsTransactionGrpApprovalGridAction extends ActionSupport{
 		c.add(Calendar.MONTH, -12);
     	
         try{
+        	setModel(new ArrayList<AlsTransactionGrpStatusDTO>());
         	atgs = atgsAS.getTransactionGroupApprovalRecords(srchTransGrpType, srchTranGrpId, srchTranGrpCreated, srchAccDt, srchSumAppStat, srchSumAppDt, srchIntAppStat, srchIntAppDt, srchUpToSumDt, srchBankCd, srchBankRefNo, srchIntFileNm, srchDepId, srchProviderNo, srchAll, new Date(c.getTimeInMillis()));
         			
-        	
         	if (atgs.size() > 10000) {
         		setUserdata("Please narrow search. The search grid is limited to 10000 rows. There were " + atgs.size() + " entries selected.");
         		atgs = new ArrayList<AlsTransactionGrpStatus>();
     		}else{
-    			setModel(new ArrayList<AlsTransactionGrpStatusDTO>());
             	AlsTransactionGrpStatusDTO tmp;
-            	
             	for(AlsTransactionGrpStatus a : atgs){
             		tmp = new AlsTransactionGrpStatusDTO();
             		tmp.setGridKey(a.getIdPk().getAtgTransactionCd()+"_"+a.getIdPk().getAtgsGroupIdentifier());

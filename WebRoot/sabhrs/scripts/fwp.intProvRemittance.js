@@ -160,7 +160,7 @@ $.subscribe('alsSabhrsEntriesComplete', function(event, data) {
 			of: $('#alsSabhrsEntriesGrid').closest('div.ui-jqgrid')
 		});
 	});
-	autoSelectTemplates();
+	
 	if ( $("#alsSabhrsEntriesGrid").length) {
    		$("#alsSabhrsEntriesGrid").jqGrid('setColProp','asacReference', { editoptions: { value: rtrnJLRList()}});
    		$("#alsSabhrsEntriesGrid").jqGrid('setColProp','aamFund', { editoptions: { value: rtrnFundList()}});
@@ -168,6 +168,10 @@ $.subscribe('alsSabhrsEntriesComplete', function(event, data) {
    		$("#alsSabhrsEntriesGrid").jqGrid('setColProp','aocOrg', { editoptions: { value: rtrnOrgList()}});
    		$("#alsSabhrsEntriesGrid").jqGrid('setColProp','aamAccount', { editoptions: { value: rtrnAccountList()}});
 	}
+});
+
+$.subscribe("autoSelectTemplates", function(event, data) {	
+	autoSelectTemplates();
 });
 
 $.subscribe("alsNonAlsDetailsComplete", function(event, data) {	
@@ -476,6 +480,7 @@ function prePopulate(id){
 }
 
 function setVisibility(){
+	var role = getUrlParameter('privRole');
 	var grid = $('#alsInternalRemittance');
 	var sel_id = grid.jqGrid('getGridParam','selrow'); 
 	var dtCompletedByProv = grid.jqGrid('getCell', sel_id, 'completeProvider');
@@ -484,49 +489,50 @@ function setVisibility(){
 	var bankDepEditOnly = grid.jqGrid('getCell', sel_id, 'bankDepEditOnly');
 	
 	disableEditable();
-	if(sel_id != null && interfaced != "YES" && hasIntProvRole == 'true'){
-			if(dtCompletedByProv.length == 1){
-				$('#add_depositsGrid').show();
-				$('#view_depositsGrid').show();
-				$('#del_depositsGrid').show();
-				$('#edit_depositsGrid').show();
-				if(bankDepEditOnly == 'false'){
-					$('#alsNonAlsDetails_pager_left').show();
-					$('#alsOverUnderSales_pager_left').show();
-					$('#provComp').prop({disabled:false});
-					$('#displayCCSales').prop({disabled:false});
-				}
-			}else{
-				if(remittanceApproved == 'false'){
-					$('#provComp').prop({disabled:false});
-				}
-			}
-	}
-	if(sel_id != null && hasUserRole == 'true'){
-		$("#userTabs").show();
-		if(interfaced != "YES"){
-			if(remittanceApproved == 'true'){
-				$('#remApp').prop({disabled:false});
-			}else{
-				if(dtCompletedByProv.length != 1){
+	if(role != "V"){
+		if(sel_id != null && interfaced != "YES" && hasIntProvRole == 'true'){
+				if(dtCompletedByProv.length == 1){
+					$('#add_depositsGrid').show();
+					$('#view_depositsGrid').show();
+					$('#del_depositsGrid').show();
 					$('#edit_depositsGrid').show();
-					$('#remApp').prop({disabled:false});
-					$('#disAppCom').prop({disabled:false});
-					$('#alsSabhrsEntriesGrid_pager_left').show();
-					$('#revAlsSabhrsEntriesGrid_pager_left').show();
-					$('#alsNonAlsTemplateTable_pager_left').show();
+					if(bankDepEditOnly == 'false'){
+						$('#alsNonAlsDetails_pager_left').show();
+						$('#alsOverUnderSales_pager_left').show();
+						$('#provComp').prop({disabled:false});
+						$('#displayCCSales').prop({disabled:false});
+					}
+				}else{
+					if(remittanceApproved == 'false'){
+						$('#provComp').prop({disabled:false});
+					}
 				}
-			}
-		}		
+		}
+		if(sel_id != null && hasUserRole == 'true'){
+			$("#userTabs").show();
+			if(interfaced != "YES"){
+				if(remittanceApproved == 'true'){
+					$('#remApp').prop({disabled:false});
+				}else{
+					if(dtCompletedByProv.length != 1){
+						$('#edit_depositsGrid').show();
+						$('#remApp').prop({disabled:false});
+						$('#disAppCom').prop({disabled:false});
+						$('#alsSabhrsEntriesGrid_pager_left').show();
+						$('#revAlsSabhrsEntriesGrid_pager_left').show();
+						$('#alsNonAlsTemplateTable_pager_left').show();
+					}
+				}
+			}		
+		}
+		if(interfaced != "YES" && bankDepEditOnly == 'false'){
+			$('#saveRemittance').prop({disabled:false});
+		}
 	}
-	if(interfaced != "YES" && bankDepEditOnly == 'false'){
-		$('#saveRemittance').prop({disabled:false});
-	}	
 }
 
 function disableEditable(){
 	//User
-	$("#userTabs").hide();
 	$('#alsSabhrsEntriesGrid_pager_left').hide();
 	$('#revAlsSabhrsEntriesGrid_pager_left').hide();
 	$('#alsNonAlsTemplateTable_pager_left').hide();

@@ -96,7 +96,7 @@
 		scrollrows="true"
 		height="100"
 		width="950"
-		rowNum="1000"
+		rowNum="10000"
 		resizable="true"
 		reloadTopics="reloadTransGroupMaintTable"
 		onCompleteTopics="transGroupComplete"

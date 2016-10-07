@@ -10,8 +10,7 @@
    	<legend style="font-weight: bold">Search Criteria</legend>
    	<s:actionerror/>
    	<form id='gridFrm'>
-   	<p>Defaults to the current budget year, if no date is used in the query.<br>
-   	Disapproved and Not Applicable Interface Approval Status are omitted unless queried on.</p>
+   	<p><b>Query defaults to the past 12 months, if "Search All Dates" is not selected or a date is not used in the query.</b></p>
    		<table>
    			<tr>
     			<td class="label">Tx Group type: </td>
@@ -80,7 +79,7 @@
 			   	<td>Summary Approval Status: </td>
 			   	<td><s:select id="srchSumAppStat"  name="srchSumAppStat"
 						  headerKey="" headerValue="" theme="simple"
-						  list="#{'A':'Approved', 'D':'Disapproved', 'N':'Not Applicable'}"/></td>
+						  list="#{'A':'Approved', 'D':'Disapproved', 'N':'Not Applicable', 'NS':'No Status'}"/></td>
 	    	 	<td>Summary Approval Date: </td>
 	    	 	<td><sj:datepicker changeMonth="true" changeYear="true" id="srchSumAppDt"
 				   name="srchSumAppDt" displayFormat="mm/dd/yy"
@@ -91,7 +90,7 @@
 			   	<td>Interface Approval Status: </td>
 			   	<td><s:select id="srchIntAppStat"  name="srchIntAppStat"
 						  headerKey="" headerValue="" theme="simple"
-						  list="#{'A':'Approved', 'D':'Disapproved', 'N':'Not Applicable'}"/></td>
+						  list="#{'A':'Approved', 'D':'Disapproved', 'N':'Not Applicable', 'NS':'No Status'}"/></td>
 	    	 	<td>Summary Approval Date: </td>
 	    	 	<td><sj:datepicker changeMonth="true" changeYear="true" id="srchIntAppDt"
 				   name="srchIntAppDt" displayFormat="mm/dd/yy"
@@ -123,7 +122,7 @@
     			<td><s:textfield id="srchIntFileNm" name="srchIntFileNm" theme="simple" title="Interface File Name" /></td>
     			<td class="label">Deposit Id: </td>
     			<td><s:textfield id="srchDepId" name="srchDepId" theme="simple" title="Deposit Id" /></td>
-    			<td class="label">All: </td>
+    			<td class="label">Search All Dates: </td>
     			<td><s:checkbox id="srchAll" name="srchAll" theme="simple" label="All"></s:checkbox></td>
     		</tr>    		
    		</table>

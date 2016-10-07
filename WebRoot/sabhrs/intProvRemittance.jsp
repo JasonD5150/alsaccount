@@ -11,6 +11,7 @@
     <sj:head locale="en" jqueryui="true" jquerytheme="smoothness" customBasepath="css/jquery"/>
     <script type="text/javascript" src= "/alsaccount/scripts/fieldEdits.js"></script> 
     <script type="text/javascript" src= "/alsaccount/scripts/exportGrid.js"></script> 
+    <script type="text/javascript" src= "/alsaccount/scripts/menuSecurity.js"></script> 
     <script type="text/javascript" src= "/alsaccount/sabhrs/scripts/fwp.intProvRemittance.js"></script>   
 	<style type="text/css">
 		@import url("/alsaccount/css/alsaccount.css");

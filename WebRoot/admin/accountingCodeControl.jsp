@@ -61,7 +61,7 @@
     	navigatorAddOptions="{width:500,reloadAfterSubmit:true,
     						  addedrow:'last',
     						  afterShowForm:setEnabled,
-    						  beforeSubmit:checkForm,  	    
+    						  beforeSubmit:checkForm, 	    
     						  afterSubmit:errorHandler,
     	                      addCaption:'Add New Code Info',
     	                      closeAfterAdd:true,
