@@ -123,6 +123,8 @@
     			<td><s:textfield id="srchIntFileNm" name="srchIntFileNm" theme="simple" title="Interface File Name" /></td>
     			<td class="label">Deposit Id: </td>
     			<td><s:textfield id="srchDepId" name="srchDepId" theme="simple" title="Deposit Id" /></td>
+    			<td class="label">All: </td>
+    			<td><s:checkbox id="srchAll" name="srchAll" theme="simple" label="All"></s:checkbox></td>
     		</tr>    		
    		</table>
 	</form>	

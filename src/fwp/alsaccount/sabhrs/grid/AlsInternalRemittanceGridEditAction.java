@@ -334,11 +334,11 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 		if(!aseLst.isEmpty()){
 			for(AlsSabhrsEntries ase : aseLst){
 				ase.setAseWhenUploadedToSummary(null);
-				ase.getIdPk().setAseSeqNo(null);
+				ase.setAsesSeqNo(null);
 				if(ase.getAseAllowUploadToSummary() == "N"){
 					ase.setAseAllowUploadToSummary(null);
 				}else{
-					ase.setAseWhenUploadedToSumm(Timestamp.valueOf("01-Jan-1900 00:00:00"));
+					ase.setAseWhenUploadedToSumm(Timestamp.valueOf("1900-1-1 00:00:00"));
 				}
 				aseAS.save(ase);
 			}

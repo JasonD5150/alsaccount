@@ -25,7 +25,6 @@
 	<form id='rptFrm'>
       <s:hidden id="frmRptType" name="rptType" />
       <s:hidden id="frmFilters" name="filters" /> 
-
     </form>
     
     <s:form id="pdfFrm" action="getTdtPdf">
@@ -66,7 +65,7 @@
 		caption="Transaction Groups"
 		href="%{transGroupMaintGridURL}"
 		editurl="%{transGroupMaintGridEditURL}"		
-		dataType="json"
+		dataType="local"
 		pager="true"
 		navigator="true"
 		navigatorEdit="false"

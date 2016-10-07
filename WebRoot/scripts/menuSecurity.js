@@ -8,6 +8,30 @@ function menuSec (tstId) {
 		}else if(tstId === 'transGrpApp'){
 			$("#saveTransGrpApp").toggle(false);
 			$("#getRpt").toggle(false);
+			$('#changeProgramYear').prop({disabled:true});
+			$('#changeAccountDt').prop({disabled:true});
+			$('#transGroupType').prop({disabled:true});
+			$('#desc').prop({disabled:true});
+			$('#transGroupIdentifier').prop({disabled:true});
+			$('#transGroupCreateDt').prop({disabled:true});
+			$('#sumAppStat').prop({disabled:true});
+			$('#sumAll').prop({disabled:true});
+			$('#sumAppBy').prop({disabled:true});
+			$('#sumAppDt').prop({disabled:true});
+			$('#intAppStat').prop({disabled:true});
+			$('#intAll').prop({disabled:true});
+			$('#intAppBy').prop({disabled:true});
+			$('#intAppDt').prop({disabled:true});
+			$('#upToSumDt').prop({disabled:true});
+			$('#upToSabhrsDt').prop({disabled:true});
+			$('#bankCd').prop({disabled:true});
+			$('#bankRefNo').prop({disabled:true});
+			$('#intFile').prop({disabled:true});
+			$('#intFileCreateDt').prop({disabled:true});
+			$('#intFileName').prop({disabled:true});
+			$('#nonAlsEnt').prop({disabled:true});
+			$('#netCashDrCr').prop({disabled:true});
+			$('#depId').prop({disabled:true}); 
 		}
 	}
 	

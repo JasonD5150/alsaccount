@@ -5,7 +5,7 @@
  * @author cfa027
  */
 $(document).ready(function(){
-	menuSec("transGrpApp");
+	
 	$('#txGrpType').val("");
 	$('#provNo').val("");
 });
@@ -126,6 +126,7 @@ function enableDisableElements() {
 			}
 		}
 	}
+	menuSec("transGrpApp");
 }
 
 $.subscribe('transGroupSelected', function(event, data) {

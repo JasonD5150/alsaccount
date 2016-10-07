@@ -86,7 +86,7 @@ public class InternalProviderBankCdDepLinkGridEditAction extends ActionSupport{
 				appSer.save(tmp);
 			}else if (oper.equalsIgnoreCase("del")){
 				String[] keys = id.split("_");
-				if(hh.getDepositProviderDate(Integer.parseInt(keys[2]), sdf.format(sdf.parse(keys[0])))){
+				if(hh.getDepositProviderDate(Integer.valueOf(keys[2]),  new java.sql.Date(sdf.parse(keys[0]).getTime()))){
 					addActionError("Cannot delete record, Deposit already approved for this billing period.");
 					return "error_json";
 				}else{
@@ -136,9 +136,10 @@ public class InternalProviderBankCdDepLinkGridEditAction extends ActionSupport{
 		if(hh.getDepositApprovalFlag(provNo, sdf.format(apbdBillingTo), sdf.format(BillingFrom))){
 			addActionError("Cannot add record, Deposit already approved for this billing period.");
 		}
-		if(hh.getDepositProviderDate(provNo, sdf.format(apbdBillingTo))){
+		/*Deposit dates need to be able to be changed by alsaccount_user after completed by provider*/
+		/*if(hh.getDepositProviderDate(provNo, apbdBillingTo)){
 			addActionError("Cannot add record, Deposit already approved for this billing period.");
-		}
+		}*/
 		
 		if(getActionErrors().size() > 0){
 			return false;

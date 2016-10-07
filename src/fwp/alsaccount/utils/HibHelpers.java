@@ -1001,7 +1001,7 @@ public class HibHelpers {
 						.createSQLQuery(queryString)
 						.addScalar("bpe", DateType.INSTANCE)
 						.addScalar("provNo", IntegerType.INSTANCE)
-						.addScalar("bankCd", IntegerType.INSTANCE)
+						.addScalar("bankCd")
 						.addScalar("depDt", DateType.INSTANCE)
 						.addScalar("depId", StringType.INSTANCE)
 						.addScalar("depAmt", DoubleType.INSTANCE)
@@ -1597,19 +1597,21 @@ public class HibHelpers {
         return appFlag;
 	}	
 	
-	public Boolean getDepositProviderDate(Integer provNo, String bpTo) {	
+	public Boolean getDepositProviderDate(Integer provNo, Date bpTo) {	
 		Boolean flag = false;
 		Date acp = null;
 		
 		String queryString =  "SELECT Air_Complete_Provider acp "
 							+ "FROM Als.Als_Internal_Remittance "
-							+ "WHERE Api_Provider_No = "+provNo+" "
-							+ "AND Air_Billing_To = TO_DATE('"+bpTo+"','MM/DD/YYYY') "
+							+ "WHERE Api_Provider_No = :provNo "
+							+ "AND Air_Billing_To = :bpTo "
 							+ "AND ROWNUM < 2 ";
 			try {
 			Query query = getSession()
 					.createSQLQuery(queryString)
-					.addScalar("acp", DateType.INSTANCE);
+					.addScalar("acp", DateType.INSTANCE)
+					.setInteger("provNo", provNo)
+					.setDate("bpTo", bpTo);
 			acp = (Date) query.uniqueResult();
 			
 			if(acp != null){
@@ -1937,12 +1939,12 @@ public class HibHelpers {
 							+ "Ati_Tribe_Cd atiTribeCd, "
 							+ "Nvl(Sum(Decode(Ase_Dr_Cr_Cd,'D',Nvl(Ase_Amt,0),'C',-1 * Nvl(Ase_Amt, 0))),0) aseAmt "
 							+ "FROM Als.Als_Sabhrs_Entries "
-							+ "WHERE Api_Provider_No  = "+provNo+" "
-							+ "AND Apr_Billing_From = TO_TIMESTAMP('"+bpFrom+"', 'yyyy-MM-dd HH24:MI:SS.FF') "
-							+ "AND Apr_Billing_To   = TO_TIMESTAMP('"+bpTo+"', 'yyyy-MM-dd HH24:MI:SS.FF') "
-							+ "AND Aam_Account      = "+account+" "
+							+ "WHERE Api_Provider_No  = :provNo "
+							+ "AND Apr_Billing_From = :bpFrom "
+							+ "AND Apr_Billing_To   = :bpTo "
+							+ "AND Aam_Account      = :acc "
 							+ "AND ASAC_SYSTEM_ACTIVITY_TYPE_CD||ASAC_TXN_CD not in ('E40','E42','E43') "
-							+ "Group By Aam_Fund,Ati_Tribe_Cd;";
+							+ "Group By Aam_Fund,Ati_Tribe_Cd";
 		
 		try {
 			Query query = getSession()
@@ -1950,8 +1952,11 @@ public class HibHelpers {
 								.addScalar("aamFund")
 								.addScalar("atiTribeCd")
 								.addScalar("aseAmt", DoubleType.INSTANCE)
-								.setResultTransformer(
-										Transformers.aliasToBean(AlsSabhrsEntries.class));
+								.setInteger("provNo", provNo)
+								.setTimestamp("bpFrom", bpFrom)
+								.setTimestamp("bpTo", bpTo)
+								.setString("acc", account)
+								.setResultTransformer(Transformers.aliasToBean(AlsSabhrsEntries.class));
 
 			lst = query.list();
 		} catch (HibernateException he){
@@ -2018,11 +2023,11 @@ public class HibHelpers {
 		String queryStr =  "SELECT DISTINCT Api_Provider_No apiProviderNo, "
 											+ "Apr_Billing_From aprBillingFrom, "
 											+ "Apr_Billing_To aprBillingTo, "
-											+ "Aiafa_Seq_No aiafaSeqNo"
+											+ "Aiafa_Seq_No aiafaSeqNo "
 							+ "FROM Als.Als_Sabhrs_Entries "
-							+ "WHERE Api_Provider_No = "+provNo+" "
-							+ "AND Apr_Billing_From = "+bpFrom+" "
-							+ "AND Apr_Billing_To = "+bpTo+" "
+							+ "WHERE Api_Provider_No = :provNo "
+							+ "AND Apr_Billing_From = :bpFrom "
+							+ "AND Apr_Billing_To = :bpTo "
 							+ "AND Asac_System_Activity_Type_Cd = 'E'"
 							+ "AND Asac_Txn_Cd in (18,19)";
 		
@@ -2033,6 +2038,9 @@ public class HibHelpers {
 								.addScalar("aprBillingFrom", TimestampType.INSTANCE)
 								.addScalar("aprBillingTo", TimestampType.INSTANCE)
 								.addScalar("aiafaSeqNo", IntegerType.INSTANCE)
+								.setInteger("provNo", provNo)
+								.setTimestamp("bpFrom", bpFrom)
+								.setTimestamp("bpTo", bpTo)
 								.setResultTransformer(
 										Transformers.aliasToBean(AlsSabhrsEntries.class));
 

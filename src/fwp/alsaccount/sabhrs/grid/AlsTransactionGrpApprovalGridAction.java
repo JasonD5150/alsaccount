@@ -2,7 +2,8 @@ package fwp.alsaccount.sabhrs.grid;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Calendar;
+import java.sql.Date;
 import java.util.List;
 
 import org.hibernate.HibernateException;
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionSupport;
 
+import fwp.alsaccount.action.QueryParam;
 import fwp.alsaccount.appservice.sabhrs.AlsTransactionGrpStatusAS;
 import fwp.alsaccount.dao.sabhrs.AlsTransactionGrpStatus;
 import fwp.alsaccount.dto.sabhrs.AlsTransactionGrpStatusDTO;
@@ -43,22 +45,29 @@ public class AlsTransactionGrpApprovalGridAction extends ActionSupport{
     private String				srchIntFileNm;
 	private String				srchDepId;
     private Integer				srchProviderNo;
+    private Boolean				srchAll;
     
     private String 				userdata;
+    
+    private String srchStr = null;
+    private List<Object> strParms = new ArrayList<Object>();
+    private List<QueryParam> newStrParams = new ArrayList<QueryParam>();
     
 	@SuppressWarnings("unchecked")
 	public String buildgrid(){  
 		HibHelpers hh = new HibHelpers();
 		
-		
-		String srchStr = buildQueryStr();
-		String orderStr = " ORDER BY atgsWhenCreated desc,idPk.atgTransactionCd,idPk.atgsGroupIdentifier";
-		
     	AlsTransactionGrpStatusAS atgsAS = new AlsTransactionGrpStatusAS();
     	List<AlsTransactionGrpStatus> atgs = new ArrayList<AlsTransactionGrpStatus>();
     	
+    	java.util.Date referenceDate = new java.util.Date();
+		Calendar c = Calendar.getInstance(); 
+		c.setTime(referenceDate); 
+		c.add(Calendar.MONTH, -12);
+    	
         try{
-        	atgs = atgsAS.findAllByWhere(srchStr+orderStr);
+        	atgs = atgsAS.getTransactionGroupApprovalRecords(srchTransGrpType, srchTranGrpId, srchTranGrpCreated, srchAccDt, srchSumAppStat, srchSumAppDt, srchIntAppStat, srchIntAppDt, srchUpToSumDt, srchBankCd, srchBankRefNo, srchIntFileNm, srchDepId, srchProviderNo, srchAll, new Date(c.getTimeInMillis()));
+        			
         	
         	if (atgs.size() > 10000) {
         		setUserdata("Please narrow search. The search grid is limited to 10000 rows. There were " + atgs.size() + " entries selected.");
@@ -119,77 +128,6 @@ public class AlsTransactionGrpApprovalGridAction extends ActionSupport{
 
 	public void setUserdata(String userdata) {
 		this.userdata = userdata;
-	}
-
-
-
-	private String buildQueryStr(){
-		HibHelpers hh = new HibHelpers();
-		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/YYYY");
-		Integer curBudgYear = Integer.parseInt(hh.getCurrentBudgetYear());
-		StringBuilder srchStr = new StringBuilder();
-		Boolean searchCreated = true;
-		/*WHERE*/
-    	srchStr.append("WHERE 1=1 ");
- 
-    	if(srchTransGrpType != null && !"".equals(srchTransGrpType)){
-    		srchStr.append("AND idPk.atgTransactionCd = "+srchTransGrpType+" ");
-    	}
-		if(srchTranGrpId != null && !" ".equals(srchTranGrpId)){
-			srchStr.append("AND idPk.atgsGroupIdentifier LIKE '"+srchTranGrpId+"%' ");
-			searchCreated = false;
-		}
-		if(srchTranGrpCreated != null){
-			srchStr.append("AND TO_CHAR(atgsWhenCreated,'YYYY') = "+srchTranGrpCreated+" ");
-			searchCreated = false;
-		}
-		if(srchAccDt != null){
-			srchStr.append("AND TO_CHAR(atgsAccountingDt,'MM/DD/YYYY') = '"+sdf.format(srchAccDt)+"' ");
-			searchCreated = false;
-		}
-		if(srchSumAppStat != null && !"".equals(srchSumAppStat)){
-			srchStr.append("AND atgsSummaryStatus = '"+srchSumAppStat+"' ");
-		}
-		if(srchSumAppDt != null ){
-			srchStr.append("AND TO_CHAR(atgsSummaryDt,'MM/DD/YYYY') = '"+sdf.format(srchSumAppDt)+"' ");
-			searchCreated = false;
-		}
-		if(srchIntAppStat != null && !"".equals(srchIntAppStat)){
-			srchStr.append("AND atgsInterfaceStatus = '"+srchIntAppStat+"' ");
-		}
-		if(srchIntAppDt != null ){
-			srchStr.append("AND TO_CHAR(atgsInterfaceDt,'MM/DD/YYYY') = '"+sdf.format(srchIntAppDt)+"' ");
-			searchCreated = false;
-		}
-		if(srchUpToSumDt != null ){
-			srchStr.append("AND TO_CHAR(atgsWhenUploadToSummary,'MM/DD/YYYY') = '"+sdf.format(srchUpToSumDt)+"' ");
-			searchCreated = false;
-		}
-		if(srchBankCd != null && !"".equals(srchBankCd)){
-    		srchStr.append("AND abcBankCd = '"+srchBankCd+"' ");
-    		
-		}
-		if(srchBankRefNo != null && !"".equals(srchBankRefNo)){
-    		srchStr.append("AND atgsBankReferenceNo = '"+srchBankRefNo+"' ");
-    		
-		}
-		if(srchIntFileNm != null && !"".equals(srchIntFileNm)){
-    		srchStr.append("AND atgsFileName = '"+srchIntFileNm+"' ");
-    		
-		}
-		if(srchDepId != null && !"".equals(srchDepId)){
-    		srchStr.append("AND atgsDepositId = '"+srchDepId+"' ");
-    		
-		}
-		if(srchProviderNo != null && !" ".equals(srchProviderNo)){
-    		srchStr.append("AND TRIM(TRIM(LEADING 0 FROM substr(idPk.atgsGroupIdentifier,3,6))) = '"+srchProviderNo+"' ");
-    		
-		}
-		if(searchCreated){
-			srchStr.append("AND TO_CHAR(atgsWhenCreated,'YYYY') = "+curBudgYear+" ");
-		}
-		
-		return srchStr.toString();
 	}
 
 	public List<AlsTransactionGrpStatusDTO> getModel() {
@@ -380,4 +318,13 @@ public class AlsTransactionGrpApprovalGridAction extends ActionSupport{
 	public void setSrchProviderNo(Integer srchProviderNo) {
 		this.srchProviderNo = srchProviderNo;
 	}
+
+	public Boolean getSrchAll() {
+		return srchAll;
+	}
+
+	public void setSrchAll(Boolean srchAll) {
+		this.srchAll = srchAll;
+	}
+	
 }
