@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionSupport;
 
-import fwp.alsaccount.action.QueryParam;
 import fwp.alsaccount.appservice.sabhrs.AlsTransactionGrpStatusAS;
 import fwp.alsaccount.dao.sabhrs.AlsTransactionGrpStatus;
 import fwp.alsaccount.dto.sabhrs.AlsTransactionGrpStatusDTO;
@@ -51,7 +50,6 @@ public class AlsTransactionGrpApprovalGridAction extends ActionSupport{
     
     private String srchStr = null;
     private List<Object> strParms = new ArrayList<Object>();
-    private List<QueryParam> newStrParams = new ArrayList<QueryParam>();
     
 	@SuppressWarnings("unchecked")
 	public String buildgrid(){  
