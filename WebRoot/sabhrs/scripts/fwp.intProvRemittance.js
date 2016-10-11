@@ -162,7 +162,7 @@ $.subscribe('alsSabhrsEntriesComplete', function(event, data) {
 	});
 	
 	if ( $("#alsSabhrsEntriesGrid").length) {
-   		$("#alsSabhrsEntriesGrid").jqGrid('setColProp','asacReference', { editoptions: { value: rtrnJLRList()}});
+   		$("#alsSabhrsEntriesGrid").jqGrid('setColProp','jlr', { editoptions: { value: rtrnJLRList()}});
    		$("#alsSabhrsEntriesGrid").jqGrid('setColProp','aamFund', { editoptions: { value: rtrnFundList()}});
    		$("#alsSabhrsEntriesGrid").jqGrid('setColProp','asacSubclass', { editoptions: { value: rtrnSubClassList()}});
    		$("#alsSabhrsEntriesGrid").jqGrid('setColProp','aocOrg', { editoptions: { value: rtrnOrgList()}});
@@ -472,6 +472,10 @@ function prePopulate(id){
 	    $('#apbdBillingTo').val(grid.jqGrid ('getCell', rows[length], 'apbdBillingTo'));
 	    $('#amtDue').val(grid.jqGrid ('getCell', rows[length], 'amtDue'));
 	}else if(id == "revAlsSabhrsEntriesGrid"){
+		$('#aamBusinessUnit').val("52010");
+	    $('#asacProgram').val($('#curBudgYear').val());
+	    $('#asacBudgetYear').val($('#curBudgYear').val());
+	}else if(id == "alsSabhrsEntriesGrid"){
 		$('#aamBusinessUnit').val("52010");
 	    $('#asacProgram').val($('#curBudgYear').val());
 	    $('#asacBudgetYear').val($('#curBudgYear').val());

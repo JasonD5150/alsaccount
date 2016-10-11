@@ -30,7 +30,7 @@
 	</form>
 	
     <div style="width:800px;text-align:center">
-    	<h2 class="title">Generate ALS Entries</h2>
+    	<h2 class="title">Generate ALS SABHRS Entries</h2>
    	</div>
 
 	<fieldset style="border: black 1px solid; display: inline-block;margin: 0 5px;">
@@ -80,7 +80,7 @@
 									theme="simple" 
 									/></td>
 				<td class="label">Transaction Group Identifier:</td>
-				<td><s:textfield id="transGrpIdentifier" name="transGrpIdentifier" theme="simple" title="Transaction Group Identifier" /></td>
+				<td><s:textfield id="transGrpId" name="transGrpId" theme="simple" title="Transaction Group Identifier" /></td>
 		    </tr>
 		    </table>
 		</form>	
@@ -120,6 +120,7 @@
 		rowNum="1000"
 		onSelectRowTopics="transGroupDtlsSelected"
 		reloadTopics="reloadTransGroupDtlsTable"
+		onCompleteTopics="transGroupDtlsComplete"
 		formIds="gridFrm">
 			
 			<sjg:gridColumn name="gridKey" title ="id" width="55" hidden="true" key="true"/>
@@ -131,8 +132,8 @@
 	
 	</sjg:grid>
 	<br/>
-	<s:url id="alsSabhrsEntriesGridURL" action="alsAccount/alsSabhrsEntriesGrid_buildgrid" />
-	<s:url id="alsSabhrsEntriesGridEditURL" action="alsAccount/alsSabhrsEntriesGridEdit_execute" />    
+	<s:url id="alsSabhrsEntriesGridURL" action="alsAccount/genAlsSabhrsEntriesGrid_buildgrid" />
+	<s:url id="alsSabhrsEntriesGridEditURL" action="alsAccount/genAlsSabhrsEntriesGridEdit_execute" />    
 	<sjg:grid
 		id="alsSabhrsEntriesTable"
 		caption="ALS SABHRS Entries"
@@ -145,6 +146,12 @@
 		navigatorView="false"
 		navigatorAdd="true"
 		navigatorDelete="true"
+		navigatorDeleteOptions="{delData : {transIdentifier : function () { return $('#frmTransIdentifier').val();},
+											transGrp: function () { return $('#frmTransGrp').val();}},
+								 afterSubmit:function (postData) {
+    						  		$.publish('reloadTransGroupDtlsTable');
+    						  		return[true, ''];
+    						  	 }}"
 		navigatorAddOptions="{width:950,reloadAfterSubmit:true,
     						  addedrow:'last',
  	    					  afterShowForm: function ($form) {
@@ -162,7 +169,7 @@
     						  },  
     						  afterSubmit:errorHandler,
     						  afterSubmit:function (postData) {
-    						  		submitSearch();
+    						  		$.publish('reloadTransGroupDtlsTable');
     						  		return[true, ''];
     						  },  
     	                      addCaption:'Add New Code Info',
@@ -171,9 +178,14 @@
 		navigatorEditOptions="{width:950,reloadAfterSubmit:true,
     	                       editCaption:'Edit Code Info',    
     	                       closeAfterEdit:true,
+    	                       beforeSubmit: function (postData) {
+    						  		postData.transIdentifier = $('#frmTransIdentifier').val();
+    						  		postData.transGrp = $('#frmTransGrp').val();
+    						  		return[true, ''];
+    						  },  
     	                       afterSubmit:errorHandler,
     	                       afterSubmit:function (postData) {
-    						  		submitSearch();
+    						  		$.publish('reloadTransGroupDtlsTable');
     						  		return[true, ''];
     						  }, 
     	                       processData:'Updating to Database',
@@ -200,8 +212,7 @@
 			
 			<sjg:gridColumn name="gridKey" title ="id" width="55" hidden="true" key="true"/>
 			<sjg:gridColumn name="asacBudgetYear" index="asacBudgetYear" title ="Budget Year" width="10" sortable="false" editable="true" editrules="{number:true,required:true}" editoptions="{size:5,maxlength:4}" formoptions="{colpos:1,rowpos:1}" align="right"/>
-			<sjg:gridColumn name="asacReference" index="asacReference" title ="JLR" width="10" sortable="false" hidden="true" editable="true" formoptions="{colpos:2,rowpos:1}" edittype="select" formatter="select" editoptions="{edithidden: true,value:','}"/>
-			<sjg:gridColumn name="jlr" index="jlr" title ="JLR" width="10" sortable="false" editable="false"/>
+			<sjg:gridColumn name="jlr" index="jlr" title ="JLR" width="10" sortable="false" editable="true" formoptions="{colpos:2,rowpos:1}" edittype="select" formatter="select" editoptions="{value:','}"/>
 			<sjg:gridColumn name="aamAccount" index="aamAccount" title ="Account" width="10" sortable="false" editable="true" editrules="{number:true,required:true}" formoptions="{colpos:1,rowpos:2}" edittype="select" formatter="select" editoptions="{value:','}" align="right"/>
 			<sjg:gridColumn name="aamFund" index="aamFund" title ="Fund" width="10" sortable="false" editable="true" editrules="{number:true,required:true}" formoptions="{colpos:2,rowpos:2}" edittype="select" formatter="select" editoptions="{value:','}" align="right"/>
 			<sjg:gridColumn name="aocOrg" index="aocOrg" title ="Org" width="10" sortable="false" editable="true" formoptions="{colpos:1,rowpos:3}"  edittype="select" formatter="select" editoptions="{value:','}"/>

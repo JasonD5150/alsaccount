@@ -364,8 +364,20 @@
 						navigatorDelete="true"
 						navigatorSearch="false"
 						navigatorRefresh="false"
+						navigatorDeleteOptions="{delData : {provNo : function () { return $('#frmProvNo').val();},
+															bpTo: function () { return $('#frmBPTo').val();}}}"
 						navigatorAddOptions="{width:950,reloadAfterSubmit:true,
 				    						  addedrow:'last',
+				    						   afterShowForm: function ($form) {
+				 	    					  	prePopulate(this.id);
+				                    		  },
+				    						  beforeSubmit: function (postData) {
+				    						  		postData.transIdentifier = $('#frmTransIdentifier').val();
+				    						  		postData.transGrp = $('#frmTransGrp').val();
+				    						  		postData.provNo = $('#frmProvNo').val();
+				    						  		postData.bpTo = $('#frmBPTo').val();
+				    						  		return[true, ''];
+				    						  }, 
 				    						  afterSubmit:errorHandler,
 				    	                      addCaption:'Add New Code Info',
 				    	                      closeAfterAdd:true,
@@ -391,8 +403,7 @@
 							
 							<sjg:gridColumn name="gridKey" title ="id" width="55" hidden="true" key="true"/>
 							<sjg:gridColumn name="asacBudgetYear" index="asacBudgetYear" title ="Budget Year" width="10" sortable="false" editable="true" editrules="{number:true,required:true}" editoptions="{size:5,maxlength:4}" formoptions="{colpos:1,rowpos:1}" align="right"/>
-							<sjg:gridColumn name="asacReference" index="asacReference" title ="JLR" width="10" sortable="false" hidden="true" editable="true" formoptions="{colpos:2,rowpos:1}" edittype="select" formatter="select" editoptions="{edithidden: true,value:','}"/>
-							<sjg:gridColumn name="jlr" index="jlr" title ="JLR" width="10" sortable="false" editable="false"/>
+							<sjg:gridColumn name="jlr" index="jlr" title ="JLR" width="10" sortable="false" editable="true" formoptions="{colpos:2,rowpos:1}" edittype="select" formatter="select" editoptions="{value:','}"/>
 							<sjg:gridColumn name="aamAccount" index="aamAccount" title ="Account" width="10" sortable="false" editable="true" editrules="{number:true,required:true}" formoptions="{colpos:1,rowpos:2}" edittype="select" formatter="select" editoptions="{value:','}" align="right" />
 							<sjg:gridColumn name="aamFund" index="aamFund" title ="Fund" width="10" sortable="false" editable="true" editrules="{number:true,required:true}" formoptions="{colpos:2,rowpos:2}" edittype="select" formatter="select" editoptions="{value:','}" align="right"/>
 							<sjg:gridColumn name="aocOrg" index="aocOrg" title ="Org" width="10" sortable="false" editable="true" formoptions="{colpos:1,rowpos:3}"  edittype="select" formatter="select" editoptions="{value:','}"/>
@@ -504,8 +515,7 @@
 						navigatorAddOptions="{width:950,reloadAfterSubmit:true,
 				    						  addedrow:'last',
 				 	    					  afterShowForm:function(postData){
-					   						  					prePopulate(this.id);
-						    	                      			return[true, ''];
+					   						  	prePopulate(this.id);
 						    	              }, 
 				                    		  beforeSubmit: function (postData) {
 				                    		  		$('#revAlsSabhrsEntriesGrid').jqGrid('setGridParam',{datatype:'json'});

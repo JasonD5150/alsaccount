@@ -61,15 +61,23 @@
     	navigatorAddOptions="{width:500,reloadAfterSubmit:true,
     						  addedrow:'last',
     						  afterShowForm:setEnabled,
-    						  beforeSubmit:checkForm, 	    
+    						  beforeSubmit:checkForm,
+    						  beforeSubmit:function(postData){
+	    	                    postData.budgYear = $('#budgYear').val();
+	    	                    return[true, ''];
+	    	               	  }, 	    
     						  afterSubmit:errorHandler,
     	                      addCaption:'Add New Code Info',
     	                      closeAfterAdd:true,
     	                      processData:'Adding Row to Database'}"
-    	navigatorEditOptions="{width:500,reloadAfterSubmit:false,
+    	navigatorEditOptions="{width:500,reloadAfterSubmit:true,
     	                       editCaption:'Edit Code Info',
     	                       afterShowForm:setDisabled,
-    	                       beforeSubmit:checkForm,	    
+    	                       beforeSubmit:checkForm,
+    	                       beforeSubmit:function(postData){
+	    	                    postData.budgYear = $('#budgYear').val();
+	    	                    return[true, ''];
+	    	               	   }, 	    
     	                       closeAfterEdit:true,
     	                       afterSubmit:errorHandler,
     	                       processData:'Updating to Database'}"

@@ -31,7 +31,7 @@ public class AlsTransactionGrpStatusGridAction extends ActionSupport{
     private Integer budgYear;
 	private Integer provNo;
     private Integer transGrpType;
-    private String transGrpIdentifier;
+    private String transGrpId;
 
     @SuppressWarnings("unchecked")
 	public String buildgrid(){  
@@ -101,8 +101,8 @@ public class AlsTransactionGrpStatusGridAction extends ActionSupport{
 		if(transGrpType != null && !"".equals(transGrpType)){
 			srchStr.append("AND idPk.atgTransactionCd = "+transGrpType+" ");		
 		}
-		if(transGrpIdentifier != null && !"".equals(transGrpIdentifier)){
-			srchStr.append("AND idPk.atgsGroupIdentifier LIKE UPPER('"+transGrpIdentifier+"%') ");		
+		if(transGrpId != null && !"".equals(transGrpId)){
+			srchStr.append("AND idPk.atgsGroupIdentifier LIKE UPPER('"+transGrpId+"%') ");		
 		}
 		if(provNo != null && !"".equals(provNo)){
 			srchStr.append("AND idPk.atgsGroupIdentifier LIKE '%"+provNo+"%' ");
@@ -215,12 +215,12 @@ public class AlsTransactionGrpStatusGridAction extends ActionSupport{
 		this.transGrpType = transGrpType;
 	}
 
-	public String getTransGrpIdentifier() {
-		return transGrpIdentifier;
+	public String getTransGrpId() {
+		return transGrpId;
 	}
 
-	public void setTransGrpIdentifier(String transGrpIdentifier) {
-		this.transGrpIdentifier = transGrpIdentifier;
+	public void setTransGrpId(String transGrpId) {
+		this.transGrpId = transGrpId;
 	}
 
 }

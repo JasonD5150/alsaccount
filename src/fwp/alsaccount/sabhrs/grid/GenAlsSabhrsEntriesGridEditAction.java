@@ -23,7 +23,7 @@ import fwp.alsaccount.utils.HibHelpers;
 import fwp.security.user.UserDTO;
 
 
-public class AlsSabhrsEntriesGridEditAction extends ActionSupport{
+public class GenAlsSabhrsEntriesGridEditAction extends ActionSupport{
 	private static final long serialVersionUID = 1L;
 	private String oper;
 	
@@ -54,12 +54,6 @@ public class AlsSabhrsEntriesGridEditAction extends ActionSupport{
 	
 	
 	
-	public AlsSabhrsEntriesGridEditAction() {
-		super();
-		// TODO Auto-generated constructor stub
-		System.out.println("Test");
-	}
-
 	public String execute() throws Exception{
 		AlsNonAlsTemplateAS anatAS = new AlsNonAlsTemplateAS();
 		AlsNonAlsTemplateIdPk anatIdPk = null;
@@ -69,14 +63,12 @@ public class AlsSabhrsEntriesGridEditAction extends ActionSupport{
 		AlsSabhrsEntriesIdPk aseIdPk = new AlsSabhrsEntriesIdPk();
 		AlsSabhrsEntries ase = null;
 		
-		HibHelpers hh = new HibHelpers();
-		
 		AlsTransactionGrpStatusAS atgsAS = new AlsTransactionGrpStatusAS();
-		String where = " WHERE idPk.atgsGroupIdentifier = '"+hh.getTransGrpIdMaxSeq(provNo, bpTo)+"'";
+		String where = " WHERE idPk.atgsGroupIdentifier = '"+transIdentifier+"'";
 		List<AlsTransactionGrpStatus> atgsLst = atgsAS.findAllByWhere(where);
 		AlsTransactionGrpStatus atgs = null;
 		
-		
+		HibHelpers hh = new HibHelpers();
 		UserDTO userInfo = (UserDTO)SecurityUtils.getSubject().getSession().getAttribute("userInfo");
 		Timestamp date = new Timestamp(System.currentTimeMillis());
 		Integer curBudgYear = Integer.parseInt(hh.getCurrentBudgetYear());
@@ -128,8 +120,8 @@ public class AlsSabhrsEntriesGridEditAction extends ActionSupport{
 		    	ase.setAseWhenUploadedToSumm(getUploadedToSumDt());
 		    	ase.setAsacReference(aseAS.getDescReference(jlr));
 
-		    	ase.setAtgsGroupIdentifier(hh.getTransGrpIdMaxSeq(provNo, bpTo));
-		    	ase.setAtgTransactionCd(8);
+		    	ase.setAtgsGroupIdentifier(transIdentifier);
+		    	ase.setAtgTransactionCd(transGrp);
 		    	ase.setAseNonAlsFlag("Y");
 		    	//TODO need to remove this logic when the triggers and correct audit columns are added to the db	
 				ase.setAseWhoLog(userInfo.getStateId().toString());
@@ -147,7 +139,6 @@ public class AlsSabhrsEntriesGridEditAction extends ActionSupport{
 					}
 					atgsAS.save(atgs);
 				}
-				
 			} else if (oper.equalsIgnoreCase("addTemplates")) {
 				if(transIdentifier == null){
 					transIdentifier = hh.getTransGrpIdMaxSeq(provNo, bpTo);
@@ -205,7 +196,7 @@ public class AlsSabhrsEntriesGridEditAction extends ActionSupport{
 
 					aseAS.save(ase);
 				}
-			}else if(oper.equalsIgnoreCase("edit")){	
+			}else if(oper.equalsIgnoreCase("edit")){
 				/*UPDATE ALS_TRANSACTION_GRP_STATUS*/
 				if(!atgsLst.isEmpty()){
 					atgs = atgsLst.get(0);
@@ -240,15 +231,17 @@ public class AlsSabhrsEntriesGridEditAction extends ActionSupport{
 				ase.setAseWhenLog(date);
 				//********************************************************************
 				aseAS.save(ase);
+				
+				
 			}else if(oper.equalsIgnoreCase("del")){
 				aseAS.delete(ase);
 				/*UPDATE ALS_TRANSACTION_GRP_STATUS*/
 				if(!atgsLst.isEmpty()){
 					atgs = atgsLst.get(0);
 					if("C".equals(ase.getIdPk().getAseDrCrCd())){
-						atgs.setAtgsNetDrCr(atgs.getAtgsNetDrCr()+aseAmt);
+						atgs.setAtgsNetDrCr(atgs.getAtgsNetDrCr()+ase.getAseAmt());
 					}else if("D".equals(ase.getIdPk().getAseDrCrCd())){
-						atgs.setAtgsNetDrCr(atgs.getAtgsNetDrCr()-aseAmt);
+						atgs.setAtgsNetDrCr(atgs.getAtgsNetDrCr()-ase.getAseAmt());
 					}
 					atgsAS.save(atgs);
 				}

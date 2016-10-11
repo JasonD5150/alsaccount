@@ -20,9 +20,9 @@ import fwp.alsaccount.utils.Utils;
 
 import fwp.utils.FwpDateUtils;
 
-public class AlsSabhrsEntriesGridAction extends ActionSupport{
+public class GenAlsSabhrsEntriesGridAction extends ActionSupport{
     private static final long   serialVersionUID = 5078264277068533593L;
-    private static final Logger    log              = LoggerFactory.getLogger(AlsSabhrsEntriesGridAction.class);
+    private static final Logger    log              = LoggerFactory.getLogger(GenAlsSabhrsEntriesGridAction.class);
 
     private List<AlsSabhrsEntriesDTO>    model;
     private Integer             rows             = 0;
@@ -33,25 +33,19 @@ public class AlsSabhrsEntriesGridAction extends ActionSupport{
     private String              sidx;
     private String              filters;
     private boolean             loadonce         = false;
-
-    private String provNo;
-    private String bpFrom;
-    private String bpTo;
+    private Integer transGrp;
+    private String transIdentifier;
 
 
 	public String buildgrid() throws ParseException{ 
-		HibHelpers hh = new HibHelpers();
     	AlsSabhrsEntriesAS aseAS = new AlsSabhrsEntriesAS();
-    	List<AlsSabhrsEntries> aseLst = new ArrayList<AlsSabhrsEntries>();    	
+    	List<AlsSabhrsEntries> aseLst = new ArrayList<AlsSabhrsEntries>();
+    	
         try{
-        	String transIdentifier = null;
-        	if(!Utils.isNil(provNo) && !Utils.isNil(bpTo)){
-            	transIdentifier = hh.getTransGrpIdMaxSeq(provNo, bpTo);
+        	if(!Utils.isNil(transIdentifier) && !Utils.isNil(transGrp)){
+        		aseLst = aseAS.getRemittanceRecords(transIdentifier, transGrp);
         	}
-        	if(!Utils.isNil(transIdentifier)){
-        		aseLst = aseAS.getRemittanceRecords(transIdentifier, 8);
-        	}
-        	
+        
 			setModel(new ArrayList<AlsSabhrsEntriesDTO>());
 			AlsSabhrsEntriesDTO tmp;
 
@@ -172,29 +166,21 @@ public class AlsSabhrsEntriesGridAction extends ActionSupport{
 	public void setModel(List<AlsSabhrsEntriesDTO> model) {
 		this.model = model;
 	}
-    
-	public String getProvNo() {
-		return provNo;
-	}
-	
-	public void setProvNo(String provNo) {
-		this.provNo = provNo;
+
+	public Integer getTransGrp() {
+		return transGrp;
 	}
 
-	public String getBpTo() {
-		return bpTo;
+	public void setTransGrp(Integer transGrp) {
+		this.transGrp = transGrp;
 	}
 
-	public void setBpTo(String bpTo) {
-		this.bpTo = bpTo;
+	public String getTransIdentifier() {
+		return transIdentifier;
 	}
 
-	public String getBpFrom() {
-		return bpFrom;
+	public void setTransIdentifier(String transIndetifier) {
+		this.transIdentifier = transIndetifier;
 	}
 
-	public void setBpFrom(String bpFrom) {
-		this.bpFrom = bpFrom;
-	}
-	
 }

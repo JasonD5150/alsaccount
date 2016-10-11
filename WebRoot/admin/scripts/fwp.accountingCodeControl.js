@@ -73,8 +73,6 @@ function checkForm(postData){
 	rtrnstate = true; 
 	rtrnMsg = ''; 
 	
-	postData.budgYear = $('#budgetYear').val();
-	
 	if(postData.aaccOrgFlag == 'Y'){
 		if(postData.aocOrg != null){
 			rtrnstate = false;

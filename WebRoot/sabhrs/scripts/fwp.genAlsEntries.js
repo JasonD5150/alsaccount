@@ -4,6 +4,7 @@
  * 
  * @author cfa027
  */
+var selectedRow;
 $(document).ready(function(){
 	resetSearch();
 });
@@ -21,12 +22,18 @@ function errorHandler(response, postdata) {
 	return [rtrnstate,rtrnMsg]; 
 }
 
+$.subscribe('transGroupDtlsComplete', function(event, data) {	
+	if(selectedRow != null){
+		$('#transGroupDtlsTable').jqGrid("setSelection", selectedRow);
+	}
+});
+
 $.subscribe('transGroupDtlsSelected', function(event, data) {	
 	$('#reverseAlsEntries').prop({disabled:false});
 	var sel_id = $("#transGroupDtlsTable").jqGrid('getGridParam', 'selrow');					    				  
 	$('#frmTransGrp').val($("#transGroupDtlsTable").jqGrid('getCell', sel_id, 'idPk.atgTransactionCd'));
 	$('#frmTransIdentifier').val($("#transGroupDtlsTable").jqGrid('getCell', sel_id, 'idPk.atgsGroupIdentifier'));
-	
+	selectedRow = sel_id;
 	$("#alsSabhrsEntriesTable").jqGrid('setGridParam',{datatype:'json'});
 	$.publish('reloadAlsSabhrsEntriesTable');
 });
@@ -56,7 +63,7 @@ $.subscribe('alsSabhrsEntriesComplete', function(event, data) {
 		});
 		
 	   if ( $("#alsSabhrsEntriesTable").length) {
-       		$("#alsSabhrsEntriesTable").jqGrid('setColProp','asacReference', { editoptions: { value: rtrnJLRList()}});
+       		$("#alsSabhrsEntriesTable").jqGrid('setColProp','jlr', { editoptions: { value: rtrnJLRList()}});
        		$("#alsSabhrsEntriesTable").jqGrid('setColProp','aamFund', { editoptions: { value: rtrnFundList()}});
        		$("#alsSabhrsEntriesTable").jqGrid('setColProp','asacSubclass', { editoptions: { value: rtrnSubClassList()}});
        		$("#alsSabhrsEntriesTable").jqGrid('setColProp','aocOrg', { editoptions: { value: rtrnOrgList()}});
@@ -177,15 +184,17 @@ function prePopulate(){
 
 /*ACTIONS*/
 function submitSearch(){
+	selectedRow = null;
 	$('#reverseAlsEntries').prop({disabled:false});
 	$('#budgYear').val($('#budgYear_widget').val());
 	$('#provNo').val($('#provNo_widget').val());
 	$('#transGrpType').val($('#transGrpType_widget').val());
-	$('#transGrpIdentifier').val($('#transGrpIdentifier_widget').val());
+
 	$('#transGroupDtlsTable').jqGrid('setGridParam',{datatype:'json'});
 	$.publish('reloadTransGroupDtlsTable');
 }
 function resetSearch(){
+	selectedRow = null;
 	$('#frmTransGrp').val('');
 	$('#frmTransIdentifier').val('');
 	$('#frmNonAlsEntries').val('');

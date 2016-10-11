@@ -79,6 +79,7 @@ public class AlsTransactionGrpApprovalGridEditAction extends ActionSupport{
 	Timestamp date = new Timestamp(System.currentTimeMillis());
 
 	public String execute() throws Exception{
+		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 		HibHelpers hh = new HibHelpers();
 		UserDTO userInfo = (UserDTO)SecurityUtils.getSubject().getSession().getAttribute("userInfo");
 		
@@ -170,7 +171,7 @@ public class AlsTransactionGrpApprovalGridEditAction extends ActionSupport{
 					atgs.setAtgsSummaryStatus(sumAppStat);
 					if("A".equals(sumAppStat)){
 						atgs.setAtgsSummaryApprovedBy(userInfo.getStateId().toString());
-						atgs.setAtgsSummaryDt(Utils.StrToTimestamp(sumAppDt, "long"));
+						atgs.setAtgsSummaryDt(new Timestamp(sdf.parse(sumAppDt).getTime()));
 					}else{
 						atgs.setAtgsSummaryApprovedBy(null);
 						atgs.setAtgsSummaryDt(null);
@@ -181,7 +182,7 @@ public class AlsTransactionGrpApprovalGridEditAction extends ActionSupport{
 					atgs.setAtgsInterfaceStatus(intAppStat);
 					if("A".equals(intAppStat)){
 						atgs.setAtgsInterfaceApprovedBy(userInfo.getStateId().toString());
-						atgs.setAtgsInterfaceDt(Utils.StrToTimestamp(sumAppDt, "long"));
+						atgs.setAtgsInterfaceDt(new Timestamp(sdf.parse(intAppDt).getTime()));
 					}else{
 						atgs.setAtgsInterfaceApprovedBy(null);
 						atgs.setAtgsInterfaceDt(null);

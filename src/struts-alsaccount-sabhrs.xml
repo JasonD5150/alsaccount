@@ -140,6 +140,16 @@
                <param name="ignoreHierarchy">false</param>
             </result>
 		</action>
+		<action name="genAlsSabhrsEntriesGrid_*" class="fwp.alsaccount.sabhrs.grid.GenAlsSabhrsEntriesGridAction">
+            <result type="json" />
+        </action>
+         <action name="genAlsSabhrsEntriesGridEdit_*" class="fwp.alsaccount.sabhrs.grid.GenAlsSabhrsEntriesGridEditAction">
+			<result type="json"></result>
+            <result type="json" name="input"></result>
+            <result name="error_json" type="json" >
+               <param name="ignoreHierarchy">false</param>
+            </result>
+		</action> 
 		<action name="alsSabhrsEntriesGrid_*" class="fwp.alsaccount.sabhrs.grid.AlsSabhrsEntriesGridAction">
             <result type="json" />
         </action>
