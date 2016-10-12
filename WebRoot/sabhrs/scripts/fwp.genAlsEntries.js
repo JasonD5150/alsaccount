@@ -152,7 +152,7 @@ function exitNonAlsMasterDialog(){
 		    if(amountSet){
 		    	$('#frmOper').val('addTemplates');
 		    	
-				url = "alsAccount/alsSabhrsEntriesGridEdit_execute.action";    
+				url = "alsAccount/genAlsSabhrsEntriesGridEdit_execute.action";    
         		$.ajax({
                   type: "POST",
                   url: url,

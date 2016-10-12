@@ -100,10 +100,24 @@ public class AlsOverUnderSalesDetsGridEditAction extends ActionSupport{
 				airAS.save(air);
 			} else if((oper.equalsIgnoreCase("edit"))){	
 				//Update Als_Internal_Remittance
-				if("O".equals(tmp.getAousdFlag())){
+				if("O".equals(tmp.getAousdFlag())&&"O".equals(aousdFlag)){
 					air.setAirOverSales(air.getAirOverSales()-tmp.getAousdAmount()+aousdAmount);
-				}else if("U".equals(tmp.getAousdFlag())){
+				}else if("U".equals(tmp.getAousdFlag())&&"U".equals(aousdFlag)){
 					air.setAirShortSales(air.getAirShortSales()-tmp.getAousdAmount()+aousdAmount);
+				}else if("O".equals(tmp.getAousdFlag())&&"U".equals(aousdFlag)){
+					air.setAirOverSales(air.getAirOverSales()-tmp.getAousdAmount());
+					if(air.getAirShortSales() != null){
+						air.setAirShortSales(air.getAirShortSales()+aousdAmount);
+					}else{
+						air.setAirShortSales(aousdAmount);
+					}
+				}else if("U".equals(tmp.getAousdFlag())&&"O".equals(aousdFlag)){
+					air.setAirShortSales(air.getAirShortSales()-tmp.getAousdAmount());
+					if(air.getAirOverSales() != null){
+						air.setAirOverSales(air.getAirOverSales()+aousdAmount);
+					}else{
+						air.setAirOverSales(aousdAmount);
+					}
 				}
 				airAS.save(air);
 

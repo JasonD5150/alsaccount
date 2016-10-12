@@ -446,6 +446,7 @@ function saveRemittance(){
           if(result.actionErrors){
           	$('#remError').html('<p style="color:red;font-size:14px"><b>'+ result.actionErrors +'</b></p>');
           }else{
+        	  $('#remError').html('');
         	  $('#alsInternalRemittance').jqGrid('setGridParam',{datatype:'json'});
       		  $.publish('reloadInternalRemittance');
           }

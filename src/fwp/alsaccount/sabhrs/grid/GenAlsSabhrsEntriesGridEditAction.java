@@ -140,9 +140,6 @@ public class GenAlsSabhrsEntriesGridEditAction extends ActionSupport{
 					atgsAS.save(atgs);
 				}
 			} else if (oper.equalsIgnoreCase("addTemplates")) {
-				if(transIdentifier == null){
-					transIdentifier = hh.getTransGrpIdMaxSeq(provNo, bpTo);
-				}
 				String[] templates = this.templates.split(",");
 				for(int i=0;i<templates.length;i++){
 			    	String[] values = templates[i].split("-");

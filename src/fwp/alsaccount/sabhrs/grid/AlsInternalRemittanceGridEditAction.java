@@ -84,20 +84,16 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 				/*Credit Card Sales Changed*/
 				if(Double.compare(original.getAirCreditSales(), Double.valueOf(ccSales)) != 0){
 					original.setAirCreditSales(Double.valueOf(ccSales));
-					tmpAS.save(original);
 				}
 				/*Approved By Provider*/
 				if(original.getAirCompleteProvider() == null && "true".equals(provComp)){
-					original.setAirCompleteProvider(date);
-					tmpAS.save(original);
+					original.setAirCompleteProvider(date);tmpAS.save(original);
 				}else if(original.getAirCompleteProvider() != null && "false".equals(provComp)){
-					original.setAirCompleteProvider(null);
-					tmpAS.save(original);
+					original.setAirCompleteProvider(null);tmpAS.save(original);
 				}
 				/*Remittance NOT Approved, Comments Changed*/
-				if(original.getAirOfflnPaymentAppCom() == null || !original.getAirOfflnPaymentAppCom().equals(disAppCom)){
-					original.setAirOfflnPaymentAppCom(disAppCom);
-					tmpAS.save(original);
+				if(original.getAirOfflnPaymentAppCom() != null && !original.getAirOfflnPaymentAppCom().equals(disAppCom)){
+					original.setAirOfflnPaymentAppCom(disAppCom);tmpAS.save(original);
 				}
 				/*Remittance Approved*/
 				if(!"Y".equals(original.getAirOfflnPaymentApproved())&&"true".equals(remApp)){
@@ -107,7 +103,6 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 					original.setAirOfflnPaymentAppBy(userInfo.getStateId());
 					original.setAirOfflnPaymentAppDt(date);
 					original.setAirOfflnPaymentAppCom(disAppCom);
-					tmpAS.save(original);
 				}
 				/*Remittance Disapproved*/
 				if("Y".equals(original.getAirOfflnPaymentApproved())&&"false".equals(remApp)){
@@ -117,8 +112,8 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 					original.setAirOfflnPaymentAppBy(null);
 					original.setAirOfflnPaymentAppDt(null);
 					original.setAirOfflnPaymentAppCom(disAppCom);
-					tmpAS.save(original);
 				}
+				tmpAS.save(original);
 			}else{
 				return "error_json";
 			}
