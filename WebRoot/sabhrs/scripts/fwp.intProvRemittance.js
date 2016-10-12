@@ -13,6 +13,16 @@ $(document).ready(function() {
 	resetSubGridForm();
 });
 
+window.onbeforeunload = function(){ 
+  // do not add an alert to this .. it will pop it's own 
+  if ($("#displayBalanced").val() == "Y") {   
+    // any return value will pop dialog
+    // firefox will not display message in return .. IE will display message in the dialog
+	return 'The remittance has been balanced by the provider but not approved.';  
+  }
+};
+
+
 function errorHandler(response, postdata) {
     rtrnstate = true; 
     rtrnMsg = ""; 
@@ -62,6 +72,7 @@ $.subscribe("internalRemittanceComplete", function(event, data) {
 	if(selectedRow != null){
 		grid.jqGrid("setSelection", selectedRow);
 	}
+	setVisibility();
 });
 
 $.subscribe("internalRemittanceSelected", function(event, data) {	
@@ -419,8 +430,15 @@ function completedByProv(){
 
 function remittanceApproved(){
 	if($('#provComp').is(':checked')){
-		var date = $.datepicker.formatDate('mm/dd/yy', new Date());
-		$('#disAppDt').val(date);
+		if($('#remApp').is(':checked')){
+			var date = $.datepicker.formatDate('mm/dd/yy', new Date());
+			$('#disAppDt').val(date);
+			$('#disAppBy').val($('#user').val());
+		}else{
+			$('#disAppDt').val('');
+			$('#disAppBy').val('');
+		}
+		
 	}else{
 		alert("Remittance must first be completed by the provider.");
 		$('#remApp').prop('checked', false);
@@ -457,8 +475,6 @@ function saveRemittance(){
 /*OTHERS*/
 function setEnabledFields(id){
 	if(hasUserRole == 'true'){
-		$("input[name='apbdCashInd']").prop({disabled:true});
-	   	$("select[name='abcBankCd']").prop({disabled:true});
 	   	$("input[name='apbdAmountDeposit']").prop({disabled:true});
 	}
 }

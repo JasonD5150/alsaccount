@@ -115,7 +115,6 @@ public class InternalProviderBankCdDepLinkGridEditAction extends ActionSupport{
 	private boolean validation(){
 		HibHelpers hh = new HibHelpers();
 		if(!hh.isValidBPTo(provNo, sdf.format(apbdBillingTo))){
-			addFieldError("name","The name is required");
 			addActionError("Invalid Billing Period End Date, List available.");
 		}
 		if("".equals(apbdAmountDeposit) || apbdAmountDeposit <= 0){

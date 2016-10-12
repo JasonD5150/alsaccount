@@ -647,7 +647,7 @@ public class ListUtils {
 		List<ListComp> lst = new ArrayList<ListComp>();
 		
 		String queryString = "SELECT ABC_BANK_CD itemVal, "
-							+ "ABC_BANK_CD itemLabel "
+							+ "ABC_BANK_CD||' - '||ABC_BANK_NM itemLabel "
 							+ "FROM ALS.ALS_BANK_CODE a, "
 							+ "als.als_provider_info b "
 							+ "WHERE a.azc_zip_cd = b.azc_business_zipcode "

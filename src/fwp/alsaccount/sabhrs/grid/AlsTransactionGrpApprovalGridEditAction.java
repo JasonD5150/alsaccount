@@ -93,6 +93,10 @@ public class AlsTransactionGrpApprovalGridEditAction extends ActionSupport{
 		
 		try{
 			if(oper.equalsIgnoreCase("edit")){
+				atgsIdPk.setAtgsGroupIdentifier(transGroupIdentifier);
+				atgsIdPk.setAtgTransactionCd(transGroupType);
+				atgs = atgsAS.findById(atgsIdPk);
+				atgsOriginal = atgsAS.findById(atgsIdPk);
 				validateEdit();
 				if (this.hasActionErrors()) {
 					return "error_json";
@@ -127,10 +131,7 @@ public class AlsTransactionGrpApprovalGridEditAction extends ActionSupport{
 					}
 				}
 				
-				atgsIdPk.setAtgsGroupIdentifier(transGroupIdentifier);
-				atgsIdPk.setAtgTransactionCd(transGroupType);
-				atgs = atgsAS.findById(atgsIdPk);
-				atgsOriginal = atgsAS.findById(atgsIdPk);
+				
 				
 				/*if override program or override accounting date changed and summary approved, then disapprove summary*/
 				if((atgsOriginal.getAtgsFyeOverrideProgram() != changeProgramYear && "A".equals(atgsOriginal.getAtgsSummaryStatus()))||(atgsOriginal.getAtgsFyeOverrideAcctDt() != changeAccountDt && "A".equals(atgsOriginal.getAtgsSummaryStatus()))){
@@ -300,6 +301,12 @@ public class AlsTransactionGrpApprovalGridEditAction extends ActionSupport{
 				this.addActionError("Date Uploaded to SABHRS should be greater than or equal to Date File Created.");
 			}
 		}
+		if(transGroupType != 8){
+			if(intAppBy.equals(atgsOriginal.getAtgsSummaryApprovedBy())||sumAppBy.equals(atgsOriginal.getAtgsInterfaceApprovedBy())){
+				this.addActionError("Summary and Interface cannot be appoved by the same person.");
+			}
+		}
+		
 		return SUCCESS;
 	}
 	

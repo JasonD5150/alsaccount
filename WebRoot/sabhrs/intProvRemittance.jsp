@@ -32,6 +32,7 @@
 <s:hidden id="projectGrantLst" name="projectGrantLst"/>
 <s:hidden id="orgLst" name="orgLst"/>
 <s:hidden id="accountLst" name="accountLst"/>
+<s:hidden id="user" name="user"/>
 
     <div id="errorMessage" style="font-weight:bold; color:#FF0000;" hidden="true"></div>    
     <s:form id="pdfFrm" action="getTdtPdf">
@@ -108,7 +109,7 @@
 			<sjg:gridColumn name="idPk.airBillingFrom" index="airBillingFrom" title="Billing Period From" width="70" sortable="true" editable="false" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }"/>
 			<sjg:gridColumn name="idPk.airBillingTo" index="airBillingTo" title="Billing Period To" width="70" sortable="true" editable="false" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }"/>
 			<sjg:gridColumn name="completeProvider" index="completeProvider" title="Date Completed by Provider" width="70" sortable="true" editable="false" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }"/>
-			<sjg:gridColumn name="airOfflnPaymentApproved" index="airOfflnPaymentApproved" title="RemittanceApproved" width="15" sortable="true" editable="true" formatter="checkbox" align="center" edittype="checkbox" editoptions="{ value: 'true:false' }"/>
+			<sjg:gridColumn name="airOfflnPaymentApproved" index="airOfflnPaymentApproved" title="Remittance Approved" width="15" sortable="true" editable="true" formatter="checkbox" align="center" edittype="checkbox" editoptions="{ value: 'true:false' }"/>
 			
 			<!-- HIDDEN -->
 			<sjg:gridColumn name="amtRec" index="amtRec" title="Amount Received" width="60" sortable="true" editable="false" align="right" formatter="number" formatoptions="{decimalPlaces: 2}" hidden="true"/>

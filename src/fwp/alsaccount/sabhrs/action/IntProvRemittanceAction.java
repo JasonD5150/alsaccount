@@ -2,6 +2,7 @@ package fwp.alsaccount.sabhrs.action;
 
 import java.util.List;
 
+import org.apache.shiro.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,6 +12,7 @@ import fwp.ListComp;
 import fwp.alsaccount.utils.HibHelpers;
 import fwp.alsaccount.utils.ListUtils;
 import fwp.alsaccount.utils.Utils;
+import fwp.security.user.UserDTO;
 import fwp.utils.FwpStringUtils;
 
 public class IntProvRemittanceAction extends ActionSupport{
@@ -28,6 +30,7 @@ public class IntProvRemittanceAction extends ActionSupport{
 	private String curBudgYear;
 	Boolean hasIntProvRole = false;
 	Boolean hasUserRole = false;
+	private String user;
 
 	public IntProvRemittanceAction(){
 	}
@@ -46,11 +49,22 @@ public class IntProvRemittanceAction extends ActionSupport{
 			setProjectGrantLst(lu.getProjectGrantsListTxt(null, false));
 			setOrgLst(FwpStringUtils.listCompListToString(lu.getOrgList(null)));
 			setAccountLst(FwpStringUtils.listCompListToString(lu.getAccountList(null)));
+			
+			UserDTO userInfo = (UserDTO)SecurityUtils.getSubject().getSession().getAttribute("userInfo");
+			setUser(userInfo.getStateId().toString());
 		} catch (Exception e) {
 			//System.out.println(e.getMessage());
 			log.debug(e.getMessage());
 		}
 		return SUCCESS;
+	}
+
+	public String getUser() {
+		return user;
+	}
+
+	public void setUser(String user) {
+		this.user = user;
 	}
 
 	void setRoles() {
