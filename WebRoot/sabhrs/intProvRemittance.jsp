@@ -200,12 +200,12 @@
 			</tr>
 			<tr><td><br><br></td></tr>
 	    	<tr>
-	    	<td class="label">Remittance in Balance: </td>
-				<td><s:textfield id="displayBalanced" name="displayBalanced" theme="simple" title="Billing Period has been balanced by Internal Provider" disabled="true"/></td>
 	    		<td class="label">Completed by Provider: </td>
 				<td><s:checkbox id="provComp" name="provComp" theme="simple" title="Completed by Provider" onchange="completedByProv();"></s:checkbox></td>
 				<td class="label">Date: </td>
 				<td><s:textfield id="compDt" name="compDt" theme="simple" title="Date Completed by Provider" disabled="true"/></td>
+				<td class="label">Remittance in Balance: </td>
+				<td><s:textfield id="displayBalanced" name="displayBalanced" theme="simple" title="Billing Period has been balanced by Internal Provider" disabled="true"/></td>
 			</tr>
 	        <tr>
 				<td class="label">Remittance Approved: </td>
