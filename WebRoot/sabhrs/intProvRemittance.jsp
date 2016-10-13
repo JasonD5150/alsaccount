@@ -119,7 +119,7 @@
 			<sjg:gridColumn name="airPae" index="airPae" title="PAE's" width="60" sortable="true" editable="false" align="right" formatter="number" formatoptions="{decimalPlaces: 2}" hidden="true"/>
 			<sjg:gridColumn name="airNonAlsSales" index="airNonAlsSales" title="Non ALS Sales" width="60" sortable="true" editable="false" align="right" formatter="number" formatoptions="{decimalPlaces: 2}" hidden="true"/>
 			<sjg:gridColumn name="airTotSales" index="airTotSales" title="Total Sales" width="60" sortable="true" editable="false" align="right" formatter="number" formatoptions="{decimalPlaces: 2}" hidden="true"/>
-			<sjg:gridColumn name="amtDue" index="amtDue" title="Total ALS Sales" width="60" sortable="true" editable="false" align="right" formatter= "number" formatoptions="{decimalPlaces: 2}" hidden="true"/>
+			<sjg:gridColumn name="amtDue" index="amtDue" title="ALS Sales" width="60" sortable="true" editable="false" align="right" formatter= "number" formatoptions="{decimalPlaces: 2}" hidden="true"/>
 			<sjg:gridColumn name="airCreditSales" index="airCreditSales" title="Credit Card Sales" width="60" sortable="true" editable="false" align="right" formatter="number" formatoptions="{decimalPlaces: 2}" editrules="{number:true,required:true}" editoptions="{minValue:0}" hidden="true"/>
 			<sjg:gridColumn name="totFundsRec" index="totFundsRec" title="Total Funds Received" width="60" sortable="true" editable="false" align="right" formatter="number" formatoptions="{decimalPlaces: 2}" hidden="true"/>
 			<sjg:gridColumn name="totBankDep" index="totBankDep" title="Total Bank Deposits" width="60" sortable="true" editable="false" align="right" formatter="number" formatoptions="{decimalPlaces: 2}" hidden="true"/>
@@ -154,50 +154,54 @@
 				<td><s:textfield id="displayBpFrom" name="displayBpFrom" theme="simple" title="Billing Period From" disabled="true"/></td>
 				<td class="label">Billing Period To: </td>
 				<td><s:textfield id="displayBpTo" name="displayBpTo" theme="simple" title="Billing Period To" disabled="true"/></td>
-				<td class="label">Total Sales: </td>
-				<td><s:textfield id="displayTotSales" name="displayTotSales" theme="simple" title="Total Sales" disabled="true"/></td>
+				<%-- <td class="label">EFT DDD: </td>
+				<td><s:textfield id="displayEftDdd" name="displayEftDdd" theme="simple" title="EFT DDD" disabled="true"/></td> --%>
+				
 			</tr>
 			<tr>
 				<td class="label">System Sales: </td>
 				<td><s:textfield id="displaySysSales" name="displaySysSales" theme="simple" title="System Sales" disabled="true"/></td>
-				<td class="label">Amount Received: </td>
-				<td><s:textfield id="displayAmtRec" name="displayAmtRec" theme="simple" title="Amount Recieved" disabled="true"/></td>
-				<td class="label">EFT DDD: </td>
-				<td><s:textfield id="displayEftDdd" name="displayEftDdd" theme="simple" title="EFT DDD" disabled="true"/></td>
+				<%-- Related to external providers <td class="label">Amount Received: </td>
+				<td><s:textfield id="displayAmtRec" name="displayAmtRec" theme="simple" title="Amount Recieved" disabled="true"/></td> --%>
+				
 			</tr>
 			<tr>
 				<td class="label">OTC Sales: </td>
 				<td><s:textfield id="displayOtcSales" name="displayOtcSales" theme="simple" title="OTC Sales" disabled="true"/></td>
 				<td class="label">PAEs: </td>
 				<td><s:textfield id="displayPaes" name="displayPaes" theme="simple" title="PAEs" disabled="true"/></td>
-				<td class="label">Non ALS Sales: </td>
-				<td><s:textfield id="displayNonAlsSales" name="displayNonAlsSales" theme="simple" title="Non ALS Sales" disabled="true"/></td>
+				<td class="label">Difference: </td>
+				<td><s:textfield id="displayDif" name="displayDif" theme="simple" title="Difference" disabled="true"/></td>
+				
 			</tr>
 			<tr>
-				<td class="label">Total ALS Sales: </td>
+				<td class="label">ALS Sales: </td>
 				<td><s:textfield id="displayTotAlsSales" name="displayTotAlsSales" theme="simple" title="Total ALS Sales" disabled="true"/></td>
 				<td class="label">Credit Card Sales: </td>
 				<td><s:textfield id="displayCCSales" name="displayCCSales" theme="simple" title="Credit Card Sales" /></td>
-				<td class="label">Total Funds Received: </td>
-				<td><s:textfield id="displayTotFundRec" name="displayTotFundRec" theme="simple" title="Total Funds Received" disabled="true"/></td>
-			</tr>
-			<tr>
-				<td class="label">Total Bank Deposits: </td>
-				<td><s:textfield id="displayTotBankDep" name="displayTotBankDep" theme="simple" title="Total Bank Deposits" disabled="true"/></td>
-				<td class="label">Balanced by Internal Provider: </td>
-				<td><s:textfield id="displayBalanced" name="displayBalanced" theme="simple" title="Billing Period has been balanced by Internal Provider" disabled="true"/></td>
-				<td class="label">Difference: </td>
-				<td><s:textfield id="displayDif" name="displayDif" theme="simple" title="Difference" disabled="true"/></td>
-			</tr>
-			<tr>
 				<td class="label">Total Short of Sales: </td>
 				<td><s:textfield id="displayTotShortOfSales" name="displayTotShortOfSales" theme="simple" title="Total Short of Sales" disabled="true"/></td>
+			</tr>
+			<tr>
+				<td class="label">Non ALS Sales: </td>
+				<td><s:textfield id="displayNonAlsSales" name="displayNonAlsSales" theme="simple" title="Non ALS Sales" disabled="true"/></td>
+				<td class="label">Total Bank Deposits: </td>
+				<td><s:textfield id="displayTotBankDep" name="displayTotBankDep" theme="simple" title="Total Bank Deposits" disabled="true"/></td>
 				<td class="label">Total Over Sales: </td>
 				<td><s:textfield id="displayTotOverSales" name="displayTotOverSales" theme="simple" title="Total Over Sales" disabled="true"/></td>
+			</tr>
+			<tr>
+				<td class="label">Total Sales: </td>
+				<td><s:textfield id="displayTotSales" name="displayTotSales" theme="simple" title="Total Sales" disabled="true"/></td>
+				<td class="label">Total Funds Received: </td>
+				<td><s:textfield id="displayTotFundRec" name="displayTotFundRec" theme="simple" title="Total Funds Received" disabled="true"/></td>
 				<td class="label">Net Over/Short of Sales: </td>
 				<td><s:textfield id="displayNetOverShortOfSales" name="displayNetOverShortOfSales" theme="simple" title="Net Over/Short of Sales" disabled="true"/></td>
 			</tr>
+			<tr><td><br><br></td></tr>
 	    	<tr>
+	    	<td class="label">Remittance in Balance: </td>
+				<td><s:textfield id="displayBalanced" name="displayBalanced" theme="simple" title="Billing Period has been balanced by Internal Provider" disabled="true"/></td>
 	    		<td class="label">Completed by Provider: </td>
 				<td><s:checkbox id="provComp" name="provComp" theme="simple" title="Completed by Provider" onchange="completedByProv();"></s:checkbox></td>
 				<td class="label">Date: </td>
