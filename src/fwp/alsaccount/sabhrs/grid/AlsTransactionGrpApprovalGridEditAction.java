@@ -322,7 +322,7 @@ public class AlsTransactionGrpApprovalGridEditAction extends ActionSupport{
 	public void updateUploadToSummarySabhrs() throws ParseException{
 		String where = "";
 		where = "WHERE atgTransactionCd="+transGroupType+" "
-			  + "AND SUBSTR(atgsGroupIdentifier,1,18) = SUBSTR("+transGroupIdentifier+",1,18) "
+			  + "AND SUBSTR(atgsGroupIdentifier,1,18) = SUBSTR('"+transGroupIdentifier+"',1,18) "
 			  + "AND aseAllowUploadToSummary = 'Y'";
 		aseLst = aseAS.findAllByWhere(where);
 		
@@ -338,15 +338,13 @@ public class AlsTransactionGrpApprovalGridEditAction extends ActionSupport{
 		}
 		
 		where = "WHERE atgTransactionCd="+transGroupType+" "
-			  + "AND SUBSTR(atgsGroupIdentifier,1,18) = 'SUBSTR("+transGroupIdentifier+",1,18)' ";
+			  + "AND SUBSTR(atgsGroupIdentifier,1,18) = SUBSTR('"+transGroupIdentifier+"',1,18) ";
 		asesLst = asesAS.findAllByWhere(where);
 		
 		if(!asesLst.isEmpty()){
 			ases = asesLst.get(0);
 			//System.out.println("Delete from AlsSabhrsEntriesSummary");
 			asesAS.delete(ases);
-		}else{
-			addActionError("No corresponding record found in Als_Sabhrs_Entries_Summary.");
 		}
 	}
 	
