@@ -86,6 +86,7 @@
 		
 			<sjg:gridColumn name="abcBankCd" index="abcBankCd" key="true" title =" Bank Code" width="15" sortable="true" hidden="false" editable="true" editrules="{number:true,required:true}" editoptions="{size:4,maxlength:3}"  align="right"/>
 			<sjg:gridColumn name="abcActive" index="abcActive" title =" Active" width="10" sortable="false" editable="true" edittype="select" editoptions="{value: {Y: 'Yes', N: 'No'}, defaultValue:'Y'}"/>
+			<sjg:gridColumn name="abcAvblToAllProv" index="abcAvblToAllProv" title =" Available to All" width="10" sortable="false" editable="true" edittype="select" editoptions="{value: {Y: 'Yes', N: 'No'}, defaultValue:'N'}"/>
 			<sjg:gridColumn name="abcBankNm" index="abcBankNm" title =" Bank Name" width="45" sortable="true"  editable="true" editrules="{required:true}" editoptions="{size:26, maxlength:25}"/>
 			<sjg:gridColumn name="abcCompanyId" index="abcCompanyId" title =" Company Id" width="20" sortable="false" editable="true" editoptions="{size:11, maxlength:10}" editrules="{number:true}" align="right"/>
 			<sjg:gridColumn name="abcAccountNo" index="abcAccountNo"  title =" Account No" width="25" sortable="false" hidden="false"  editable="true" editoptions="{size:18, maxlength:17}" editrules="{number:true}" align="right"/>		

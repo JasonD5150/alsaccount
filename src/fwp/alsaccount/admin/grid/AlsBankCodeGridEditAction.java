@@ -29,6 +29,7 @@ public class AlsBankCodeGridEditAction extends ActionSupport{
 	private Timestamp abcWhenLog;
 	private String abcCreatePersonid;
 	private String abcActive;
+	private String abcAvblToAllProv;
 
 
 	public String execute() throws Exception{
@@ -84,6 +85,7 @@ public class AlsBankCodeGridEditAction extends ActionSupport{
 
 					tmp.setAbcAccountNo(abcAccountNo);
 					tmp.setAbcActive(abcActive);
+					tmp.setAbcAvblToAllProv(abcAvblToAllProv);
 					tmp.setAbcBankCd(abcBankCd);
 					tmp.setAbcBankNm(abcBankNm);
 					tmp.setAbcCompanyId(abcCompanyId);
@@ -274,6 +276,14 @@ public class AlsBankCodeGridEditAction extends ActionSupport{
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public String getAbcAvblToAllProv() {
+		return abcAvblToAllProv;
+	}
+
+	public void setAbcAvblToAllProv(String abcAvblToAllProv) {
+		this.abcAvblToAllProv = abcAvblToAllProv;
 	}
 
 

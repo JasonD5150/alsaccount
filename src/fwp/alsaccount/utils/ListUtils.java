@@ -646,14 +646,19 @@ public class ListUtils {
 	public List<ListComp> getProviderBankCodeList(Integer provNo) {
 		List<ListComp> lst = new ArrayList<ListComp>();
 		
-		String queryString = "SELECT ABC_BANK_CD itemVal, "
-							+ "ABC_BANK_CD||' - '||ABC_BANK_NM itemLabel "
+		String queryString = "SELECT a.ABC_BANK_CD itemVal, "
+							+ "a.ABC_BANK_CD||' - '||a.ABC_BANK_NM itemLabel "
 							+ "FROM ALS.ALS_BANK_CODE a, "
 							+ "als.als_provider_info b "
-							+ "WHERE a.azc_zip_cd = b.azc_business_zipcode "
+							+ "WHERE (a.azc_zip_cd = b.azc_business_zipcode OR a.azc_city_nm = b.api_business_city) "
 							+ "AND a.abc_active = 'Y' "
 							+ "AND b.api_provider_no = :provNo "
-							+ "Order By ABC_BANK_CD";
+							+ "UNION "
+							+ "SELECT c.ABC_BANK_CD itemVal, "
+							+ "c.ABC_BANK_CD||' - '||c.ABC_BANK_NM itemLabel "
+							+ "FROM ALS.ALS_BANK_CODE c "
+							+ "WHERE c.abc_avbl_to_all_prov = 'Y' "
+							+ "Order By 1";
 
 		Query query = getSession().createSQLQuery(queryString)
 								  .addScalar("itemVal", StringType.INSTANCE)
