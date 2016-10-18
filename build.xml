@@ -87,6 +87,9 @@
     <path id="fwpMethods.userclasspath">
         <pathelement location="${deployServer}/modules/fwp/custom/fwpMethods/main/fwpMethods.jar"/>
     </path>
+	 <path id="ssr_dal.userclasspath">
+        <pathelement location="${deployServer}/modules/fwp/dal/ssr/main/ssr_dal.jar"/>
+    </path>
     <path id="alsaccount.classpath">
         <pathelement location="WebRoot/WEB-INF/classes"/>
         <path refid="strutsXwork.userclasspath"/>
