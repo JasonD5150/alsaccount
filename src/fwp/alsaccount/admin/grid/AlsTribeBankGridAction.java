@@ -43,7 +43,7 @@ public class AlsTribeBankGridAction extends ActionSupport{
     	AlsTribeInfoAS abcAS = new AlsTribeInfoAS();
     	
         try{
-        	//model = abcAS.findAllTribeCodes();
+        	model = abcAS.findAll();
         }
         catch (HibernateException re) {
         	//System.out.println(re.toString());

@@ -58,7 +58,7 @@ public class AlsBankCodeGridAction extends ActionSupport{
     		
         	List<AlsBankCodeEXT> oldBankCode = new ArrayList<AlsBankCodeEXT>();
         	List<AlsBankCodeEXT> newBankCodeList = new ArrayList<AlsBankCodeEXT>();
-        	//oldBankCode = abcAS.findAll();
+        	oldBankCode = abcAS.findAll();
         	
         	for (AlsBankCode oldBankCodeIterator : oldBankCode)
 			{
