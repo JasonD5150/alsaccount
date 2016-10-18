@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionSupport;
 
+
+
 import fwp.alsaccount.appservice.admin.AlsBankCodeAS;
 import fwp.alsaccount.appservice.admin.AlsBankCodeExtAS;
 import fwp.alsaccount.dao.admin.AlsBankCode;
@@ -56,7 +58,7 @@ public class AlsBankCodeGridAction extends ActionSupport{
     		
         	List<AlsBankCodeEXT> oldBankCode = new ArrayList<AlsBankCodeEXT>();
         	List<AlsBankCodeEXT> newBankCodeList = new ArrayList<AlsBankCodeEXT>();
-        	oldBankCode = abcAS.findAll();
+        	//oldBankCode = abcAS.findAll();
         	
         	for (AlsBankCode oldBankCodeIterator : oldBankCode)
 			{
