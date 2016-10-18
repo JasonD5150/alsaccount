@@ -115,6 +115,7 @@
         <path refid="alsaccount_dal.userclasspath"/>
         <path refid="alsadmin_dal.userclasspath"/>
         <path refid="fwpMethods.userclasspath"/>
+		<path refid="ssr_dal.userclasspath"/>
     </path>
     <target name="init" depends="clean">
         <mkdir dir="WebRoot/WEB-INF/classes"/>
