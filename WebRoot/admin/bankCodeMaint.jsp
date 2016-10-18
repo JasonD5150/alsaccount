@@ -89,12 +89,13 @@
 			<sjg:gridColumn name="abcAvblToAllProv" index="abcAvblToAllProv" title =" Available to All" width="10" sortable="false" editable="true" edittype="select" editoptions="{value: {Y: 'Yes', N: 'No'}, defaultValue:'N'}"/>
 			<sjg:gridColumn name="abcBankNm" index="abcBankNm" title =" Bank Name" width="45" sortable="true"  editable="true" editrules="{required:true}" editoptions="{size:26, maxlength:25}"/>
 			<sjg:gridColumn name="abcCompanyId" index="abcCompanyId" title =" Company Id" width="20" sortable="false" editable="true" editoptions="{size:11, maxlength:10}" editrules="{number:true}" align="right"/>
-			<sjg:gridColumn name="abcAccountNo" index="abcAccountNo"  title =" Account No" width="25" sortable="false" hidden="false"  editable="true" editoptions="{size:18, maxlength:17}" editrules="{number:true}" align="right"/>		
+			<sjg:gridColumn name="abcAccountNo" index="abcAccountNo"  title =" Account No" width="25" sortable="false" hidden="false"  editable="true" editoptions="{size:18, maxlength:17}" editrules="{number:true, required:true}" align="right"/>		
 			<sjg:gridColumn name="azcZipCd" index="azcZipCd" title =" Zip Code" width="13" sortable="false" editable="true" editrules="{number:true,required:true}" editoptions="{size:6,maxlength:5}" align="right"/>
 			<sjg:gridColumn name="azcCityNm" index="azcCityNm" title =" City" width="20" sortable="false" editable="false" />
-			<sjg:gridColumn name="abcWhenLog" index="abcWhenLog" title =" Updated On" width="35" sortable="false" editable="false" formatter="date" formatoptions="{srcformat:'y-m-d:H:i' , newformat : 'm/d/Y H:i'}"/>			
-			<sjg:gridColumn name="abcWhoLog" index="abcWhoLog" title =" Updated By" width="20" sortable="false" editable="false" />
-			<sjg:gridColumn name="abcCreatePersonid" index="abcCreatePersonid" title =" Updated Username" width="25" sortable="false" editable="false" />
+			<sjg:gridColumn name="abcWhenLog" index="abcWhenLog" title =" Updated On" width="35" sortable="false" editable="false" formatter="date" formatoptions="{srcformat:'y-m-d:H:i' , newformat : 'm/d/Y H:i'}"/>	
+			<sjg:gridColumn name="abcWhoLog" index="abcWhoLog" title =" Database User" width="20" sortable="false" editable="false"/>
+			<sjg:gridColumn name="updatedUsername" index="updatedUsername" title =" Updated By" width="20" sortable="false" editable="false" />		
+			<sjg:gridColumn name="abcCreatePersonid" index="abcCreatePersonid" title =" Updated Username" width="25" sortable="false" editable="false" hidden="true"/>
 			
 	</sjg:grid>
 </fwp:template>  

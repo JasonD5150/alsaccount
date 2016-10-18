@@ -10,8 +10,7 @@ import fwp.als.hibernate.admin.dao.AlsTribeInfo;
 import fwp.alsaccount.appservice.admin.AlsTribeInfoAS;
 import fwp.security.user.UserDTO;
 
-
-public class AlsTribeBankGridEditAction extends ActionSupport{
+public class AlsTribeBankGridEditAction extends ActionSupport {
 	private static final long serialVersionUID = 1L;
 	private String oper;
 
@@ -26,24 +25,19 @@ public class AlsTribeBankGridEditAction extends ActionSupport{
 	private String atiTribeAcctRoutingNo;
 	private String atiTribeAcctNo;
 
-
-	public String execute() throws Exception{
-		UserDTO userInfo = (UserDTO)SecurityUtils.getSubject().getSession().getAttribute("userInfo");
+	public String execute() throws Exception {
+		UserDTO userInfo = (UserDTO) SecurityUtils.getSubject().getSession()
+				.getAttribute("userInfo");
 		Timestamp date = new Timestamp(System.currentTimeMillis());
-		
-		String errMsg="";
 
-		try{
-			
-			
-			
-			
-			if(validation()){
+		String errMsg = "";
+
+		try {
+
+			if (validation()) {
 
 				AlsTribeInfoAS appSer = new AlsTribeInfoAS();
 				AlsTribeInfo tmp = null;
-				
-				
 
 				if (oper.equalsIgnoreCase("add")) {
 					tmp = new AlsTribeInfo();
@@ -54,15 +48,14 @@ public class AlsTribeBankGridEditAction extends ActionSupport{
 
 					String idString = id.toString();
 					tmp = appSer.findById(idString);
-					
+
 				}
 
-				if(oper.equalsIgnoreCase("add") || oper.equalsIgnoreCase("edit")){
-					
-					
+				if (oper.equalsIgnoreCase("add")
+						|| oper.equalsIgnoreCase("edit")) {
 
-					if(oper.equalsIgnoreCase("add")){
-						if(appSer.isDuplicateEntry(atiTribeCd)){
+					if (oper.equalsIgnoreCase("add")) {
+						if (appSer.isDuplicateEntry(atiTribeCd)) {
 							addActionError("Unable to add this record due to duplicate Tribe Bank Code.");
 						}
 					}
@@ -70,11 +63,6 @@ public class AlsTribeBankGridEditAction extends ActionSupport{
 						return "error_json";
 					}
 
-					
-					
-					
-					//abcCreatePersonid = userInfo.getDisplayName();
-					
 					tmp.setAtiWhoLog(userInfo.getStateId().toString());
 					tmp.setAtiWhenLog(date);
 
@@ -85,39 +73,36 @@ public class AlsTribeBankGridEditAction extends ActionSupport{
 					tmp.setAtiTribeAcctRoutingNo(atiTribeAcctRoutingNo);
 					tmp.setAtiTribeCd(atiTribeCd);
 					tmp.setAtiTribeNm(atiTribeNm);
-					
 
 					appSer.save(tmp);
-				}else if(oper.equalsIgnoreCase("del")){
+				} else if (oper.equalsIgnoreCase("del")) {
 					appSer.delete(tmp);
 				}
-			}else{
+			} else {
 				return "error_json";
 			}
 
 		}
 
-		catch(Exception ex) {
-			if (ex.toString().contains("ORA-02292")){
+		catch (Exception ex) {
+			if (ex.toString().contains("ORA-02292")) {
 				errMsg += "Bank Code has child record(s) which would need to be deleted first.";
-			} else if (ex.toString().contains("ORA-02291")){
+			} else if (ex.toString().contains("ORA-02291")) {
 				errMsg += "Parent record not found.";
-			} else if (ex.toString().contains("ORA-00001")){
+			} else if (ex.toString().contains("ORA-00001")) {
 				errMsg += "Unable to add this record due to duplicate.";
-			}	else {
+			} else {
 				errMsg += " " + ex.toString();
 			}
 
 			addActionError(errMsg);
 			return "error_json";
-		}	
+		}
 		return SUCCESS;
 	}
 
-	private boolean validation()
-	{
-		
-		
+	private boolean validation() {
+
 		return true;
 
 	}
@@ -209,8 +194,5 @@ public class AlsTribeBankGridEditAction extends ActionSupport{
 	public void setOper(String oper) {
 		this.oper = oper;
 	}
-
-
-
 
 }

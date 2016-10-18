@@ -9,9 +9,10 @@ import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionSupport;
 
-import fwp.als.appservice.admin.AlsTribeInfoAS;
+
+
 import fwp.als.hibernate.admin.dao.AlsTribeInfo;
-import fwp.alsaccount.utils.Utils;
+import fwp.alsaccount.appservice.admin.AlsTribeInfoAS;
 
 
 public class AlsTribeBankGridAction extends ActionSupport{
@@ -38,102 +39,142 @@ public class AlsTribeBankGridAction extends ActionSupport{
 
 	@SuppressWarnings("unchecked")
 	public String buildgrid(){    	
-    	String srchStr = " where 1=1";
-    	String orderStr = " order by atiTribeNm";
-    	
-    	if(filters != null && !"".equals(filters)){
-    		//srchStr = buildStr(srchStr);
-    		srchStr = Utils.buildStr(srchStr, filters);
-    		if(srchStr.contains("Build String Error:")){
-    			addActionError(srchStr);
-    		}
-    	}
-    	
+
     	AlsTribeInfoAS abcAS = new AlsTribeInfoAS();
     	
         try{
-        	model = abcAS.findAllByWhere(srchStr+orderStr);
+        	model = abcAS.findAllTribeCodes();
         }
         catch (HibernateException re) {
         	//System.out.println(re.toString());
             log.debug("AlsTribeInfo did not load " + re.getMessage());
         }
-        setRows(model.size());
-        setRecords(model.size());
-
-        setTotal(1);
 
 	    return SUCCESS;
     }
 
+	/**
+	 * @return
+	 */
 	public List<AlsTribeInfo> getModel() {
 		return model;
 	}
 
+	/**
+	 * @param model
+	 */
 	public void setModel(List<AlsTribeInfo> model) {
 		this.model = model;
 	}
 
+	/**
+	 * @return
+	 */
 	public Integer getRows() {
 		return rows;
 	}
 
+	/**
+	 * @param rows
+	 */
 	public void setRows(Integer rows) {
 		this.rows = rows;
 	}
 
+	/**
+	 * @return
+	 */
 	public Integer getPage() {
 		return page;
 	}
 
+	/**
+	 * @param page
+	 */
 	public void setPage(Integer page) {
 		this.page = page;
 	}
 
+	/**
+	 * @return
+	 */
 	public Integer getTotal() {
 		return total;
 	}
 
+	/**
+	 * @param total
+	 */
 	public void setTotal(Integer total) {
 		this.total = total;
 	}
 
+	/**
+	 * @return
+	 */
 	public Integer getRecords() {
 		return records;
 	}
 
+	/**
+	 * @param records
+	 */
 	public void setRecords(Integer records) {
 		this.records = records;
 	}
 
+	/**
+	 * @return
+	 */
 	public String getSord() {
 		return sord;
 	}
 
+	/**
+	 * @param sord
+	 */
 	public void setSord(String sord) {
 		this.sord = sord;
 	}
 
+	/**
+	 * @return
+	 */
 	public String getSidx() {
 		return sidx;
 	}
 
+	/**
+	 * @param sidx
+	 */
 	public void setSidx(String sidx) {
 		this.sidx = sidx;
 	}
 
+	/**
+	 * @return
+	 */
 	public String getFilters() {
 		return filters;
 	}
 
+	/**
+	 * @param filters
+	 */
 	public void setFilters(String filters) {
 		this.filters = filters;
 	}
 
+	/**
+	 * @return
+	 */
 	public boolean isLoadonce() {
 		return loadonce;
 	}
 
+	/**
+	 * @param loadonce
+	 */
 	public void setLoadonce(boolean loadonce) {
 		this.loadonce = loadonce;
 	}

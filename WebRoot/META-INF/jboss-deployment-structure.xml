@@ -19,6 +19,7 @@
  		<module name="fwp.dal.gen"/>
  		<module name="fwp.common.lang3"/>
  		<module name="fwp.custom.fwpMethods"/>
+		<module name="fwp.dal.ssr"  />
      </dependencies>
      <exclude-subsystems>
         <subsystem name="logging" />

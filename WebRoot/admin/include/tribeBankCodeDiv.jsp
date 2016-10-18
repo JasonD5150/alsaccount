@@ -1,13 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="/fwp/tags" prefix="fwp"%>
-<%@ taglib prefix="sj" uri="/struts-jquery-tags" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="sjg" uri="/struts-jquery-grid-tags" %>
-
-    
- 
 
 	<s:url id="tribeBankCodeDivGridURL" action="alsAccount/tribeBankCodeGrid_buildgrid" />
 	<s:url id="tribeBankCodeDivGridEditURL" action="alsAccount/tribeBankCodeGridEdit_execute" />    
@@ -50,25 +44,17 @@
 		scrollrows="true"
 		height="300"
 		rowNum="1000">
-		
-		
-		
+	
 			<sjg:gridColumn name="atiTribeCd" index="atiTribeCd" key="true" title =" Tribe Code" width="6" sortable="false" hidden="false" editable="true" editrules="{required:true}" editoptions="{size:6,maxlength:5}" />
 			<sjg:gridColumn name="abcBankCd" index="abcBankCd"  title =" Bank Code" width="15" sortable="true" hidden="false" editable="true" editrules="{number:true,required:true}" editoptions="{size:6,maxlength:5}"  align="right"/>
 			<sjg:gridColumn name="atiDirectorNm" index="atiDirectorNm" title =" Director Name" width="20" sortable="false" editable="true" editoptions="{size:26, maxlength:100}"/>
 			<sjg:gridColumn name="atiTribeNm" index="atiTribeNm" title =" Tribe Name" width="20" sortable="false" editable="true" editoptions="{size:26, maxlength:25}"/>
 			<sjg:gridColumn name="atiTribeAcctBankNm" index="atiTribeAcctBankNm" title =" Bank Name" width="35" sortable="false" editable="true" editoptions="{size:24, maxlength:23}"  />
-			<sjg:gridColumn name="atiWhoLog" index="atiWhoLog"  title =" Who Log" width="25" sortable="false" hidden="true"  editable="true" />		
+			<sjg:gridColumn name="atiWhoLog" index="atiWhoLog"  title =" Database User" width="25" sortable="false" hidden="true"  editable="true" />		
 			<sjg:gridColumn name="atiWhenLog" index="atiWhenLog" title =" When Log" width="13" sortable="false" hidden="true" editable="true" />	
 			<sjg:gridColumn name="atiTribeAcctRoutingNo" index="atiTribeAcctRoutingNo" title =" Routing Number" width="20" sortable="false" editable="true" hidden="false" editoptions="{size:10, maxlength:9}" align="right" editrules="{number:true}"/>			
 			<sjg:gridColumn name="atiTribeAcctNo" index="atiTribeAcctNo" title =" Account Number" width="20" sortable="false" editable="true" hidden="false" editoptions="{size:18, maxlength:17}" align="right" editrules="{number:true}"/>
-			
-			
-			
-			
-			
-			
-			
+	
 	</sjg:grid>
 	
 
