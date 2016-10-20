@@ -18,6 +18,12 @@
 		#appCom{
 			width:100%;
 		}
+		
+		/* Fixes problems with dragging dialog */
+	    body{
+	        position: relative; overflow: auto;
+	    }
+
     </style>
     <script>
 
@@ -577,4 +583,40 @@
 					</sjg:grid>
 				</div>
 		 	</sj:tabbedpanel>
+<s:form id="addSlipFrm">
+	<s:hidden id="remittanceId" name="remittanceId" value=""/>
+	<s:hidden id="apbdId" name="apbdId" value=""/>
+</s:form>
+
+<s:url id="depositSlipUrl" action="depositSlipDlg_input"/>
+<sj:dialog id="depositSlipDlg" 
+    autoOpen="false"
+    href="%{depositSlipUrl}"
+    modal="true" 
+    resizable="false"
+    height="auto" 
+    width="auto"
+    title="Deposit Slip"
+    formIds="addSlipFrm" 
+    onCloseTopics="addDocumentDlgClose"
+    buttons="{
+    	'Save': {
+    			text: 'Save',
+    			id: 'depositSlipSave',
+    			click :function() {
+   	    			$('#uploadSubmit').trigger('click');
+   	    		}
+   	    },
+   	    'Delete': {
+   	    		text: 'Delete',
+   	    		id: 'depositSlipDel',
+   	    		click :function() {
+   	    			$('#deleteSubmit').trigger('click');
+   	    		}
+   	    },
+        'Close': function() {
+            $('#depositSlipDlg').dialog('close');
+            $('#depositSlipDlg').empty();
+   	    }
+    }"/>
 </fwp:template>

@@ -97,6 +97,6 @@
 		<sjg:gridColumn name="deadlineDate" index="deadlineDate" title="Billing Period End Date" width="10" sortable="true" editable="true" hidden="true" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }"/>
 		<sjg:gridColumn name="amtDue" index="amtDue" title="Amount Due" width="10" sortable="true" align="right" editable="false" formatter= "number" formatoptions="{decimalPlaces: 2}"/>
 		<sjg:gridColumn name="apbdDepositId" index="apbdDepositId" title="Deposit Id" width="10" sortable="true" editable="false"/>
-		
+		<sjg:gridColumn name="depositSlip" title ="Deposit Slip" width="10" hidden="false" editable="false" align="center" formatter="slipDlg"/>
 </sjg:grid>
 

@@ -117,6 +117,15 @@
 			<result name="error">sabhrs/include/intProvRemittanceNonAlsDetDiv.jsp</result>
 			<result name="input">sabhrs/include/intProvRemittanceNonAlsDetDiv.jsp</result>        
 		</action>
+		<action name="depositSlipDlg_*" method="{1}" class="fwp.alsaccount.sabhrs.action.DepositSlipDlgAction">
+			<result>sabhrs/include/depositSlipDlg.jsp</result>
+			<result name="error">sabhrs/include/depositSlipDlg.jsp</result>
+		</action>
+		<action name="uploadDiv_*" method="{1}" class="fwp.alsaccount.sabhrs.action.DepositSlipDivAction">
+			<result>sabhrs/include/depositSlipDiv.jsp</result>
+			<result name="error">sabhrs/include/depositSlipDiv.jsp</result>
+			<result name="delete">sabhrs/include/depositSlipDiv.jsp</result>
+		</action>
 	</package>
  
  	<package name="fwp.alsaccount.sabhrs.grid" namespace="/alsAccount" extends="json-default">     
@@ -298,5 +307,14 @@
             <result type="json"/>
         </action>
     </package>
+    
+    <package name="fwp.alsaccount.depositSlip" namespace="" extends="struts-default">
+		<result-types>
+			<result-type name="depositSlipResult" class="fwp.alsaccount.sabhrs.action.DepositSlipResult" />
+		</result-types>
+		<action name="DepositSlipAction" class="fwp.alsaccount.sabhrs.action.DepositSlipAction">
+			<result name="success" type="depositSlipResult"></result>
+		</action>
+	</package>
 
 </struts>    

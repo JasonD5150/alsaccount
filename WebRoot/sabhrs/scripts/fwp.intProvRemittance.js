@@ -4,7 +4,7 @@
  * 
  * @author cfa027
  */
-var hasUserRole;
+var hasUserRole ;
 var hasIntProvRole;
 var selectedRow;
 $(document).ready(function() {
@@ -15,13 +15,41 @@ $(document).ready(function() {
 
 window.onbeforeunload = function(){ 
   // do not add an alert to this .. it will pop it's own 
-  if ($("#displayBalanced").val() == "Y") {   
+  if ($("#displayBalanced").val() == "Y" && !$('#provComp').is(':checked')) {   
     // any return value will pop dialog
     // firefox will not display message in return .. IE will display message in the dialog
 	return 'The remittance has been balanced by the provider but not approved.';  
   }
 };
 
+function slipDlg(cellvalue, options, rowObject) {
+	var gridKey = rowObject["gridKey"];
+	if(hasIntProvRole == 'true'){
+		return "<a style='color:blue;' id='"+gridKey+"' onclick='slipLinkClicked(this);'>Edit</a>";
+	}else{
+		return "<a style='color:blue;' id='"+gridKey+"' onclick='slipLinkClicked(this);'>View</a>";
+	}
+};
+
+function slipLinkClicked(e) {
+	$('#apbdId').val(e.id);
+	$('#depositSlipDlg').dialog('open');
+}
+
+function deleteDepositSlip(e) {
+	$('#delApbdsImageId').val($('#apbdId').val());
+	$('#deleteSlipForm').submit();
+}
+
+function checkSizeFormat(element) {
+	if (element.files[0].size > 12000000 || element.value.substr(element.value.lastIndexOf('.') + 1).toLowerCase() != 'pdf') {
+		$("#fileErrorMessage").attr("hidden", false);
+		$(".ui-dialog-buttonpane button:contains('Save')").attr("disabled", true).addClass("ui-state-disabled");
+	} else {
+		$("#fileErrorMessage").attr("hidden", true);
+		$(".ui-dialog-buttonpane button:contains('Save')").attr("disabled", false).removeClass("ui-state-disabled");
+	}
+}
 
 function errorHandler(response, postdata) {
     rtrnstate = true; 
@@ -80,6 +108,7 @@ $.subscribe("internalRemittanceSelected", function(event, data) {
 	var grid = $('#alsInternalRemittance');
 	var sel_id = grid.jqGrid('getGridParam','selrow');
 	selectedRow = sel_id;
+	$('#remittanceId').val(sel_id);
 	$('#frmProvNo').val(grid.jqGrid('getCell', sel_id, 'idPk.apiProviderNo'));
 	$('#frmBPFrom').val(grid.jqGrid('getCell', sel_id, 'idPk.airBillingFrom'));
 	$('#frmBPTo').val(grid.jqGrid('getCell', sel_id, 'idPk.airBillingTo'));
@@ -164,14 +193,6 @@ $.subscribe("depositsGridComplete", function(event, data) {
 });
 
 $.subscribe('alsSabhrsEntriesComplete', function(event, data) {	
-	$('#del_alsSabhrsEntriesGrid').bind( "click", function() {
-		$('#alerthd_alsSabhrsEntriesGrid').closest('.ui-jqdialog').position({
-			my: 'center',
-			at: 'center',
-			of: $('#alsSabhrsEntriesGrid').closest('div.ui-jqgrid')
-		});
-	});
-	
 	if ( $("#alsSabhrsEntriesGrid").length) {
    		$("#alsSabhrsEntriesGrid").jqGrid('setColProp','jlr', { editoptions: { value: rtrnJLRList()}});
    		$("#alsSabhrsEntriesGrid").jqGrid('setColProp','aamFund', { editoptions: { value: rtrnFundList()}});
@@ -522,10 +543,15 @@ function setVisibility(){
 						$('#alsOverUnderSales_pager_left').show();
 						$('#provComp').prop({disabled:false});
 						$('#displayCCSales').prop({disabled:false});
+						$('#depositSlipSave').show();
+						$('#depositSlipDel').show();
 					}
 				}else{
 					if(remittanceApproved == 'false'){
 						$('#provComp').prop({disabled:false});
+						$('.canUploadFile').show();
+					}else{
+						$('.cannotUploadFile').show();
 					}
 				}
 		}
@@ -570,6 +596,11 @@ function disableEditable(){
 	$('#displayCCSales').prop({disabled:true});
 	
 	$('#saveRemittance').prop({disabled:true});
+	//Deposit Slip Dlg
+	$('#depositSlipSave').hide();
+	$('#depositSlipDel').hide();
+	$('.canUploadFile').hide();
+	$('.cannotUploadFile').hide();
 }
 
 function resetSubGridForm(){

@@ -2,6 +2,24 @@
 <!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-reverse-engineering-3.0.dtd" >
 
 <hibernate-reverse-engineering>
+   <table name="ALS_PROVIDER_BANK_DEPOSIT_SLIP" schema="ALS" class="fwp.alsaccount.dao.sabhrs.AlsProviderBankDepositSlip"> 
+     <primary-key> 
+       <column name="APBDS_ID" jdbc-type="NUMERIC" type="Integer"></column>
+     </primary-key>
+     <column name="API_PROVIDER_NO" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="APBD_BILLING_TO" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="APBD_SEQ_NO" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="APBDS_FILE_NAME" jdbc-type="VARCHAR" type="String"></column>
+     <column name="APBDS_FILE_TYPE" jdbc-type="VARCHAR" type="String"></column>
+     <column name="APBDS_DATA" jdbc-type="" type=""></column>
+     <column name="APBDS_CREATE_DATE" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="APBDS_CREATE_DBUSER" jdbc-type="VARCHAR" type="String"></column>
+     <column name="APBDS_CREATE_PERSON_ID" jdbc-type="NUMERIC" type="Integer"></column>
+     <column name="APBDS_MOD_DATE" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="APBDS_MOD_DBUSER" jdbc-type="VARCHAR" type="String"></column>
+     <column name="APBDS_MOD_PERSONID" jdbc-type="NUMERIC" type="Integer"></column>
+   </table>
+
 <table name="ALS_INTERNAL_REMITTANCE" schema="ALS" class="fwp.alsaccount.dao.sabhrs.AlsInternalRemittance"> 
      <primary-key id-class="fwp.alsaccount.dao.sabhrs.AlsInternalRemittanceIdPk" property="idPk">
        <column name="API_PROVIDER_NO" jdbc-type="NUMERIC" type="Integer"></column>
