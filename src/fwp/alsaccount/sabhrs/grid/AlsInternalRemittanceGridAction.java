@@ -12,13 +12,12 @@ import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionSupport;
 
-import fwp.als.hibernate.inventory.dao.AlsInternalRemittance;
+import fwp.als.appservice.inventory.AlsProviderRemittanceAS;
 import fwp.als.hibernate.inventory.dao.AlsInternalRemittanceIdPk;
+import fwp.als.hibernate.inventory.dao.AlsProviderRemittance;
+import fwp.als.hibernate.inventory.dao.AlsProviderRemittanceIdPk;
 import fwp.alsaccount.appservice.sabhrs.AlsInternalRemittanceAS;
-import fwp.alsaccount.appservice.sabhrs.AlsProviderRemittanceAS;
 import fwp.alsaccount.appservice.sabhrs.AlsTransactionGrpStatusAS;
-import fwp.alsaccount.dao.sabhrs.AlsProviderRemittance;
-import fwp.alsaccount.dao.sabhrs.AlsProviderRemittanceIdPk;
 import fwp.alsaccount.dao.sabhrs.AlsTransactionGrpStatus;
 import fwp.alsaccount.dto.sabhrs.AlsInternalRemittanceDTO;
 import fwp.alsaccount.utils.HibHelpers;
