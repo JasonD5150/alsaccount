@@ -1,9 +1,8 @@
 package fwp.alsaccount.sabhrs.grid;
 
-import java.text.SimpleDateFormat;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.sql.Date;
 import java.util.List;
 
 import org.hibernate.HibernateException;

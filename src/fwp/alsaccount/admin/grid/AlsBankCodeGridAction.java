@@ -5,21 +5,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.shiro.SecurityUtils;
 import org.hibernate.HibernateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionSupport;
 
-
-
 import fwp.alsaccount.appservice.admin.AlsBankCodeAS;
 import fwp.alsaccount.appservice.admin.AlsBankCodeExtAS;
 import fwp.alsaccount.dao.admin.AlsBankCode;
 import fwp.alsaccount.extended.admin.AlsBankCodeEXT;
-import fwp.security.user.UserDTO;
-import fwp.security.utils.FwpUserUtils;
 import fwp.ssr.appservice.SsrPersAS;
 import fwp.ssr.hibernate.dao.SsrPers;
 

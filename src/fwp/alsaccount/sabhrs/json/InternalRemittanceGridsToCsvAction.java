@@ -17,10 +17,7 @@ import com.opensymphony.xwork2.ActionSupport;
 
 import fwp.ListComp;
 import fwp.als.hibernate.inventory.dao.AlsInternalRemittanceIdPk;
-import fwp.als.hibernate.inventory.dao.AlsNonAlsDetails;
-import fwp.alsaccount.dao.sabhrs.AlsOverUnderSalesDets;
 import fwp.alsaccount.dto.sabhrs.AlsInternalRemittanceDTO;
-import fwp.alsaccount.dto.sabhrs.InternalProviderBankCdDepLinkDTO;
 import fwp.alsaccount.utils.Utils;
 
 /**

@@ -34,10 +34,11 @@ import fwp.alsaccount.dto.admin.AlsTribeItemDTO;
 import fwp.alsaccount.dto.sabhrs.AlsProviderBankDetailsDTO;
 import fwp.alsaccount.dto.sabhrs.AlsSabhrsEntriesDTO;
 import fwp.alsaccount.dto.sabhrs.AlsTransactionGrpMassCopyDTO;
-import fwp.alsaccount.dto.sabhrs.IafaDetailsDTO;
-import fwp.alsaccount.dto.sabhrs.IafaSummaryDTO;
 import fwp.alsaccount.dto.sabhrs.InternalProviderBankCdDepLinkDTO;
 import fwp.alsaccount.dto.sabhrs.InternalProviderTdtDTO;
+import fwp.alsaccount.dto.sales.IafaDetailsDTO;
+import fwp.alsaccount.dto.sales.IafaSummaryDTO;
+import fwp.alsaccount.dto.sales.TribalSalesDTO;
 import fwp.alsaccount.hibernate.HibernateSessionFactory;
 
 public class HibHelpers {
@@ -1917,7 +1918,6 @@ public class HibHelpers {
             	cs.setNull(4, OracleTypes.VARCHAR);
             }
             
-
             cs.execute();
             
             rtn = cs.getString(1);
@@ -1930,6 +1930,27 @@ public class HibHelpers {
 			getSession().close();
 		}
         
+        return rtn;
+	}
+	
+	public String getAmKey2(String amKey1, String amParVal) {		
+		String rtn = null;
+		
+        Connection conn = ((SessionImpl)getSession()).connection();
+        try {
+
+			CallableStatement cs = conn.prepareCall("{? = call Als.Als_Package.Get_Key2(?,?)}");
+	
+			cs.registerOutParameter(1,OracleTypes.VARCHAR);
+            cs.setString(2,amKey1);
+            cs.setString(3, amParVal);
+            cs.execute();
+            
+            rtn = cs.getString(1);
+            conn.close(); 
+		} 
+        catch (SQLException e) {e.printStackTrace();} 
+        finally {getSession().close();}
         return rtn;
 	}
 	
@@ -2160,175 +2181,123 @@ public class HibHelpers {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<IafaSummaryDTO> getIafaSummaryByItemTypeRecords(String where) throws HibernateException {
+	public List<IafaSummaryDTO> getIafaSummaryRecords(Date fromDt, Date toDt, Integer issProvNo, Date upFromDt, Date upToDt,
+													  String itemTypeCd, String procCatCd, String appType, String procTypeCd,
+													  String amountTypeCd) throws HibernateException {
 		List<IafaSummaryDTO> lst = new ArrayList<IafaSummaryDTO>();
-		String queryStr = "SELECT ALS_ITEM_APPL_FEE_ACCT.API_PROVIDER_NO||'_'||ALS_ITEM_APPL_FEE_ACCT.APR_BILLING_FROM||'_'||ALS_ITEM_APPL_FEE_ACCT.AIAFA_SEQ_NO gridKey, "
-								+ "ALS_SESSION_TRANS.AICT_ITEM_TYPE_CD itemTypeCd, "
-								+ "Als_Item_type.Ait_Type_Desc itemTypeDesc, "
-								+ "Am_Key2 processTypeCd, "
-								+ "Decode(Am_Key2,'REPLACE',0,'EXCHANGE',0,'REFUND REQUEST',0,'RETURN',0,ALS_ITEM_APPL_FEE_ACCT.AIAFA_AMT) amount "
-						+ "FROM ALS.ALS_ITEM_APPL_FEE_ACCT, "
-							 + "ALS.ALS_SESSION_TRANS, "
-							 + "Als.Als_Misc, "
-							 + "Als.Als_Provider_Info, "
-							 + "Als.Als_Item_type, "
-							 + "ALS.ALS_ITEM_INFORMATION "
-						+ where
-						+ "AND  ((ALS_ITEM_APPL_FEE_ACCT.AST_TRANSACTION_SEQ_NO = ALS_SESSION_TRANS.AST_TRANSACTION_SEQ_NO) "
-						  + "AND (ALS_ITEM_APPL_FEE_ACCT.AST_TRANSACTION_CD = ALS_SESSION_TRANS.AST_TRANSACTION_CD) "
-						  + "AND (ALS_ITEM_APPL_FEE_ACCT.AS_SESSION_DT = ALS_SESSION_TRANS.AS_SESSION_DT) "
-						  + "AND (ALS_ITEM_APPL_FEE_ACCT.AHM_CD = ALS_SESSION_TRANS.AHM_CD) "
-						  + "AND (ALS_ITEM_APPL_FEE_ACCT.AHM_TYPE = ALS_SESSION_TRANS.AHM_TYPE)) "
-						+ "AND ALS_SESSION_TRANS.AST_PROCESS_TYPE_CD IS NOT NULL "
-						+ "AND Als_Item_Appl_Fee_Acct.Api_Provider_No = Als_Provider_Info.Api_Provider_No "
-						+ "AND Als_Session_Trans.AICT_ITEM_TYPE_CD = LPAD(Als_Item_type.AI_ITEM_ID,2,0)||LPAD(Als_Item_type.AIC_CATEGORY_ID,2,0)||LPAD(Als_Item_type.AIT_TYPE_ID,3,0)   "
-						+ "AND Am_Key1 = 'PROCESS TYPE' "
-						+ "And Am_Key2 IN ('ISSUE','OFFLINE ISSUE') "
-						+ "And to_number(Am_Par_Val) = ALS_SESSION_TRANS.AST_PROCESS_TYPE_CD "
-						+ "AND ALS_ITEM_INFORMATION.AICT_USAGE_PERIOD_FROM = ALS_SESSION_TRANS.AICT_USAGE_PERIOD_FROM "
-						+ "AND ALS_ITEM_INFORMATION.AICT_USAGE_PERIOD_TO = ALS_SESSION_TRANS.AICT_USAGE_PERIOD_TO "
-						+ "AND ALS_ITEM_INFORMATION.AICT_ITEM_TYPE_CD = ALS_SESSION_TRANS.AICT_ITEM_TYPE_CD "
-						+ "AND ALS_ITEM_INFORMATION.API_DOB = ALS_SESSION_TRANS.API_DOB "
-						+ "AND ALS_ITEM_INFORMATION.API_ALS_NO = ALS_SESSION_TRANS.API_ALS_NO "
-						+ "AND ALS_ITEM_INFORMATION.AII_ITEM_TXN_IND = ALS_SESSION_TRANS.AII_ITEM_TXN_IND "
-						+ "AND ALS_ITEM_INFORMATION.AII_SEQ_NO  = ALS_SESSION_TRANS.AII_SEQ_NO "
-						+ "AND ALS_ITEM_APPL_FEE_ACCT.AIAFA_STATUS='A' "
-						+ "AND ALS_ITEM_APPL_FEE_ACCT.AIAFA_AMT_TYPE <> (SELECT TO_NUMBER(AM_PAR_VAL) FROM ALS.ALS_MISC "
-																		+ "WHERE AM_KEY1 = 'IAFA_AMOUNT_TYPE' AND AM_KEY2 = 'PAE') "
-						+ "ORDER BY ALS_SESSION_TRANS.AICT_ITEM_TYPE_CD ASC";
+		StringBuilder queryStr = new StringBuilder("SELECT aiafa.API_PROVIDER_NO provNo,"
+														+ "api.api_business_nm provNm, "
+														+ "ast.AICT_ITEM_TYPE_CD itemTypeCd, "
+														+ "ait.Ait_Type_Desc itemTypeDesc, "
+														+ "aiafa.aiafa_amt_type amtType, "
+														+ "count(aiafa.AIAFA_AMT) count, "
+														+ "SUM(Decode(am.Am_Key2,'REPLACE',0,'EXCHANGE',0,'REFUND REQUEST',0,'RETURN',0,aiafa.AIAFA_AMT)) amount, "
+														+ "ast.aict_usage_period_from upFromDt, "
+														+ "ast.aict_usage_period_to upToDt, "
+														+ "Decode(aii.AII_RESIDENCY_STATUS,'R','Resident','N','Non-Resident','O','Other',aii.AII_RESIDENCY_STATUS) resStatus, "
+														+ "aiafa.aiafa_app_type appTypeCd, "
+														+ "ast.ast_process_type_cd processTypeCd, "
+														+ "aiafa.aiafa_process_category_cd procCatCd "
+												+ "FROM ALS.ALS_ITEM_APPL_FEE_ACCT aiafa "
+													+ "JOIN ALS.ALS_SESSION_TRANS ast "
+														+ " ON (ast.AST_TRANSACTION_SEQ_NO = aiafa.AST_TRANSACTION_SEQ_NO "
+															+ "AND ast.AST_TRANSACTION_CD = aiafa.AST_TRANSACTION_CD "
+															+ "AND ast.AS_SESSION_DT = aiafa.AS_SESSION_DT "
+															+ "AND ast.AHM_CD = aiafa.AHM_CD "
+															+ "AND ast.AHM_TYPE = aiafa.AHM_TYPE) "
+													+ "LEFT OUTER JOIN ALS.ALS_ITEM_INFORMATION aii "
+														+ "ON (aii.AICT_USAGE_PERIOD_FROM = ast.AICT_USAGE_PERIOD_FROM "
+															+ "AND aii.AICT_USAGE_PERIOD_TO = ast.AICT_USAGE_PERIOD_TO "
+															+ "AND aii.AICT_ITEM_TYPE_CD = ast.AICT_ITEM_TYPE_CD "
+															+ "AND aii.API_DOB = ast.API_DOB "
+															+ "AND aii.API_ALS_NO = ast.API_ALS_NO "
+															+ "AND aii.AII_ITEM_TXN_IND = ast.AII_ITEM_TXN_IND "
+															+ "AND aii.AII_SEQ_NO = ast.AII_SEQ_NO) "
+													+ "JOIN Als.Als_Provider_Info api "
+														+ "ON api.Api_Provider_No = aiafa.Api_Provider_No "
+													+ "JOIN Als.Als_Item_type ait "
+														+ "ON LPAD(ait.AI_ITEM_ID,2,0)||LPAD(ait.AIC_CATEGORY_ID,2,0)||LPAD(ait.AIT_TYPE_ID,3,0) = ast.AICT_ITEM_TYPE_CD "
+													+ "JOIN Als.Als_Misc am " 
+														+ "ON to_number(Am_Par_Val) = ast.AST_PROCESS_TYPE_CD "
+												+ "WHERE ast.AST_PROCESS_TYPE_CD IS NOT NULL "
+												+ "AND aiafa.AIAFA_STATUS='A' "
+												+ "AND aiafa.AIAFA_AMT_TYPE <> (SELECT TO_NUMBER(AM_PAR_VAL) FROM ALS.ALS_MISC WHERE AM_KEY1 = 'IAFA_AMOUNT_TYPE' AND AM_KEY2 = 'PAE') "
+												+ "AND am.Am_Key1 = 'PROCESS TYPE' "
+												+ "And am.Am_Key2 IN ('ISSUE','OFFLINE ISSUE') ");
+						
+						if(!Utils.isNil(fromDt) && !Utils.isNil(toDt))
+							queryStr.append("AND aiafa.AIAFA_When_Log BETWEEN :fromDt AND :toDt ");
+						if(!Utils.isNil(issProvNo))
+							queryStr.append("AND aiafa.API_PROVIDER_NO = :issProvNo ");
+						if(!Utils.isNil(upFromDt) && !Utils.isNil(upToDt))
+							queryStr.append("AND ast.Aict_Usage_Period_From = :upFromDt "
+										   +"AND ast.Aict_Usage_Period_To = :upToDt ");
+						if(!Utils.isNil(itemTypeCd))
+							queryStr.append("AND ast.AICT_ITEM_TYPE_CD = :itemTypeCd ");
+						if(!Utils.isNil(procCatCd))
+							queryStr.append("AND aiafa.Aiafa_Process_Category_Cd = :procCatCd ");
+						if(!Utils.isNil(appType))
+							queryStr.append("AND aiafa.aiafa_app_type LIKE :appType ");
+						if(!Utils.isNil(procTypeCd))
+							queryStr.append("AND ast.AST_PROCESS_TYPE_CD = :procTypeCd ");
+						if(!Utils.isNil(amountTypeCd))
+							queryStr.append("AND aiafa.AIAFA_AMT_TYPE = :amountTypeCd ");
+						
+						queryStr.append("GROUP BY api.api_business_nm, "
+									  + "aiafa.API_PROVIDER_NO, "
+									  + "ast.AICT_ITEM_TYPE_CD, "
+									  + "ait.Ait_Type_Desc, "
+									  + "ast.aict_usage_period_from, "
+									  + "ast.aict_usage_period_to, "
+									  + "aii.AII_RESIDENCY_STATUS, "
+									  + "aiafa.aiafa_amt_type, "
+									  + "aiafa.aiafa_app_type, "
+									  + "ast.ast_process_type_cd, "
+									  + "aiafa.aiafa_process_category_cd "
+									  + "ORDER BY 1,2 ASC");
 		try {
-			Query query = getSession()
-					.createSQLQuery(queryStr)
-					.addScalar("gridKey")
-					.addScalar("itemTypeCd", IntegerType.INSTANCE)
-					.addScalar("itemTypeDesc")
-					.addScalar("processTypeCd")
-					.addScalar("amount", DoubleType.INSTANCE)
-					.setResultTransformer(
-							Transformers.aliasToBean(IafaSummaryDTO.class));
-
+			Query query = getSession().createSQLQuery(queryStr.toString())
+									  .addScalar("provNo", IntegerType.INSTANCE)
+									  .addScalar("provNm")
+									  .addScalar("itemTypeCd", IntegerType.INSTANCE)
+									  .addScalar("itemTypeDesc")
+									  .addScalar("amtType", IntegerType.INSTANCE)
+									  .addScalar("count", IntegerType.INSTANCE)
+									  .addScalar("amount", DoubleType.INSTANCE)
+									  .addScalar("upFromDt", DateType.INSTANCE)
+									  .addScalar("upToDt", DateType.INSTANCE)
+									  .addScalar("resStatus")
+									  .addScalar("appTypeCd")
+									  .addScalar("processTypeCd", IntegerType.INSTANCE)
+									  .addScalar("procCatCd", IntegerType.INSTANCE)
+									  .setResultTransformer(Transformers.aliasToBean(IafaSummaryDTO.class));
+			
+			if(!Utils.isNil(fromDt) && !Utils.isNil(toDt)){
+				query .setDate("fromDt", fromDt);
+				query.setDate("toDt", toDt);
+			}
+			if(!Utils.isNil(issProvNo))
+				query.setInteger("issProvNo", issProvNo);
+			if(!Utils.isNil(upFromDt) && !Utils.isNil(upToDt)){
+				query.setDate("upFromDt", upFromDt);
+				query.setDate("upToDt", upToDt);
+			}
+			if(!Utils.isNil(itemTypeCd))
+				query.setString("itemTypeCd", itemTypeCd);
+			if(!Utils.isNil(procCatCd))
+				query.setString("procCatCd", procCatCd);
+			if(!Utils.isNil(appType))
+				query.setString("appType", appType+'%');
+			if(!Utils.isNil(procTypeCd))
+				query.setString("procTypeCd", procTypeCd);
+			if(!Utils.isNil(amountTypeCd))
+				query.setString("amountTypeCd", amountTypeCd);
+			
 			lst = query.list();
-		} catch (HibernateException he){
-			System.out.println(he.toString());
-		}
-		catch (RuntimeException re) {
-			System.out.println(re.toString());
-		}
-		finally {
-			getSession().close();
-		}
-		return lst;
-	}
-	
-	@SuppressWarnings("unchecked")
-	public List<IafaSummaryDTO> getIafaSummaryByAmountTypeRecords(String where) throws HibernateException {
-		List<IafaSummaryDTO> lst = new ArrayList<IafaSummaryDTO>();
-		String queryStr =  "SELECT DISTINCT ALS_ITEM_APPL_FEE_ACCT.API_PROVIDER_NO provNo, "
-							+ "ALS_ITEM_APPL_FEE_ACCT.API_PROVIDER_NO||'_'||ALS_ITEM_APPL_FEE_ACCT.APR_BILLING_FROM||'_'||sum(aiafa_amt) gridKey, "
-							+ "API_BUSINESS_NM provNm, "
-						 	+ "ALS_ITEM_APPL_FEE_ACCT.APR_BILLING_FROM bpFromDt, "
-						 	+ "ALS_ITEM_APPL_FEE_ACCT.APR_BILLING_TO bpToDt, "
-							+ "ALS_ITEM_APPL_FEE_ACCT.AIAFA_PROCESS_CATEGORY_CD procCatCd,  "
-							+ "ALS_SESSION_TRANS.AHM_TYPE|| Lpad(ALS_SESSION_TRANS.AHM_CD,6,0) deviceNo,  "
-							+ "ALS_ITEM_APPL_FEE_ACCT.AIAFA_AMT_TYPE amtType,   "
-							+ "Am_Key2 processTypeCd, "
-							+ "ALS_SESSION_TRANS.AICT_ITEM_TYPE_CD itemTypeCd, "
-							+ "ALS_SESSION_TRANS.AICT_USAGE_PERIOD_FROM upFromDt, "
-							+ "ALS_SESSION_TRANS.AICT_USAGE_PERIOD_TO upToDt,  "
-							//+ "ALS_ITEM_APPL_FEE_ACCT.AIAFA_AMT amount, "
-							+ "Als_Item_type.Ait_Type_Desc itemTypeDesc,  "
-							+ "ALS_ITEM_INFORMATION.AII_RESIDENCY_STATUS resStatus, "
-							+ "(SELECT acg.acg_supplement_cost_grp_desc "
-							 + "FROM ALS.ALS_COST_GROUP acg "
-							 + "WHERE acg.aict_usage_period_from = ALS_SESSION_TRANS.AICT_USAGE_PERIOD_FROM "
-							 + "AND acg.aict_usage_period_to = ALS_SESSION_TRANS.AICT_USAGE_PERIOD_TO "
-							 + "AND acg.aict_item_type_cd = ALS_SESSION_TRANS.AICT_ITEM_TYPE_CD "
-							 + "AND acg.air_residency_ind = ALS_ITEM_INFORMATION.AII_RESIDENCY_STATUS "
-							 + "AND acg.acg_seq_no = nvl(ALS_ITEM_INFORMATION.ACG_COST_GROUP_SEQ_NO,0)) costGrpDesc, "
-							+ "(SELECT apc_prerequisite_desc "
-							 + "FROM ALS.ALS_PREREQUISITE_CD apc "
-							 + "WHERE apc.apc_prerequisite_cd = nvl(ALS_ITEM_INFORMATION.APC_PREREQUISITE_COST_CD,0)) prereqCostDesc, "
-							+ "count(AIAFA_AMT) count,"
-							+ "sum(aiafa_amt) amount "
-							+ "FROM ALS.ALS_ITEM_APPL_FEE_ACCT, "
-									+ "ALS.ALS_SESSION_TRANS, "
-									+ "Als.Als_Misc, "
-									+ "Als.Als_Provider_Info, "
-									+ "Als.Als_Item_type, "
-									+ "ALS.ALS_ITEM_INFORMATION "
-							+ where
-							+ "AND ((ALS_ITEM_APPL_FEE_ACCT.AHM_TYPE = ALS_SESSION_TRANS.AHM_TYPE) "
-							 + "AND (ALS_ITEM_APPL_FEE_ACCT.AHM_CD = ALS_SESSION_TRANS.AHM_CD) "
-							 + "AND (ALS_ITEM_APPL_FEE_ACCT.AS_SESSION_DT = ALS_SESSION_TRANS.AS_SESSION_DT) "
-							 + "AND (ALS_ITEM_APPL_FEE_ACCT.AST_TRANSACTION_CD = ALS_SESSION_TRANS.AST_TRANSACTION_CD) "
-							 + "AND (ALS_ITEM_APPL_FEE_ACCT.AST_TRANSACTION_SEQ_NO = ALS_SESSION_TRANS.AST_TRANSACTION_SEQ_NO)) "
-							+ "AND ALS_SESSION_TRANS.AST_PROCESS_TYPE_CD IS NOT NULL "
-							+ "AND Als_Item_Appl_Fee_Acct.Api_Provider_No = Als_Provider_Info.Api_Provider_No "
-							+ "AND Als_Session_Trans.AICT_ITEM_TYPE_CD = LPAD(Als_Item_type.AI_ITEM_ID,2,0)||LPAD(Als_Item_type.AIC_CATEGORY_ID,2,0)||LPAD(Als_Item_type.AIT_TYPE_ID,3,0) "
-							+ "AND Am_Key1 = 'PROCESS TYPE' "
-							+ "AND Am_Key2 IN ('ISSUE','OFFLINE ISSUE') "
-							+ "AND to_number(Am_Par_Val)  = ALS_SESSION_TRANS.AST_PROCESS_TYPE_CD "
-							+ "AND ALS_ITEM_INFORMATION.AICT_USAGE_PERIOD_FROM = ALS_SESSION_TRANS.AICT_USAGE_PERIOD_FROM "
-							+ "AND ALS_ITEM_INFORMATION.AICT_USAGE_PERIOD_TO = ALS_SESSION_TRANS.AICT_USAGE_PERIOD_TO "
-							+ "AND ALS_ITEM_INFORMATION.AICT_ITEM_TYPE_CD = ALS_SESSION_TRANS.AICT_ITEM_TYPE_CD "
-							+ "AND ALS_ITEM_INFORMATION.API_DOB = ALS_SESSION_TRANS.API_DOB "
-							+ "AND ALS_ITEM_INFORMATION.API_ALS_NO = ALS_SESSION_TRANS.API_ALS_NO "
-							+ "AND ALS_ITEM_INFORMATION.AII_ITEM_TXN_IND = ALS_SESSION_TRANS.AII_ITEM_TXN_IND "
-							+ "AND ALS_ITEM_INFORMATION.AII_SEQ_NO  = ALS_SESSION_TRANS.AII_SEQ_NO "
-							+ "AND ALS_ITEM_APPL_FEE_ACCT.AIAFA_STATUS='A' "
-							+ "AND ALS_ITEM_APPL_FEE_ACCT.AIAFA_AMT_TYPE <> (SELECT TO_NUMBER(AM_PAR_VAL) FROM ALS.ALS_MISC  "
-																			+ "WHERE AM_KEY1 = 'IAFA_AMOUNT_TYPE' AND AM_KEY2 = 'PAE') "
-							+ "Group by ALS_ITEM_APPL_FEE_ACCT.API_PROVIDER_NO, "
-							+ "API_BUSINESS_NM, "
-							+ "ALS_ITEM_APPL_FEE_ACCT.APR_BILLING_FROM, "
-							+ "ALS_ITEM_APPL_FEE_ACCT.APR_BILLING_TO, "
-							+ "ALS_ITEM_APPL_FEE_ACCT.AIAFA_PROCESS_CATEGORY_CD,  "
-							+ "ALS_SESSION_TRANS.AHM_TYPE|| Lpad(ALS_SESSION_TRANS.AHM_CD,6,0),  "
-							+ "ALS_ITEM_APPL_FEE_ACCT.AIAFA_AMT_TYPE,   "
-							+ "Am_Key2, "
-							+ "ALS_SESSION_TRANS.AICT_ITEM_TYPE_CD , ALS_SESSION_TRANS.AICT_USAGE_PERIOD_FROM, "
-							+ "ALS_SESSION_TRANS.AICT_USAGE_PERIOD_TO,  "
-							+ "ALS_ITEM_APPL_FEE_ACCT.AIAFA_AMT,  "
-							+ "Als_Item_type.Ait_Type_Desc,  "
-							+ "ALS_ITEM_INFORMATION.AII_RESIDENCY_STATUS, "
-							+ "ALS_ITEM_INFORMATION.ACG_COST_GROUP_SEQ_NO, "
-							+ "ALS_ITEM_INFORMATION.APC_PREREQUISITE_COST_CD "
-							+ "ORDER BY  1,3,4,5,6 ";
-		
-		try {
-			Query query = getSession()
-					.createSQLQuery(queryStr)
-					.addScalar("gridKey")
-					.addScalar("provNo", IntegerType.INSTANCE)
-					.addScalar("provNm")
-					.addScalar("bpFromDt", DateType.INSTANCE)
-					.addScalar("bpToDt", DateType.INSTANCE)
-					.addScalar("procCatCd", IntegerType.INSTANCE)
-					.addScalar("deviceNo")
-					.addScalar("amtType", IntegerType.INSTANCE)
-					.addScalar("processTypeCd")
-					.addScalar("itemTypeCd", IntegerType.INSTANCE)
-					.addScalar("upFromDt", DateType.INSTANCE)
-					.addScalar("upToDt", DateType.INSTANCE)
-					.addScalar("itemTypeDesc")
-					.addScalar("resStatus")
-					.addScalar("costGrpDesc")
-					.addScalar("prereqCostDesc")
-					.addScalar("count", IntegerType.INSTANCE)
-					.addScalar("amount", DoubleType.INSTANCE)
-					.setResultTransformer(
-							Transformers.aliasToBean(IafaSummaryDTO.class));
-
-			lst = query.list();
-		} catch (HibernateException he){
-			System.out.println(he.toString());
-		}
-		catch (RuntimeException re) {
-			System.out.println(re.toString());
-		}
-		finally {
-			getSession().close();
-		}
+		} 
+		catch (HibernateException he){System.out.println(he.toString());}
+		catch (RuntimeException re){System.out.println(re.toString());}
+		finally {getSession().close();}
 		return lst;
 	}
 	
@@ -2381,6 +2350,127 @@ public class HibHelpers {
 			getSession().close();
 		}
         return tmpTransGrpId+String.format("%03d", maxSeq);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<TribalSalesDTO> getTribalSalesRecords(String tribeCd, Integer provNo, Integer itemTypeCd, Date upFromDt, Date upToDt,
+													  Date fromDt, Date toDt, Date bpFromDt, Date bpToDt) throws HibernateException {
+		List<TribalSalesDTO> lst = new ArrayList<TribalSalesDTO>();
+		StringBuilder queryStr = new StringBuilder("SELECT AIAFA.ATI_TRIBE_CD tribeCd, "
+														+ "ATI.ATI_TRIBE_NM tribeNm, "
+														+ "APR.APR_EFT_DEPOSIT_DEADLINE_DT eftDepDeadline, "
+														+ "DECODE(AIAFA.AIAFA_AMT_TYPE"
+															+ ",ALS.ALS_PACKAGE.GET_PVAL('IAFA_AMOUNT_TYPE','ITEM FEE NOT PAYABLE BY FWP')"
+															+ ",'Tribal HQ'"
+															+ ",ALS.ALS_PACKAGE.GET_PVAL('IAFA_AMOUNT_TYPE','COMM NOT PAYABLE BY FWP')"
+															+ ",'Tribal HQ'"
+															+ ",'MT FWP ') dueTo, "
+														+ "APR.APR_BILLING_TO bpEndDt, "
+														+ "APR.API_PROVIDER_NO provNo, "
+														+ "API.API_BUSINESS_NM provNm, "
+														+ "AST.AICT_ITEM_TYPE_CD itemTypeCd, "
+														+ "DECODE(NVL(AST.AICT_ITEM_TYPE_CD,'X'),'X','ACCOUNTING ENTRY NOT LINKED TO ITEM',AIT.AIT_TYPE_DESC) itemTypeDesc, "
+														+ "SUM(DECODE(AIAFA.AIAFA_AMT_TYPE, "
+															+ "ALS.ALS_PACKAGE.GET_PVAL('IAFA_AMOUNT_TYPE','ITEM'),1, "
+															+ "ALS.ALS_PACKAGE.GET_PVAL('IAFA_AMOUNT_TYPE', 'ITEM FEE NOT PAYABLE BY FWP'),1,0)) salesCount, "
+														+ "SUM(DECODE(AIAFA.AIAFA_AMT_TYPE, "
+															+ "ALS.ALS_PACKAGE.GET_PVAL('IAFA_AMOUNT_TYPE','ITEM'),AIAFA_AMT,"
+															+ "ALS.ALS_PACKAGE.GET_PVAL('IAFA_AMOUNT_TYPE','ITEM FEE NOT PAYABLE BY FWP'),AIAFA_AMT,0)) salesAmt, "
+														+ "SUM(DECODE(AIAFA.AIAFA_AMT_TYPE,  "
+															+ "ALS.ALS_PACKAGE.GET_PVAL('IAFA_AMOUNT_TYPE','PAE'),AIAFA_AMT,"
+															+ "ALS.ALS_PACKAGE.GET_PVAL('IAFA_AMOUNT_TYPE','COMM NOT PAYABLE BY FWP'),AIAFA_AMT,0)) adjEntries, "
+														+ "SUM(AIAFA.AIAFA_AMT) netAmt "
+												+ "FROM ALS.ALS_ITEM_APPL_FEE_ACCT AIAFA, "
+														+ "ALS.ALS_PROVIDER_REMITTANCE APR, "
+														+ "ALS.ALS_TRIBE_INFO ATI, "
+														+ "ALS.ALS_PROVIDER_INFO API, "
+														+ "ALS.ALS_SESSION_TRANS AST, "
+														+ "ALS.ALS_ITEM_TYPE AIT "
+												+ "WHERE APR.API_PROVIDER_NO = AIAFA.API_PROVIDER_NO "
+												+ "AND APR.APR_BILLING_FROM  = AIAFA.APR_BILLING_FROM "
+												+ "AND APR.APR_BILLING_TO    = AIAFA.APR_BILLING_TO "
+												+ "AND AST.AHM_TYPE(+)= AIAFA.AHM_TYPE "
+												+ "AND AST.AHM_CD(+) = AIAFA.AHM_CD "
+												+ "AND AST.AS_SESSION_DT(+)  = AIAFA.AS_SESSION_DT "
+												+ "AND AST.AST_TRANSACTION_CD(+) = AIAFA.AST_TRANSACTION_CD "
+												+ "AND AST.AST_TRANSACTION_SEQ_NO(+) = AIAFA.AST_TRANSACTIOn_SEQ_NO "
+												+ "AND ATI.ATI_TRIBE_CD = AIAFA.ATI_TRIBE_CD "
+												+ "AND API.API_PROVIDER_NO = APR.API_PROVIDER_NO "
+												+ "AND AIAFA.ATI_TRIBE_CD IS NOT NULL "
+												+ "AND AIAFA.AIAFA_STATUS = 'A' "
+												+ "AND NVL(AST.AST_TRANS_STATUS,'A') = 'A' "
+												+ "AND NVL(AIAFA_REASON_CD,0) <> ALS.ALS_PACKAGE.GET_PVAL('PAE_REASON','FWP COMMISSION' ) "
+												+ "AND AIT.AI_ITEM_ID||AIT.AIC_CATEGORY_ID||AIT.AIT_TYPE_ID = NVL(AST.AICT_ITEM_TYPE_CD,'2001001') ");
+		
+		if(!Utils.isNil(tribeCd))
+			queryStr.append("AND AIAFA.ATI_TRIBE_CD = :tribeCd ");
+		if(!Utils.isNil(provNo))
+			queryStr.append("AND APR.API_PROVIDER_NO = :provNo ");
+		if(!Utils.isNil(itemTypeCd))
+			queryStr.append("AND AST.AICT_ITEM_TYPE_CD = :itemTypeCd ");
+		if(!Utils.isNil(upFromDt)&&!Utils.isNil(upToDt)){
+			queryStr.append("AND AST.AICT_USAGE_PERIOD_FROM = :upFromDt ");
+			queryStr.append("AND AST.AICT_USAGE_PERIOD_TO = :upToDt ");
+		}
+		if(!Utils.isNil(bpFromDt)&&!Utils.isNil(bpToDt)){
+			queryStr.append("AND APR.APR_BILLING_FROM = :bpFromDt ");
+			queryStr.append("AND APR.APR_BILLING_TO = :bpToDt ");
+		}
+		
+		queryStr.append("GROUP BY AIAFA.ATI_TRIBE_CD, "
+						+ "ATI.ATI_TRIBE_NM, "
+						+ "APR.APR_EFT_DEPOSIT_DEADLINE_DT, "
+						+ "DECODE(AIAFA.AIAFA_AMT_TYPE"
+							+ ",ALS.ALS_PACKAGE.GET_PVAL('IAFA_AMOUNT_TYPE','ITEM FEE NOT PAYABLE BY FWP')"
+							+ ",'Tribal HQ',ALS.ALS_PACKAGE.GET_PVAL('IAFA_AMOUNT_TYPE','COMM NOT PAYABLE BY FWP')"
+							+ ",'Tribal HQ'"
+							+ ",'MT FWP '), "
+						+ "APR.APR_BILLING_TO, "
+						+ "APR.API_PROVIDER_NO, "
+						+ "API.API_BUSINESS_NM, "
+						+ "AST.AICT_ITEM_TYPE_CD, "
+						+ "DECODE(NVL(AST.AICT_ITEM_TYPE_CD,'X')"
+							+ ",'X'"
+							+ ",'ACCOUNTING ENTRY NOT LINKED TO ITEM',AIT.AIT_TYPE_DESC)");
+						
+		try {
+			Query query = getSession().createSQLQuery(queryStr.toString())
+									  .addScalar("tribeCd")
+									  .addScalar("tribeNm")
+									  .addScalar("eftDepDeadline", DateType.INSTANCE)
+									  .addScalar("dueTo")
+									  .addScalar("bpEndDt", DateType.INSTANCE)
+									  .addScalar("provNo", IntegerType.INSTANCE)
+									  .addScalar("provNm")
+									  .addScalar("itemTypeCd", IntegerType.INSTANCE)
+									  .addScalar("itemTypeDesc")
+									  .addScalar("salesCount", IntegerType.INSTANCE)
+									  .addScalar("salesAmt", DoubleType.INSTANCE)
+									  .addScalar("adjEntries", DoubleType.INSTANCE)
+									  .addScalar("netAmt", DoubleType.INSTANCE)
+									  .setResultTransformer(Transformers.aliasToBean(TribalSalesDTO.class));
+			
+			if(!Utils.isNil(tribeCd))
+				query.setString("tribeCd", tribeCd);
+			if(!Utils.isNil(provNo))
+				query.setInteger("provNo", provNo);
+			if(!Utils.isNil(itemTypeCd))
+				query.setInteger("itemTypeCd", itemTypeCd);
+			if(!Utils.isNil(upFromDt)&&!Utils.isNil(upToDt)){
+				query.setDate("upFromDt", upFromDt);
+				query.setDate("upToDt", upToDt);
+			}
+			if(!Utils.isNil(bpFromDt)&&!Utils.isNil(bpToDt)){
+				query.setDate("bpFromDt", bpFromDt);
+				query.setDate("bpToDt", bpToDt);
+			}
+			
+			lst = query.list();
+		} 
+		catch (HibernateException he){System.out.println(he.toString());}
+		catch (RuntimeException re){System.out.println(re.toString());}
+		finally {getSession().close();}
+		return lst;
 	}
 	
 }

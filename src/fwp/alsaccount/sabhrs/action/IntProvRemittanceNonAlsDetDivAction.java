@@ -1,6 +1,5 @@
 package fwp.alsaccount.sabhrs.action;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.HibernateException;
@@ -11,10 +10,7 @@ import com.opensymphony.xwork2.ActionSupport;
 
 import fwp.alsaccount.appservice.admin.AlsNonAlsTemplateAS;
 import fwp.alsaccount.dao.admin.AlsNonAlsTemplate;
-import fwp.alsaccount.dto.admin.AlsNonAlsTemplateDTO;
 import fwp.alsaccount.utils.HibHelpers;
-import fwp.alsaccount.utils.ListUtils;
-import fwp.utils.FwpStringUtils;
 
 public class IntProvRemittanceNonAlsDetDivAction extends ActionSupport{
 	

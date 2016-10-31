@@ -10,11 +10,7 @@
    	<legend style="font-weight: bold;">Search Criteria</legend>
    	<form id='gridFrm'>
    		<table>
-   			<tr>
-   				<td class="label">Query Type: </td>
-   				<td><s:radio id="qryType" name="qryType" list="#{'1':'Item Type','2':'Amount Type'}" value="1" theme="simple" onchange="$.publish('resetSearchCriteria')"/></td>
-   			</tr>
-			<tr class="itemType amountType">
+			<tr>
 				<td class="label">Issuing Provider No: </td>
 				<td class="autocompleter"><sj:autocompleter
 									id="issProvNo"
@@ -27,10 +23,8 @@
 									forceValidOption="true"
 									loadMinimumCount="2"
 									theme="simple" /></td>
-				<td class="label itemType">Summary Only: </td>
-				<td class="itemType"><s:checkbox id="sumOnly" name="sumOnly" value="true" theme="simple"/></td>
 			</tr>
-    		<tr class="itemType amountType">
+    		<tr>
     			<td class="label">Process Category Code: </td>
 				<td class="autocompleter"><sj:autocompleter
 									id="procCatCd"
@@ -44,7 +38,7 @@
 									loadMinimumCount="2"
 									theme="simple" /></td>
     		</tr>
-    		<tr class="itemType">
+    		<tr>
     			<td class="label">Process Type Code: </td>
 				<td class="autocompleter"><sj:autocompleter
 									id="procTypeCd"
@@ -58,7 +52,7 @@
 									loadMinimumCount="2"
 									theme="simple" /></td>	
     		</tr>
-    		<tr class="itemType amountType">
+    		<tr>
     			<td class="label">Item Type Code: </td>
 				<td class="autocompleter"><sj:autocompleter
 						id="itemTypeCd"
@@ -72,7 +66,7 @@
 						loadMinimumCount="2"
 						theme="simple"/></td>
     		</tr>
-    		<tr class="itemType amountType">
+    		<tr>
 				<td class="label">App Type Code: </td>
 				<td class="autocompleter"><sj:autocompleter
 									id="appType"
@@ -86,7 +80,7 @@
 									loadMinimumCount="2"
 									theme="simple" /></td>
     		</tr>
-    		<tr class="amountType">
+    		<tr>
     			<td class="label">Amount Type Code: </td>
 				<td class="autocompleter"><sj:autocompleter
 									id="amountTypeCd"
@@ -100,7 +94,7 @@
 									loadMinimumCount="2"
 									theme="simple" /></td>
     		</tr>
-    		<tr class="amountType">
+    		<%-- <tr>
     			<td class="label">Reason Code: </td>
 				<td class="autocompleter"><sj:autocompleter
 									id="reasonCd"
@@ -113,7 +107,7 @@
 									forceValidOption="true"
 									loadMinimumCount="2"
 									theme="simple" /></td>
-    		</tr>
+    		</tr> --%>
     		<tr>
     			<td class="label">Usage Period From: </td>
 				<td><sj:datepicker changeMonth="true" changeYear="true" id="upFromDt"

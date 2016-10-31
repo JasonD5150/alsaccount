@@ -60,6 +60,7 @@ public class AlsAccCodeControlGridEditAction extends ActionSupport{
 			}
 			
 			if(oper.equalsIgnoreCase("add") || oper.equalsIgnoreCase("edit")){
+				Boolean balFlagSet = appSer.isBalanceAmtFlagSet(budgYear, idPk.getAaccAccCd());
 				if(oper.equalsIgnoreCase("add")){
 					if(appSer.isDuplicateEntry(idPk)){
 						addActionError("Unable to add this record due to duplicate");
@@ -67,14 +68,19 @@ public class AlsAccCodeControlGridEditAction extends ActionSupport{
 					if(appSer.isDuplicateBudgYearAccCdAccFund(idPk.getAsacBudgetYear(), idPk.getAaccAccCd(), aamAccount, aaccFund)){
 						addActionError("The combination of Budget Year, Account Code, Account, and Fund already exists in the database.");
 					}
+					if("Y".equals(aaccBalancingAmtFlag) && balFlagSet){
+						addActionError("Balancing Amount Flag cannot be Yes twice for the same combination of Budget Year and Accounting Code.");
+					}else if ("N".equals(aaccBalancingAmtFlag) && !balFlagSet){
+						addActionError("Balancing Amount Flag should be selected as Yes, if only one combination of Budget Year and Accounting Code exists.");
+					}
+				}else if(oper.equalsIgnoreCase("edit")){
+					if("N".equals(aaccBalancingAmtFlag) && "N".equals(tmp.getAaccBalancingAmtFlag()) && !balFlagSet){
+						addActionError("Balancing Amount Flag should be selected as Yes, if only one combination of Budget Year and Accounting Code exists.");
+					}else if ("Y".equals(aaccBalancingAmtFlag) && "N".equals(tmp.getAaccBalancingAmtFlag()) && balFlagSet){
+						addActionError("Balancing Amount Flag cannot be Yes twice for the same combination of Budget Year and Accounting Code.");
+					}
 				}
 				
-				Boolean balFlagSet = appSer.isBalanceAmtFlagSet(budgYear, idPk.getAaccAccCd());
-				if("Y".equals(aaccBalancingAmtFlag) && balFlagSet){
-					addActionError("Balancing Amount Flag cannot be Yes twice for the same combination of Budget Year and Accounting Code.");
-				}else if ("N".equals(aaccBalancingAmtFlag) && balFlagSet == false){
-					addActionError("Balancing Amount Flag should be selected as Yes, if only one combination of Budget Year and Accounting Code exists.");
-				}
 				if (this.hasActionErrors()) {
 					return "error_json";
 				}

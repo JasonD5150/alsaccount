@@ -18,6 +18,7 @@ import fwp.als.hibernate.inventory.dao.AlsNonAlsDetails;
 import fwp.alsaccount.appservice.sabhrs.AlsOverUnderSalesDetsAS;
 import fwp.alsaccount.dao.sabhrs.AlsOverUnderSalesDets;
 import fwp.alsaccount.dto.sabhrs.AlsInternalRemittanceDTO;
+import fwp.alsaccount.utils.Utils;
 
 /**
  * Action handler for the SABHRS Query search page to CSV export file.
@@ -49,6 +50,7 @@ public class InternalRemittanceReportAction extends ActionSupport {
 		FileWriter fileWriter = new FileWriter(tempFile);
 		fileWriter.write("Internal Provider Remittance Report\n\n");
 		
+		fileWriter.write("Search Criteria\n");
 		if(!"".equals(filters)&& filters != null){
 			String[] criteria = URLDecoder.decode(filters,"UTF-8").split("&");
 			for(String tmp : criteria){
@@ -67,7 +69,7 @@ public class InternalRemittanceReportAction extends ActionSupport {
 					fileWriter.write(getColumnLabel(column)+" = "+value+"\n");
 				}
 			}
-			fileWriter.write("\n");
+			fileWriter.write("\n\n");
 		}
 		
 		AlsNonAlsDetailsAS anadAS = new AlsNonAlsDetailsAS();
@@ -95,8 +97,10 @@ public class InternalRemittanceReportAction extends ActionSupport {
 				Date bpFrom = sdf.parse(rr.getGridKey().split("_")[0]);
 				Date bpTo = sdf.parse(rr.getGridKey().split("_")[1]);
 				sdf.applyPattern("mm/dd/yyyy");
-				line.append("Provider No:, "+rr.getGridKey().split("_")[2]+",Provider Name:,"+rr.getProvNm()+"\n");
-				line.append("Billing Period From:, "+sdf.format(bpFrom)+",Billing Period To:,"+sdf.format(bpTo)+"\n");
+				line.append(rr.getProvNm()+"\n");
+				line.append("Provider No:,"+rr.getGridKey().split("_")[2]+"\n");
+				line.append("Billing Period From:, "+sdf.format(bpFrom)+"\n");
+				line.append("Billing Period To:, "+sdf.format(bpTo)+"\n\n");
 				line.append(",Amount, Total\n");
 				line.append("System Sales:,$"+rr.getAirSystemSales()+"\n");
 				line.append("OTC Sales:,$"+rr.getAirOtcPhoneSales()+"\n");
@@ -107,25 +111,25 @@ public class InternalRemittanceReportAction extends ActionSupport {
 				anadLst = new ArrayList<AlsNonAlsDetails>();
 				anadLst = anadAS.findAllByWhere(where);
 				if(!anadLst.isEmpty()){
-					line.append("Non ALS Sales Details\n");
-					line.append("Description\n");
+					line.append("\nNon ALS Sales Details\n");
+					//line.append("Description\n");
 					for(AlsNonAlsDetails anadTmp : anadLst){
 						line.append(StringEscapeUtils.escapeCsv(anadTmp.getAnadDesc())+",$"+anadTmp.getAnadAmount()+"\n");
 					}
 				}
 				
-				line.append("Total Non ALS Sales:,,$"+rr.getAirNonAlsSales()+"\n");
-				line.append("Total Sales:,,$"+rr.getAirTotSales()+"\n");
-				line.append("Total Bank Deposits:,$"+rr.getTotBankDep()+"\n");
-				line.append("Credit Card Sales:,$"+rr.getAirCreditSales()+"\n");
-				line.append("Total Funds Received:,,$"+rr.getTotFundsRec()+"\n");
-				line.append("Difference:,,$"+rr.getAirDifference()+"\n");
+				line.append("Total Non ALS Sales:,,$"+Utils.nullFix(rr.getAirNonAlsSales())+"\n");
+				line.append("Total Sales:,,$"+Utils.nullFix(rr.getAirTotSales())+"\n");
+				line.append("Total Bank Deposits:,$"+Utils.nullFix(rr.getTotBankDep())+"\n");
+				line.append("Credit Card Sales:,$"+Utils.nullFix(rr.getAirCreditSales())+"\n");
+				line.append("Total Funds Received:,,$"+Utils.nullFix(rr.getTotFundsRec())+"\n");
+				line.append("Difference:,,$"+Utils.nullFix(rr.getAirDifference())+"\n");
 				
 				/*TOTAL FUNDS RECEIVED SHORT OF SALES*/
 				aousdLst = new ArrayList<AlsOverUnderSalesDets>();
 				aousdLst = aousdAS.findAllByWhere(where);
 				if(!aousdLst.isEmpty()){
-					line.append("Total Funds Received Short of Sales -\n");
+					line.append("\nTotal Funds Received Short of Sales -\n");
 					line.append("Details\n");
 					for(AlsOverUnderSalesDets aousdTmp : aousdLst){
 						line.append(StringEscapeUtils.escapeCsv(aousdTmp.getAousdDesc())+",$"+aousdTmp.getAousdAmount()+"\n");

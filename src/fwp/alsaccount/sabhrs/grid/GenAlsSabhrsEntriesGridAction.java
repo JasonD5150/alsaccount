@@ -1,9 +1,7 @@
 package fwp.alsaccount.sabhrs.grid;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.hibernate.HibernateException;
@@ -15,10 +13,7 @@ import com.opensymphony.xwork2.ActionSupport;
 import fwp.alsaccount.appservice.sabhrs.AlsSabhrsEntriesAS;
 import fwp.alsaccount.dao.sabhrs.AlsSabhrsEntries;
 import fwp.alsaccount.dto.sabhrs.AlsSabhrsEntriesDTO;
-import fwp.alsaccount.utils.HibHelpers;
 import fwp.alsaccount.utils.Utils;
-
-import fwp.utils.FwpDateUtils;
 
 public class GenAlsSabhrsEntriesGridAction extends ActionSupport{
     private static final long   serialVersionUID = 5078264277068533593L;

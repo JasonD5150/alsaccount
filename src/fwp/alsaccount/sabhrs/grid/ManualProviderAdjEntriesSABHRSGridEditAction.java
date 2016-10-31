@@ -14,7 +14,6 @@ import fwp.alsaccount.appservice.sabhrs.AlsSabhrsEntriesAS;
 import fwp.alsaccount.dao.sabhrs.AlsSabhrsEntries;
 import fwp.alsaccount.dao.sabhrs.AlsSabhrsEntriesDAO;
 import fwp.alsaccount.dao.sabhrs.AlsSabhrsEntriesIdPk;
-import fwp.alsaccount.dto.sabhrs.AlsSabhrsEntriesDTO;
 import fwp.alsaccount.hibernate.utils.DalUtils;
 import fwp.alsaccount.utils.Utils;
 import fwp.security.user.UserDTO;

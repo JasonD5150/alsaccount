@@ -18,6 +18,11 @@
 	<div class="error"><s:actionerror theme="jquery"/></div>
 	<div id="uploadMessage"><s:actionmessage theme="jquery"/></div>
 	<div style="margin: 4px;">
+		<p>
+			<b>
+				File must be in pdf format and must not be larger than 12 MB.
+			</b>
+		</p>
 		<div id="fileErrorMessage" hidden="true" style="color:red;">
 			<p>
 				File must be in pdf format and must not be larger than 12 MB. Please select a different file.

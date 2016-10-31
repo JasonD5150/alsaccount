@@ -1,4 +1,4 @@
-package fwp.alsaccount.sabhrs.json;
+package fwp.alsaccount.sales.json;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -15,7 +15,7 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 import com.opensymphony.xwork2.ActionSupport;
 
 import fwp.ListComp;
-import fwp.alsaccount.dto.sabhrs.IafaSummaryDTO;
+import fwp.alsaccount.dto.sales.IafaSummaryDTO;
 
 /**
  * Action handler for the SABHRS Query search page to CSV export file.
@@ -32,171 +32,76 @@ public class IafaSummaryQueryBuildCsvAction extends ActionSupport {
 
 	private String csvFileName;
 	private String fileName;
-	private Integer qryType;
+
 	public String execute() throws Exception {
-		String[] criteria = URLDecoder.decode(filters,"UTF-8").split("&");
-		for(String tmp : criteria){
-			if(tmp.contains("qryType")){
-				qryType = Integer.valueOf(tmp.split("=")[1]);
+		File tempFile = File.createTempFile("iafasummaryrecords", "csv");
+		fileName="IAFASummary.csv";
+		StringBuilder titleLine = new StringBuilder();
+
+	
+		for (ListComp listComp : this.columnNameValues) {
+			if (validColumn(listComp)) {
+				if (titleLine.length() > 0) {
+					titleLine.append(",");
+				}
+				titleLine.append(StringEscapeUtils.escapeCsv(listComp.getItemLabel()));
 			}
 		}
-		if(qryType == 1){
-			buildItemTypeCSV();
-		}else if(qryType == 2){
-			buildAmountTypeCSV();
+		titleLine.append("\n");
+		FileWriter fileWriter = new FileWriter(tempFile);
+		fileWriter.write("IAFA Summary Report\n\n");
+		
+		if(!"".equals(filters)&& filters != null){
+			String[] criteria = URLDecoder.decode(filters,"UTF-8").split("&");
+			for(String tmp : criteria){
+				if(!tmp.contains("_widget")&&!tmp.contains("qryType")&&!tmp.contains("sumOnly")){
+					Integer length = tmp.trim().split("=").length;
+					String column;
+					String value;
+					if(tmp.split("=")[0].contains("__checkbox_")){
+						column = tmp.split("=")[0].replace("__checkbox_", "");
+						value = tmp.split("=")[1];
+						if(value == "true"){
+							fileWriter.write(getColumnLabel(column)+" = "+value+"\n");
+						}
+					}else if(length > 1){
+						column = tmp.split("=")[0];
+						value = tmp.split("=")[1];
+						fileWriter.write(getColumnLabel(column)+" = "+value+"\n");
+					}
+				}
+			}
+			fileWriter.write("\n");
 		}
+		fileWriter.write(titleLine.toString());
+		
+		for (IafaSummaryDTO ie : iafaSummaryRecords) {			
+			StringBuilder line = new StringBuilder();
+			Boolean firstColumn = true;
+			for (ListComp listComp : this.columnNameValues) {
+				if (validColumn(listComp)) {
+					if (!firstColumn) {
+						line.append(",");
+					} else {
+						firstColumn = false;
+					}
+					Object gotten;
+					
+					gotten = ie.getClass().getMethod("get" + StringUtils.capitalize(listComp.getItemVal())).invoke(ie);
+					if (gotten != null && gotten instanceof Date) {
+						line.append(StringEscapeUtils.escapeCsv(DateFormatUtils.format((Date) gotten, "MM/dd/yyyy")));
+					} else {
+						line.append(StringEscapeUtils.escapeCsv(ObjectUtils.toString(gotten)));
+					}
+				}
+			}
+			line.append("\n");
+			fileWriter.write(line.toString());
+		}
+		fileWriter.close();
+		csvFileName = tempFile.getName();
 		
 		return SUCCESS;
-	}
-
-	private void buildItemTypeCSV() throws Exception {
-		File tempFile = File.createTempFile("iafasummaryrecords", "csv");
-		fileName="IAFASummary.csv";
-		StringBuilder titleLine = new StringBuilder();
-
-	
-		for (ListComp listComp : this.columnNameValues) {
-			if (validColumn(listComp)) {
-				if (titleLine.length() > 0) {
-					titleLine.append(",");
-				}
-				titleLine.append(StringEscapeUtils.escapeCsv(listComp.getItemLabel()));
-			}
-		}
-		titleLine.append("\n");
-		FileWriter fileWriter = new FileWriter(tempFile);
-		fileWriter.write("IAFA Summary by Item Type Report\n\n");
-		
-		if(!"".equals(filters)&& filters != null){
-			String[] criteria = URLDecoder.decode(filters,"UTF-8").split("&");
-			for(String tmp : criteria){
-				if(!tmp.contains("_widget")&&!tmp.contains("qryType")&&!tmp.contains("sumOnly")){
-					Integer length = tmp.trim().split("=").length;
-					String column;
-					String value;
-					if(tmp.split("=")[0].contains("__checkbox_")){
-						column = tmp.split("=")[0].replace("__checkbox_", "");
-						value = tmp.split("=")[1];
-						if(value == "true"){
-							fileWriter.write(getColumnLabel(column)+" = "+value+"\n");
-						}
-					}else if(length > 1){
-						column = tmp.split("=")[0];
-						value = tmp.split("=")[1];
-						fileWriter.write(getColumnLabel(column)+" = "+value+"\n");
-						//System.out.println(column +" = "+value);
-					}
-				}
-			}
-			fileWriter.write("\n");
-		}
-		fileWriter.write(titleLine.toString());
-		
-		Integer issueCount = 0;
-		Double issueAmount = 0.0;
-		for (IafaSummaryDTO ie : iafaSummaryRecords) {			
-			StringBuilder line = new StringBuilder();
-			Boolean firstColumn = true;
-			for (ListComp listComp : this.columnNameValues) {
-				if (validColumn(listComp)) {
-					if (!firstColumn) {
-						line.append(",");
-					} else {
-						firstColumn = false;
-					}
-					Object gotten;
-					
-					gotten = ie.getClass().getMethod("get" + StringUtils.capitalize(listComp.getItemVal())).invoke(ie);
-					if("count".equals(listComp.getItemVal())){
-						issueCount += Integer.parseInt(ObjectUtils.toString(gotten));
-					}else if("amount".equals(listComp.getItemVal())){
-						issueAmount += Double.parseDouble(ObjectUtils.toString(gotten));
-					}
-					if (gotten != null && gotten instanceof Date) {
-						line.append(StringEscapeUtils.escapeCsv(DateFormatUtils.format((Date) gotten, "MM/dd/yyyy")));
-					} else {
-						line.append(StringEscapeUtils.escapeCsv(ObjectUtils.toString(gotten)));
-					}
-				}
-			}
-			line.append("\n");
-			fileWriter.write(line.toString());
-		}
-		fileWriter.write("Totals,,,"+issueCount+",$"+issueAmount);
-		fileWriter.close();
-		csvFileName = tempFile.getName();
-	}
-	
-	private void buildAmountTypeCSV() throws Exception {
-		File tempFile = File.createTempFile("iafasummaryrecords", "csv");
-		fileName="IAFASummary.csv";
-		StringBuilder titleLine = new StringBuilder();
-
-	
-		for (ListComp listComp : this.columnNameValues) {
-			if (validColumn(listComp)) {
-				if (titleLine.length() > 0) {
-					titleLine.append(",");
-				}
-				titleLine.append(StringEscapeUtils.escapeCsv(listComp.getItemLabel()));
-			}
-		}
-		titleLine.append("\n");
-		FileWriter fileWriter = new FileWriter(tempFile);
-		fileWriter.write("IAFA Summary by Item Type Report\n\n");
-		
-		if(!"".equals(filters)&& filters != null){
-			String[] criteria = URLDecoder.decode(filters,"UTF-8").split("&");
-			for(String tmp : criteria){
-				if(!tmp.contains("_widget")&&!tmp.contains("qryType")&&!tmp.contains("sumOnly")){
-					Integer length = tmp.trim().split("=").length;
-					String column;
-					String value;
-					if(tmp.split("=")[0].contains("__checkbox_")){
-						column = tmp.split("=")[0].replace("__checkbox_", "");
-						value = tmp.split("=")[1];
-						if(value == "true"){
-							fileWriter.write(getColumnLabel(column)+" = "+value+"\n");
-						}
-					}else if(length > 1){
-						column = tmp.split("=")[0];
-						value = tmp.split("=")[1];
-						fileWriter.write(getColumnLabel(column)+" = "+value+"\n");
-						//System.out.println(column +" = "+value);
-					}
-				}
-			}
-			fileWriter.write("\n");
-		}
-		fileWriter.write(titleLine.toString());
-
-		for (IafaSummaryDTO ie : iafaSummaryRecords) {			
-			StringBuilder line = new StringBuilder();
-			Boolean firstColumn = true;
-			for (ListComp listComp : this.columnNameValues) {
-				if (validColumn(listComp)) {
-					if (!firstColumn) {
-						line.append(",");
-					} else {
-						firstColumn = false;
-					}
-					Object gotten;
-					
-					gotten = ie.getClass().getMethod("get" + StringUtils.capitalize(listComp.getItemVal())).invoke(ie);
-		
-					if (gotten != null && gotten instanceof Date) {
-						line.append(StringEscapeUtils.escapeCsv(DateFormatUtils.format((Date) gotten, "MM/dd/yyyy")));
-					} else {
-						line.append(StringEscapeUtils.escapeCsv(ObjectUtils.toString(gotten)));
-					}
-				}
-			}
-			line.append("\n");
-			fileWriter.write(line.toString());
-		}
-
-		fileWriter.close();
-		csvFileName = tempFile.getName();
 	}
 	
 	private Boolean validColumn(ListComp listComp) {
@@ -241,13 +146,10 @@ public class IafaSummaryQueryBuildCsvAction extends ActionSupport {
 		this.csvFileName = csvFileName;
 	}
 
-
-
 	public List<ListComp> getColumnNameValues() {
 		return columnNameValues;
 	}
-
-
+	
 	public List<IafaSummaryDTO> getIafaSummaryRecords() {
 		return iafaSummaryRecords;
 	}
@@ -268,16 +170,10 @@ public class IafaSummaryQueryBuildCsvAction extends ActionSupport {
 		this.fileName = fileName;
 	}
 
-	/**
-	 * @return the filters
-	 */
 	public String getFilters() {
 		return filters;
 	}
 
-	/**
-	 * @param filters the filters to set
-	 */
 	public void setFilters(String filters) {
 		this.filters = filters;
 	}

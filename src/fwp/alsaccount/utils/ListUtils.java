@@ -800,4 +800,48 @@ public class ListUtils {
 		getSession().close();
 		return lst;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<ListComp> getTribalUsagePeriodList() {
+		List<ListComp> lst = new ArrayList<ListComp>();
+
+		String queryString = "SELECT DISTINCT TO_CHAR(AICT_USAGE_PERIOD_FROM,'mm/dd/yyyy')||'_'||TO_CHAR(AICT_USAGE_PERIOD_TO,'mm/dd/yyyy') itemVal, "
+							+ "TO_CHAR(AICT_USAGE_PERIOD_FROM,'mm/dd/yyyy')||' - '||TO_CHAR(AICT_USAGE_PERIOD_TO,'mm/dd/yyyy') itemLabel "
+							+ "FROM ALS.ALS_TRIBE_ITEM_INFO "
+							+ "ORDER BY 1 DESC";
+
+		Query query = getSession().createSQLQuery(queryString)
+				.addScalar("itemVal", StringType.INSTANCE)
+				.addScalar("itemLabel", StringType.INSTANCE)
+				.setResultTransformer(Transformers.aliasToBean(ListComp.class));
+
+		lst = query.list();
+		getSession().close();
+		return lst;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<ListComp> getTribalItemTypeList() {
+		List<ListComp> lst = new ArrayList<ListComp>();
+
+		String queryString = "SELECT DISTINCT A.aict_item_type_cd itemVal, "
+									+ "A.aict_item_type_cd||' - '||B.ait_type_desc itemLabel "
+						   + "FROM ALS.ALS_TRIBE_ITEM_INFO A, "
+								+ "ALS.ALS_ITEM_TYPE B "
+						   + "WHERE A.AICT_ITEM_TYPE_CD = B.AI_ITEM_ID||B.AIC_CATEGORY_ID||B.AIT_TYPE_ID "
+						   + "ORDER BY A.AICT_ITEM_TYPE_CD";
+
+		Query query = getSession().createSQLQuery(queryString)
+				.addScalar("itemVal", StringType.INSTANCE)
+				.addScalar("itemLabel", StringType.INSTANCE)
+				.setResultTransformer(Transformers.aliasToBean(ListComp.class));
+
+		lst = query.list();
+		getSession().close();
+		return lst;
+	}
+	
+	
+	
+	
 }

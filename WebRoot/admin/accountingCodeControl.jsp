@@ -63,9 +63,10 @@
     						  afterShowForm:setEnabled,
     						  beforeSubmit:checkForm,
     						  beforeSubmit:function(postData){
+    						  	$(this).jqGrid('setGridParam', {datatype: 'json'});
 	    	                    postData.budgYear = $('#budgYear').val();
 	    	                    return[true, ''];
-	    	               	  }, 	    
+	    	               	  },   
     						  afterSubmit:errorHandler,
     	                      addCaption:'Add New Code Info',
     	                      closeAfterAdd:true,
@@ -76,11 +77,12 @@
     	                       beforeSubmit:checkForm,
     	                       beforeSubmit:function(postData){
 	    	                    postData.budgYear = $('#budgYear').val();
+	    	                    $(this).jqGrid('setGridParam', {datatype: 'json'});
 	    	                    return[true, ''];
-	    	               	   }, 	    
-    	                       closeAfterEdit:true,
+	    	               	   },
     	                       afterSubmit:errorHandler,
-    	                       processData:'Updating to Database'}"
+    	                       processData:'Updating to Database',
+    	                       closeAfterEdit:true}"
     	navigatorViewOptions="{width:500,reloadAfterSubmit:false}"    	
     	navigatorDeleteOptions="{afterSubmit:errorHandler}"
     	gridModel="model"

@@ -41,8 +41,7 @@
 					,caption:""
 					,buttonicon:"ui-icon-extlink"
 					,onClickButton:function(){ 
-						grid.jqGrid('columnChooser',{caption: "Columns: CTRL-click select/deselect a column, CTRL-A select all",
-													 width: 500});
+						grid.jqGrid('columnChooser',{width: 500});
 					}
 					,position:"last"
 					,title:"Add/Remove Columns"

@@ -12,7 +12,9 @@ $(document).ready(function(){
 });
 
 $.subscribe('resetSearchCriteria', function(event,data)  {
-	$('.itemType').hide();
+	$('#amountTypeDiv').toggle(false);
+	$('#itemTypeDiv').toggle(true);
+	/*$('.itemType').hide();
 	$('.amountType').hide();
 	if(getQryType()==1){
 		$('.itemType').show();
@@ -22,11 +24,11 @@ $.subscribe('resetSearchCriteria', function(event,data)  {
 		$('.amountType').show();
 		$('#amountTypeDiv').toggle(true);
 		$('#itemTypeDiv').toggle(false);
-	}
+	}*/
 });
 
-$.subscribe("iafaSumItemTypeQueryTableComplete", function (event, data) {
-		var grid = $('#iafaSummaryByItemTypeQueryTable');
+$.subscribe("iafaSummaryTableComplete", function (event, data) {
+		var grid = $('#iafaSummaryTable');
 		var error = grid.jqGrid('getGridParam', 'userData');
 		
 		if (error != null && error.length > 0) {
@@ -43,26 +45,20 @@ $.subscribe("iafaSumItemTypeQueryTableComplete", function (event, data) {
 	             }
 			});
 		}
-});
-
-$.subscribe("iafaSumAmountTypeQueryTableComplete", function (event, data) {
-		var grid = $('#iafaSummaryByItemTypeQueryTable');
-		var error = grid.jqGrid('getGridParam', 'userData');
-		
-		if (error != null && error.length > 0) {
-			$("#errorMessage").html(error);
-			$("#errorMessage").dialog({
-				title:"Search Error",
-			    resizable: false,
-			    height:"auto",
-			    modal: true,
-			    buttons: {
-	                "Ok": function() {
-	                    $(this).dialog("close");
-	                 }
-	             }
-			});
+		   
+     grid.jqGrid({pager:'#iafaSummaryTable_pager'})
+		.jqGrid('navButtonAdd'
+		,'#iafaSummaryTable_pager'
+		,{id:"columnSelector_iafaSummaryTable"
+		,caption:""
+		,buttonicon:"ui-icon-extlink"
+		,onClickButton:function(){ 
+			grid.jqGrid('columnChooser',{width: 500});
 		}
+		,position:"last"
+		,title:"Add/Remove Columns"
+		,cursor:"pointer"
+		});
 });
 
 function getQryType(){
@@ -89,14 +85,17 @@ function submitSearch(){
 	$('#amountTypeCd').val($('#amountTypeCd_widget').val());
 	$('#costPrereqCd').val($('#costPrereqCd_widget').val());
 	$('#reasonCd').val($('#reasonCd_widget').val());
+	$('#appType').val($('#appType_widget').val());
 	
-	if(getQryType()==1){
+	$('#iafaSummaryTable').jqGrid('setGridParam',{datatype:'json'});
+	$.publish('reloadIafaSummaryTable');
+	/*if(getQryType()==1){
 		$('#iafaSummaryByItemTypeQueryTable').jqGrid('setGridParam',{datatype:'json'});
 		$.publish('reloadIafaSumItemTypeQueryTable');
 	}else{
 		$('#iafaSummaryByAmountTypeQueryTable').jqGrid('setGridParam',{datatype:'json'});
 		$.publish('reloadIafaSumAmountTypeQueryTable');
-	}
+	}*/
 }
 
 function resetSearch(){
@@ -104,15 +103,9 @@ function resetSearch(){
 }
 
 function exportToCSV(){
-	var tableNm;
-	if(getQryType()==1){
-		tableNm = "iafaSummaryByItemTypeQueryTable";
-	}else{
-		tableNm = "iafaSummaryByAmountTypeQueryTable";
-	}
 	$.ajax({
 		type: "POST",
-		data: JSON.stringify(exportGrid(tableNm,"iafaSummaryRecords","gridFrm")),
+		data: JSON.stringify(exportGrid("iafaSummaryTable","iafaSummaryRecords","gridFrm")),
 		dataType: "json",
 		cache: false,
 		contentType: "application/json",
@@ -120,8 +113,8 @@ function exportToCSV(){
 		success: function (data) {
 			window.location = "downloadCsv.action?csvFileName=" + data.csvFileName+"&fileName="+data.fileName;
 		}, complete: function () {
-			$('#iafaSummaryQueryTable').jqGrid('setGridParam',{datatype:'json'});
-			$.publish('reloadIafaSummaryQueryTable');
+			$('#iafaSummaryTable').jqGrid('setGridParam',{datatype:'json'});
+			$.publish('reloadIafaSummaryTable');
 		},
 	 	error: function (x, e) {
 			ajaxErrorHandler(x, e, "Save", null, null);

@@ -1,4 +1,4 @@
-package fwp.alsaccount.sabhrs.json;
+package fwp.alsaccount.sales.json;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -15,7 +15,7 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 import com.opensymphony.xwork2.ActionSupport;
 
 import fwp.ListComp;
-import fwp.alsaccount.dto.sabhrs.IafaDetailsDTO;
+import fwp.alsaccount.dto.sales.IafaDetailsDTO;
 
 /**
  * Action handler for the SABHRS Query search page to CSV export file.

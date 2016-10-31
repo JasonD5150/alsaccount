@@ -1,4 +1,4 @@
-package fwp.alsaccount.sabhrs.grid;
+package fwp.alsaccount.sales.grid;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionSupport;
 
-import fwp.alsaccount.dto.sabhrs.IafaDetailsDTO;
+import fwp.alsaccount.dto.sales.IafaDetailsDTO;
 import fwp.alsaccount.utils.HibHelpers;
 import fwp.alsaccount.utils.Utils;
 

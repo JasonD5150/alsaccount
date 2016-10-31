@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+<constant name="struts.devMode" value="false" />
+
+	<package name="fwp.alsaccount.sales" namespace="" extends="struts-default">
+		<action name="iafaQuery_*" method="{1}" class="fwp.alsaccount.action.GenericAction">
+			<result>sales/iafaDetailsQuery.jsp</result>
+			<result name="error">sales/iafaDetailsQuery.jsp</result>
+			<result name="input">sales/iafaDetailsQuery.jsp</result>        
+		</action>
+		<action name="iafaDetailsQueryDiv_*" method="{1}" class="fwp.alsaccount.sales.action.IafaDetailsQueryDivAction">
+			<result>sales/include/iafaDetailsQueryDiv.jsp</result>
+			<result name="error">sales/include/iafaDetailsQueryDiv.jsp</result>
+			<result name="input">sales/include/iafaDetailsQueryDiv.jsp</result>        
+		</action>
+		<action name="iafaSummaryQuery_*" method="{1}" class="fwp.alsaccount.action.GenericAction">
+			<result>sales/iafaSummaryQuery.jsp</result>
+			<result name="error">sales/iafaSummaryQuery.jsp</result>
+			<result name="input">sales/iafaSummaryQuery.jsp</result>        
+		</action>
+		<action name="iafaSummaryQueryDiv_*" method="{1}" class="fwp.alsaccount.sales.action.IafaSummaryQueryDivAction">
+			<result>sales/include/iafaSummaryQueryDiv.jsp</result>
+			<result name="error">sales/include/iafaSummaryQueryDiv.jsp</result>
+			<result name="input">sales/include/iafaSummaryQueryDiv.jsp</result>        
+		</action>
+		<action name="tribalQuery_*" method="{1}" class="fwp.alsaccount.action.GenericAction">
+			<result>sales/tribalQuery.jsp</result>
+			<result name="error">sales/tribalQuery.jsp</result>
+			<result name="input">sales/tribalQuery.jsp</result>        
+		</action>
+		<action name="tribalQueryDiv_*" method="{1}" class="fwp.alsaccount.sales.action.TribalQueryDivAction">
+			<result>sales/include/tribalQueryDiv.jsp</result>
+			<result name="error">sales/include/tribalQueryDiv.jsp</result>
+			<result name="input">sales/include/tribalQueryDiv.jsp</result>        
+		</action>
+	</package>
+ 
+ 	<package name="fwp.alsaccount.sales.grid" namespace="/alsAccount" extends="json-default">     
+		<action name="iafaQueryGrid_*" class="fwp.alsaccount.sales.grid.IafaQueryGridAction">
+            <result type="json" />
+        	<result type="json" name="input"></result>   
+        </action>
+        <action name="iafaSummaryGrid_*" class="fwp.alsaccount.sales.grid.IafaSummaryQueryGridAction">
+            <result type="json" />
+        	<result type="json" name="input"></result>   
+        </action>
+        <action name="tribalSalesGrid_*" class="fwp.alsaccount.sales.grid.TribalSalesQueryGridAction">
+            <result type="json" />
+        	<result type="json" name="input"></result>   
+        </action>
+   </package>
+   
+	<package name="fwp.alsaccount.sales.json" extends="json-default" >
+        <action name="iafaQueryBuildCsv" class="fwp.alsaccount.sales.json.IafaQueryBuildCsvAction">
+            <interceptor-ref name="json">
+                <param name="enableSMD">true</param>
+            </interceptor-ref>
+            <result type="json"/>
+        </action>
+		<action name="iafaSummaryQueryBuildCsv" class="fwp.alsaccount.sales.json.IafaSummaryQueryBuildCsvAction">
+            <interceptor-ref name="json">
+                <param name="enableSMD">true</param>
+            </interceptor-ref>
+            <result type="json"/>
+        </action>
+        <action name="tribalSalesQueryBuildCsv" class="fwp.alsaccount.sales.json.TribalSalesQueryBuildCsvAction">
+            <interceptor-ref name="json">
+                <param name="enableSMD">true</param>
+            </interceptor-ref>
+            <result type="json"/>
+        </action>
+    </package>
+</struts>    
