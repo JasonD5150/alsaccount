@@ -38,7 +38,6 @@ import fwp.alsaccount.dto.sabhrs.InternalProviderBankCdDepLinkDTO;
 import fwp.alsaccount.dto.sabhrs.InternalProviderTdtDTO;
 import fwp.alsaccount.dto.sales.IafaDetailsDTO;
 import fwp.alsaccount.dto.sales.IafaSummaryDTO;
-import fwp.alsaccount.dto.sales.TribalSalesDTO;
 import fwp.alsaccount.hibernate.HibernateSessionFactory;
 
 public class HibHelpers {
