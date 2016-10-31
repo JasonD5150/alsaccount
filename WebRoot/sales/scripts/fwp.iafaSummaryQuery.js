@@ -113,8 +113,9 @@ function exportToCSV(){
 		success: function (data) {
 			window.location = "downloadCsv.action?csvFileName=" + data.csvFileName+"&fileName="+data.fileName;
 		}, complete: function () {
-			$('#iafaSummaryTable').jqGrid('setGridParam',{datatype:'json'});
-			$.publish('reloadIafaSummaryTable');
+			$.unblockUI();
+			//$('#iafaSummaryTable').jqGrid('setGridParam',{datatype:'json'});
+			//$.publish('reloadIafaSummaryTable');
 		},
 	 	error: function (x, e) {
 			ajaxErrorHandler(x, e, "Save", null, null);

@@ -102,8 +102,9 @@ function exportToCSV(){
 		success: function (data) {
 			window.location = "downloadCsv.action?csvFileName=" + data.csvFileName+"&fileName="+data.fileName;
 		}, complete: function () {
-			$('#alsSabhrsQueryTable').jqGrid('setGridParam',{datatype:'json'});
-			$('#alsSabhrsQueryTable').trigger("reloadGrid");
+			$.unblockUI();
+			//$('#alsSabhrsQueryTable').jqGrid('setGridParam',{datatype:'json'});
+			//$('#alsSabhrsQueryTable').trigger("reloadGrid");
 		},
 		error: function (x, e) {
 			ajaxErrorHandler(x, e, "Save", null, null);

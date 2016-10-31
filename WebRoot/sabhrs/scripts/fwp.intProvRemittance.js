@@ -656,8 +656,9 @@ function gridToCSV(){
 	success: function (data) {
 		window.location = "downloadCsv.action?csvFileName=" + data.csvFileName+"&fileName="+data.fileName;
 	}, complete: function () {
-		$('#alsInternalRemittance').jqGrid('setGridParam',{datatype:'json'});
-		$('#alsInternalRemittance').trigger("reloadGrid");
+		$.unblockUI();
+		//$('#alsInternalRemittance').jqGrid('setGridParam',{datatype:'json'});
+		//$('#alsInternalRemittance').trigger("reloadGrid");
 	},
 	error: function (x, e) {
 		ajaxErrorHandler(x, e, "Save", null, null);
@@ -677,8 +678,9 @@ function intRemittanceRptCSV(){
 		success: function (data) {
 			window.location = "downloadCsv.action?csvFileName=" + data.csvFileName+"&fileName="+data.fileName;
 		}, complete: function () {
-			$('#alsInternalRemittance').jqGrid('setGridParam',{datatype:'json'});
-			$('#alsInternalRemittance').trigger("reloadGrid");
+			$.unblockUI();
+			//$('#alsInternalRemittance').jqGrid('setGridParam',{datatype:'json'});
+			//$('#alsInternalRemittance').trigger("reloadGrid");
 		},
 		error: function (x, e) {
 			ajaxErrorHandler(x, e, "Save", null, null);

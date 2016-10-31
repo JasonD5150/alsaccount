@@ -38,6 +38,7 @@ import fwp.alsaccount.dto.sabhrs.InternalProviderBankCdDepLinkDTO;
 import fwp.alsaccount.dto.sabhrs.InternalProviderTdtDTO;
 import fwp.alsaccount.dto.sales.IafaDetailsDTO;
 import fwp.alsaccount.dto.sales.IafaSummaryDTO;
+import fwp.alsaccount.dto.sales.TribalSalesDTO;
 import fwp.alsaccount.hibernate.HibernateSessionFactory;
 
 public class HibHelpers {
@@ -2349,6 +2350,134 @@ public class HibHelpers {
 			getSession().close();
 		}
         return tmpTransGrpId+String.format("%03d", maxSeq);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<TribalSalesDTO> getTribalSalesRecords(String tribeCd, Integer provNo, Integer itemTypeCd, Date upFromDt, Date upToDt,
+													  Date fromDt, Date toDt, Date bpFromDt, Date bpToDt) throws HibernateException {
+		List<TribalSalesDTO> lst = new ArrayList<TribalSalesDTO>();
+		StringBuilder queryStr = new StringBuilder("SELECT AIAFA.ATI_TRIBE_CD tribeCd, "
+														+ "ATI.ATI_TRIBE_NM tribeNm, "
+														+ "APR.APR_EFT_DEPOSIT_DEADLINE_DT eftDepDeadline, "
+														+ "DECODE(AIAFA.AIAFA_AMT_TYPE "
+															+ ",ALS.ALS_PACKAGE.GET_PVAL('IAFA_AMOUNT_TYPE','ITEM FEE NOT PAYABLE BY FWP')"
+															+ ",'Tribal HQ'"
+															+ ",ALS.ALS_PACKAGE.GET_PVAL('IAFA_AMOUNT_TYPE','COMM NOT PAYABLE BY FWP')"
+															+ ",'Tribal HQ'"
+															+ ",'MT FWP ') dueTo, "
+														+ "APR.APR_BILLING_TO bpEndDt, "
+														+ "APR.API_PROVIDER_NO provNo, "
+														+ "API.API_BUSINESS_NM provNm, "
+														+ "AST.AICT_ITEM_TYPE_CD itemTypeCd, "
+														+ "DECODE(NVL(AST.AICT_ITEM_TYPE_CD,'X'),'X','ACCOUNTING ENTRY NOT LINKED TO ITEM',AIT.AIT_TYPE_DESC) itemTypeDesc, "
+														+ "SUM(DECODE(AIAFA.AIAFA_AMT_TYPE, "
+															+ "ALS.ALS_PACKAGE.GET_PVAL('IAFA_AMOUNT_TYPE','ITEM'),1, "
+															+ "ALS.ALS_PACKAGE.GET_PVAL('IAFA_AMOUNT_TYPE', 'ITEM FEE NOT PAYABLE BY FWP'),1,0)) salesCount, "
+														+ "SUM(DECODE(AIAFA.AIAFA_AMT_TYPE, "
+															+ "ALS.ALS_PACKAGE.GET_PVAL('IAFA_AMOUNT_TYPE','ITEM'),AIAFA_AMT,"
+															+ "ALS.ALS_PACKAGE.GET_PVAL('IAFA_AMOUNT_TYPE','ITEM FEE NOT PAYABLE BY FWP'),AIAFA_AMT,0)) salesAmt, "
+														+ "SUM(DECODE(AIAFA.AIAFA_AMT_TYPE, "
+															+ "ALS.ALS_PACKAGE.GET_PVAL('IAFA_AMOUNT_TYPE','PAE'),AIAFA_AMT,"
+															+ "ALS.ALS_PACKAGE.GET_PVAL('IAFA_AMOUNT_TYPE','COMM NOT PAYABLE BY FWP'),AIAFA_AMT,0)) adjEntries, "
+														+ "SUM(AIAFA.AIAFA_AMT) netAmt "
+												+ "FROM ALS.ALS_ITEM_APPL_FEE_ACCT AIAFA "
+													+ "RIGHT OUTER JOIN ALS.ALS_SESSION_TRANS AST "
+														+ "ON (AST.AHM_TYPE = AIAFA.AHM_TYPE "
+															+ "AND AST.AHM_CD = AIAFA.AHM_CD "
+															+ "AND AST.AS_SESSION_DT = AIAFA.AS_SESSION_DT "
+															+ "AND AST.AST_TRANSACTION_CD = AIAFA.AST_TRANSACTION_CD "
+															+ "AND AST.AST_TRANSACTION_SEQ_NO = AIAFA.AST_TRANSACTIOn_SEQ_NO) "
+													+ "JOIN ALS.ALS_ITEM_TYPE AIT "
+														+ "ON AIT.AI_ITEM_ID||AIT.AIC_CATEGORY_ID||AIT.AIT_TYPE_ID = NVL(AST.AICT_ITEM_TYPE_CD,'2001001') "
+													+ "JOIN ALS.ALS_PROVIDER_REMITTANCE APR "
+														+ "ON (APR.API_PROVIDER_NO = AIAFA.API_PROVIDER_NO "
+															+ "AND APR.APR_BILLING_FROM = AIAFA.APR_BILLING_FROM "
+															+ "AND APR.APR_BILLING_TO = AIAFA.APR_BILLING_TO ) "
+													+ "JOIN ALS.ALS_PROVIDER_INFO API "
+														+ "ON API.API_PROVIDER_NO = APR.API_PROVIDER_NO "
+													+ "JOIN ALS.ALS_TRIBE_INFO ATI "
+														+ "ON ATI.ATI_TRIBE_CD = AIAFA.ATI_TRIBE_CD "
+												+ "WHERE AIAFA.ATI_TRIBE_CD IS NOT NULL "
+												+ "AND AIAFA.AIAFA_STATUS = 'A' "
+												+ "AND NVL(AIAFA_REASON_CD,0) <> ALS.ALS_PACKAGE.GET_PVAL('PAE_REASON','FWP COMMISSION' ) "
+												+ "AND NVL(AST.AST_TRANS_STATUS,'A') = 'A' ");
+		
+		if(!Utils.isNil(tribeCd))
+			queryStr.append("AND AIAFA.ATI_TRIBE_CD = :tribeCd ");
+		if(!Utils.isNil(provNo))
+			queryStr.append("AND APR.API_PROVIDER_NO = :provNo ");
+		if(!Utils.isNil(itemTypeCd))
+			queryStr.append("AND AST.AICT_ITEM_TYPE_CD = :itemTypeCd ");
+		if(!Utils.isNil(upFromDt)&&!Utils.isNil(upToDt)){
+			queryStr.append("AND AST.AICT_USAGE_PERIOD_FROM = :upFromDt ");
+			queryStr.append("AND AST.AICT_USAGE_PERIOD_TO = :upToDt ");
+		}
+		if(!Utils.isNil(bpFromDt)&&!Utils.isNil(bpToDt)){
+			queryStr.append("AND APR.APR_BILLING_FROM = :bpFromDt ");
+			queryStr.append("AND APR.APR_BILLING_TO = :bpToDt ");
+		}
+		if(!Utils.isNil(fromDt)&&!Utils.isNil(toDt)){
+			queryStr.append("AND aiafa.AIAFA_When_Log BETWEEN :fromDt AND :toDt ");
+		}
+		
+		queryStr.append("GROUP BY AIAFA.ATI_TRIBE_CD, "
+						+ "ATI.ATI_TRIBE_NM, "
+						+ "APR.APR_EFT_DEPOSIT_DEADLINE_DT, "
+						+ "DECODE(AIAFA.AIAFA_AMT_TYPE"
+							+ ",ALS.ALS_PACKAGE.GET_PVAL('IAFA_AMOUNT_TYPE','ITEM FEE NOT PAYABLE BY FWP')"
+							+ ",'Tribal HQ',ALS.ALS_PACKAGE.GET_PVAL('IAFA_AMOUNT_TYPE','COMM NOT PAYABLE BY FWP')"
+							+ ",'Tribal HQ'"
+							+ ",'MT FWP '), "
+						+ "APR.APR_BILLING_TO, "
+						+ "APR.API_PROVIDER_NO, "
+						+ "API.API_BUSINESS_NM, "
+						+ "AST.AICT_ITEM_TYPE_CD, "
+						+ "DECODE(NVL(AST.AICT_ITEM_TYPE_CD,'X')"
+							+ ",'X'"
+							+ ",'ACCOUNTING ENTRY NOT LINKED TO ITEM',AIT.AIT_TYPE_DESC)");
+						
+		try {
+			Query query = getSession().createSQLQuery(queryStr.toString())
+									  .addScalar("tribeCd")
+									  .addScalar("tribeNm")
+									  .addScalar("eftDepDeadline", DateType.INSTANCE)
+									  .addScalar("dueTo")
+									  .addScalar("bpEndDt", DateType.INSTANCE)
+									  .addScalar("provNo", IntegerType.INSTANCE)
+									  .addScalar("provNm")
+									  .addScalar("itemTypeCd", IntegerType.INSTANCE)
+									  .addScalar("itemTypeDesc")
+									  .addScalar("salesCount", IntegerType.INSTANCE)
+									  .addScalar("salesAmt", DoubleType.INSTANCE)
+									  .addScalar("adjEntries", DoubleType.INSTANCE)
+									  .addScalar("netAmt", DoubleType.INSTANCE)
+									  .setResultTransformer(Transformers.aliasToBean(TribalSalesDTO.class));
+			
+			if(!Utils.isNil(tribeCd))
+				query.setString("tribeCd", tribeCd);
+			if(!Utils.isNil(provNo))
+				query.setInteger("provNo", provNo);
+			if(!Utils.isNil(itemTypeCd))
+				query.setInteger("itemTypeCd", itemTypeCd);
+			if(!Utils.isNil(upFromDt)&&!Utils.isNil(upToDt)){
+				query.setDate("upFromDt", upFromDt);
+				query.setDate("upToDt", upToDt);
+			}
+			if(!Utils.isNil(bpFromDt)&&!Utils.isNil(bpToDt)){
+				query.setDate("bpFromDt", bpFromDt);
+				query.setDate("bpToDt", bpToDt);
+			}
+			if(!Utils.isNil(fromDt)&&!Utils.isNil(toDt)){
+				query.setDate("fromDt", fromDt);
+				query.setDate("toDt", toDt);
+			}
+			
+			lst = query.list();
+		} 
+		catch (HibernateException he){System.out.println(he.toString());}
+		catch (RuntimeException re){System.out.println(re.toString());}
+		finally {getSession().close();}
+		return lst;
 	}
 	
 }

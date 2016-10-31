@@ -1,7 +1,9 @@
 package fwp.alsaccount.sabhrs.grid;
 
+import java.math.RoundingMode;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +64,9 @@ public class AlsInternalRemittanceGridAction extends ActionSupport{
         		if(airLst.size() > 10000){
         			setUserdata("Please narrow search. The search grid is limited to 10000 rows. There were " + airLst.size() + " entries selected.");
         		}else{
+        			DecimalFormat df = new DecimalFormat("#.##");
+        			//df.setRoundingMode(RoundingMode.CEILING);
+        			
         			AlsInternalRemittanceDTO airDTO = null;
         			AlsProviderRemittanceAS aprAS = new AlsProviderRemittanceAS();
         			AlsProviderRemittance apr = new AlsProviderRemittance();
@@ -128,9 +133,10 @@ public class AlsInternalRemittanceGridAction extends ActionSupport{
             			/*CALCULATED FIELDS*/
             			airDTO.setAirTotSales(Utils.nullFix(tmp.getAirSystemSales())+Utils.nullFix(tmp.getAirOtcPhoneSales())+Utils.nullFix(tmp.getAirPae())+Utils.nullFix(tmp.getAirNonAlsSales()));
             			airDTO.setTotFundsRec(Utils.nullFix(airDTO.getTotBankDep())+Utils.nullFix(tmp.getAirCreditSales()));
-            			airDTO.setAirDifference(Utils.nullFix(airDTO.getTotFundsRec())-Utils.nullFix(airDTO.getAirTotSales()));
+            			airDTO.setAirDifference(Double.valueOf(df.format(Utils.nullFix(airDTO.getAirTotSales())-Utils.nullFix(airDTO.getTotFundsRec()))));
             			airDTO.setNetOverShortOfSales(Utils.nullFix(tmp.getAirOverSales())-Utils.nullFix(tmp.getAirShortSales()));
-            			airDTO.setBillingBallanced((Double.compare(airDTO.getAirDifference(), airDTO.getNetOverShortOfSales()) == 0 ? "Y" : "N"));
+            			
+            			airDTO.setBillingBallanced((Double.compare(Math.abs(airDTO.getAirDifference()), Math.abs(airDTO.getNetOverShortOfSales())) == 0 ? "Y" : "N"));
             			
             			airDTO.setBankDepEditOnly(tmp.getBankDepEditOnly());
             			model.add(airDTO);
