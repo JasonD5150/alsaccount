@@ -29,11 +29,7 @@
 			<result name="error">sales/tribalQuery.jsp</result>
 			<result name="input">sales/tribalQuery.jsp</result>        
 		</action>
-		<action name="tribalQueryDiv_*" method="{1}" class="fwp.alsaccount.sales.action.TribalQueryDivAction">
-			<result>sales/include/tribalQueryDiv.jsp</result>
-			<result name="error">sales/include/tribalQueryDiv.jsp</result>
-			<result name="input">sales/include/tribalQueryDiv.jsp</result>        
-		</action>
+		
 	</package>
  
  	<package name="fwp.alsaccount.sales.grid" namespace="/alsAccount" extends="json-default">     
@@ -45,10 +41,7 @@
             <result type="json" />
         	<result type="json" name="input"></result>   
         </action>
-        <action name="tribalSalesGrid_*" class="fwp.alsaccount.sales.grid.TribalSalesQueryGridAction">
-            <result type="json" />
-        	<result type="json" name="input"></result>   
-        </action>
+        
    </package>
    
 	<package name="fwp.alsaccount.sales.json" extends="json-default" >
@@ -64,11 +57,6 @@
             </interceptor-ref>
             <result type="json"/>
         </action>
-        <action name="tribalSalesQueryBuildCsv" class="fwp.alsaccount.sales.json.TribalSalesQueryBuildCsvAction">
-            <interceptor-ref name="json">
-                <param name="enableSMD">true</param>
-            </interceptor-ref>
-            <result type="json"/>
-        </action>
+        
     </package>
 </struts>    
