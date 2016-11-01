@@ -87,13 +87,13 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 				}
 				/*Approved By Provider*/
 				if(original.getAirCompleteProvider() == null && "true".equals(provComp)){
-					original.setAirCompleteProvider(date);tmpAS.save(original);
+					original.setAirCompleteProvider(date);
 				}else if(original.getAirCompleteProvider() != null && "false".equals(provComp)){
-					original.setAirCompleteProvider(null);tmpAS.save(original);
+					original.setAirCompleteProvider(null);
 				}
 				/*Remittance NOT Approved, Comments Changed*/
 				if(original.getAirOfflnPaymentAppCom() != null && !original.getAirOfflnPaymentAppCom().equals(disAppCom)){
-					original.setAirOfflnPaymentAppCom(disAppCom);tmpAS.save(original);
+					original.setAirOfflnPaymentAppCom(disAppCom);
 				}
 				/*Remittance Approved*/
 				if(!"Y".equals(original.getAirOfflnPaymentApproved())&&"true".equals(remApp)){
@@ -382,7 +382,7 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 			aprvStatus = "A";
 			aprvDt = date;
 			aprvUser = "auto_"+userInfo.getStateId();
-			gi001 = grpIdentifier1.substring(0, grpIdentifier1.length()-4);
+			gi001 = grpIdentifier1.substring(0, grpIdentifier1.length()-4)+ " 001";
 		}
 		AlsTransactionGrpStatusAS atgsAS = new AlsTransactionGrpStatusAS();
 		AlsTransactionGrpStatus atgs = new AlsTransactionGrpStatus();
