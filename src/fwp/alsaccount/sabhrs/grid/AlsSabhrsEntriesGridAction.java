@@ -1,5 +1,6 @@
 package fwp.alsaccount.sabhrs.grid;
 
+import java.sql.Date;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +43,8 @@ public class AlsSabhrsEntriesGridAction extends ActionSupport{
         try{
         	String transIdentifier = null;
         	if(!Utils.isNil(provNo) && !Utils.isNil(bpTo)){
-            	transIdentifier = hh.getTransGrpIdMaxSeq(provNo, bpTo);
+        		//transIdentifier = Utils.createIntProvGroupIdentifier(Integer.parseInt(provNo), bpTo, 1);
+            	transIdentifier = hh.getTransGrpIdMaxSeq(provNo, bpTo.toString());
         	}
         	if(!Utils.isNil(transIdentifier)){
         		aseLst = aseAS.getRemittanceRecords(transIdentifier, 8);

@@ -52,6 +52,7 @@ public class AlsInternalRemittanceGridAction extends ActionSupport{
     private Boolean 			hasNonAlsDetails;
     private Boolean 			hasOverShortDetails;
     private Boolean				hasPaeAmt;
+    private Boolean 			srchAll;
     
 	public String buildgrid(){ 
         try{
@@ -60,7 +61,7 @@ public class AlsInternalRemittanceGridAction extends ActionSupport{
         		AlsInternalRemittanceAS airAS = new AlsInternalRemittanceAS();
     			List<AlsInternalRemittanceDTO> airLst = new ArrayList<AlsInternalRemittanceDTO>();
         		
-        		airLst = airAS.getRemittanceRecords(provNo, bpFrom, bpTo, hasNonAlsDetails, hasOverShortDetails, hasPaeAmt, comByProv, comByProvDt, app, appBy, appDt, appCom);
+        		airLst = airAS.getRemittanceRecords(provNo, bpFrom, bpTo, hasNonAlsDetails, hasOverShortDetails, hasPaeAmt, comByProv, comByProvDt, app, appBy, appDt, appCom, srchAll);
         		if(airLst.size() > 10000){
         			setUserdata("Please narrow search. The search grid is limited to 10000 rows. There were " + airLst.size() + " entries selected.");
         		}else{
@@ -96,6 +97,7 @@ public class AlsInternalRemittanceGridAction extends ActionSupport{
             			airDTO.setAirOfflnPaymentAppBy(tmp.getAirOfflnPaymentAppBy());
             			airDTO.setAirOfflnPaymentAppCom(tmp.getAirOfflnPaymentAppCom());
             			airDTO.setAirOfflnPaymentApproved(tmp.getAirOfflnPaymentApproved());
+            			airDTO.setAirOfflnPaymentReviewed(tmp.getAirOfflnPaymentReviewed());
 
             			
             			/*SETTING DATE INSTEAD OF TIMESTAMP, exportToCSV() DOES NOT LIKE TIMESTAMPS*/
@@ -386,4 +388,13 @@ public class AlsInternalRemittanceGridAction extends ActionSupport{
 	public void setAppCom(String appCom) {
 		this.appCom = appCom;
 	}
+
+	public Boolean getSrchAll() {
+		return srchAll;
+	}
+
+	public void setSrchAll(Boolean srchAll) {
+		this.srchAll = srchAll;
+	}
+	
 }

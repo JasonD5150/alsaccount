@@ -45,6 +45,7 @@
      <column name="AIR_WHO_LOG" jdbc-type="VARCHAR" type="String"></column>
      <column name="AIR_WHEN_LOG" jdbc-type="DATE" type="java.sql.Timestamp"></column>
      <column name="AIR_SYSTEM_SALES" jdbc-type="NUMERIC" type="Double"></column>
+     <column name="AIR_OFFLN_PAYMENT_REVIEWED" jdbc-type="VARCHAR" type="String"></column>
    </table>
 	 <table name="ALS_OVER_UNDER_SALES_DETS" schema="ALS" class="fwp.alsaccount.dao.sabhrs.AlsOverUnderSalesDets"> 
      <primary-key id-class="fwp.alsaccount.dao.sabhrs.AlsOverUnderSalesDetsIdPk" property="idPk">

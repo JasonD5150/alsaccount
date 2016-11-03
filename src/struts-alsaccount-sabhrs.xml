@@ -106,6 +106,16 @@
 			<result name="error">sabhrs/include/depositSlipDiv.jsp</result>
 			<result name="delete">sabhrs/include/depositSlipDiv.jsp</result>
 		</action>
+		<action name="distQuery_*" method="{1}" class="fwp.alsaccount.action.GenericAction">
+			<result>sabhrs/distributionQuery.jsp</result>
+			<result name="error">sabhrs/distributionQuery.jsp</result>
+			<result name="input">sabhrs/distributionQuery.jsp</result>        
+		</action>
+		<action name="distQueryDiv_*" method="{1}" class="fwp.alsaccount.sabhrs.action.DistributionQueryDivAction">
+			<result>sabhrs/include/distributionQueryDiv.jsp</result>
+			<result name="error">sabhrs/include/distributionQueryDiv.jsp</result>
+			<result name="input">sabhrs/include/distributionQueryDiv.jsp</result>        
+		</action>
 	</package>
  
  	<package name="fwp.alsaccount.sabhrs.grid" namespace="/alsAccount" extends="json-default">     
@@ -228,6 +238,9 @@
             </result>
 		</action>
 		<action name="manualProviderAdjEntriesIAFAGrid_*" class="fwp.alsaccount.sabhrs.grid.ManualProviderAdjEntriesIAFAGridAction">
+            <result type="json" />
+        </action>
+        <action name="distributionQueryGrid_*" class="fwp.alsaccount.sabhrs.grid.DistributionQueryGridAction">
             <result type="json" />
         </action>
    </package>

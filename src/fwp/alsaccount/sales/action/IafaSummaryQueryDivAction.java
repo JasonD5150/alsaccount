@@ -24,7 +24,6 @@ public class IafaSummaryQueryDivAction extends ActionSupport{
 	private List<ListComp> reasonTypeCdLst;
 
 	public IafaSummaryQueryDivAction(){
-		System.out.println("");
 	}
 
 	public String input(){

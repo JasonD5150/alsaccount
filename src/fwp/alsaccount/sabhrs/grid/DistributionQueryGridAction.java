@@ -1,7 +1,6 @@
 package fwp.alsaccount.sabhrs.grid;
 
-import java.util.ArrayList;
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 import org.hibernate.HibernateException;
@@ -10,15 +9,15 @@ import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionSupport;
 
-import fwp.alsaccount.appservice.sabhrs.AlsSabhrsEntriesAS;
-import fwp.alsaccount.dao.sabhrs.AlsSabhrsEntries;
 import fwp.alsaccount.dto.sabhrs.AlsSabhrsEntriesDTO;
+import fwp.alsaccount.dto.sabhrs.DistributionQueryDTO;
+import fwp.alsaccount.utils.HibHelpers;
 
-public class ManualProviderAdjEntriesSABHRSGridAction extends ActionSupport{
+public class DistributionQueryGridAction extends ActionSupport{
     private static final long   serialVersionUID = 5078264277068533593L;
-    private static final Logger    log              = LoggerFactory.getLogger(ManualProviderAdjEntriesSABHRSGridAction.class);
+    private static final Logger    log              = LoggerFactory.getLogger(DistributionQueryGridAction.class);
 
-    private List<AlsSabhrsEntriesDTO>    model;
+    private List<DistributionQueryDTO>    model;
     private Integer             rows             = 0;
     private Integer             page             = 0;
     private Integer             total            = 0;
@@ -29,58 +28,30 @@ public class ManualProviderAdjEntriesSABHRSGridAction extends ActionSupport{
     private boolean             loadonce         = false;
     
     private Integer 			provNo;
-    private Integer 			iafaSeqNo;
-    private Date				bpFrom;
-    private Date				bpTo;
+    private Integer 			itemTypeCd;
+    private Date 				fromDt;
+    private Date 				toDt;
+  
+    private String 				userdata;
 
-
-	public String buildgrid(){ 		
-    	AlsSabhrsEntriesAS aseAS = new AlsSabhrsEntriesAS();
-    	List<AlsSabhrsEntries> aseLst;
-    	
+    
+	public String buildgrid(){ 
+    	HibHelpers hh = new HibHelpers();
         try{
-        	aseLst = aseAS.getManualProviderAdjEntriesRecords(provNo, iafaSeqNo, bpFrom, bpTo);
-        	
-			setModel(new ArrayList<AlsSabhrsEntriesDTO>());
-			AlsSabhrsEntriesDTO tmp;
-
-        	for(AlsSabhrsEntries ase : aseLst){
-				tmp = new AlsSabhrsEntriesDTO();
-
-				tmp.setGridKey(ase.getIdPk().getAseWhenEntryPosted()+"_"+ase.getIdPk().getAseSeqNo()+"_"+ase.getIdPk().getAseDrCrCd()+"_"+ase.getIdPk().getAseTxnCdSeqNo());
-				tmp.setIdPk(ase.getIdPk());
-				tmp.setAsacBudgetYear(ase.getAsacBudgetYear());
-				tmp.setAsacReference(ase.getAsacReference());
-				tmp.setAamAccount(ase.getAamAccount());
-				tmp.setAamFund(ase.getAamFund());
-				tmp.setAocOrg(ase.getAocOrg());
-				tmp.setAsacProgram(ase.getAsacProgram());
-				tmp.setAsacSubclass(ase.getAsacSubclass());
-				tmp.setAamBusinessUnit(ase.getAamBusinessUnit());
-				tmp.setAsacProjectGrant(ase.getAsacProjectGrant());
-				tmp.setAseAmt(ase.getAseAmt());
-				tmp.setAsacSystemActivityTypeCd(ase.getAsacSystemActivityTypeCd());
-				tmp.setAsacTxnCd(ase.getAsacTxnCd());
-				tmp.setAseLineDescription(ase.getAseLineDescription());
-				
-				model.add(tmp);
-			}
+        	model = hh.getDistributionQueryRecords(provNo, itemTypeCd, fromDt, toDt);
         }
         catch (HibernateException re) {
         	//System.out.println(re.toString());
-            log.debug("AlsSabhrsEntries did not load " + re.getMessage());
+            log.debug("DistributionQueryGrid did not load " + re.getMessage());
         }
         setRows(model.size());
         setRecords(model.size());
-
         setTotal(1);
 
 	    return SUCCESS;
     }
 
-	
-	public String getJSON()
-	{
+	public String getJSON(){
 		return buildgrid();
 	}
 
@@ -148,12 +119,20 @@ public class ManualProviderAdjEntriesSABHRSGridAction extends ActionSupport{
         this.loadonce = loadonce;
     }
 
-	public List<AlsSabhrsEntriesDTO> getModel() {
+	public List<DistributionQueryDTO> getModel() {
 		return model;
 	}
 
-	public void setModel(List<AlsSabhrsEntriesDTO> model) {
+	public void setModel(List<DistributionQueryDTO> model) {
 		this.model = model;
+	}
+	
+	public String getUserdata() {
+		return userdata;
+	}
+
+	public void setUserdata(String userdata) {
+		this.userdata = userdata;
 	}
 
 	public Integer getProvNo() {
@@ -164,28 +143,28 @@ public class ManualProviderAdjEntriesSABHRSGridAction extends ActionSupport{
 		this.provNo = provNo;
 	}
 
-	public Integer getIafaSeqNo() {
-		return iafaSeqNo;
+	public Integer getItemTypeCd() {
+		return itemTypeCd;
 	}
 
-	public void setIafaSeqNo(Integer iafaSeqNo) {
-		this.iafaSeqNo = iafaSeqNo;
+	public void setItemTypeCd(Integer itemTypeCd) {
+		this.itemTypeCd = itemTypeCd;
 	}
 
-	public Date getBpTo() {
-		return bpTo;
+	public Date getFromDt() {
+		return fromDt;
 	}
 
-	public void setBpTo(Date bpTo) {
-		this.bpTo = bpTo;
+	public void setFromDt(Date fromDt) {
+		this.fromDt = fromDt;
 	}
 
-	public Date getBpFrom() {
-		return bpFrom;
+	public Date getToDt() {
+		return toDt;
 	}
 
-	public void setBpFrom(Date bpFrom) {
-		this.bpFrom = bpFrom;
+	public void setToDt(Date toDt) {
+		this.toDt = toDt;
 	}
 	
 	

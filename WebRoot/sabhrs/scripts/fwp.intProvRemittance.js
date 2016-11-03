@@ -23,11 +23,29 @@ window.onbeforeunload = function(){
 };
 
 function slipDlg(cellvalue, options, rowObject) {
+	var grid = $('#alsInternalRemittance');
+	var sel_id = grid.jqGrid('getGridParam','selrow'); 
 	var gridKey = rowObject["gridKey"];
+	var hasDepositSlip = rowObject["hasDepositSlip"];
+	var remittanceReviewed = grid.jqGrid('getCell', sel_id, 'airOfflnPaymentReviewed');
+	var remittanceApproved = grid.jqGrid('getCell', sel_id, 'airOfflnPaymentApproved');
 	if(hasIntProvRole == 'true'){
-		return "<a style='color:blue;' id='"+gridKey+"' onclick='slipLinkClicked(this);'>Edit</a>";
+		if(remittanceReviewed != "Y" && remittanceApproved == 'false'){
+			if(hasDepositSlip){
+				return "<a style='color:blue;' id='"+gridKey+"' onclick='slipLinkClicked(this);'>Edit</a>";
+			}else{
+				return "<a style='color:blue;' id='"+gridKey+"' onclick='slipLinkClicked(this);'>Upload</a>";
+			}
+		}else{
+			return "<a id='"+gridKey+"' >Not Attached</a>";
+		}
 	}else{
-		return "<a style='color:blue;' id='"+gridKey+"' onclick='slipLinkClicked(this);'>View</a>";
+		if(hasDepositSlip){
+			return "<a style='color:blue;' id='"+gridKey+"' onclick='slipLinkClicked(this);'>View</a>";
+		}else{
+			return "<a id='"+gridKey+"' >Not Attached</a>";
+		}
+		
 	}
 };
 
@@ -160,6 +178,11 @@ $.subscribe("internalRemittanceSelected", function(event, data) {
 	}else{
 		$('#remApp').prop('checked', false);
 	}
+	if(grid.jqGrid('getCell', sel_id, 'airOfflnPaymentReviewed') == 'Y'){
+		$('#remRev').prop('checked', true);
+	}else{
+		$('#remRev').prop('checked', false);
+	}
 	$('#disAppBy').val(grid.jqGrid('getCell', sel_id, 'airOfflnPaymentAppBy'));
 	$('#disAppDt').val(grid.jqGrid('getCell', sel_id, 'offlnPaymentAppDt'));
 	$('#disAppCom').val(grid.jqGrid('getCell', sel_id, 'airOfflnPaymentAppCom'));
@@ -174,16 +197,52 @@ $.subscribe("internalRemittanceSelected", function(event, data) {
 });
 
 $.subscribe("depositsGridComplete", function(event, data) {	
-	$("#depositsGrid").jqGrid({pager:'#depositsGrid_pager'}).jqGrid('navButtonAdd'
+	var grid = $("#depositsGrid");
+
+	grid.jqGrid({pager:'#depositsGrid_pager'}).jqGrid('navButtonAdd'
 	,'#depositsGrid_pager'
-	,{id:"addTemplate_depositsGrid"
-	,caption:"Generate Deposit Tickets"
+	,{id:"genDepositTickets_depositsGrid"
+	,caption:"Gen Deposit Tickets"
 	,buttonicon:"ui-icon-document"
 	,onClickButton:function(){ 
 		getTDT();
 	}
 	,position:"last"
 	,title:"Generate Deposit Tickets"
+	,cursor:"pointer"
+	});
+
+	grid.jqGrid({pager:'#depositsGrid_pager'}).jqGrid('navButtonAdd'
+	,'#depositsGrid_pager'
+	,{id:"selectAll_depositsGrid"
+	,caption:"Select All"
+	,buttonicon:"ui-icon-circle-plus"
+	,onClickButton:function(){ 
+	    var rows = grid.jqGrid("getDataIDs");
+	    for (i = 0; i < rows.length; i++)
+	    {
+			grid.jqGrid('setCell',rows[i],'genTDT',1);
+	    }
+	}
+	,position:"last"
+	,title:"Select All"
+	,cursor:"pointer"
+	});
+
+	grid.jqGrid({pager:'#depositsGrid_pager'}).jqGrid('navButtonAdd'
+	,'#depositsGrid_pager'
+	,{id:"deselectAll_depositsGrid"
+	,caption:"Deselect All"
+	,buttonicon:"ui-icon-circle-minus"
+	,onClickButton:function(){ 
+	    var rows = grid.jqGrid("getDataIDs");
+	    for (i = 0; i < rows.length; i++)
+	    {
+			grid.jqGrid('setCell',rows[i],'genTDT',0);
+	    }
+	}
+	,position:"last"
+	,title:"Add Template"
 	,cursor:"pointer"
 	});
 	if ( $("#depositsGrid").length) {
@@ -218,16 +277,15 @@ $.subscribe("alsNonAlsTemplateTableComplete", function(event, data) {
 	grid.jqGrid({pager:'#alsNonAlsTemplateTable_pager'}).jqGrid('navButtonAdd'
 	,'#alsNonAlsTemplateTable_pager'
 	,{id:"saveTemplates_alsNonAlsTemplateTable"
-	,caption:"Save"
+	,caption:"Generate Entries"
 	,buttonicon:"ui-icon-check"
 	,onClickButton:function(){ 
 		saveTemplates();
 		$('#alsNonAlsTempDiv').hide();
 		$('#nonAlsSabhrsEntriesDiv').show();
-		
 	}
 	,position:"last"
-	,title:"Save"
+	,title:"Generate Entries"
 	,cursor:"pointer"
 	});
 
@@ -479,6 +537,7 @@ function saveRemittance(){
 	    	 id:$('#alsInternalRemittance').jqGrid('getGridParam','selrow'),
 	    	 provComp:$('#provComp').is(':checked'),
 	    	 remApp:$('#remApp').is(':checked'),
+	    	 remRev:$('#remRev').is(':checked'),
 	    	 disAppCom:$('#disAppCom').val(),
 	    	 ccSales:$('#displayCCSales').val()},
       success: function(result){
@@ -526,6 +585,7 @@ function setVisibility(){
 	var grid = $('#alsInternalRemittance');
 	var sel_id = grid.jqGrid('getGridParam','selrow'); 
 	var dtCompletedByProv = grid.jqGrid('getCell', sel_id, 'completeProvider');
+	var remittanceReviewed = grid.jqGrid('getCell', sel_id, 'airOfflnPaymentReviewed');
 	var remittanceApproved = grid.jqGrid('getCell', sel_id, 'airOfflnPaymentApproved');
 	var interfaced = grid.jqGrid('getCell', sel_id, 'intFileGenerated');
 	var bankDepEditOnly = grid.jqGrid('getCell', sel_id, 'bankDepEditOnly');
@@ -561,13 +621,21 @@ function setVisibility(){
 				if(remittanceApproved == 'true'){
 					$('#remApp').prop({disabled:false});
 				}else{
-					if(dtCompletedByProv.length != 1){
-						$('#edit_depositsGrid').show();
-						$('#remApp').prop({disabled:false});
-						$('#disAppCom').prop({disabled:false});
-						$('#alsSabhrsEntriesGrid_pager_left').show();
-						$('#revAlsSabhrsEntriesGrid_pager_left').show();
-						$('#alsNonAlsTemplateTable_pager_left').show();
+					
+					if(remittanceReviewed == 'Y'){
+						$('#remRev').prop({disabled:false});
+						if(dtCompletedByProv.length != 1){
+							$('#remApp').prop({disabled:false});
+							$('#disAppCom').prop({disabled:false});
+							$('#alsSabhrsEntriesGrid_pager_left').show();
+							$('#revAlsSabhrsEntriesGrid_pager_left').show();
+							$('#alsNonAlsTemplateTable_pager_left').show();
+						}
+					}else{
+						if(dtCompletedByProv.length != 1){
+							$('#edit_depositsGrid').show();
+							$('#remRev').prop({disabled:false});
+						}
 					}
 				}
 			}		
@@ -585,6 +653,7 @@ function disableEditable(){
 	$('#alsNonAlsTemplateTable_pager_left').hide();
 	$('#remApp').prop({disabled:true});
 	$('#disAppCom').prop({disabled:true});
+	$('#remRev').prop({disabled:true});
 	//Int Prov
 	$('#alsNonAlsDetails_pager_left').hide();
 	$('#alsOverUnderSales_pager_left').hide();

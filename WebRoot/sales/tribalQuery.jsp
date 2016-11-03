@@ -115,7 +115,7 @@
 		viewrecords="true"
 		scroll="false"
 		scrollrows="false"
-		height="100"
+		height="200"
 		width="950"
         resizable="true"
 		rowNum="25"
@@ -128,7 +128,8 @@
 			<sjg:gridColumn name="tribeNm" index="tribeNm" title ="Tribe Name" width="150" sortable="false" editable="true"/>
 			<sjg:gridColumn name="eftDepDeadline" index="eftDepDeadline" title ="EFT Deposit Deadline" width="40" sortable="false" editable="true" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }"/>
 			<sjg:gridColumn name="dueTo" index="dueTo" title ="Due To" width="40" sortable="false" editable="true" />
-			<sjg:gridColumn name="bpEndDt" index="bpEndDt" title ="Billing Period End" width="70" sortable="false" editable="true" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }"/>
+			<sjg:gridColumn name="bpFromDt" index="bpFromDt" title ="Billing Period From" width="70" sortable="false" editable="true" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }"/>
+			<sjg:gridColumn name="bpToDt" index="bpToDt" title ="Billing Period To" width="70" sortable="false" editable="true" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }"/>
 			<sjg:gridColumn name="provNo" index="provNo" title ="Provider No" width="70" sortable="false" editable="true" align="right"/>
 			<sjg:gridColumn name="provNm" index="provNm" title ="Provider Name" width="40" sortable="false" editable="true"/>
 			<sjg:gridColumn name="itemTypeCd" index="itemTypeCd" title ="Item Type" width="50" sortable="false" editable="true" align="right"/>

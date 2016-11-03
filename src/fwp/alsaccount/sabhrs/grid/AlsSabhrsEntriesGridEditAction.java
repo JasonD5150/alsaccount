@@ -51,14 +51,6 @@ public class AlsSabhrsEntriesGridEditAction extends ActionSupport{
 	private String transIdentifier;
 	private String provNo;
 	private String bpTo;
-	
-	
-	
-	public AlsSabhrsEntriesGridEditAction() {
-		super();
-		// TODO Auto-generated constructor stub
-		System.out.println("Test");
-	}
 
 	public String execute() throws Exception{
 		AlsNonAlsTemplateAS anatAS = new AlsNonAlsTemplateAS();

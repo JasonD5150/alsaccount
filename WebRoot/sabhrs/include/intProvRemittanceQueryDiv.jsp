@@ -64,6 +64,8 @@
 				<td><s:checkbox id="hasOverShortDetails" name="hasOverShortDetails" theme="simple" label="Has Over/Short Details"></s:checkbox></td>
 				<td class="label">Has PAE Amount</td>
 				<td><s:checkbox id="hasPaeAmt" name="hasPaeAmt" theme="simple" label="Has PAE Amount"></s:checkbox></td>
+				<td class="label">Search All Dates: </td>
+    			<td><s:checkbox id="srchAll" name="srchAll" theme="simple" label="All"></s:checkbox></td>
 		    </tr>
 		    </table>
 		</form>	

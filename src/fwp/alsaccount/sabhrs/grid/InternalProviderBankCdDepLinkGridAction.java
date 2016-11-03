@@ -15,8 +15,10 @@ import fwp.als.appservice.inventory.AlsProviderRemittanceAS;
 import fwp.als.hibernate.inventory.dao.AlsProviderRemittance;
 import fwp.als.hibernate.inventory.dao.AlsProviderRemittanceIdPk;
 import fwp.alsaccount.appservice.admin.AlsBankCodeAS;
+import fwp.alsaccount.appservice.sabhrs.AlsProviderBankDepositSlipAS;
 import fwp.alsaccount.appservice.sabhrs.AlsProviderBankDetailsAS;
 import fwp.alsaccount.dao.admin.AlsBankCode;
+import fwp.alsaccount.dao.sabhrs.AlsProviderBankDepositSlip;
 import fwp.alsaccount.dao.sabhrs.AlsProviderBankDetails;
 import fwp.alsaccount.dto.sabhrs.InternalProviderBankCdDepLinkDTO;
 
@@ -86,6 +88,12 @@ public class InternalProviderBankCdDepLinkGridAction extends ActionSupport{
         			tmp.setApbdBillingTo(apbd.getIdPk().getApbdBillingTo());
         			tmp.setApbdDepositId(apbd.getApbdDepositId());
         			tmp.setApbdCashInd(apbd.getApbdCashInd());
+        			
+        			AlsProviderBankDepositSlipAS apbdsAS = new AlsProviderBankDepositSlipAS();
+        			List<AlsProviderBankDepositSlip> apbdsLst = apbdsAS.findByApbdId(apbd.getIdPk().getApiProviderNo(), apbd.getIdPk().getApbdBillingTo(), apbd.getIdPk().getApbdSeqNo());
+        			if(!apbdsLst.isEmpty()){
+        				tmp.setHasDepositSlip(true);
+        			}
         			model.add(tmp);
         		}
     		}

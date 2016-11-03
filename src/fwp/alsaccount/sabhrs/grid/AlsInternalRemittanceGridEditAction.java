@@ -51,6 +51,7 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 	
 	private String provComp;
 	private String remApp;
+	private String remRev;
 	private String 	disAppCom;
 	private String 	ccSales;
 
@@ -95,10 +96,20 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 				if(original.getAirOfflnPaymentAppCom() != null && !original.getAirOfflnPaymentAppCom().equals(disAppCom)){
 					original.setAirOfflnPaymentAppCom(disAppCom);
 				}
-				/*Remittance Approved*/
-				if(!"Y".equals(original.getAirOfflnPaymentApproved())&&"true".equals(remApp)){
+				/*Remittance Reviewed*/
+				if(!"Y".equals(original.getAirOfflnPaymentReviewed())&&"true".equals(remRev)){
 					postEntries(original, provNo, bpFrom, bpTo);
 					updateProviderRemittance("A", provNo, bpTo, bpTo, null);
+					original.setAirOfflnPaymentReviewed("Y");
+				}
+				/*Remittance Un-Reviewed*/
+				if("Y".equals(original.getAirOfflnPaymentReviewed())&&"false".equals(remRev)){
+					deleteEntries(original, provNo, bpTo, bpTo);
+					updateProviderRemittance("D", provNo, bpTo, bpTo, null);
+					original.setAirOfflnPaymentReviewed("N");
+				}
+				/*Remittance Approved*/
+				if(!"Y".equals(original.getAirOfflnPaymentApproved())&&"true".equals(remApp)){
 					original.setAirOfflnPaymentApproved("Y");
 					original.setAirOfflnPaymentAppBy(userInfo.getStateId());
 					original.setAirOfflnPaymentAppDt(date);
@@ -106,8 +117,6 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 				}
 				/*Remittance Disapproved*/
 				if("Y".equals(original.getAirOfflnPaymentApproved())&&"false".equals(remApp)){
-					deleteEntries(original, provNo, bpTo, bpTo);
-					updateProviderRemittance("D", provNo, bpTo, bpTo, null);
 					original.setAirOfflnPaymentApproved("N");
 					original.setAirOfflnPaymentAppBy(null);
 					original.setAirOfflnPaymentAppDt(null);
@@ -225,8 +234,8 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 	
 	private String deleteEntries(AlsInternalRemittance original, Integer provNo, Timestamp bpFrom, Timestamp bpTo){
 		String where = null;
-		
-		String grpIdentifier = Utils.createIntProvGroupIdentifier(provNo, bpTo.toString().substring(0, 10).replace("-", "/"),null);
+
+		String grpIdentifier = Utils.createIntProvGroupIdentifier(provNo, bpTo.toString().substring(0, 10).replace("-", "/"),null).trim();
 		String grpIdentifier1 = Utils.createIntProvGroupIdentifier(provNo, bpTo.toString().substring(0, 10).replace("-", "/"),001);
 		Integer transGrpCd = 8;
 		String interfaceStatus = null;
@@ -241,7 +250,7 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 		}
 		
 		/*TO DELETE BANK DEPOSITS ENTRIES AND CONSOLIDATED BANK DEPOSIT,C7/8/9/10, Credit Entry.*/
-		where = "WHERE idPk.atgTransactionCd = "+transGrpCd+" AND substr(idPk.atgsGroupIdentifier,1,18) = '"+grpIdentifier+"' And To_Number(Substr(idPk.atgsGroupIdentifier,-3,3)) > 1";
+		where = "WHERE idPk.atgTransactionCd = "+transGrpCd+" AND idPk.atgsGroupIdentifier LIKE '"+grpIdentifier+"%' And To_Number(Substr(idPk.atgsGroupIdentifier,-3,3)) > 1";
 		atgsLst = atgsAS.findAllByWhere(where);
 		if(!atgsLst.isEmpty()){
 			for(AlsTransactionGrpStatus atgs : atgsLst){
@@ -281,19 +290,17 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 						apbd.setAtgsGroupIdentifier(null);
 						apbdAS.save(apbd);
 					}
-				}else{
-					addActionError("Error while updating Als_Provider_Bank_Details table for Transaction Type 8 and Group Identifier "+atgs.getIdPk().getAtgsGroupIdentifier()+".");
-					return "error_json";
 				}
 				
 				List<AlsTransactionGrpStatus> atgsLst2 = new ArrayList<AlsTransactionGrpStatus>();
+				where = "WHERE idPk.atgTransactionCd = "+transGrpCd+" AND idPk.atgsGroupIdentifier = '"+atgs.getIdPk().getAtgsGroupIdentifier()+"' ";
 				atgsLst2 = atgsAS.findAllByWhere(where);
 				if(!atgsLst2.isEmpty()){
 					for(AlsTransactionGrpStatus atgs2 : atgsLst2){
 						atgsAS.delete(atgs2);
 					}
 				}else{
-					addActionError("Error while deleting Then record from Als_Transaction_Grp_Status for Transaction Type 8 and Group Identifier "+atgs.getIdPk().getAtgsGroupIdentifier()+".");
+					addActionError("Error while deleting the record from Als_Transaction_Grp_Status for Transaction Type 8 and Group Identifier "+atgs.getIdPk().getAtgsGroupIdentifier()+".");
 					return "error_json";
 				}
 			}
@@ -627,6 +634,14 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 
 	public void setCcSales(String ccSales) {
 		this.ccSales = ccSales;
+	}
+
+	public String getRemRev() {
+		return remRev;
+	}
+
+	public void setRemRev(String remRev) {
+		this.remRev = remRev;
 	}
 	
 }

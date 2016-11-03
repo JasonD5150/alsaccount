@@ -34,6 +34,7 @@ import fwp.alsaccount.dto.admin.AlsTribeItemDTO;
 import fwp.alsaccount.dto.sabhrs.AlsProviderBankDetailsDTO;
 import fwp.alsaccount.dto.sabhrs.AlsSabhrsEntriesDTO;
 import fwp.alsaccount.dto.sabhrs.AlsTransactionGrpMassCopyDTO;
+import fwp.alsaccount.dto.sabhrs.DistributionQueryDTO;
 import fwp.alsaccount.dto.sabhrs.InternalProviderBankCdDepLinkDTO;
 import fwp.alsaccount.dto.sabhrs.InternalProviderTdtDTO;
 import fwp.alsaccount.dto.sales.IafaDetailsDTO;
@@ -2364,8 +2365,9 @@ public class HibHelpers {
 															+ ",'Tribal HQ'"
 															+ ",ALS.ALS_PACKAGE.GET_PVAL('IAFA_AMOUNT_TYPE','COMM NOT PAYABLE BY FWP')"
 															+ ",'Tribal HQ'"
-															+ ",'MT FWP ') dueTo, "
-														+ "APR.APR_BILLING_TO bpEndDt, "
+															+ ",'MT FWP ') dueTo,"
+														+ "APR.APR_BILLING_FROM bpFromDt, "
+														+ "APR.APR_BILLING_TO bpToDt, "
 														+ "APR.API_PROVIDER_NO provNo, "
 														+ "API.API_BUSINESS_NM provNm, "
 														+ "AST.AICT_ITEM_TYPE_CD itemTypeCd, "
@@ -2428,6 +2430,7 @@ public class HibHelpers {
 							+ ",'Tribal HQ',ALS.ALS_PACKAGE.GET_PVAL('IAFA_AMOUNT_TYPE','COMM NOT PAYABLE BY FWP')"
 							+ ",'Tribal HQ'"
 							+ ",'MT FWP '), "
+						+ "APR.APR_BILLING_FROM, "
 						+ "APR.APR_BILLING_TO, "
 						+ "APR.API_PROVIDER_NO, "
 						+ "API.API_BUSINESS_NM, "
@@ -2442,7 +2445,8 @@ public class HibHelpers {
 									  .addScalar("tribeNm")
 									  .addScalar("eftDepDeadline", DateType.INSTANCE)
 									  .addScalar("dueTo")
-									  .addScalar("bpEndDt", DateType.INSTANCE)
+									  .addScalar("bpFromDt", DateType.INSTANCE)
+									  .addScalar("bpToDt", DateType.INSTANCE)
 									  .addScalar("provNo", IntegerType.INSTANCE)
 									  .addScalar("provNm")
 									  .addScalar("itemTypeCd", IntegerType.INSTANCE)
@@ -2469,7 +2473,7 @@ public class HibHelpers {
 			}
 			if(!Utils.isNil(fromDt)&&!Utils.isNil(toDt)){
 				query.setDate("fromDt", fromDt);
-				query.setDate("toDt", toDt);
+				query.setDate("toDt", Utils.addDays(toDt, 1));
 			}
 			
 			lst = query.list();
@@ -2480,5 +2484,96 @@ public class HibHelpers {
 		return lst;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public List<DistributionQueryDTO> getDistributionQueryRecords(Integer provNo, Integer itemTypeCd, Date fromDt, Date toDt) throws HibernateException {
+		List<DistributionQueryDTO> lst = new ArrayList<DistributionQueryDTO>();
+		StringBuilder queryStr = new StringBuilder("SELECT t.asac_budget_year as asacBudgetYear"
+														+ ", trunc(ast.as_session_dt) as asSessionDt "
+														+ ", ast.aict_item_type_cd as itemTypeCode "
+														+ ", ait.ait_type_desc as itemDesc "
+														+ ", ast.aict_usage_period_from as upFrom "
+														+ ", ast.aict_usage_period_to as upTo "
+														+ ", ast.api_dob as apiDob "
+														+ ", ast.api_als_no as apiAlsNo "
+														+ ", api.api_residency_status as apiResStatus "
+														+ ", t.ase_dr_cr_cd as aseDrCrCd "
+														+ ", t.aam_account as aamAccount "
+														+ ", t.aam_fund as aamFund "
+														+ ", t.aoc_org as aocOrg "
+														+ ", i.aiafa_app_type as aiafaAppType "
+														+ ", t.asac_program as asacProgram "
+														+ ", t.asac_subclass as asacSubclass "
+														+ ", t.ase_amt as aseAmt "
+														+ ", ast.ast_remark as astRemarks "
+														+ ", t.asac_system_activity_type_cd as asacSystemActivityTypeCd "
+														+ ", t.asac_txn_cd as asacTxnCd "
+														+ ", t.ase_seq_no as aseSeqNo "
+														+ ", i.aiafa_seq_no as aiafaSeqNo "
+												+ "FROM als.als_sabhrs_entries t, "
+														+ "als.als_item_appl_fee_acct i, "
+														+ "als.als_session_trans ast, "
+														+ "als.als_item_type ait, "
+														+ "als.als_person_information api "
+												+ "WHERE i.aiafa_seq_no = t.aiafa_seq_no "
+												+ "AND i.api_provider_no = t.api_provider_no "
+												+ "AND i.apr_billing_from = t.apr_billing_from "
+												+ "AND i.apr_billing_to = t.apr_billing_to "
+												+ "AND ast.ahm_type = i.ahm_type "
+												+ "AND ast.ahm_cd = i.ahm_cd "
+												+ "AND ast.as_session_dt = i.as_session_dt "
+												+ "AND ast.ast_transaction_seq_no = i.ast_transaction_seq_no "
+												+ "AND ait.ai_item_id||ait.aic_category_id||ait.ait_type_id = ast.aict_item_type_cd "
+												+ "AND api.api_dob = ast.api_dob "
+												+ "AND api.api_als_no = ast.api_als_no ");
+		
+		if(!Utils.isNil(provNo))
+			queryStr.append("AND t.API_PROVIDER_NO = :provNo ");
+		if(!Utils.isNil(itemTypeCd))
+			queryStr.append("AND ast.AICT_ITEM_TYPE_CD = :itemTypeCd ");
+		if(!Utils.isNil(fromDt)&&!Utils.isNil(toDt)){
+			queryStr.append("AND t.ase_when_entry_posted BETWEEN :fromDt AND :toDt ");
+		}
+
+		try {
+			Query query = getSession().createSQLQuery(queryStr.toString())
+									  .addScalar("asacBudgetYear", IntegerType.INSTANCE)
+									  .addScalar("asSessionDt", DateType.INSTANCE)
+									  .addScalar("itemTypeCode", IntegerType.INSTANCE)
+									  .addScalar("itemDesc")
+									  .addScalar("upFrom", DateType.INSTANCE)
+									  .addScalar("upTo", DateType.INSTANCE)
+									  .addScalar("apiDob", DateType.INSTANCE)
+									  .addScalar("apiAlsNo", IntegerType.INSTANCE)
+									  .addScalar("aseDrCrCd")
+									  .addScalar("aamAccount")
+									  .addScalar("aamFund")
+									  .addScalar("aocOrg")
+									  .addScalar("aiafaAppType")
+									  .addScalar("asacProgram", IntegerType.INSTANCE)
+									  .addScalar("asacSubclass")
+									  .addScalar("aseAmt", DoubleType.INSTANCE)
+									  .addScalar("astRemarks")
+									  .addScalar("asacSystemActivityTypeCd")
+									  .addScalar("asacTxnCd")
+									  .addScalar("aseSeqNo", IntegerType.INSTANCE)
+									  .addScalar("aiafaSeqNo", IntegerType.INSTANCE)
+									  .setResultTransformer(Transformers.aliasToBean(DistributionQueryDTO.class));
+			
+			if(!Utils.isNil(provNo))
+				query.setInteger("provNo", provNo);
+			if(!Utils.isNil(itemTypeCd))
+				query.setInteger("itemTypeCd", itemTypeCd);
+			if(!Utils.isNil(fromDt)&&!Utils.isNil(toDt)){
+				query.setDate("fromDt", fromDt);
+				query.setDate("toDt", Utils.addDays(toDt, 1));
+			}
+			
+			lst = query.list();
+		} 
+		catch (HibernateException he){System.out.println(he.toString());}
+		catch (RuntimeException re){System.out.println(re.toString());}
+		finally {getSession().close();}
+		return lst;
+	}
 }
 

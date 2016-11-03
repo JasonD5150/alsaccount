@@ -67,7 +67,7 @@
 							    $('#alsInternalRemittance').jqGrid('setGridParam',{datatype:'json'});
 							    $.publish('reloadInternalRemittance');
 							    return [true];
-						  	}}"
+						  	}}"   	
    	gridModel="model"
    	formIds="subGridFrm"
 	rownumbers="false"
@@ -75,7 +75,7 @@
 	viewrecords="true"
 	scroll="true"
 	scrollrows="true"
-	height="75"
+	height="150"
 	width="910"
 	rowNum="1000"
 	onBeforeTopics="setBankCdList"
@@ -98,5 +98,6 @@
 		<sjg:gridColumn name="amtDue" index="amtDue" title="Amount Due" width="10" sortable="true" align="right" editable="false" formatter= "number" formatoptions="{decimalPlaces: 2}"/>
 		<sjg:gridColumn name="apbdDepositId" index="apbdDepositId" title="Deposit Id" width="10" sortable="true" editable="false"/>
 		<sjg:gridColumn name="depositSlip" title ="Deposit Slip" width="10" hidden="false" editable="false" align="center" formatter="slipDlg"/>
+		<sjg:gridColumn name="hasDepositSlip" index="hasDepositSlip" title ="Has Deposit Slip" width="10" hidden="true" editable="false"/>
 </sjg:grid>
 

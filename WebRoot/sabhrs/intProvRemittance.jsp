@@ -23,7 +23,6 @@
 	    body{
 	        position: relative; overflow: auto;
 	    }
-
     </style>
     <script>
 
@@ -137,6 +136,7 @@
 			<sjg:gridColumn name="airOfflnPaymentAppBy" index="airOfflnPaymentAppBy" title="Approved By" width="60" sortable="true" editable="false" hidden="true"/>
 			<sjg:gridColumn name="offlnPaymentAppDt" index="offlnPaymentAppDt" title="Date" width="70" sortable="true" editable="false" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }" hidden="true"/>
 			<sjg:gridColumn name="airOfflnPaymentAppCom" index="airOfflnPaymentAppCom" title="Comments" width="100" sortable="true" editable="true" hidden="true"/>
+			<sjg:gridColumn name="airOfflnPaymentReviewed" index="airOfflnPaymentReviewed" title="Remittance Reviewed" width="15" sortable="true" editable="true" hidden="true"/>
 			<sjg:gridColumn name="intFileCreateDt" index="intFileCreateDt" title="SABHRS Interface File Created" width="70" sortable="true" editable="false" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }" hidden="true"/>
 			<sjg:gridColumn name="intFileGenerated" index="intFileGenerated" title="" hidden="true" editable="false"/>
 			<sjg:gridColumn name="bankDepEditOnly" index="bankDepEditOnly" title="" hidden="true" editable="false"/>
@@ -212,6 +212,10 @@
 				<td><s:textfield id="compDt" name="compDt" theme="simple" title="Date Completed by Provider" disabled="true"/></td>
 				<td class="label">Remittance in Balance: </td>
 				<td><s:textfield id="displayBalanced" name="displayBalanced" theme="simple" title="Billing Period has been balanced by Internal Provider" disabled="true"/></td>
+			</tr>
+			<tr>
+				<td class="label">Remittance Reviewed: </td>
+				<td><s:checkbox id="remRev" name="remRev" theme="simple" title="Remittance Reviewed" ></s:checkbox></td>
 			</tr>
 	        <tr>
 				<td class="label">Remittance Approved: </td>
