@@ -46,11 +46,7 @@
             <result name="input">sabhrs/transactionGroupApproval.jsp</result>         
       </action>
       
-        <action name="transGroupMassApproval_*" method="{1}" class="fwp.alsaccount.action.GenericAction">
-			<result>sabhrs/transactionGroupMassApproval.jsp</result>
-			<result name="error">sabhrs/transactionGroupMassApproval.jsp</result>
-			<result name="input">sabhrs/transactionGroupMassApproval.jsp</result>         
-		</action>
+        
 		<action name="sabhrsQuery_*" method="{1}" class="fwp.alsaccount.action.GenericAction">
 			<result>sabhrs/sabhrsQuery.jsp</result>
 			<result name="error">sabhrs/sabhrsQuery.jsp</result>
@@ -170,16 +166,7 @@
                <param name="ignoreHierarchy">false</param>
             </result>
 		</action>  
-		<action name="transGroupMassApprovalGrid_*" class="fwp.alsaccount.sabhrs.grid.AlsTransactionGrpMassApprovalGridAction">
-			<result type="json" />
-		</action> 
-		<action name="transGroupMassApprovalGridEdit_*" class="fwp.alsaccount.sabhrs.grid.AlsTransactionGrpMassApprovalGridEditAction">
-			<result type="json"></result>
-			<result type="json" name="input"></result>
-			<result name="error_json" type="json" >
-			   <param name="ignoreHierarchy">false</param>
-			</result>
-		</action>  
+		
 		<action name="alsSabhrsQueryGrid_*" class="fwp.alsaccount.sabhrs.grid.SabhrsQueryGridAction">
             <result type="json" />
             <result type="json" name="input"></result>

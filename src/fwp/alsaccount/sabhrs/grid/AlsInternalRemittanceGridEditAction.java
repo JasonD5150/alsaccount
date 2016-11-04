@@ -4,6 +4,7 @@ package fwp.alsaccount.sabhrs.grid;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -99,17 +100,18 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 				/*Remittance Reviewed*/
 				if(!"Y".equals(original.getAirOfflnPaymentReviewed())&&"true".equals(remRev)){
 					postEntries(original, provNo, bpFrom, bpTo);
-					updateProviderRemittance("A", provNo, bpTo, bpTo, null);
+					updateProviderRemittance("A", provNo, bpFrom, bpTo, null);
 					original.setAirOfflnPaymentReviewed("Y");
 				}
 				/*Remittance Un-Reviewed*/
 				if("Y".equals(original.getAirOfflnPaymentReviewed())&&"false".equals(remRev)){
-					deleteEntries(original, provNo, bpTo, bpTo);
-					updateProviderRemittance("D", provNo, bpTo, bpTo, null);
+					deleteEntries(original, provNo, bpFrom, bpTo);
+					updateProviderRemittance("D", provNo, bpFrom, bpTo, null);
 					original.setAirOfflnPaymentReviewed("N");
 				}
 				/*Remittance Approved*/
 				if(!"Y".equals(original.getAirOfflnPaymentApproved())&&"true".equals(remApp)){
+					updateTransactionGroup(provNo, sdf.parse(id.split("_")[1]), true);
 					original.setAirOfflnPaymentApproved("Y");
 					original.setAirOfflnPaymentAppBy(userInfo.getStateId());
 					original.setAirOfflnPaymentAppDt(date);
@@ -117,6 +119,7 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 				}
 				/*Remittance Disapproved*/
 				if("Y".equals(original.getAirOfflnPaymentApproved())&&"false".equals(remApp)){
+					updateTransactionGroup(provNo, sdf.parse(id.split("_")[1]), false);
 					original.setAirOfflnPaymentApproved("N");
 					original.setAirOfflnPaymentAppBy(null);
 					original.setAirOfflnPaymentAppDt(null);
@@ -545,6 +548,50 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 			addActionError("Amount Received could not be updated in Als_Provider_Remittance table.");
 			return "error_json";
 		}		
+		return SUCCESS;
+	}
+	
+	public String updateTransactionGroup(Integer provNo, Date bpToDt, Boolean approve){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+		AlsTransactionGrpStatusAS atgsAS = new AlsTransactionGrpStatusAS();
+		List<AlsTransactionGrpStatus> atgsLst = new ArrayList<AlsTransactionGrpStatus>();
+		Timestamp curDate = new Timestamp(Calendar.getInstance().getTimeInMillis());
+		String errMsg="";
+		String where = "";
+		try{
+			/*DEPOSITS*/
+			where = "WHERE idPk.atgTransactionCd = 8 "
+				  + "AND Substr(idPk.atgsGroupIdentifier,2,6) = LPAD("+provNo+", 6, '0') "
+				  + "AND Substr(idPk.atgsGroupIdentifier,9,10) = '"+sdf.format(bpToDt)+"' "
+				  + "AND (atgsSummaryStatus IS NULL OR atgsInterfaceStatus IS NULL) ";
+			atgsLst = atgsAS.findAllByWhere(where);
+			
+			if(!atgsLst.isEmpty()){
+				for(AlsTransactionGrpStatus tmp:atgsLst){
+					tmp.setAtgsSummaryStatus(approve?"A":null);
+					tmp.setAtgsSummaryApprovedBy(approve?userInfo.getStateId().toString():null);
+					tmp.setAtgsSummaryDt(approve?curDate:null);
+					tmp.setAtgsWhoModi(userInfo.getStateId().toString());
+					tmp.setAtgsWhenModi(curDate);
+					atgsAS.save(tmp);
+				}
+			}else{
+				this.addActionError("Error while updating Interface Status in ALS.ALSTRANSACTION_GRP_STATUS for Provider "+provNo+", for BPE "+bpToDt.toString()+".");
+				return "error_json";
+			}		
+		}  catch(Exception ex) {
+			 if (ex.toString().contains("ORA-02292")){
+				  errMsg += "Grid has child record(s) which would need to be deleted first.";
+			  } else if (ex.toString().contains("ORA-02291")){
+				  errMsg += "Parent record not found.";
+			  } else if (ex.toString().contains("ORA-00001")){
+				  errMsg += "Unable to add this record due to duplicate.";
+			  }	else {
+				  errMsg += " " + ex.toString();
+			  }
+		    addActionError(errMsg);
+	        return "error_json";
+		}	
 		return SUCCESS;
 	}
 		

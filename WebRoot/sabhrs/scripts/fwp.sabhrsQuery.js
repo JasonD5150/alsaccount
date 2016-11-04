@@ -70,25 +70,7 @@ function submitSearch(){
 	}
 }
 function resetSearch(){
-	$('#providerNo').val('');
-	$('#seqNo').val('');
-	$('#bpFromDt').val('');
-	$('#bpToDt').val('');
-	$('#fromDt').val('');
-	$('#toDt').val('');
-	$('#budgYear').val('');
-	$('#progYear').val('');
-	$('#jlr').val('');
-	$('#account').val('');
-	$('#fund').val('');
-	$('#org').val('');
-	$('#subClass').val('');
-	$('#tribeCd').val('');
-	$('#txnGrpIdentifier').val('');
-	$('#sysActTypeCd').val('');
-	$('#transGrpType').val('');
-	$('#sumAppStat').val('');
-	$('#intAppStat').val('');
+	$('#gridFrm')[0].reset();
 }
 
 function exportToCSV(){

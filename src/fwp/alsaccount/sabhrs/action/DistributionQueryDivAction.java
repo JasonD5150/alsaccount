@@ -24,7 +24,7 @@ public class DistributionQueryDivAction extends ActionSupport{
 	public String input(){
 		ListUtils lu = new ListUtils();
 		try {
-			provLst = lu.getProviderList();
+			provLst = lu.getActiveProviderList();
 			itemTypeLst = lu.getItemTypeCd(null);
 		} catch (Exception e) {
 			//System.out.println(e.getMessage());

@@ -24,7 +24,7 @@ public class AlsNonAlsOrgControlDivAction extends ActionSupport{
 		try {
 			ListUtils lu = new ListUtils();
 			setOrgLst(FwpStringUtils.listCompListToString(lu.getOrgList(null)));
-			setProviderLst(FwpStringUtils.listCompListToString(lu.getProviderList()));
+			setProviderLst(FwpStringUtils.listCompListToString(lu.getActiveProviderList()));
 		} catch (Exception e) {
 			//System.out.println(e.getMessage());
 			log.debug(e.getMessage());

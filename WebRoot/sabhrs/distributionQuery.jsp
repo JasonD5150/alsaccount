@@ -90,6 +90,8 @@
 		viewrecords="true"
 		scroll="false"
 		scrollrows="false"
+		autowidth="false"
+	    shrinkToFit="false"
 		height="200"
 		width="950"
 		rowNum="25"
@@ -98,26 +100,26 @@
 		onCompleteTopics="distributionQueryTableComplete"
 		loadonce="true">
 			<sjg:gridColumn name="gridKey" title ="id" width="55" hidden="true" key="true"/>
-			<sjg:gridColumn name="asacBudgetYear" index="asacBudgetYear" title ="Budget Year" width="10" sortable="false" align="right"/>
-			<sjg:gridColumn name="asSessionDt" index="asSessionDt" title ="Session Date" width="70" sortable="false" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }"/>
-			<sjg:gridColumn name="itemTypeCode" index="itemTypeCode" title ="Item Type Cd" width="25" sortable="false" align="right"/>
-			<sjg:gridColumn name="itemDesc" index="itemDesc" title ="Item Type Desc" width="75" sortable="false"  />
-			<sjg:gridColumn name="upFrom" index="upFrom" title ="Usage Period From" width="70" sortable="false" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }"/>
-			<sjg:gridColumn name="upTo" index="upTo" title ="Usage Period To" width="70" sortable="false" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }" />
-			<sjg:gridColumn name="apiDob" index="apiDob" title ="DOB" width="70" sortable="false" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }" />
-			<sjg:gridColumn name="apiAlsNo" index="apiAlsNo" title ="ALS No" width="10" sortable="false"  align="right"/>
-			<sjg:gridColumn name="aseDrCrCd" index="aseDrCrCd" title ="Dr/Cr Cd" width="10" sortable="false"  />
-			<sjg:gridColumn name="aamAccount" index="aamAccount" title ="Account" width="25" sortable="false" align="right"/>
-			<sjg:gridColumn name="aamFund" index="aamFund" title ="Fund" width="25" sortable="false"  align="right"/>
-			<sjg:gridColumn name="aocOrg" index="aocOrg" title ="Org" width="15" sortable="false"  />
-			<sjg:gridColumn name="aiafaAppType" index="aiafaAppType" title ="App Type" width="25" sortable="false"  />
-			<sjg:gridColumn name="asacProgram" index="asacProgram" title ="Program" width="10" sortable="false" align="right"/>
-			<sjg:gridColumn name="asacSubclass" index="asacSubclass" title ="Subclass" width="10" sortable="false"  />
-			<sjg:gridColumn name="aseAmt" index="aseAmt" title ="Amount" width="15" sortable="false"  formatter= "number" formatoptions="{decimalPlaces: 2}" align="right"/>
-			<sjg:gridColumn name="astRemarks" index="astRemarks" title ="Remarks" width="75" sortable="false"  />
-			<sjg:gridColumn name="asacSystemActivityTypeCd" index="asacSystemActivityTypeCd" title ="Sys Activity Type Cd" width="5" sortable="false"  />
-			<sjg:gridColumn name="asacTxnCd" index="asacTxnCd" title ="Txn Cd" width="5" sortable="false" align="right"/>
-			<sjg:gridColumn name="aseSeqNo" index="aseSeqNo" title ="Seq No" width="10" sortable="false" align="right"/>
-			<sjg:gridColumn name="aiafaSeqNo" index="aiafaSeqNo" title ="AIAFA Seq No" width="5" sortable="false" align="right"/>
+			<sjg:gridColumn name="asacBudgetYear" index="asacBudgetYear" title ="Budget Year" width="50" sortable="false" align="right"/>
+			<sjg:gridColumn name="asSessionDt" index="asSessionDt" title ="Session Date" width="75" sortable="false" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }"/>
+			<sjg:gridColumn name="itemTypeCode" index="itemTypeCode" title ="Item Type Cd" width="55" sortable="false" align="right"/>
+			<sjg:gridColumn name="itemDesc" index="itemDesc" title ="Item Type Desc" width="150" sortable="false"  />
+			<sjg:gridColumn name="upFrom" index="upFrom" title ="Usage Period From" width="75" sortable="false" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }"/>
+			<sjg:gridColumn name="upTo" index="upTo" title ="Usage Period To" width="75" sortable="false" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }" />
+			<sjg:gridColumn name="apiDob" index="apiDob" title ="DOB" width="75" sortable="false" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }" />
+			<sjg:gridColumn name="apiAlsNo" index="apiAlsNo" title ="ALS No" width="25" sortable="false"  align="right"/>
+			<sjg:gridColumn name="aseDrCrCd" index="aseDrCrCd" title ="Dr/Cr Cd" width="25" sortable="false"  />
+			<sjg:gridColumn name="aamAccount" index="aamAccount" title ="Account" width="50" sortable="false" align="right"/>
+			<sjg:gridColumn name="aamFund" index="aamFund" title ="Fund" width="50" sortable="false"  align="right"/>
+			<sjg:gridColumn name="aocOrg" index="aocOrg" title ="Org" width="50" sortable="false"  />
+			<sjg:gridColumn name="aiafaAppType" index="aiafaAppType" title ="App Type" width="50" sortable="false"  />
+			<sjg:gridColumn name="asacProgram" index="asacProgram" title ="Program" width="50" sortable="false" align="right"/>
+			<sjg:gridColumn name="asacSubclass" index="asacSubclass" title ="Subclass" width="50" sortable="false"  />
+			<sjg:gridColumn name="aseAmt" index="aseAmt" title ="Amount" width="50" sortable="false"  formatter= "number" formatoptions="{decimalPlaces: 2}" align="right"/>
+			<sjg:gridColumn name="astRemarks" index="astRemarks" title ="Remarks" width="150" sortable="false"  />
+			<sjg:gridColumn name="asacSystemActivityTypeCd" index="asacSystemActivityTypeCd" title ="Sys Activity Type Cd" width="25" sortable="false"  />
+			<sjg:gridColumn name="asacTxnCd" index="asacTxnCd" title ="Txn Cd" width="25" sortable="false" align="right"/>
+			<sjg:gridColumn name="aseSeqNo" index="aseSeqNo" title ="Seq No" width="25" sortable="false" align="right"/>
+			<sjg:gridColumn name="aiafaSeqNo" index="aiafaSeqNo" title ="AIAFA Seq No" width="25" sortable="false" align="right"/>
 	</sjg:grid>
 </fwp:template>

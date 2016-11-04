@@ -24,7 +24,7 @@ public class OrgControlDivAction extends ActionSupport{
 		ListUtils lu = new ListUtils();
 		try {
 			setAccountCdLst(FwpStringUtils.listCompListToString(lu.getAccCdListTxt(budgYear, false)));
-			setProviderLst(FwpStringUtils.listCompListToString(lu.getProviderList()));
+			setProviderLst(FwpStringUtils.listCompListToString(lu.getActiveProviderList()));
 		} catch (Exception e) {
 			//System.out.println(e.getMessage());
 			log.debug(e.getMessage());

@@ -41,7 +41,7 @@ public class SabhrsQueryDivAction extends ActionSupport{
 			budgYear = hh.getCurrentBudgetYear();
 		}
 		try {
-			providerLst = lu.getProviderList();
+			providerLst = lu.getActiveProviderList();
 			jlrLst = lu.getJLRBudgYearList(budgYear);
 			transGroupTypeLst = lu.getSabhrsTransGroupTypeLst();
 			budgetYearSel = lu.getBudgetYearList();

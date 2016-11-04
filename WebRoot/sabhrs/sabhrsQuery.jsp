@@ -63,6 +63,8 @@
 		viewrecords="true"
 		scroll="false"
 		scrollrows="false"
+		autowidth="false"
+	    shrinkToFit="false"
 		height="100"
 		width="950"
 		rowNum="25"
@@ -72,37 +74,37 @@
 		loadonce="true">
 			<!-- DEFAULT COLUMNS -->
 			<sjg:gridColumn name="gridKey" title ="id" width="55" hidden="true" key="true"/>
-			<sjg:gridColumn name="asacBudgetYear" index="asacBudgetYear" title ="Budget Year" width="10" sortable="false" editable="true"/>
-			<sjg:gridColumn name="jlr" index="jlr" title ="JLR" width="10" sortable="false" editable="true" />
-			<sjg:gridColumn name="aamAccount" index="aamAccount" title ="Account" width="10" sortable="false" editable="true"/>
-			<sjg:gridColumn name="aamFund" index="aamFund" title ="Fund" width="10" sortable="false" editable="true" />
-			<sjg:gridColumn name="aocOrg" index="aocOrg" title ="Org" width="10" sortable="false" editable="true" />
-			<sjg:gridColumn name="asacProgram" index="asacProgram" title ="Program" width="10" sortable="false" editable="true" />
-			<sjg:gridColumn name="asacSubclass" index="asacSubclass" title ="Subclass" width="10" sortable="false" editable="true" />
-			<sjg:gridColumn name="aamBusinessUnit" index="aamBusinessUnit" title ="Business Unit" width="10" sortable="false" editable="true"/>
-			<sjg:gridColumn name="asacProjectGrant" index="asacProjectGrant" title ="Project Grant" width="10" sortable="false" editable="true"/>
-			<sjg:gridColumn name="aseAmt" index="aseAmt" title ="Amount" width="10" sortable="false" editable="true" formatter= "number" formatoptions="{decimalPlaces: 2}" align="right"/>
-			<sjg:gridColumn name="asacSystemActivityTypeCd" index="asacSystemActivityTypeCd" title ="Sys Activity Type Code" width="10" sortable="false" editable="false"/>
-			<sjg:gridColumn name="asacTxnCd" index="asacTxnCd" title ="Transaction Cd" width="10" sortable="false" editable="false"/>
-			<sjg:gridColumn name="aseDrCrCd" index="aseDrCrCd" title ="Dr/Cr Code" width="10" sortable="false" editable="true" edittype="select" formatter="select" editoptions="{value: {D: 'Debit', C: 'Credit'}}" />
-			<sjg:gridColumn name="aseSeqNo" index="aseSeqNo" title ="SABHRS Entries Seq No" width="10" sortable="false" editable="false"/>
-			<sjg:gridColumn name="aseLineDescription" index="aseLineDescription" title ="Line Desc" width="40" sortable="false" editable="true" edittype="textarea" />
-			<sjg:gridColumn name="aseWhenEntryPosted" index="aseWhenEntryPosted" title ="When Entry Posted" width="40" sortable="false" editable="true" hidden="false" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y h:i:s' }"/>
+			<sjg:gridColumn name="asacBudgetYear" index="asacBudgetYear" title ="Budget Year" width="50" sortable="true"  align="right"/>
+			<sjg:gridColumn name="jlr" index="jlr" title ="JLR" width="50" sortable="true"  />
+			<sjg:gridColumn name="aamAccount" index="aamAccount" title ="Account" width="50" sortable="true"  />
+			<sjg:gridColumn name="aamFund" index="aamFund" title ="Fund" width="50" sortable="true"  align="right"/>
+			<sjg:gridColumn name="aocOrg" index="aocOrg" title ="Org" width="50" sortable="true"  />
+			<sjg:gridColumn name="asacProgram" index="asacProgram" title ="Program" width="50" sortable="true"  align="right"/>
+			<sjg:gridColumn name="asacSubclass" index="asacSubclass" title ="Subclass" width="50" sortable="true"  />
+			<sjg:gridColumn name="aamBusinessUnit" index="aamBusinessUnit" title ="Business Unit" width="50" sortable="true"  align="right"/>
+			<sjg:gridColumn name="asacProjectGrant" index="asacProjectGrant" title ="Project Grant" width="50" sortable="true" />
+			<sjg:gridColumn name="aseAmt" index="aseAmt" title ="Amount" width="50" sortable="true"  formatter= "number" formatoptions="{decimalPlaces: 2}" align="right"/>
+			<sjg:gridColumn name="asacSystemActivityTypeCd" index="asacSystemActivityTypeCd" title ="Sys Activity Type Code" width="25" sortable="true"  align="right"/>
+			<sjg:gridColumn name="asacTxnCd" index="asacTxnCd" title ="Transaction Cd" width="25" sortable="true" />
+			<sjg:gridColumn name="aseDrCrCd" index="aseDrCrCd" title ="Dr/Cr Code" width="50" sortable="true"  edittype="select" formatter="select" editoptions="{value: {D: 'Debit', C: 'Credit'}}" />
+			<sjg:gridColumn name="aseSeqNo" index="aseSeqNo" title ="SABHRS Entries Seq No" width="25" sortable="true"  align="right"/>
+			<sjg:gridColumn name="aseLineDescription" index="aseLineDescription" title ="Line Desc" width="150" sortable="true"  edittype="textarea" />
+			<sjg:gridColumn name="aseWhenEntryPosted" index="aseWhenEntryPosted" title ="When Entry Posted" width="100" sortable="true"  hidden="false" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y h:i:s' }"/>
 			<!-- HIDDEN COLUMNS-->
-			<sjg:gridColumn name="aseAllowUploadToSummary" index="aseAllowUploadToSummary" title ="Allow Upload To Summary" width="40" sortable="false" editable="true" hidden="true"/>
-			<sjg:gridColumn name="upToSummDt" index="upToSummDt" title ="When Uploaded To Summary" width="40" sortable="false" editable="true" hidden="true" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }"/>
-			<sjg:gridColumn name="asesSeqNo" index="asesSeqNo" title ="SABHRS Entries Summary Seq No" width="40" sortable="false" editable="true" hidden="true"/>
-			<sjg:gridColumn name="apiProviderNo" index="apiProviderNo" title ="Provider No" width="40" sortable="false" editable="true" hidden="true"/>
-			<sjg:gridColumn name="bpFromDt" index="bpFromDt" title ="Billing From" width="40" sortable="false" editable="true" hidden="true" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }"/>
-			<sjg:gridColumn name="bpToDt" index="bpToDt" title ="Billing To" width="40" sortable="false" editable="true" hidden="true" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }"/>
-			<sjg:gridColumn name="aiafaSeqNo" index="aiafaSeqNo" title ="AIAFA Seq No" width="40" sortable="false" editable="true" hidden="true"/>
-			<sjg:gridColumn name="atgTransactionCd" index="atgTransactionCd" title ="Transaction Type Cd" width="40" sortable="false" editable="true" hidden="true"/>
-			<sjg:gridColumn name="atgsGroupIdentifier" index="atgsGroupIdentifier" title ="Group Identifier" width="40" sortable="false" editable="true" hidden="true"/>
-			<sjg:gridColumn name="aseNonAlsFlag" index="aseNonAlsFlag" title ="Non Als Flag" width="40" sortable="false" editable="true" hidden="true"/>
-			<sjg:gridColumn name="atiTribeCd" index="atiTribeCd" title ="Tribe Cd" width="40" sortable="false" editable="true" hidden="true"/>
-			<sjg:gridColumn name="anatCd" index="anatCd" title ="ANAT Cd" width="40" sortable="false" editable="true" hidden="true"/>
-			<sjg:gridColumn name="sumStat" index="sumStat" title ="Summary Status" width="40" sortable="false" editable="true" hidden="true" formatter="select" editoptions="{value: {null:'',A: 'Approved', D: 'Disapproved', N: 'Not Applicable'}}"/>
-			<sjg:gridColumn name="intStat" index="intStat" title ="Interface Status" width="40" sortable="false" editable="true" hidden="true" formatter="select" editoptions="{value: {null:'',A: 'Approved', D: 'Disapproved', N: 'Not Applicable'}}"/>
+			<sjg:gridColumn name="aseAllowUploadToSummary" index="aseAllowUploadToSummary" title ="Allow Upload To Summary" width="40" sortable="false"  hidden="true"/>
+			<sjg:gridColumn name="upToSummDt" index="upToSummDt" title ="When Uploaded To Summary" width="40" sortable="false"  hidden="true" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }"/>
+			<sjg:gridColumn name="asesSeqNo" index="asesSeqNo" title ="SABHRS Entries Summary Seq No" width="40" sortable="false"  hidden="true"/>
+			<sjg:gridColumn name="apiProviderNo" index="apiProviderNo" title ="Provider No" width="40" sortable="false"  hidden="true"/>
+			<sjg:gridColumn name="bpFromDt" index="bpFromDt" title ="Billing From" width="40" sortable="false"  hidden="true" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }"/>
+			<sjg:gridColumn name="bpToDt" index="bpToDt" title ="Billing To" width="40" sortable="false"  hidden="true" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }"/>
+			<sjg:gridColumn name="aiafaSeqNo" index="aiafaSeqNo" title ="AIAFA Seq No" width="40" sortable="false"  hidden="true"/>
+			<sjg:gridColumn name="atgTransactionCd" index="atgTransactionCd" title ="Transaction Type Cd" width="40" sortable="false"  hidden="true"/>
+			<sjg:gridColumn name="atgsGroupIdentifier" index="atgsGroupIdentifier" title ="Group Identifier" width="40" sortable="false"  hidden="true"/>
+			<sjg:gridColumn name="aseNonAlsFlag" index="aseNonAlsFlag" title ="Non Als Flag" width="40" sortable="false"  hidden="true"/>
+			<sjg:gridColumn name="atiTribeCd" index="atiTribeCd" title ="Tribe Cd" width="40" sortable="false"  hidden="true"/>
+			<sjg:gridColumn name="anatCd" index="anatCd" title ="ANAT Cd" width="40" sortable="false"  hidden="true"/>
+			<sjg:gridColumn name="sumStat" index="sumStat" title ="Summary Status" width="40" sortable="false"  hidden="true" formatter="select" editoptions="{value: {null:'',A: 'Approved', D: 'Disapproved', N: 'Not Applicable'}}"/>
+			<sjg:gridColumn name="intStat" index="intStat" title ="Interface Status" width="40" sortable="false"  hidden="true" formatter="select" editoptions="{value: {null:'',A: 'Approved', D: 'Disapproved', N: 'Not Applicable'}}"/>
 	
 	</sjg:grid>
 </fwp:template>

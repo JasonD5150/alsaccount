@@ -8,6 +8,7 @@
 <fieldset style="border: black 1px solid; display: inline-block;">
 	<legend style="font-weight: bold;">Search Criteria</legend>
 	   	<form id='gridFrm'>
+	   	<p><b>Query defaults to the past 12 months, if "Search All Dates" is not selected or a date is not used in the query.</b></p>
 	   		<table>
    			<tr>			
 				<td class="label">Provider No</td>

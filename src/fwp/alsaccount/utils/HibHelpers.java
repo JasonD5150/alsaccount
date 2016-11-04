@@ -33,7 +33,6 @@ import fwp.alsaccount.dto.admin.AccCdDistByItemTypeDTO;
 import fwp.alsaccount.dto.admin.AlsTribeItemDTO;
 import fwp.alsaccount.dto.sabhrs.AlsProviderBankDetailsDTO;
 import fwp.alsaccount.dto.sabhrs.AlsSabhrsEntriesDTO;
-import fwp.alsaccount.dto.sabhrs.AlsTransactionGrpMassCopyDTO;
 import fwp.alsaccount.dto.sabhrs.DistributionQueryDTO;
 import fwp.alsaccount.dto.sabhrs.InternalProviderBankCdDepLinkDTO;
 import fwp.alsaccount.dto.sabhrs.InternalProviderTdtDTO;
@@ -243,22 +242,21 @@ public class HibHelpers {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public AlsProviderInfo getProviderInfo(Integer providerNo) {
+	public AlsProviderInfo getProviderInfo(Integer provNo) {
 		List<AlsProviderInfo> rtn = new ArrayList<AlsProviderInfo>();
 
 		String queryString = "SELECT api_business_nm apiBusinessNm, "+
 							 "       ar_business_region arBusinessRegion "+
 							 "FROM ALS.ALS_PROVIDER_INFO  "+
-							 "WHERE api_provider_no = "+providerNo;
+							 "WHERE api_provider_no = :provNo ";
 
 		try {
-			Query query = getSession()
-					.createSQLQuery(queryString)
-					.addScalar("apiBusinessNm", StringType.INSTANCE)
-					.addScalar("arBusinessRegion", StringType.INSTANCE)
-	
-					.setResultTransformer(
-							Transformers.aliasToBean(AlsProviderInfo.class));
+			Query query = getSession().createSQLQuery(queryString)
+										.addScalar("apiBusinessNm", StringType.INSTANCE)
+										.addScalar("arBusinessRegion", StringType.INSTANCE)
+										.setInteger("provNo", provNo)
+										.setResultTransformer(
+												Transformers.aliasToBean(AlsProviderInfo.class));
 
 			rtn = query.list();
 		} catch (RuntimeException re) {
@@ -270,16 +268,16 @@ public class HibHelpers {
 		return rtn.get(0);
 	}
 	
-	public String getProviderName(Integer providerNo) {
+	public String getProviderName(Integer provNo) {
 		String rtn = null;
 
 		String queryString = "SELECT api_business_nm apiBusinessNm "+
 							 "FROM ALS.ALS_PROVIDER_INFO  "+
-							 "WHERE api_provider_no = "+providerNo;
+							 "WHERE api_provider_no = :provNo ";
 		try {
-			Query query = getSession()
-					.createSQLQuery(queryString)
-					.addScalar("apiBusinessNm", StringType.INSTANCE);
+			Query query = getSession().createSQLQuery(queryString)
+										.addScalar("apiBusinessNm", StringType.INSTANCE)
+										.setInteger("provNo", provNo);
 
 			rtn = (String) query.uniqueResult();
 		} catch (RuntimeException re) {
@@ -419,16 +417,17 @@ public class HibHelpers {
 		Integer rtn = null;
 		
 		String queryString =  "SELECT DISTINCT "
-				+ "asac_budget_year year "
-				+ "FROM als.als_sabhrs_entries "
-				+ "WHERE atg_transaction_cd = "+transCd+" "
-				+ "AND atgs_group_identifier = '"+grpIdentifier+"' "
-				+ "AND ase_allow_upload_to_summary = 'Y'";
+							+ "asac_budget_year year "
+							+ "FROM als.als_sabhrs_entries "
+							+ "WHERE atg_transaction_cd = :transCd "
+							+ "AND atgs_group_identifier = :grpIdentifier "
+							+ "AND ase_allow_upload_to_summary = 'Y'";
 		
 		try {
-			Query query = getSession()
-					.createSQLQuery(queryString)
-					.addScalar("year", StringType.INSTANCE);
+			Query query = getSession().createSQLQuery(queryString)
+										.addScalar("year", StringType.INSTANCE)
+										.setInteger("transCd", transCd)
+										.setString("grpIdentifier",grpIdentifier);
 
 			List<String> tmpLst = query.list();
 			
@@ -451,14 +450,15 @@ public class HibHelpers {
 		String queryString =  "SELECT DISTINCT "
 				+ "asac_program year "
 				+ "FROM als.als_sabhrs_entries "
-				+ "WHERE atg_transaction_cd = "+transCd+" "
-				+ "AND atgs_group_identifier = '"+grpIdentifier+"' "
+				+ "WHERE atg_transaction_cd = :transCd "
+				+ "AND atgs_group_identifier = :grpIdentifier "
 				+ "AND ase_allow_upload_to_summary = 'Y'";
 		
 		try {
-			Query query = getSession()
-					.createSQLQuery(queryString)
-					.addScalar("year", StringType.INSTANCE);
+			Query query = getSession().createSQLQuery(queryString)
+										.addScalar("year", StringType.INSTANCE)
+										.setInteger("transCd", transCd)
+										.setString("grpIdentifier",grpIdentifier);
 			List<String> tmpLst = query.list();
 			if(!tmpLst.isEmpty() && tmpLst.size() == 1){
 				rtn = Integer.parseInt(tmpLst.get(0));
@@ -477,13 +477,13 @@ public class HibHelpers {
 		
 		String queryString =  "SELECT Air_Offln_Payment_Approved rtn "
 						    + "FROM Als.Als_Internal_Remittance "
-						    + "Where  Api_Provider_No = To_Number(Substr('"+transGroupIdentifier+"',2,6)) "
-						    + "AND Air_Billing_To = To_Date(Substr('"+transGroupIdentifier+"',9,10),'YYYY/MM/DD')";
+						    + "Where  Api_Provider_No = To_Number(Substr(:transGroupIdentifier,2,6)) "
+						    + "AND Air_Billing_To = To_Date(Substr(:transGroupIdentifier,9,10),'YYYY/MM/DD')";
 		
 		try {
-			Query query = getSession()
-					.createSQLQuery(queryString)
-					.addScalar("rtn", StringType.INSTANCE);
+			Query query = getSession().createSQLQuery(queryString)
+										.addScalar("rtn", StringType.INSTANCE)
+										.setString("transGroupIdentifier", transGroupIdentifier);
 			rtn = (String) query.uniqueResult();
 		} catch (RuntimeException re) {
 			System.out.println(re.toString());
@@ -632,31 +632,6 @@ public class HibHelpers {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<AlsTransactionGrpMassCopyDTO> getTransGroupMassApprovalRecords(String queryStr) {
-		List<AlsTransactionGrpMassCopyDTO> lst = new ArrayList<AlsTransactionGrpMassCopyDTO>();
-
-		try {
-			Query query = getSession()
-					.createSQLQuery(queryStr)
-					.addScalar("providerNo", IntegerType.INSTANCE)
-					.addScalar("bpe", DateType.INSTANCE)
-					.addScalar("atgsNetDrCr", DoubleType.INSTANCE)
-					.addScalar("providerName", StringType.INSTANCE)
-					.addScalar("remPerStat", StringType.INSTANCE)
-	
-					.setResultTransformer(
-							Transformers.aliasToBean(AlsTransactionGrpMassCopyDTO.class));
-
-			lst = query.list();
-		} catch (RuntimeException re) {
-			System.out.println(re.toString());
-		}
-		finally {
-			getSession().close();
-		}
-		return lst;
-	}
-	@SuppressWarnings("unchecked")
 	public List<AlsTribeItemDTO> findTribeBankItems(String tribeId)
 		{
 			
@@ -678,10 +653,9 @@ public class HibHelpers {
 						.addScalar("aictUsagePeriodFrom", DateType.INSTANCE)
 						.addScalar("aictUsagePeriodTo", DateType.INSTANCE)
 						.addScalar("aictItemTypeCd", StringType.INSTANCE)
-		
+						.setString("tribeId", tribeId)
 						.setResultTransformer(
 								Transformers.aliasToBean(AlsTribeItemDTO.class));
-				 query.setString("tribeId", tribeId);
 
 				toReturn = query.list();
 			} catch (RuntimeException re) {
@@ -983,6 +957,11 @@ public class HibHelpers {
 	@SuppressWarnings("unchecked")
 	public List<InternalProviderTdtDTO> getDeposits(String ids)
 		{
+		
+			List<String> idLst = new ArrayList<String>();
+			for(String tmp:ids.split(",")){
+				idLst.add(tmp);
+			}
 			List<InternalProviderTdtDTO> rtn = new ArrayList<InternalProviderTdtDTO>();
 			String queryString = "SELECT apbd.apbd_billing_to bpe, "
 									+ "apbd.api_provider_no provNo, "

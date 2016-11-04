@@ -241,7 +241,7 @@ public class ListUtils {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<ListComp> getProviderList() {
+	public List<ListComp> getActiveProviderList() {
 		List<ListComp> lst = new ArrayList<ListComp>();
 
 		String queryString = "SELECT DISTINCT api.api_provider_no itemLabel, api.api_provider_no itemVal "
@@ -285,7 +285,7 @@ public class ListUtils {
 
 	/**
 	 * This method retrieves all accounts for a given year from the database as
-	 * formatted text for a jqgrid column select list.
+	 * ListComp 
 	 */
 	@SuppressWarnings("unchecked")
 	public List<ListComp> getAccountList(String budgetYear) throws Exception {
@@ -294,11 +294,14 @@ public class ListUtils {
 		HibHelpers hh = new HibHelpers();
 		String year = (budgetYear == null || "".equals(budgetYear)) ? hh.getCurrentBudgetYear() : budgetYear;
 
-		String where = " WHERE idPk.asacBudgetYear = " + year
-					 + " ORDER BY idPk.aamAccount ";
+		String queryString = "FROM AlsAccountMaster "
+						   + "WHERE idPk.asacBudgetYear = :year "
+						   + "ORDER BY idPk.aamAccount ";
+
+		Query query = getSession().createQuery(queryString)
+						  .setString("year", year);
 		
-		AlsAccountMasterAS appSer = new AlsAccountMasterAS();
-		List<AlsAccountMaster> aamLst = appSer.findAllByWhere(where);
+		List<AlsAccountMaster> aamLst = query.list();
 
 		for (AlsAccountMaster aam : aamLst) {
 			tmp = new ListComp();
@@ -486,12 +489,15 @@ public class ListUtils {
 		
 		List<ListComp> lst = new ArrayList<ListComp>();
 		ListComp tmp;
-		String where = " WHERE idPk.asacBudgetYear = "
-						+ year
-						+ " ORDER BY idPk.asacSystemActivityTypeCd,cast(idPk.asacTxnCd as int) ASC ";
-		
-		AlsSysActivityControlAS appSer = new AlsSysActivityControlAS();
-		List<AlsSysActivityControl> asacLst = appSer.findAllByWhere(where);
+
+		String queryString = "FROM AlsSysActivityControl "
+						   + "WHERE idPk.asacBudgetYear = :year "
+						   + "ORDER BY idPk.asacSystemActivityTypeCd,cast(idPk.asacTxnCd as int) ASC ";
+
+		Query query = getSession().createQuery(queryString)
+						  .setString("year", year);
+
+		List<AlsSysActivityControl> asacLst = query.list();
 
 		for (AlsSysActivityControl asac : asacLst) {
 			tmp = new ListComp();
@@ -515,10 +521,13 @@ public class ListUtils {
 		List<ListComp> lst = new ArrayList<ListComp>();
 		ListComp tmp;
 
-		String where = " WHERE idPk.asacBudgetYear = " + year
-				+ " ORDER BY idPk.aaccAccCd ";
-		AlsAccCdControlAS aaccAS = new AlsAccCdControlAS();
-		List<AlsAccCdControl> aaccLst = aaccAS.findAllByWhere(where);
+		String queryString = "FROM AlsAccCdControl "
+				   + "WHERE idPk.asacBudgetYear = :year "
+				   + "ORDER BY idPk.aaccAccCd ";
+
+		Query query = getSession().createQuery(queryString)
+						  .setString("year", year);
+		List<AlsAccCdControl> aaccLst  = query.list();
 		String tmpCd = null;
 		for (AlsAccCdControl aacc : aaccLst) {
 			if (!aacc.getIdPk().getAaccAccCd().equals(tmpCd)) {
@@ -581,8 +590,14 @@ public class ListUtils {
 	public List<ListComp> getIdGenCode(String codeType){		
 		ListComp lc;
 		List<ListComp> lst = new ArrayList<ListComp>();
-		AlsWebGenCodesAS awgcAS = new AlsWebGenCodesAS();
-		List<AlsWebGenCodes> records = awgcAS.findAllByWhere("where awgcName = '" + codeType + "'",null);
+
+		String queryString = "FROM AlsWebGenCodes "
+				   + "WHERE awgcName = :codeType "
+				   + "ORDER BY awgcName, awgcOrder ";
+
+		Query query = getSession().createQuery(queryString)
+						  .setString("codeType", codeType);
+		List<AlsWebGenCodes> records = query.list();
 		
 		for(AlsWebGenCodes row: records){
 			lc = new ListComp();
@@ -712,14 +727,6 @@ public class ListUtils {
 		getSession().close(); 
 		return lst;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	/*IAFA Query Lists*/
 	@SuppressWarnings("unchecked")

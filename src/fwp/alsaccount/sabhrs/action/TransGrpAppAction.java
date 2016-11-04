@@ -28,7 +28,7 @@ public class TransGrpAppAction extends ActionSupport{
 		ListUtils lu = new ListUtils();
 		try {
 			setBankCodeLst(FwpStringUtils.listCompListToString(lu.getTransGrpBankCodeList()));
-			setProviderLst(FwpStringUtils.listCompListToString(lu.getProviderList()));
+			setProviderLst(FwpStringUtils.listCompListToString(lu.getActiveProviderList()));
 			
 			UserDTO userInfo = (UserDTO)SecurityUtils.getSubject().getSession().getAttribute("userInfo");
 			setUser(userInfo.getStateId().toString());

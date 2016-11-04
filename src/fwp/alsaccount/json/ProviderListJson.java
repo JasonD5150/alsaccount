@@ -23,7 +23,7 @@ public class ProviderListJson extends ActionSupport {
 		if(txGrpType != null && txGrpType == 8){
 			providerLst = lu.getIntOnActProviderList();
 		}else{
-			providerLst = lu.getProviderList();
+			providerLst = lu.getActiveProviderList();
 		}
 		return SUCCESS;
 	}
