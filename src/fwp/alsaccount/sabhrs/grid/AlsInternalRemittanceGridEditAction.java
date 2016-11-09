@@ -361,7 +361,7 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 			addActionError("Error while deleting record from Als_Sabhrs_Entries_Summary table for Transaction Type 8 and Group Identifier "+grpIdentifier1+".");
 			return "error_json";
 		}
-		
+		where = "WHERE idPk.atgTransactionCd = "+transGrpCd+" AND idPk.atgsGroupIdentifier = '"+grpIdentifier1+"' ";
 		atgsLst = atgsAS.findAllByWhere(where);
 		if(!atgsLst.isEmpty()){
 			for(AlsTransactionGrpStatus atgs : atgsLst){
@@ -544,7 +544,7 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 				apr.setAprAmtReceived(apr.getAprOldAmtReceived());
 				apr.setAprOldAmtReceived(apr.getAprAmtReceived());
 				apr.setAprAmtDue(apr.getAprAmtDue() - airNetOverShort);
-				apr.setAprRemittPerStatus("0");
+				apr.setAprRemittPerStatus("O");
 			}
 			aprAS.save(apr);
 		}else{
