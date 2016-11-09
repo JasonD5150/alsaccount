@@ -562,11 +562,9 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 		String errMsg="";
 		String where = "";
 		try{
-			/*DEPOSITS*/
 			where = "WHERE idPk.atgTransactionCd = 8 "
 				  + "AND Substr(idPk.atgsGroupIdentifier,2,6) = LPAD("+provNo+", 6, '0') "
-				  + "AND Substr(idPk.atgsGroupIdentifier,9,10) = '"+sdf.format(bpToDt)+"' "
-				  + "AND (atgsSummaryStatus IS NULL OR atgsInterfaceStatus IS NULL) ";
+				  + "AND Substr(idPk.atgsGroupIdentifier,9,10) = '"+sdf.format(bpToDt)+"' ";
 			atgsLst = atgsAS.findAllByWhere(where);
 			
 			if(!atgsLst.isEmpty()){
