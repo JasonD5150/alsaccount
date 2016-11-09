@@ -77,6 +77,10 @@ public class ListUtils {
     	            }
     	            else if ("amKey2".equals(labelFieldName)) {
         	            lc.setItemLabel(am.getAmKey2());
+    	            }else if("amDesc1".equals(labelFieldName)){
+    	            	lc.setItemLabel(am.getAmDesc1());
+    	            }else if("amDesc2".equals(labelFieldName)){
+    	            	lc.setItemLabel(am.getAmDesc2());
     	            }
     	            else {
     	            	throw new Exception("labelFieldName: "+labelFieldName+" has not been implemented yet.");
@@ -101,6 +105,7 @@ public class ListUtils {
     				}
     	        }
 
+
     	        Collections.sort(lcList, new Comparator<ListComp>() {
     	            @Override
     	            public int compare(ListComp o1, ListComp o2) {
@@ -108,9 +113,18 @@ public class ListUtils {
         	                return o1.getItemLabel().compareTo(o2.getItemLabel());
     	            	}
     	            	else {
-        	                return o1.getItemVal().compareTo(o2.getItemVal());
+    	            		Integer val1 = extractInt(o1.getItemVal());
+    	            		Integer val2 = extractInt(o2.getItemVal());
+        	                return val1.compareTo(val2);
     	            	}
     	            }
+    	            	
+    	            int extractInt(String s){
+    	            	String num = s.replaceAll("\\D", "");
+    	                // return 0 if no digits found
+    	                return num.isEmpty() ? 0 : Integer.parseInt(num);
+    	            }
+    	            
     	        });
     		}	        	        
 	    }

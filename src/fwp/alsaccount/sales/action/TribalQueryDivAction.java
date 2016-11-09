@@ -27,7 +27,7 @@ public class TribalQueryDivAction extends ActionSupport{
 		ListUtils lu = new ListUtils();
 		try {
 			tribeCdLst = lu.getTribeCdList();
-			provLst = lu.getIafaQueryProviderList();
+			provLst = lu.getActiveProviderList();
 			itemTypeLst = lu.getTribalItemTypeList();
 			usagePeriodLst = lu.getTribalUsagePeriodList();
 		} catch (Exception e) {

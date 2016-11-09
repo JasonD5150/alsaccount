@@ -29,7 +29,7 @@ public class IafaSummaryQueryDivAction extends ActionSupport{
 	public String input(){
 		ListUtils lu = new ListUtils();
 		try {
-			provLst = lu.getIafaQueryProviderList();
+			provLst = lu.getActiveProviderList();
 			applicationTypeLst = lu.getJLRList();
 			itemTypeLst = lu.getItemTypeCd(null);
 			amountTypeCdLst = lu.getMiscCodes("IAFA_AMOUNT_TYPE", null, null, null, null, null, null, true, true);

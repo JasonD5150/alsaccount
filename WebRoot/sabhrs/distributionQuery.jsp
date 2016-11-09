@@ -29,11 +29,11 @@
 			function exportToCSV(){
 				$.ajax({
 					type: "POST",
-					data: JSON.stringify(exportGrid("iafaSummaryTable","iafaSummaryRecords","gridFrm")),
+					data: JSON.stringify(exportGrid("distributionQueryTable","distributionRecords","gridFrm")),
 					dataType: "json",
 					cache: false,
 					contentType: "application/json",
-					url: 'iafaSummaryQueryBuildCsv.action',
+					url: 'distributionGridsToCsv.action',
 					success: function (data) {
 						window.location = "downloadCsv.action?csvFileName=" + data.csvFileName+"&fileName="+data.fileName;
 					}, complete: function () {

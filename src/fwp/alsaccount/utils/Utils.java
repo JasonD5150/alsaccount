@@ -178,6 +178,11 @@ public class Utils {
        if (in == null) return "";
        else return in;
 	}
+   
+   public static Integer nullFix(Integer in){
+       if (in == null) return 0;
+       else return in;
+	}
 
    public static Double nullFix(Double in){
        if (in == null) return 0.0;

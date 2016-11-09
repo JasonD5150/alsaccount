@@ -42,7 +42,7 @@ public class IafaDetailsQueryDivAction extends ActionSupport{
 			budgYear = hh.getCurrentBudgetYear();
 		}
 		try {
-			provLst = lu.getIafaQueryProviderList();
+			provLst = lu.getActiveProviderList();
 			applicationTypeLst = lu.getIafaApplicationTypeList();
 			itemTypeLst = lu.getItemTypeCd(null);
 			amountTypeCdLst = lu.getMiscCodes("IAFA_AMOUNT_TYPE", null, null, null, null, null, null, true, true);
