@@ -248,6 +248,7 @@
 		<s:hidden id="frmIafaSeqNo" name="iafaSeqNo"/>
 		<s:hidden id="frmBudgYear" name="budgYear"/>
 	</form>
+	
 	<sj:tabbedpanel id="intProvTabs" selectedTab="0" useSelectedTabCookie="false"  cssStyle="width:950px;position:inherit">
 				<sj:tab id="intProvTab1" target="intProvTOne" title="Bank Deposits" label="Bank Deposits" tabindex="1" />
 				<sj:tab id="intProvTab2" target="intProvTTwo" title="Non ALS Details" label="Non ALS Details" tabindex="2" />
@@ -292,11 +293,9 @@
 					   						  addedrow:'last',
 					   						  beforeSubmit:function(postData){
 				   						  			$('#alsOverUnderSales').jqGrid('setGridParam',{datatype:'json'});
-					    	                      	var grid = $('#alsInternalRemittance');
-													var sel_id = grid.jqGrid('getGridParam','selrow'); 
-				    	                      		postData.provNo = $('#provNo').val();
-				    	                      		postData.apbdBillingFrom = grid.jqGrid('getCell', sel_id, 'idPk.airBillingFrom');
-				    	                      		postData.apbdBillingTo = grid.jqGrid('getCell', sel_id, 'idPk.airBillingTo');
+					    	                      	postData.provNo = $('#frmProvNo').val();
+					    	                      	postData.billingFrom = $('#frmBPFrom').val();
+					    	                      	postData.apbdBillingTo = $('#frmBPTo').val();
 					    	                      	return[true, ''];
 						    	              },
 					   						  afterSubmit:errorHandler,
@@ -316,8 +315,10 @@
 					   	                       editCaption:'Edit Code Info',
 					   	                       beforeSubmit:function(postData){
 					   	                       $('#alsOverUnderSales').jqGrid('setGridParam',{datatype:'json'});
-						    	               		postData.provNo = $('#provNo').val();
-						    	                    return[true, ''];
+						    	               		postData.provNo = $('#frmProvNo').val();
+					    	                      	postData.billingFrom = $('#frmBPFrom').val();
+					    	                      	postData.apbdBillingTo = $('#frmBPTo').val();
+					    	                      	return[true, ''];
 						    	               },
 					   	                       closeAfterEdit:true,
 					   	                       afterSubmit:errorHandler,
@@ -346,6 +347,7 @@
 						rowNum="1000"
 						formIds="subGridFrm"
 						reloadTopics="reloadSubGrids"
+						onCompleteTopics="alsOverUnderComplete"
 						loadonce="true">
 							<sjg:gridColumn name="gridKey" title ="id" width="55" hidden="true" key="true"/>
 							<sjg:gridColumn name="aousdFlag" index="aousdFlag" title="Over/Short of Sales" width="10" sortable="true" editable="true" edittype="select" formatter="select" editoptions="{value: {O: 'Over Sale', U: 'Short of Sales'}}" editrules="{required:true}"/>

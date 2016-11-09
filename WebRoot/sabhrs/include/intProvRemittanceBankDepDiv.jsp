@@ -29,7 +29,7 @@
    	navigatorAddOptions="{width:600,reloadAfterSubmit:false,
    						  addedrow:'last',
    						  beforeSubmit:function(postData){
-	    	                      	postData.provNo = $('#provNo').val();
+	    	                      	postData.provNo = $('#frmProvNo').val();
 	    	                      	postData.billingFrom = $('#frmBPFrom').val();
 	    	                      	postData.apbdBillingTo = $('#frmBPTo').val();
 	    	                      	return[true, ''];
@@ -48,7 +48,7 @@
    	                       editCaption:'Edit Code Info',
    	                       afterShowForm:setEnabledFields,
    	                       beforeSubmit:function(postData){
-	    	                      	postData.provNo = $('#provNo').val();
+	    	                      	postData.provNo = $('#frmProvNo').val();
 	    	                      	postData.billingFrom = $('#frmBPFrom').val();
 	    	                      	postData.apbdBillingTo = $('#frmBPTo').val();
 	    	                      	return[true, ''];

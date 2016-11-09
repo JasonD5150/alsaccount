@@ -30,7 +30,7 @@
    	navigatorAddOptions="{width:600,reloadAfterSubmit:false,
    						  addedrow:'last',
    						  beforeSubmit:function(postData){
-					  				postData.provNo = $('#provNo').val();
+					  				postData.provNo = $('#frmProvNo').val();
 	    	                    	postData.apbdBillingFrom = $('#frmBPFrom').val();
 	    	                    	postData.apbdBillingTo = $('#frmBPTo').val();
   	                      			return[true, ''];
@@ -51,7 +51,7 @@
    	navigatorEditOptions="{width:600,reloadAfterSubmit:false,
    	                       editCaption:'Edit Code Info',
    	                       beforeSubmit:function(postData){
-	    	                    postData.provNo = $('#provNo').val();
+	    	                    postData.provNo = $('#frmProvNo').val();
 	    	                    postData.apbdBillingFrom = $('#frmBPFrom').val();
 	    	                    postData.apbdBillingTo = $('#frmBPTo').val();
 	    	                    return[true, ''];
