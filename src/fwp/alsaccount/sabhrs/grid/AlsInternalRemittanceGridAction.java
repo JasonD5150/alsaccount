@@ -134,7 +134,7 @@ public class AlsInternalRemittanceGridAction extends ActionSupport{
             			/*CALCULATED FIELDS*/
             			airDTO.setAirTotSales(Utils.nullFix(tmp.getAirSystemSales())+Utils.nullFix(tmp.getAirOtcPhoneSales())+Utils.nullFix(tmp.getAirPae())+Utils.nullFix(tmp.getAirNonAlsSales()));
             			airDTO.setTotFundsRec(Utils.nullFix(airDTO.getTotBankDep())+Utils.nullFix(tmp.getAirCreditSales()));
-            			airDTO.setAirDifference(Double.valueOf(df.format(Utils.nullFix(airDTO.getAirTotSales())-Utils.nullFix(airDTO.getTotFundsRec()))));
+            			airDTO.setAirDifference(Double.valueOf(df.format(Utils.nullFix(airDTO.getTotFundsRec())-Utils.nullFix(airDTO.getAirTotSales()))));
             			airDTO.setNetOverShortOfSales(Utils.nullFix(tmp.getAirOverSales())-Utils.nullFix(tmp.getAirShortSales()));
             			
             			airDTO.setBillingBallanced((Double.compare(Math.abs(airDTO.getAirDifference()), Math.abs(airDTO.getNetOverShortOfSales())) == 0 ? "Y" : "N"));

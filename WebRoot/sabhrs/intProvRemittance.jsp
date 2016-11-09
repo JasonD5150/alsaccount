@@ -185,7 +185,7 @@
 				<td><s:textfield id="displayTotAlsSales" name="displayTotAlsSales" theme="simple" title="Total ALS Sales" disabled="true"/></td>
 				<td class="label">Credit Card Sales: </td>
 				<td><s:textfield id="displayCCSales" name="displayCCSales" theme="simple" title="Credit Card Sales" /></td>
-				<td class="label">Total Short of Sales: </td>
+				<td class="label">Total Shortage: </td>
 				<td><s:textfield id="displayTotShortOfSales" name="displayTotShortOfSales" theme="simple" title="Total Short of Sales" disabled="true"/></td>
 			</tr>
 			<tr>
@@ -193,7 +193,7 @@
 				<td><s:textfield id="displayNonAlsSales" name="displayNonAlsSales" theme="simple" title="Non ALS Sales" disabled="true"/></td>
 				<td class="label">Total Bank Deposits: </td>
 				<td><s:textfield id="displayTotBankDep" name="displayTotBankDep" theme="simple" title="Total Bank Deposits" disabled="true"/></td>
-				<td class="label">Total Over Sales: </td>
+				<td class="label">Total Overage: </td>
 				<td><s:textfield id="displayTotOverSales" name="displayTotOverSales" theme="simple" title="Total Over Sales" disabled="true"/></td>
 			</tr>
 			<tr>
@@ -201,7 +201,7 @@
 				<td><s:textfield id="displayTotSales" name="displayTotSales" theme="simple" title="Total Sales" disabled="true"/></td>
 				<td class="label">Total Funds Received: </td>
 				<td><s:textfield id="displayTotFundRec" name="displayTotFundRec" theme="simple" title="Total Funds Received" disabled="true"/></td>
-				<td class="label">Net Over/Short of Sales: </td>
+				<td class="label">Net Overage/Shortage: </td>
 				<td><s:textfield id="displayNetOverShortOfSales" name="displayNetOverShortOfSales" theme="simple" title="Net Over/Short of Sales" disabled="true"/></td>
 			</tr>
 			<tr><td><br><br></td></tr>
@@ -252,7 +252,7 @@
 	<sj:tabbedpanel id="intProvTabs" selectedTab="0" useSelectedTabCookie="false"  cssStyle="width:950px;position:inherit">
 				<sj:tab id="intProvTab1" target="intProvTOne" title="Bank Deposits" label="Bank Deposits" tabindex="1" />
 				<sj:tab id="intProvTab2" target="intProvTTwo" title="Non ALS Details" label="Non ALS Details" tabindex="2" />
-				<sj:tab id="intProvTab3" target="intProvTThree" title="Over / Short of Sales" label="Over / Short of Sales" tabindex="3" />				
+				<sj:tab id="intProvTab3" target="intProvTThree" title="Overage / Shortage" label="Overage / Shortage" tabindex="3" />				
 				
 				<div id="intProvTOne">
 			 		<s:url id="intProvRemittanceBankDepDivUrl" value="intProvRemittanceBankDepDiv_input.action" />
@@ -294,7 +294,7 @@
 					   						  beforeSubmit:function(postData){
 				   						  			$('#alsOverUnderSales').jqGrid('setGridParam',{datatype:'json'});
 					    	                      	postData.provNo = $('#frmProvNo').val();
-					    	                      	postData.billingFrom = $('#frmBPFrom').val();
+					    	                      	postData.apbdBillingFrom = $('#frmBPFrom').val();
 					    	                      	postData.apbdBillingTo = $('#frmBPTo').val();
 					    	                      	return[true, ''];
 						    	              },
@@ -350,7 +350,7 @@
 						onCompleteTopics="alsOverUnderComplete"
 						loadonce="true">
 							<sjg:gridColumn name="gridKey" title ="id" width="55" hidden="true" key="true"/>
-							<sjg:gridColumn name="aousdFlag" index="aousdFlag" title="Over/Short of Sales" width="10" sortable="true" editable="true" edittype="select" formatter="select" editoptions="{value: {O: 'Over Sale', U: 'Short of Sales'}}" editrules="{required:true}"/>
+							<sjg:gridColumn name="aousdFlag" index="aousdFlag" title="Overage/Shortage" width="10" sortable="true" editable="true" edittype="select" formatter="select" editoptions="{value: {O: 'Overage', U: 'Shortage'}}" editrules="{required:true}"/>
 							<sjg:gridColumn name="aousdDesc" index="aousdDesc" title="Description" width="10" sortable="true" editable="true" editrules="{required:true}"/>
 							<sjg:gridColumn name="aousdAmount" index="aousdAmount" title="Amount" width="10" sortable="true" editable="true" align="right" formatter= "number" formatoptions="{decimalPlaces: 2}" editrules="{number:true,required:true}" editoptions="{minValue:0}"/>
 					</sjg:grid>	

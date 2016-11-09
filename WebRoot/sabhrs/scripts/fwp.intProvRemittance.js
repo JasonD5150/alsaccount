@@ -198,7 +198,22 @@ $.subscribe("internalRemittanceSelected", function(event, data) {
 
 $.subscribe("depositsGridComplete", function(event, data) {	
 	var grid = $("#depositsGrid");
-
+	var error = grid.jqGrid('getGridParam', 'userData');
+	
+	if (error != null && error.length > 0) {
+		$("#errorMessage").html(error);
+		$("#errorMessage").dialog({
+			title:"Search Error",
+		    resizable: false,
+		    height:"auto",
+		    modal: true,
+		    buttons: {
+	            "Ok": function() {
+	                $(this).dialog("close");
+	                 }
+	             }
+			});
+		}
 	grid.jqGrid({pager:'#depositsGrid_pager'}).jqGrid('navButtonAdd'
 	,'#depositsGrid_pager'
 	,{id:"genDepositTickets_depositsGrid"
@@ -259,6 +274,26 @@ $.subscribe('alsSabhrsEntriesComplete', function(event, data) {
    		$("#alsSabhrsEntriesGrid").jqGrid('setColProp','aocOrg', { editoptions: { value: rtrnOrgList()}});
    		$("#alsSabhrsEntriesGrid").jqGrid('setColProp','aamAccount', { editoptions: { value: rtrnAccountList()}});
 	}
+});
+
+$.subscribe('alsOverUnderComplete', function(event, data) {	
+	var grid = $("#alsOverUnderSales");
+	var error = grid.jqGrid('getGridParam', 'userData');
+	
+	if (error != null && error.length > 0) {
+		$("#errorMessage").html(error);
+		$("#errorMessage").dialog({
+			title:"Search Error",
+		    resizable: false,
+		    height:"auto",
+		    modal: true,
+		    buttons: {
+	            "Ok": function() {
+	                $(this).dialog("close");
+	                 }
+	             }
+			});
+		}
 });
 
 $.subscribe("autoSelectTemplates", function(event, data) {	
