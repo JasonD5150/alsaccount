@@ -531,6 +531,9 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 		aprIdPk.setAprBillingFrom(bpFrom);
 		aprIdPk.setAprBillingTo(bpTo);
 		apr = aprAS.findById(aprIdPk);
+		if(Utils.isNil(airNetOverShort)){
+			airNetOverShort = 0.0;
+		}
 		if(apr != null){
 			if("A".equals(flg)){
 				apr.setAprAmtDue(apr.getAprAmtDue() + airNetOverShort);
