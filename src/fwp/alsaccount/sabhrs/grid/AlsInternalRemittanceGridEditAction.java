@@ -67,7 +67,7 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 		String errMsg="";		
 		
 		try{
-			if(oper.equalsIgnoreCase("edit")){				
+			if(oper.equalsIgnoreCase("edit")){	
 				AlsInternalRemittanceAS tmpAS = new AlsInternalRemittanceAS();
 				AlsInternalRemittanceIdPk tmpIdPk = new AlsInternalRemittanceIdPk();
 				AlsInternalRemittance original = null;	
@@ -82,6 +82,13 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 				if(original == null){
 					addActionError("Original record not found.");
 					 return "error_json";
+				}
+				
+				Boolean approveSummary = false;
+				if((original.getAirNonAlsSales() == null ||  original.getAirNonAlsSales() == 0.0) && 
+				   (original.getAirShortSales() == null ||  original.getAirShortSales() == 0.0) &&
+				   (original.getAirOverSales() == null ||  original.getAirOverSales() == 0.0)){
+					approveSummary = true;
 				}
 				/*Credit Card Sales Changed*/
 				if(Double.compare(original.getAirCreditSales(), Double.valueOf(ccSales)) != 0){
@@ -111,7 +118,7 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 				}
 				/*Remittance Approved*/
 				if(!"Y".equals(original.getAirOfflnPaymentApproved())&&"true".equals(remApp)){
-					updateTransactionGroup(provNo, sdf.parse(id.split("_")[1]), true);
+					updateTransactionGroup(provNo, sdf.parse(id.split("_")[1]), true, approveSummary);
 					original.setAirOfflnPaymentApproved("Y");
 					original.setAirOfflnPaymentAppBy(userInfo.getStateId());
 					original.setAirOfflnPaymentAppDt(date);
@@ -119,7 +126,7 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 				}
 				/*Remittance Disapproved*/
 				if("Y".equals(original.getAirOfflnPaymentApproved())&&"false".equals(remApp)){
-					updateTransactionGroup(provNo, sdf.parse(id.split("_")[1]), false);
+					updateTransactionGroup(provNo, sdf.parse(id.split("_")[1]), false, approveSummary);
 					original.setAirOfflnPaymentApproved("N");
 					original.setAirOfflnPaymentAppBy(null);
 					original.setAirOfflnPaymentAppDt(null);
@@ -554,7 +561,7 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 		return SUCCESS;
 	}
 	
-	public String updateTransactionGroup(Integer provNo, Date bpToDt, Boolean approve){
+	public String updateTransactionGroup(Integer provNo, Date bpToDt, Boolean approve, Boolean approveSummary){
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 		AlsTransactionGrpStatusAS atgsAS = new AlsTransactionGrpStatusAS();
 		List<AlsTransactionGrpStatus> atgsLst = new ArrayList<AlsTransactionGrpStatus>();
@@ -570,8 +577,13 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 			if(!atgsLst.isEmpty()){
 				for(AlsTransactionGrpStatus tmp:atgsLst){
 					tmp.setAtgsSummaryStatus(approve?"A":null);
-					tmp.setAtgsSummaryApprovedBy(approve?userInfo.getStateId().toString():null);
+					tmp.setAtgsSummaryApprovedBy(approve?"auto_"+userInfo.getStateId().toString():null);
 					tmp.setAtgsSummaryDt(approve?curDate:null);
+					if(approveSummary){
+						tmp.setAtgsInterfaceStatus(approve?"A":null);
+						tmp.setAtgsInterfaceApprovedBy(approve?"auto_"+userInfo.getStateId().toString():null);
+						tmp.setAtgsInterfaceDt(approve?curDate:null);
+					}
 					tmp.setAtgsWhoModi(userInfo.getStateId().toString());
 					tmp.setAtgsWhenModi(curDate);
 					atgsAS.save(tmp);
