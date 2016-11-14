@@ -114,7 +114,7 @@ public class AlsTransactionGrpApprovalGridEditAction extends ActionSupport{
 							by = curBudgYear.substring(2, 3);
 							seq = hh.getAlsDepIdSeq(curBudgYear, type);
 							depId = String.format("%02d", Integer.parseInt(by))+type+String.format("%05d", seq);
-						}else if(transGroupType == 8 && depId == null){
+						}else if(transGroupType == 8 && (depId == null || "".equals(depId))){
 							ipTranGrp = transGroupIdentifier.substring(0, 18);
 							if(intAll == false){
 								Integer cnt = hh.getTransGroupCnt(transGroupIdentifier);
@@ -215,7 +215,7 @@ public class AlsTransactionGrpApprovalGridEditAction extends ActionSupport{
 					ipTranGrp = null;
 					String where = "WHERE idPk.atgTransactionCd = "+transGroupType+" AND substr(idPk.atgsGroupIdentifier,1,18) = substr('"+transGroupIdentifier+"',1,18) ";
 					if(sumAll == true){
-						if("A".equals(sumAppStat)){
+						if(!"A".equals(atgsOriginal.getAtgsSummaryStatus()) && "A".equals(sumAppStat)){
 							atgsLst = atgsAS.findAllByWhere(where);
 							for(AlsTransactionGrpStatus tmp : atgsLst){
 								tmp.setAtgsSummaryStatus(sumAppStat);
@@ -228,11 +228,11 @@ public class AlsTransactionGrpApprovalGridEditAction extends ActionSupport{
 						}
 					}
 					if(intAll == true){
-						if("A".equals(intAppStat)){
+						if(!"A".equals(atgsOriginal.getAtgsInterfaceStatus()) && "A".equals(intAppStat)){
 							atgsLst = atgsAS.findAllByWhere(where);
 							for(AlsTransactionGrpStatus tmp : atgsLst){
-								tmp.setAtgsInterfaceStatus(sumAppStat);
-								tmp.setAtgsInterfaceApprovedBy(sumAppBy);
+								tmp.setAtgsInterfaceStatus(intAppStat);
+								tmp.setAtgsInterfaceApprovedBy(intAppBy);
 								tmp.setAtgsInterfaceDt(Utils.StrToTimestamp(intAppDt, "long"));
 								tmp.setAtgsWhoModi(userInfo.getStateId());
 								tmp.setAtgsWhenModi(date);
@@ -267,6 +267,10 @@ public class AlsTransactionGrpApprovalGridEditAction extends ActionSupport{
 		String offlinePayment = "";
 		Integer providerNo = 0;
 		String billingTo = "";
+		if((atgsOriginal.getAtgsSummaryApprovedBy() != null && atgsOriginal.getAtgsSummaryApprovedBy().replace("auto_", "").equals(intAppBy)) ||
+		   (atgsOriginal.getAtgsInterfaceApprovedBy()!= null && atgsOriginal.getAtgsInterfaceApprovedBy().replace("auto_", "").equals(sumAppBy))){
+			this.addActionError("Summary and Interface cannot be approved by the same person.");
+		}
 		if((transGroupType == 1 || transGroupType == 3) && "A".equals(intAppStat)){
 			if(bankRefNo == null || "".equals(bankRefNo)){
 				this.addActionError("Bank Reference Number must be entered.");

@@ -130,6 +130,7 @@ function enableDisableElements() {
 }
 
 $.subscribe('transGroupSelected', function(event, data) {
+		$('#transGroupApprovalJsonFrm')[0].reset();
 		$('#rtnAction').html('');
 		var sel_id = $("#transGroupApprovalTable").jqGrid('getGridParam', 'selrow');
 							    				  
@@ -163,7 +164,6 @@ $.subscribe('transGroupSelected', function(event, data) {
 });
 
 function submitTransGroupApproval(){
-	var row = $('#idPk.atgTransactionCd').val+"_"+$('#idPk.atgsGroupIdentifier').val;
 	url = "alsAccount/transGroupApprovalGridEdit_execute.action";    
 	$.ajax({
       type: "POST",
@@ -203,11 +203,12 @@ function submitTransGroupApproval(){
         	  $('#rtnAction').html(
 						'<p style="color:red;font-size:14px"><b>'
 								+ result.actionErrors+ '</b></p>');
+        	  $("#transGroupApprovalTable").trigger("reloadGrid");
+        	 
           }else{
         	  $('#rtnAction').html(
 						'<p style="color:blue;font-size:14px"><b>Transaction Group succesfully updated.</b></p>');
         	  $("#transGroupApprovalTable").trigger("reloadGrid");
-        	  $("#transGroupApprovalTable").jqGrid('setSelection', row);
           }
      }
     });

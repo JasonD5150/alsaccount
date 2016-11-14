@@ -34,7 +34,7 @@ public class Utils {
 	
 	public static Timestamp StrToTimestamp(String inDate, String type){
 		DateFormat shortFormat = new SimpleDateFormat("dd/MM/yyyy");
-		DateFormat longFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+		DateFormat longFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss");
 		
 		Date date = null;
 		
