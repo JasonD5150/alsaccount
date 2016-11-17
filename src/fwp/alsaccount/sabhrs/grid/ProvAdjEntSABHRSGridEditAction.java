@@ -1,6 +1,8 @@
 package fwp.alsaccount.sabhrs.grid;
 
+
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,11 +17,13 @@ import fwp.alsaccount.dao.sabhrs.AlsSabhrsEntries;
 import fwp.alsaccount.dao.sabhrs.AlsSabhrsEntriesDAO;
 import fwp.alsaccount.dao.sabhrs.AlsSabhrsEntriesIdPk;
 import fwp.alsaccount.hibernate.utils.DalUtils;
+import fwp.alsaccount.utils.HibHelpers;
 import fwp.alsaccount.utils.Utils;
+import fwp.gen.appservice.GenZipCodesAS;
 import fwp.security.user.UserDTO;
 
 
-public class ManualProviderAdjEntriesSABHRSGridEditAction extends ActionSupport{
+public class ProvAdjEntSABHRSGridEditAction extends ActionSupport{
 	private static final long serialVersionUID = 1L;
 	private String oper;
 	
@@ -47,32 +51,32 @@ public class ManualProviderAdjEntriesSABHRSGridEditAction extends ActionSupport{
     private String aseDrCrCd;
     private Integer aseSeqNo;
     private String aseLineDescription;
+    private Boolean remittanceInd;
 
-	
-    AlsSabhrsEntriesAS aseAS = new AlsSabhrsEntriesAS();
-    
-    UserDTO userInfo = (UserDTO)SecurityUtils.getSubject().getSession().getAttribute("userInfo");
-	Timestamp date = new Timestamp(System.currentTimeMillis());
-	SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 	
 	public String execute() throws Exception{
 		DalUtils dalUtils = new DalUtils();
-		String errMsg="";	
+		AlsSabhrsEntriesAS aseAS = new AlsSabhrsEntriesAS();
 		AlsSabhrsEntriesIdPk aseIdPk = new AlsSabhrsEntriesIdPk();
 		AlsSabhrsEntries ase = null;
 		AlsSabhrsEntriesDAO aseDAO = new AlsSabhrsEntriesDAO();
+		
+		UserDTO userInfo = (UserDTO)SecurityUtils.getSubject().getSession().getAttribute("userInfo");
+		Timestamp date = new Timestamp(System.currentTimeMillis());
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+		String errMsg="";
+
 		try{
-			
 			if (oper.equalsIgnoreCase("edit") || oper.equalsIgnoreCase("del")) {
 				String[] keys = id.split("_");
-				aseIdPk.setAseWhenEntryPosted(Timestamp.valueOf(keys[0]));
+				aseIdPk.setAseWhenEntryPosted(Timestamp.valueOf(keys[3]));
 				aseIdPk.setAseSeqNo(Integer.valueOf(keys[1]));
-				aseIdPk.setAseDrCrCd(keys[2]);
-				aseIdPk.setAseTxnCdSeqNo(Integer.valueOf(keys[3]));
+				aseIdPk.setAseDrCrCd(keys[0]);
+				aseIdPk.setAseTxnCdSeqNo(Integer.valueOf(keys[2]));
 				ase = aseAS.findById(aseIdPk);
 			}
-			
-			if (oper.equalsIgnoreCase("add")) {	
+			if (oper.equalsIgnoreCase("add") && validation()) {	
 				aseIdPk.setAseWhenEntryPosted(date);
 				aseIdPk.setAseSeqNo(dalUtils.getNextValueFromSequence("ALS_SABHRS_ENTRIES_SEQ", aseDAO.getSession()));
 				aseIdPk.setAseDrCrCd(idPk.getAseDrCrCd());
@@ -102,8 +106,8 @@ public class ManualProviderAdjEntriesSABHRSGridEditAction extends ActionSupport{
 				ase.setAseWhenLog(date);
 				ase.setAseWhoLog(userInfo.getStateId());
 				
-				aseAS.save(ase);
-			}else if(oper.equalsIgnoreCase("edit")){		
+				//aseAS.save(ase);
+			}else if(oper.equalsIgnoreCase("edit") && validation()){		
 				ase.setAamAccount(aamAccount);
 				ase.setAamBusinessUnit(aamBusinessUnit);
 				ase.setAamFund(aamFund);
@@ -118,19 +122,70 @@ public class ManualProviderAdjEntriesSABHRSGridEditAction extends ActionSupport{
 				ase.setAseWhenLog(date);
 				ase.setAseWhoLog(userInfo.getStateId());
 				aseAS.save(ase);
-			}else if(oper.equalsIgnoreCase("del")){
-				if(ase != null){
-					aseAS.delete(ase);
-				}
 			}else if (oper.equalsIgnoreCase("reverseAlsEntries")) {
 				if(aseAS.getSabhrsRecordCnt(8, Utils.createIntProvGroupIdentifier(provNo, sdf.format(bpTo), iafaSeqNo), provNo, iafaSeqNo, bpFrom, bpTo) == 0){
-					dupSabhrsEntries();
+					List<AlsSabhrsEntries> aseLst = new ArrayList<AlsSabhrsEntries>();
+					AlsSabhrsEntries aseNew = null;
+					AlsSabhrsEntriesIdPk aseIdPkNew = null;
+					Timestamp ts = Timestamp.valueOf("1900-01-01 12:00:00");
+					Long incr = 1000l;
+					
+					aseLst = aseAS.getManualProviderAdjEntriesRecords(provNo, iafaSeqNo, bpFrom, bpTo);
+					for(AlsSabhrsEntries tmp : aseLst){
+						aseNew = new AlsSabhrsEntries();
+						aseIdPkNew = new AlsSabhrsEntriesIdPk();
+						
+						aseNew.setAseWhenLog(date);
+						aseIdPkNew.setAseSeqNo(dalUtils.getNextValueFromSequence("ALS_SABHRS_ENTRIES_SEQ", aseDAO.getSession()));
+						aseIdPkNew.setAseDrCrCd(tmp.getIdPk().getAseDrCrCd());
+						aseIdPkNew.setAseTxnCdSeqNo(tmp.getIdPk().getAseTxnCdSeqNo());
+						aseIdPkNew.setAseWhenEntryPosted(date);
+						aseNew.setIdPk(aseIdPkNew);
+						aseNew.setAsacBudgetYear(tmp.getAsacBudgetYear());
+						aseNew.setAsacSystemActivityTypeCd("Z");
+						aseNew.setAsacTxnCd("9");
+						aseNew.setAamAccount(tmp.getAamAccount());
+						aseNew.setAamBusinessUnit(tmp.getAamBusinessUnit());
+						aseNew.setAamFund(tmp.getAamFund());
+						aseNew.setAocOrg(tmp.getAocOrg());
+						aseNew.setAsacProgram(tmp.getAsacProgram());
+						aseNew.setAsacSubclass(tmp.getAsacSubclass());
+						aseNew.setAsacProjectGrant(tmp.getAsacProjectGrant());
+						aseNew.setAsacReference(tmp.getAsacReference());
+						aseNew.setAseAmt(tmp.getAseAmt());
+						aseNew.setAseAllowUploadToSummary(tmp.getAseAllowUploadToSummary());
+						aseNew.setAseWhenUploadedToSumm(null);
+						aseNew.setAsesSeqNo(null);
+						aseNew.setApiProviderNo(tmp.getApiProviderNo());
+						aseNew.setAprBillingFrom(tmp.getAprBillingFrom());
+						aseNew.setAprBillingTo(tmp.getAprBillingTo());
+						aseNew.setAiafaSeqNo(tmp.getAiafaSeqNo());
+						if("Y".equals(tmp.getAseAllowUploadToSummary())){
+							aseNew.setAseWhenUploadedToSumm(ts);
+							ts.setTime(ts.getTime()+incr);
+						}else{
+							aseNew.setAseWhenUploadedToSumm(null);
+						}
+						aseNew.setAtgTransactionCd(tmp.getAtgTransactionCd());
+						aseNew.setAtgsGroupIdentifier(Utils.createIntProvGroupIdentifier(provNo, sdf.format(bpTo), iafaSeqNo));
+						aseNew.setAseNonAlsFlag("Y");
+						aseNew.setAseLineDescription("REVERSAL-Z9");
+						aseNew.setAtiTribeCd(tmp.getAtiTribeCd());
+						aseNew.setAseWhoLog(userInfo.getStateId());
+						aseAS.save(aseNew);
+					}
 				}else{
 					addActionError("Cannot post mutiple reversal entires. Reversal of the Current ALS Entry has been already posted.");
 					return "error_json";
 				}
-
+			}else if(oper.equalsIgnoreCase("del")){
+				if(ase != null){
+					aseAS.delete(ase);
+				}
 			}
+			if (hasActionErrors()) {
+				return "error_json";
+			} 
 		}  catch(Exception ex) {
 			 if (ex.toString().contains("ORA-02292")){
 				  errMsg += "Grid has child record(s) which would need to be deleted first.";
@@ -147,63 +202,18 @@ public class ManualProviderAdjEntriesSABHRSGridEditAction extends ActionSupport{
 		return SUCCESS;
 	}
 
-	private String dupSabhrsEntries(){
-		List<AlsSabhrsEntries> aseLst = new ArrayList<AlsSabhrsEntries>();
-		AlsSabhrsEntries tmp = null;
-		AlsSabhrsEntriesIdPk tmpIdPk = null;
-		Timestamp ts = Timestamp.valueOf("1900-01-01 12:00:00");
-		Long incr = 1000l;
-		
-		DalUtils dalUtils = new DalUtils();
-		AlsSabhrsEntriesDAO aseDAO = new AlsSabhrsEntriesDAO();
-		aseLst = aseAS.getManualProviderAdjEntriesRecords(provNo, iafaSeqNo, bpFrom, bpTo);
-		for(AlsSabhrsEntries ase : aseLst){
-			tmp = new AlsSabhrsEntries();
-			tmpIdPk = new AlsSabhrsEntriesIdPk();
-			
-			tmp.setAseWhenLog(date);
-			tmpIdPk.setAseSeqNo(dalUtils.getNextValueFromSequence("ALS_SABHRS_ENTRIES_SEQ", aseDAO.getSession()));
-			tmpIdPk.setAseDrCrCd(ase.getIdPk().getAseDrCrCd());
-			tmpIdPk.setAseTxnCdSeqNo(ase.getIdPk().getAseTxnCdSeqNo());
-			tmpIdPk.setAseWhenEntryPosted(date);
-			tmp.setIdPk(tmpIdPk);
-			tmp.setAsacBudgetYear(ase.getAsacBudgetYear());
-			tmp.setAsacSystemActivityTypeCd("Z");
-			tmp.setAsacTxnCd("9");
-			tmp.setAamAccount(ase.getAamAccount());
-			tmp.setAamBusinessUnit(ase.getAamBusinessUnit());
-			tmp.setAamFund(ase.getAamFund());
-			tmp.setAocOrg(ase.getAocOrg());
-			tmp.setAsacProgram(ase.getAsacProgram());
-			tmp.setAsacSubclass(ase.getAsacSubclass());
-			tmp.setAsacProjectGrant(ase.getAsacProjectGrant());
-			tmp.setAsacReference(ase.getAsacReference());
-			tmp.setAseAmt(ase.getAseAmt());
-			tmp.setAseAllowUploadToSummary(ase.getAseAllowUploadToSummary());
-			tmp.setAseWhenUploadedToSumm(null);
-			tmp.setAsesSeqNo(null);
-			tmp.setApiProviderNo(ase.getApiProviderNo());
-			tmp.setAprBillingFrom(ase.getAprBillingFrom());
-			tmp.setAprBillingTo(ase.getAprBillingTo());
-			tmp.setAiafaSeqNo(ase.getAiafaSeqNo());
-			if("Y".equals(ase.getAseAllowUploadToSummary())){
-				tmp.setAseWhenUploadedToSumm(ts);
-				ts.setTime(ts.getTime()+incr);
-			}else{
-				tmp.setAseWhenUploadedToSumm(null);
-			}
-			tmp.setAtgTransactionCd(ase.getAtgTransactionCd());
-			tmp.setAtgsGroupIdentifier(Utils.createIntProvGroupIdentifier(provNo, sdf.format(bpTo), iafaSeqNo));
-			tmp.setAseNonAlsFlag("Y");
-			tmp.setAseLineDescription("REVERSAL-Z9");
-			tmp.setAtiTribeCd(ase.getAtiTribeCd());
-			
-			tmp.setAseWhoLog(userInfo.getStateId());
-			aseAS.save(tmp);
+	private boolean validation() {
+
+		if (("002504".equals(aamAccount) || "002505".equals(aamAccount)) && asacReference == null) {
+			addActionError("Account codes 002504 and 002505 require a JLR be entered.");
 		}
-	
-		return SUCCESS;
+		if (hasActionErrors()) {
+			return false;
+		} else {
+			return true;
+		}
 	}
+	
 	public String getOper() {
 		return oper;
 	}
@@ -379,4 +389,14 @@ public class ManualProviderAdjEntriesSABHRSGridEditAction extends ActionSupport{
 	public void setIdPk(AlsSabhrsEntriesIdPk idPk) {
 		this.idPk = idPk;
 	}
+
+	public Boolean getRemittanceInd() {
+		return remittanceInd;
+	}
+
+	public void setRemittanceInd(Boolean remittanceInd) {
+		this.remittanceInd = remittanceInd;
+	}
+	
+	
 }

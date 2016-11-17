@@ -385,7 +385,7 @@ $.subscribe('revAlsSabhrsEntriesComplete', function(event, data) {
 	,onClickButton:function(){ 
 		$('#frmOper').val('reverseAlsEntries');
 
-		url = "alsAccount/manualProviderAdjEntriesSABHRSGridEdit_execute.action";    
+		url = "alsAccount/provAdjEntSABHRSGridEdit_execute.action";    
 		$.ajax({
 	      type: "POST",
 	      url: url,

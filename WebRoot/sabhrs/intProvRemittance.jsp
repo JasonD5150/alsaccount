@@ -247,6 +247,7 @@
 		<s:hidden id="frmBPTo" name="bpTo"/>
 		<s:hidden id="frmIafaSeqNo" name="iafaSeqNo"/>
 		<s:hidden id="frmBudgYear" name="budgYear"/>
+		<s:hidden id="frmRemittanceInd" name="remittanceInd" value="true"/>
 	</form>
 	
 	<sj:tabbedpanel id="intProvTabs" selectedTab="0" useSelectedTabCookie="false"  cssStyle="width:950px;position:inherit">
@@ -479,11 +480,11 @@
 					</sjg:grid>	
 				</div>
 				<div id="utTwo">
-					<s:url id="manualProviderAdjEntriesIAFAGridURL" action="alsAccount/manualProviderAdjEntriesIAFAGrid_buildgrid" /> 
+					<s:url id="provAdjEntIAFAGridURL" action="alsAccount/provAdjEntIAFAGrid_buildgrid" /> 
 					<sjg:grid
 						id="iafaGrid"
 						caption="IAFA Table"
-						href="%{manualProviderAdjEntriesIAFAGridURL}"		
+						href="%{provAdjEntIAFAGridURL}"		
 						dataType="local"
 						pager="true"
 						navigator="false"
@@ -506,22 +507,24 @@
 							
 							<sjg:gridColumn name="gridKey" title ="id" width="55" hidden="true" key="true"/>
 							<sjg:gridColumn name="apiProviderNo" index="apiProviderNo" title ="Issuing Provider No" width="10" sortable="false" align="right"/>
-							<sjg:gridColumn name="aprBillingFrom" index="aprBillingFrom" title ="Billing Period From" width="10" sortable="false" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }"/>
-							<sjg:gridColumn name="aprBillingTo" index="aprBillingTo" title ="Billing Period To" width="10" sortable="false" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }"/>
+							<sjg:gridColumn name="billingFrom" index="billingFrom" title ="Billing Period From" width="10" sortable="false" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }"/>
+							<sjg:gridColumn name="billingTo" index="billingTo" title ="Billing Period To" width="10" sortable="false" formatter="date" formatoptions="{srcformat:'ISO8601Long' , newformat:'m/d/Y' }"/>
 							<sjg:gridColumn name="aiafaSeqNo" index="aiafaSeqNo" title ="IAFA Seq No" width="10" sortable="false" align="right"/>	
-					
+							<sjg:gridColumn name="itemTypeCd" index="itemTypeCd" title ="Item Type Cd" width="10" sortable="false" align="right"/>	
+							<sjg:gridColumn name="itemTypeDesc" index="itemTypeDesc" title ="Item Type Desc" width="25" sortable="false"/>	
+			
 					</sjg:grid>
 					<br>
 					<div id ='revErrorDiv'>
 						<span id='revError'></span>
 					</div>
-					<s:url id="iafaManualProviderAdjEntriesGridURL" action="alsAccount/manualProviderAdjEntriesSABHRSGrid_buildgrid" />
-					<s:url id="iafaManualProviderAdjEntriesGridEditURL" action="alsAccount/manualProviderAdjEntriesSABHRSGridEdit_execute" />    
+					<s:url id="provAdjEntSABHRSGridURL" action="alsAccount/provAdjEntSABHRSGrid_buildgrid" />
+					<s:url id="provAdjEntSABHRSGridEditURL" action="alsAccount/provAdjEntSABHRSGridEdit_execute" />    
 					<sjg:grid
 						id="revAlsSabhrsEntriesGrid"
 						caption="ALS SABHRS Entries"
-						href="%{iafaManualProviderAdjEntriesGridURL}"
-						editurl="%{iafaManualProviderAdjEntriesGridEditURL}"		
+						href="%{provAdjEntSABHRSGridURL}"
+						editurl="%{provAdjEntSABHRSGridEditURL}"		
 						dataType="local"
 						pager="true"
 						navigator="true"
@@ -538,8 +541,8 @@
 				                    		  		$('#revAlsSabhrsEntriesGrid').jqGrid('setGridParam',{datatype:'json'});
 				    						  		postData.transIdentifier = $('#frmTransIdentifier').val();
 				    						  		postData.transGrp = $('#frmTransGrp').val();
-				    						  		postData.bpFrom = $('#frmBPFrom').val();
-				    						  		postData.bpTo = $('#frmBPTo').val();
+				    						  		postData.billingPeriodFrom = $('#frmBPFrom').val();
+				    						  		postData.billingPeriodTo = $('#frmBPTo').val();
 				    						  		return[true, ''];
 				    						  },  
 				    						  afterSubmit:errorHandler,

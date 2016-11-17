@@ -36,8 +36,8 @@ public class InternalProviderBankCdDepLinkGridAction extends ActionSupport{
     private String              filters;
     private boolean             loadonce         = false;
     
-	private Date 				bpFrom;
-	private Date 				bpTo;
+	private String 				bpFrom;
+	private String				bpTo;
     private String				provNo;
     
     private Boolean 			search = false;
@@ -119,11 +119,11 @@ public class InternalProviderBankCdDepLinkGridAction extends ActionSupport{
 			search = true;
 		}
 		if(bpFrom != null){
-			srchStr.append("AND apbdBillingFrom = TO_DATE('"+sdf.format(bpFrom)+"','mm/dd/yyyy') ");
+			srchStr.append("AND apbdBillingFrom = TO_DATE('"+bpFrom+"','mm/dd/yyyy') ");
 			search = true;
 		}
 		if(bpTo != null){
-			srchStr.append("AND idPk.apbdBillingTo = TO_DATE('"+sdf.format(bpTo)+"','mm/dd/yyyy') ");
+			srchStr.append("AND idPk.apbdBillingTo = TO_DATE('"+bpTo+"','mm/dd/yyyy') ");
 			search = true;
 		}
 		srchStr.append("ORDER BY apbdDepositDate DESC, abcBankCd ASC");
@@ -207,20 +207,20 @@ public class InternalProviderBankCdDepLinkGridAction extends ActionSupport{
 	public void setModel(List<InternalProviderBankCdDepLinkDTO> model) {
 		this.model = model;
 	}
-	
-	 public Date getBpFrom() {
+
+	public String getBpFrom() {
 		return bpFrom;
 	}
 
-	public void setBpFrom(Date bpFrom) {
+	public void setBpFrom(String bpFrom) {
 		this.bpFrom = bpFrom;
 	}
 
-	public Date getBpTo() {
+	public String getBpTo() {
 		return bpTo;
 	}
 
-	public void setBpTo(Date bpTo) {
+	public void setBpTo(String bpTo) {
 		this.bpTo = bpTo;
 	}
 

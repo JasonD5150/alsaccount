@@ -112,6 +112,17 @@
 			<result name="error">sabhrs/include/distributionQueryDiv.jsp</result>
 			<result name="input">sabhrs/include/distributionQueryDiv.jsp</result>        
 		</action>
+		<action name="provAdjEnt_*" method="{1}" class="fwp.alsaccount.sabhrs.action.ProvAdjEntPostingAction">
+			<result>sabhrs/provAdjEntPosting.jsp</result>
+			<result name="error">sabhrs/provAdjEntPosting.jsp</result>
+			<result name="input">sabhrs/provAdjEntPosting.jsp</result>        
+		</action>
+		<action name="provAdjEntQueryDiv_*" method="{1}" class="fwp.alsaccount.sabhrs.action.ProvAdjEntPostingQueryDivAction">
+			<result>sabhrs/include/provAdjEntPostingQueryDiv.jsp</result>
+			<result name="error">sabhrs/include/provAdjEntPostingQueryDiv.jsp</result>
+			<result name="input">sabhrs/include/provAdjEntPostingQueryDiv.jsp</result>        
+		</action>
+		
 	</package>
  
  	<package name="fwp.alsaccount.sabhrs.grid" namespace="/alsAccount" extends="json-default">     
@@ -214,22 +225,22 @@
 			   <param name="ignoreHierarchy">false</param>
 			</result>
 		</action> 
-		<action name="manualProviderAdjEntriesSABHRSGrid_*" class="fwp.alsaccount.sabhrs.grid.ManualProviderAdjEntriesSABHRSGridAction">
+        <action name="distributionQueryGrid_*" class="fwp.alsaccount.sabhrs.grid.DistributionQueryGridAction">
             <result type="json" />
         </action>
-        <action name="manualProviderAdjEntriesSABHRSGridEdit_*" class="fwp.alsaccount.sabhrs.grid.ManualProviderAdjEntriesSABHRSGridEditAction">
+        <action name="provAdjEntIAFAGrid_*" class="fwp.alsaccount.sabhrs.grid.ProvAdjEntIAFAGridAction">
+            <result type="json" />
+        </action>
+        <action name="provAdjEntSABHRSGrid_*" class="fwp.alsaccount.sabhrs.grid.ProvAdjEntSABHRSGridAction">
+            <result type="json" />
+        </action>
+        <action name="provAdjEntSABHRSGridEdit_*" class="fwp.alsaccount.sabhrs.grid.ProvAdjEntSABHRSGridEditAction">
 			<result type="json"></result>
             <result type="json" name="input"></result>
             <result name="error_json" type="json" >
                <param name="ignoreHierarchy">false</param>
             </result>
 		</action>
-		<action name="manualProviderAdjEntriesIAFAGrid_*" class="fwp.alsaccount.sabhrs.grid.ManualProviderAdjEntriesIAFAGridAction">
-            <result type="json" />
-        </action>
-        <action name="distributionQueryGrid_*" class="fwp.alsaccount.sabhrs.grid.DistributionQueryGridAction">
-            <result type="json" />
-        </action>
    </package>
 
 	<package name="fwp.alsaccount.sabhrs.json" extends="json-default" >
@@ -266,8 +277,13 @@
             </interceptor-ref>
             <result type="json"/>
         </action>
-        
         <action name="distributionGridsToCsv" class="fwp.alsaccount.sabhrs.json.DistributionGridsToCsvAction">
+            <interceptor-ref name="json">
+                <param name="enableSMD">true</param>
+            </interceptor-ref>
+            <result type="json"/>
+        </action>
+        <action name="provAdjEntGridToCsv" class="fwp.alsaccount.sabhrs.json.ProvAdjEntGridsToCsvAction">
             <interceptor-ref name="json">
                 <param name="enableSMD">true</param>
             </interceptor-ref>

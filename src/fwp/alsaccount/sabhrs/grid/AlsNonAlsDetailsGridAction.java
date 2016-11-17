@@ -38,8 +38,9 @@ public class AlsNonAlsDetailsGridAction extends ActionSupport{
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		String srchStr = buildQueryStr();
         try{
+        	setModel(new ArrayList<AlsNonAlsDetailsDTO>());  
         	if(search){
-        		setModel(new ArrayList<AlsNonAlsDetailsDTO>());    
+        		  
         		AlsNonAlsDetailsAS anadAS = new AlsNonAlsDetailsAS();
         		List<AlsNonAlsDetails> anadLst = new ArrayList<AlsNonAlsDetails>();
         		anadLst = anadAS.findAllByWhere(srchStr);

@@ -2075,7 +2075,7 @@ public class HibHelpers {
 					+ "aiat.asac_budget_yr budgYear, "
 					+ "aiat.aiat_partial_cost_acc_cd partialCost, "
 					+ "aiat.aiat_drawing_fee_acc_cd drawFee, "
-					+ "aiat.aacc_acc_cd accCd, "
+					+ "LPAD(aiat.aacc_acc_cd,3,0) accCd, "
 					+ "aacc.aam_account account, "
 					+ "aacc.aacc_fund fund, "
 					+ "aacc.aacc_balancing_amt_flag balancing,"
@@ -2130,7 +2130,7 @@ public class HibHelpers {
 					.addScalar("budgYear", IntegerType.INSTANCE)
 					.addScalar("partialCost")
 					.addScalar("drawFee")
-					.addScalar("accCd", IntegerType.INSTANCE)
+					.addScalar("accCd")
 					.addScalar("account", IntegerType.INSTANCE)
 					.addScalar("fund", IntegerType.INSTANCE)
 					.addScalar("balancing")
