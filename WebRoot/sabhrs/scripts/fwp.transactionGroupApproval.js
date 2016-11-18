@@ -193,7 +193,7 @@ function submitTransGroupApproval(){
     	  	 netCashDrCr:$('#netCashDrCr').val(),
     	  	 depId:$('#depId').val(),
     	  	 remarks:$('#remarks').val(),
-    	  	 upToSabhrsDt:$('#upToSabhrsDt').val(),
+    	  	 upToSabhrsDt:$.trim($('#upToSabhrsDt').val()),
     	  	 sumAll:$('#sumAll').val(),
     	  	 intAll:$('#intAll').val(),
     	  	 changeProgramYear:$('#changeProgramYear').val(),
