@@ -106,7 +106,7 @@ public class ProvAdjEntSABHRSGridEditAction extends ActionSupport{
 				ase.setAseWhenLog(date);
 				ase.setAseWhoLog(userInfo.getStateId());
 				
-				//aseAS.save(ase);
+				aseAS.save(ase);
 			}else if(oper.equalsIgnoreCase("edit") && validation()){		
 				ase.setAamAccount(aamAccount);
 				ase.setAamBusinessUnit(aamBusinessUnit);
@@ -203,7 +203,6 @@ public class ProvAdjEntSABHRSGridEditAction extends ActionSupport{
 	}
 
 	private boolean validation() {
-
 		if (("002504".equals(aamAccount) || "002505".equals(aamAccount)) && asacReference == null) {
 			addActionError("Account codes 002504 and 002505 require a JLR be entered.");
 		}

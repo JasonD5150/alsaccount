@@ -352,7 +352,7 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 				}else{
 					ase.setAseWhenUploadedToSumm(Timestamp.valueOf("1900-1-1 00:00:00"));
 				}
-				aseAS.save(ase);
+				aseAS.merge(ase);
 			}
 		}else{
 			addActionError("Error while updating Als_Sabhrs_Entries table for Transaction Type 8 and Group Identifier "+grpIdentifier1+".");

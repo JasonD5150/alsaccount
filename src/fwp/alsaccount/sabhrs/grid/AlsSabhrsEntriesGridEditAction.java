@@ -127,7 +127,7 @@ public class AlsSabhrsEntriesGridEditAction extends ActionSupport{
 				ase.setAseWhoLog(userInfo.getStateId().toString());
 				ase.setAseWhenLog(date);
 				//********************************************************************
-				aseAS.save(ase);
+				aseAS.merge(ase);
 				
 				/*UPDATE ALS_TRANSACTION_GRP_STATUS*/
 				if(!atgsLst.isEmpty()){
@@ -184,7 +184,7 @@ public class AlsSabhrsEntriesGridEditAction extends ActionSupport{
 					ase.setAseWhoLog(userInfo.getStateId().toString());
 					ase.setAseWhenLog(date);
 					//********************************************************************
-					aseAS.save(ase);
+					aseAS.merge(ase);
 
 			    	aseIdPk.setAseDrCrCd("D");
 			    	aseIdPk.setAseSeqNo(aseAS.getNextSeqNo());
@@ -195,7 +195,7 @@ public class AlsSabhrsEntriesGridEditAction extends ActionSupport{
 			    	ase.setAsacProjectGrant(anat.getAnatDrProjectGrant());
 			    	ase.setAseLineDescription(anat.getAnatDrLineDesc());
 
-					aseAS.save(ase);
+					aseAS.merge(ase);
 				}
 			}else if(oper.equalsIgnoreCase("edit")){	
 				/*UPDATE ALS_TRANSACTION_GRP_STATUS*/
@@ -231,7 +231,7 @@ public class AlsSabhrsEntriesGridEditAction extends ActionSupport{
 				ase.setAseWhoLog(userInfo.getStateId().toString());
 				ase.setAseWhenLog(date);
 				//********************************************************************
-				aseAS.save(ase);
+				aseAS.merge(ase);
 			}else if(oper.equalsIgnoreCase("del")){
 				aseAS.delete(ase);
 				/*UPDATE ALS_TRANSACTION_GRP_STATUS*/

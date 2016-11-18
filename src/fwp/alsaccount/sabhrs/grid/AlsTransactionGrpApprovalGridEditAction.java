@@ -104,12 +104,12 @@ public class AlsTransactionGrpApprovalGridEditAction extends ActionSupport{
 				
 				if(transGroupType == 1 || transGroupType == 3 || transGroupType == 8){
 					if("A".equals(intAppStat)){
-						if(transGroupType == 1 && depId == null){
+						if(transGroupType == 1 && (depId == null || "".equals(depId))){
 							type = "SW";
-							by = curBudgYear.substring(2, 3);
+							by = curBudgYear.substring(2, 4);
 							seq = hh.getAlsDepIdSeq(curBudgYear, type);
 							depId = String.format("%02d", Integer.parseInt(by))+type+String.format("%05d", seq);
-						}else if(transGroupType == 3 && depId == null){
+						}else if(transGroupType == 3 && (depId == null || "".equals(depId))){
 							type = "FS";
 							by = curBudgYear.substring(2, 3);
 							seq = hh.getAlsDepIdSeq(curBudgYear, type);
@@ -126,8 +126,9 @@ public class AlsTransactionGrpApprovalGridEditAction extends ActionSupport{
 								}
 							}
 						}
+						atgs.setAtgsDepositId(depId);
 					}else{
-						ipTranGrp = transGroupIdentifier.substring(0, 18);
+						ipTranGrp = transGroupIdentifier.substring(0, 19);
 					}
 				}
 				
@@ -156,8 +157,7 @@ public class AlsTransactionGrpApprovalGridEditAction extends ActionSupport{
 					upToSumDt = null;
 				}
 				
-				/* If Summary Approval Status is disapproved or Null then Delete from Sabhrs Summary and
-			      update SABHRS entries if already uploaded to Summary. */
+			
 				if(!sumAppStat.equals(atgsOriginal.getAtgsSummaryStatus())){
 					if(upToSumDt != null && !"".equals(upToSumDt)){
 						updateUploadToSummarySabhrs();
@@ -177,6 +177,9 @@ public class AlsTransactionGrpApprovalGridEditAction extends ActionSupport{
 						atgs.setAtgsSummaryApprovedBy(null);
 						atgs.setAtgsSummaryDt(null);
 					}
+					atgs.setAtgsWhenModi(date);
+					atgs.setAtgsWhoModi(userInfo.getStateId().toString());
+				}else if(!intAppStat.equals(atgsOriginal.getAtgsInterfaceStatus())){
 					if("-1".equals(intAppStat)){
 						intAppStat = null;
 					}
@@ -188,12 +191,6 @@ public class AlsTransactionGrpApprovalGridEditAction extends ActionSupport{
 						atgs.setAtgsInterfaceApprovedBy(null);
 						atgs.setAtgsInterfaceDt(null);
 					}
-					atgs.setAtgsWhenModi(date);
-					atgs.setAtgsWhoModi(userInfo.getStateId().toString());
-				}else if(!intAppStat.equals(atgsOriginal.getAtgsInterfaceStatus()) && "D".equals(intAppStat)){
-					atgs.setAtgsInterfaceStatus(intAppStat);
-					atgs.setAtgsInterfaceApprovedBy(null);
-					atgs.setAtgsInterfaceDt(null);
 					atgs.setAtgsWhoModi(userInfo.getStateId().toString());
 					atgs.setAtgsWhenModi(date);
 				}
@@ -213,8 +210,14 @@ public class AlsTransactionGrpApprovalGridEditAction extends ActionSupport{
 						}
 					}
 					ipTranGrp = null;
-					String where = "WHERE idPk.atgTransactionCd = "+transGroupType+" AND substr(idPk.atgsGroupIdentifier,1,18) = substr('"+transGroupIdentifier+"',1,18) ";
-					if(sumAll == true){
+					String where = null;
+					if(sumAll != null){
+						if(sumAll = true){
+							where = "WHERE idPk.atgTransactionCd = "+transGroupType+" AND substr(idPk.atgsGroupIdentifier,1,19) = substr('"+transGroupIdentifier+"',1,19) ";
+						}else{
+							where = "WHERE idPk.atgTransactionCd = "+transGroupType+" AND idPk.atgsGroupIdentifier = '"+transGroupIdentifier;
+						}
+						
 						if(!"A".equals(atgsOriginal.getAtgsSummaryStatus()) && "A".equals(sumAppStat)){
 							atgsLst = atgsAS.findAllByWhere(where);
 							for(AlsTransactionGrpStatus tmp : atgsLst){
@@ -227,7 +230,13 @@ public class AlsTransactionGrpApprovalGridEditAction extends ActionSupport{
 							}
 						}
 					}
-					if(intAll == true){
+					
+					if(intAll != null){
+						if(intAll = true){
+							where = "WHERE idPk.atgTransactionCd = "+transGroupType+" AND substr(idPk.atgsGroupIdentifier,1,19) = substr('"+transGroupIdentifier+"',1,19) ";
+						}else{
+							where = "WHERE idPk.atgTransactionCd = "+transGroupType+" AND idPk.atgsGroupIdentifier = '"+transGroupIdentifier;
+						}
 						if(!"A".equals(atgsOriginal.getAtgsInterfaceStatus()) && "A".equals(intAppStat)){
 							atgsLst = atgsAS.findAllByWhere(where);
 							for(AlsTransactionGrpStatus tmp : atgsLst){
@@ -240,6 +249,7 @@ public class AlsTransactionGrpApprovalGridEditAction extends ActionSupport{
 							}
 						}
 					}
+					
 				}
 			}else if(oper.equalsIgnoreCase("del")){
 				atgsAS.delete(atgs);
@@ -304,13 +314,7 @@ public class AlsTransactionGrpApprovalGridEditAction extends ActionSupport{
 			if(Utils.StrToTimestamp(intFileCreateDt,"short").after(Utils.StrToTimestamp(upToSabhrsDt,"short"))){
 				this.addActionError("Date Uploaded to SABHRS should be greater than or equal to Date File Created.");
 			}
-		}
-		if(transGroupType != 8){
-			if(intAppBy.equals(atgsOriginal.getAtgsSummaryApprovedBy())||sumAppBy.equals(atgsOriginal.getAtgsInterfaceApprovedBy())){
-				this.addActionError("Summary and Interface cannot be appoved by the same person.");
-			}
-		}
-		
+		}		
 		return SUCCESS;
 	}
 	
@@ -326,7 +330,7 @@ public class AlsTransactionGrpApprovalGridEditAction extends ActionSupport{
 	public void updateUploadToSummarySabhrs() throws ParseException{
 		String where = "";
 		where = "WHERE atgTransactionCd="+transGroupType+" "
-			  + "AND SUBSTR(atgsGroupIdentifier,1,18) = SUBSTR('"+transGroupIdentifier+"',1,18) "
+			  + "AND SUBSTR(atgsGroupIdentifier,1,19) = SUBSTR('"+transGroupIdentifier+"',1,19) "
 			  + "AND aseAllowUploadToSummary = 'Y'";
 		aseLst = aseAS.findAllByWhere(where);
 		
@@ -336,13 +340,13 @@ public class AlsTransactionGrpApprovalGridEditAction extends ActionSupport{
 			ase.setAseWhenUploadedToSumm(getUploadedToSumDt());
 			ase.setAsesSeqNo(null);
 			//System.out.println("Update AlsSabhrsEntries");
-			aseAS.save(ase);
+			aseAS.merge(ase);
 		}else{
 			addActionError("No corresponding record found in Als_Sabhrs_Entries.");
 		}
 		
 		where = "WHERE atgTransactionCd="+transGroupType+" "
-			  + "AND SUBSTR(atgsGroupIdentifier,1,18) = SUBSTR('"+transGroupIdentifier+"',1,18) ";
+			  + "AND SUBSTR(atgsGroupIdentifier,1,19) = SUBSTR('"+transGroupIdentifier+"',1,19) ";
 		asesLst = asesAS.findAllByWhere(where);
 		
 		if(!asesLst.isEmpty()){
