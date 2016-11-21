@@ -194,6 +194,8 @@ public class AlsTransactionGrpApprovalGridEditAction extends ActionSupport{
 					atgs.setAtgsWhoModi(userInfo.getStateId().toString());
 					atgs.setAtgsWhenModi(date);
 				}
+				atgs.setAtgsBankReferenceNo(bankRefNo);
+				atgs.setAtgsRemarks(remarks);
 				atgsAS.save(atgs);
 				
 				if(transGroupType == 8){
