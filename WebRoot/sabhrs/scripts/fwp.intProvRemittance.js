@@ -267,7 +267,10 @@ $.subscribe("depositsGridComplete", function(event, data) {
 });
 
 $.subscribe('alsSabhrsEntriesComplete', function(event, data) {	
-	if ( $("#alsSabhrsEntriesGrid").length) {
+	var sum = $("#alsSabhrsEntriesGrid").jqGrid('getCol', 'aseAmt', false, 'sum');
+    $("#alsSabhrsEntriesGrid").jqGrid('footerData','set', {asacProjectGrant: 'Total:', aseAmt:sum});
+	
+    if ( $("#alsSabhrsEntriesGrid").length) {
    		$("#alsSabhrsEntriesGrid").jqGrid('setColProp','jlr', { editoptions: { value: rtrnJLRList()}});
    		$("#alsSabhrsEntriesGrid").jqGrid('setColProp','aamFund', { editoptions: { value: rtrnFundList()}});
    		$("#alsSabhrsEntriesGrid").jqGrid('setColProp','asacSubclass', { editoptions: { value: rtrnSubClassList()}});
@@ -275,6 +278,35 @@ $.subscribe('alsSabhrsEntriesComplete', function(event, data) {
    		$("#alsSabhrsEntriesGrid").jqGrid('setColProp','aamAccount', { editoptions: { value: rtrnAccountList()}});
 	}
 });
+
+function copySelectedAlsSABHRSEntry(){
+	var grid = $('#alsSabhrsEntriesGrid');
+	var sel_id = grid.jqGrid('getGridParam','selrow');
+	if(sel_id == null){
+		alert("A row must be selected.");
+	}else{
+		grid.jqGrid("editGridRow", "new", {recreateForm: true, closeAfterAdd: true,
+										   width: 950, reloadAfterSubmit: true, editCaption:'Copy Code Info',
+										   afterSubmit: errorHandler,processData: 'Updating to Database',
+										   beforeSubmit: function (postData) {
+			    						  		postData.transIdentifier = $('#frmTransIdentifier').val();
+			    						  		postData.transGrp = $('#frmTransGrp').val();
+			    						  		postData.provNo = $('#frmProvNo').val();
+			    						  		postData.bpTo = $('#frmBPTo').val();
+			    						  		return[true, ''];
+			    						  }});
+		$('#asacBudgetYear').val(grid.jqGrid('getCell', sel_id, 'asacBudgetYear'));
+		$('#jlr').val(grid.jqGrid('getCell', sel_id, 'jlr'));
+		$('#aamAccount').val(grid.jqGrid('getCell', sel_id, 'aamAccount'));
+		$('#aamFund').val(grid.jqGrid('getCell', sel_id, 'aamFund'));
+		$('#aocOrg').val(grid.jqGrid('getCell', sel_id, 'aocOrg'));
+		$('#asacProgram').val(grid.jqGrid('getCell', sel_id, 'asacProgram'));
+		$('#asacSubclass').val(grid.jqGrid('getCell', sel_id, 'asacSubclass'));
+		$('#aamBusinessUnit').val(grid.jqGrid('getCell', sel_id, 'aamBusinessUnit'));
+		$('#asacProjectGrant').val(grid.jqGrid('getCell', sel_id, 'asacProjectGrant'));
+		$('#aseLineDescription').val(grid.jqGrid('getCell', sel_id, 'aseLineDescription'));
+	}
+}
 
 $.subscribe('alsOverUnderComplete', function(event, data) {	
 	var grid = $("#alsOverUnderSales");
@@ -731,22 +763,7 @@ function submitSearch(){
 }
 
 function resetSearch(){
-	selectedRow = null;
-	$('#frmProvNo').val(null);
-	$('#frmBPFrom').val(null);
-	$('#frmBPTo').val(null);
-	$('#frmIafaSeqNo').val(null);
-	$('#gridFrm')[0].reset();
-	$('#displayRemittanceDiv').hide();
-	$('#displayRemittanceDiv').find('input:text').val(''); 
-	submitSearch();
-	$('#depositsGrid').jqGrid('setGridParam',{datatype:'json'});
-	$('#alsNonAlsDetails').jqGrid('setGridParam',{datatype:'json'});
-	$('#alsSabhrsEntriesGrid').jqGrid('setGridParam',{datatype:'json'});
-	$('#alsOverUnderSales').jqGrid('setGridParam',{datatype:'json'});
-	$.publish('reloadBankDepGrids');
-	$.publish('reloadNonAlsDetGrids');
-	$.publish('reloadSubGrids');
+	window.location.reload(true);
 }
 
 function gridToCSV(){

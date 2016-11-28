@@ -2,6 +2,7 @@ package fwp.alsaccount.admin.grid;
 
 import java.sql.Timestamp;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.shiro.SecurityUtils;
 
 import com.opensymphony.xwork2.ActionSupport;
@@ -78,24 +79,20 @@ public class AlsNonAlsTemplateGridEditAction extends ActionSupport{
 				if (this.hasActionErrors()) {
 					return "error_json";
 				}
-				tmp.setAnatDesc(anatDesc);
+				tmp.setAnatDesc(StringEscapeUtils.unescapeHtml(anatDesc));
 				tmp.setAnatBusinessUnit("52010");
 				tmp.setAnatFund(anatFund);
 				tmp.setAnatProgramYear(budgYear);
 				tmp.setAnatCrAccount(anatCrAccount);
-				tmp.setAnatCrLineDesc(anatCrLineDesc);
+				tmp.setAnatCrLineDesc(StringEscapeUtils.unescapeHtml(anatCrLineDesc));
 				tmp.setAnatCrOrg(anatCrOrg);
-				if(appSer.getJlrParVal(anatCrJournalLineRefrDesc) != 0){
-					tmp.setAnatCrJournalLineRefr(appSer.getJlrParVal(anatCrJournalLineRefrDesc));
-				}
+				tmp.setAnatCrJournalLineRefr(appSer.getJlrParVal(anatCrJournalLineRefrDesc));
 				tmp.setAnatCrProjectGrant(anatCrProjectGrant);
 				tmp.setAnatCrSubclass(anatCrSubclass);
 				tmp.setAnatDrAccount(anatDrAccount);
-				tmp.setAnatDrLineDesc(anatDrLineDesc);
+				tmp.setAnatDrLineDesc(StringEscapeUtils.unescapeHtml(anatDrLineDesc));
 				tmp.setAnatDrOrg(anatDrOrg);
-				if(appSer.getJlrParVal(anatDrJournalLineRefrDesc) != 0){
-					tmp.setAnatDrJournalLineRefr(appSer.getJlrParVal(anatDrJournalLineRefrDesc));
-				}
+				tmp.setAnatDrJournalLineRefr(appSer.getJlrParVal(anatDrJournalLineRefrDesc));
 				tmp.setAnatDrProjectGrant(anatDrProjectGrant);
 				tmp.setAnatDrSubclass(anatDrSubclass);
 

@@ -39,7 +39,7 @@
     	                      addCaption:'Add New Template Info',
     	                      closeAfterAdd:true,
     	                      processData:'Adding Row to Database'}"
-    	navigatorEditOptions="{width:500,reloadAfterSubmit:false,
+    	navigatorEditOptions="{width:500,reloadAfterSubmit:true,
     	                       editCaption:'Edit Template Info',
     	                       beforeSubmit:function(postData){
 		    	                      	postData.budgYear = $('#drGridBudgYear').val();
@@ -81,8 +81,5 @@
 			<sjg:gridColumn name="anatCrJournalLineRefr" index="anatCrJournalLineRefr" title ="Credit Journal Line Reference" width="25" sortable="false" hidden="true"/>
 			<sjg:gridColumn name="anatCrJournalLineRefrDesc" index="anatCrJournalLineRefrDesc" title ="Credit Journal Line Reference" width="25" sortable="false" hidden="false" editable="true" edittype="select" formatter="select" editoptions="{value:','}" align="right"/>
 			<sjg:gridColumn name="anatCrLineDesc" index="anatCrLineDesc" title ="Credit Line Desc." width="25" sortable="false" hidden="false" editable="true" editrules="{required:true}"/>
-			
-			
-
 	</sjg:grid>
 

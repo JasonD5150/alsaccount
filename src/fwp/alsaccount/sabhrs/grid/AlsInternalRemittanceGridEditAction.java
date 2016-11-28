@@ -91,9 +91,12 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 					approveSummary = true;
 				}
 				/*Credit Card Sales Changed*/
-				if(Double.compare(original.getAirCreditSales(), Double.valueOf(ccSales)) != 0){
-					original.setAirCreditSales(Double.valueOf(ccSales));
+				if(original.getAirCreditSales() != null){
+					if(Double.compare(original.getAirCreditSales(), Double.valueOf(ccSales)) != 0){
+						original.setAirCreditSales(Double.valueOf(ccSales));
+					}
 				}
+				
 				/*Approved By Provider*/
 				if(original.getAirCompleteProvider() == null && "true".equals(provComp)){
 					original.setAirCompleteProvider(date);

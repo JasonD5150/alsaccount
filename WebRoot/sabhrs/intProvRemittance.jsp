@@ -406,7 +406,10 @@
 				    	                       afterSubmit:errorHandler,
 				    	                       processData:'Updating to Database'}"
 						navigatorSearchOptions="{sopt:['cn','bw','eq','ne','lt','gt','ew'],multipleSearch:true}"
-					    navigatorViewOptions="{width:500,reloadAfterSubmit:false}"    	
+					    navigatorViewOptions="{width:500,reloadAfterSubmit:false}" 
+					    navigatorExtraButtons="{
+					                            copybutton: {title : 'Copy Selected Row', icon: 'ui-icon-copy', caption : 'Copy Selected Row', onclick: function(){copySelectedAlsSABHRSEntry();}}
+					                        	}"      	
 					    gridModel="model"
 						rownumbers="true"
 						viewrecords="true"
@@ -417,7 +420,8 @@
 						rowNum="1000"
 						formIds="subGridFrm"
 						reloadTopics="reloadSubGrids"
-						onCompleteTopics="alsSabhrsEntriesComplete">
+						onCompleteTopics="alsSabhrsEntriesComplete"
+						footerrow="true">
 							
 							<sjg:gridColumn name="gridKey" title ="id" width="55" hidden="true" key="true"/>
 							<sjg:gridColumn name="asacBudgetYear" index="asacBudgetYear" title ="Budget Year" width="10" sortable="false" editable="true" editrules="{number:true,required:true}" editoptions="{size:5,maxlength:4}" formoptions="{colpos:1,rowpos:1}" align="right"/>
@@ -432,7 +436,7 @@
 							<sjg:gridColumn name="aseAmt" index="aseAmt" title ="Amount" width="10" sortable="false" editable="true" formatter="number" formatoptions="{decimalPlaces: 2}" formoptions="{colpos:2,rowpos:5}" editrules="{number:true,required:true}" align="right"/>
 							<sjg:gridColumn name="asacSystemActivityTypeCd" index="asacSystemActivityTypeCd" title ="Sys Activity Type Code" width="10" sortable="false" editable="false"/>
 							<sjg:gridColumn name="asacTxnCd" index="asacTxnCd" title ="Transaction Code" width="10" sortable="false" editable="false" align="right"/>
-							<sjg:gridColumn name="idPk.aseDrCrCd" index="idPk.aseDrCrCd" title ="Dr/Cr Code" width="10" sortable="false" editable="true" edittype="select" formatter="select" editoptions="{value: {D: 'Debit', C: 'Credit'}}" editrules="{required:true}" formoptions="{colpos:1,rowpos:6}"/>
+							<sjg:gridColumn name="idPk.aseDrCrCd" index="idPk.aseDrCrCd" title ="Dr/Cr Code" width="10" sortable="false" editable="true" edittype="select" formatter="select" editoptions="{value: {0:'-- Select One --',D: 'Debit', C: 'Credit'}}" editrules="{required:true}" formoptions="{colpos:1,rowpos:6}"/>
 							<sjg:gridColumn name="idPk.aseSeqNo" index="idPk.aseSeqNo" title ="Seq No" width="10" sortable="false" editable="false" align="right"/>
 							<sjg:gridColumn name="aseLineDescription" index="aseLineDescription" title ="Line Desc" width="40" sortable="false" editable="true" edittype="textarea" formoptions="{colpos:2,rowpos:6}" editrules="{required:true}"/>
 					

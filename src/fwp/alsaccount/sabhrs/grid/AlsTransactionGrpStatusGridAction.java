@@ -109,7 +109,7 @@ public class AlsTransactionGrpStatusGridAction extends ActionSupport{
 			//srchStr.append("AND TRIM(TRIM(LEADING 0 FROM substr(idPk.atgsGroupIdentifier,3,6))) = '"+provNo+"' ");
 		}
 		
-		srchStr.append("ORDER BY idPk.atgTransactionCd,idPk.atgsGroupIdentifier");
+		srchStr.append("ORDER BY idPk.atgTransactionCd,idPk.atgsGroupIdentifier DESC");
 		
 		return srchStr.toString();
 	}
