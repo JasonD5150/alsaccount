@@ -36,8 +36,7 @@ public class TribalSalesQueryGridAction extends ActionSupport{
     private String usagePeriod;
     private Date fromDt;
     private Date toDt;
-    private Date bpFromDt;
-    private Date bpToDt;
+
     
     private String 				userdata;
  
@@ -55,7 +54,7 @@ public class TribalSalesQueryGridAction extends ActionSupport{
             		upFromDt = new java.sql.Date(sdf.parse(usagePeriod.split("_")[0]).getTime());
             		upToDt = new java.sql.Date(sdf.parse(usagePeriod.split("_")[1]).getTime());
             	}
-            	tsdLst = hh.getTribalSalesRecords(tribeCd, provNo, itemTypeCd, upFromDt, upToDt, fromDt, toDt, bpFromDt, bpToDt);
+            	tsdLst = hh.getTribalSalesRecords(tribeCd, provNo, itemTypeCd, upFromDt, upToDt, fromDt, toDt);
             	for(TribalSalesDTO tsd : tsdLst){
             		tsd.setGridKey(tsd.getProvNm()+tsd.getItemTypeCd());
             		model.add(tsd);
@@ -78,7 +77,7 @@ public class TribalSalesQueryGridAction extends ActionSupport{
 
 	private Boolean validateFields(){
 		Boolean rtn = true;
-		if((usagePeriod == null || "".equals(usagePeriod)) && fromDt == null && toDt == null && bpFromDt == null && bpToDt == null){
+		if((usagePeriod == null || "".equals(usagePeriod)) && fromDt == null && toDt == null){
 			userdata = "A date must be queried on.";
 			rtn = false;
 		}
@@ -216,22 +215,6 @@ public class TribalSalesQueryGridAction extends ActionSupport{
 
 	public void setToDt(Date toDt) {
 		this.toDt = toDt;
-	}
-
-	public Date getBpFromDt() {
-		return bpFromDt;
-	}
-
-	public void setBpFromDt(Date bpFromDt) {
-		this.bpFromDt = bpFromDt;
-	}
-
-	public Date getBpToDt() {
-		return bpToDt;
-	}
-
-	public void setBpToDt(Date bpToDt) {
-		this.bpToDt = bpToDt;
 	}
     
 }

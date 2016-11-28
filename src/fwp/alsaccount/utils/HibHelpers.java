@@ -2334,7 +2334,7 @@ public class HibHelpers {
 	
 	@SuppressWarnings("unchecked")
 	public List<TribalSalesDTO> getTribalSalesRecords(String tribeCd, Integer provNo, Integer itemTypeCd, Date upFromDt, Date upToDt,
-													  Date fromDt, Date toDt, Date bpFromDt, Date bpToDt) throws HibernateException {
+													  Date fromDt, Date toDt) throws HibernateException {
 		List<TribalSalesDTO> lst = new ArrayList<TribalSalesDTO>();
 		StringBuilder queryStr = new StringBuilder("SELECT AIAFA.ATI_TRIBE_CD tribeCd, "
 														+ "ATI.ATI_TRIBE_NM tribeNm, "
@@ -2393,10 +2393,6 @@ public class HibHelpers {
 			queryStr.append("AND AST.AICT_USAGE_PERIOD_FROM = :upFromDt ");
 			queryStr.append("AND AST.AICT_USAGE_PERIOD_TO = :upToDt ");
 		}
-		if(!Utils.isNil(bpFromDt)&&!Utils.isNil(bpToDt)){
-			queryStr.append("AND APR.APR_BILLING_FROM = :bpFromDt ");
-			queryStr.append("AND APR.APR_BILLING_TO = :bpToDt ");
-		}
 		if(!Utils.isNil(fromDt)&&!Utils.isNil(toDt)){
 			queryStr.append("AND aiafa.AIAFA_When_Log BETWEEN :fromDt AND :toDt ");
 		}
@@ -2445,10 +2441,6 @@ public class HibHelpers {
 			if(!Utils.isNil(upFromDt)&&!Utils.isNil(upToDt)){
 				query.setDate("upFromDt", upFromDt);
 				query.setDate("upToDt", upToDt);
-			}
-			if(!Utils.isNil(bpFromDt)&&!Utils.isNil(bpToDt)){
-				query.setDate("bpFromDt", bpFromDt);
-				query.setDate("bpToDt", bpToDt);
 			}
 			if(!Utils.isNil(fromDt)&&!Utils.isNil(toDt)){
 				query.setDate("fromDt", fromDt);

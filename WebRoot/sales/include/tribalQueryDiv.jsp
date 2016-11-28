@@ -79,18 +79,6 @@
 				   cssStyle="width:80px" maxlength="10"  maxDate="+0" title="To Date" 
 				   showOn="focus" onblur="testDate(this)" placeholder="mm/dd/yyyy" requiredLabel="true"/></td>
 			</tr>
-    		<tr>			
-				<td class="label">Billing Period From: </td>
-				<td><sj:datepicker changeMonth="true" changeYear="true" id="bpFromDt"
-				   name="bpFromDt" displayFormat="mm/dd/yy"
-				   cssStyle="width:80px" maxlength="10"  maxDate="+0" title="Billing Period From Date" 
-				   showOn="focus" onblur="testDate(this)" placeholder="mm/dd/yyyy" requiredLabel="true"/></td>
-				<td class="label">Billing Period To: </td>
-				<td><sj:datepicker changeMonth="true" changeYear="true" id="bpToDt"
-				   name="bpToDt" displayFormat="mm/dd/yy"
-				   cssStyle="width:80px" maxlength="10"  maxDate="+0" title="Billing Period To Date" 
-				   showOn="focus" onblur="testDate(this)" placeholder="mm/dd/yyyy" requiredLabel="true"/></td>
-			</tr>
    		</table>
 	</form>	
 </fieldset>
