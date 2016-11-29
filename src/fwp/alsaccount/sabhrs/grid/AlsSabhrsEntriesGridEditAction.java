@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -63,12 +64,6 @@ public class AlsSabhrsEntriesGridEditAction extends ActionSupport{
 		
 		HibHelpers hh = new HibHelpers();
 		
-		AlsTransactionGrpStatusAS atgsAS = new AlsTransactionGrpStatusAS();
-		String where = " WHERE idPk.atgsGroupIdentifier = '"+hh.getTransGrpIdMaxSeq(provNo, bpTo)+"'";
-		List<AlsTransactionGrpStatus> atgsLst = atgsAS.findAllByWhere(where);
-		AlsTransactionGrpStatus atgs = null;
-		
-		
 		UserDTO userInfo = (UserDTO)SecurityUtils.getSubject().getSession().getAttribute("userInfo");
 		Timestamp date = new Timestamp(System.currentTimeMillis());
 		Integer curBudgYear = Integer.parseInt(hh.getCurrentBudgetYear());
@@ -89,14 +84,7 @@ public class AlsSabhrsEntriesGridEditAction extends ActionSupport{
 				ase = aseAS.findById(aseIdPk);
 			}
 			
-			if (oper.equalsIgnoreCase("add")) {
-				if(aamAccount == "06" && ("".equals(asacSubclass)||asacSubclass == null)){
-					addActionError("Expense account requries subclass.");
-				}
-			
-				if (this.hasActionErrors()) {
-					return "error_json";
-				}
+			if (oper.equalsIgnoreCase("add")&&validation()) {
 				ase = new AlsSabhrsEntries();
 		    	aseIdPk = idPk;
 		    	aseIdPk.setAseWhenEntryPosted(date);
@@ -127,19 +115,8 @@ public class AlsSabhrsEntriesGridEditAction extends ActionSupport{
 				ase.setAseWhoLog(userInfo.getStateId().toString());
 				ase.setAseWhenLog(date);
 				//********************************************************************
-				aseAS.merge(ase);
-				
-				/*UPDATE ALS_TRANSACTION_GRP_STATUS*/
-				if(!atgsLst.isEmpty()){
-					atgs = atgsLst.get(0);
-					if("C".equals(ase.getIdPk().getAseDrCrCd())){
-						atgs.setAtgsNetDrCr(atgs.getAtgsNetDrCr()-aseAmt);
-					}else if("D".equals(ase.getIdPk().getAseDrCrCd())){
-						atgs.setAtgsNetDrCr(atgs.getAtgsNetDrCr()+aseAmt);
-					}
-					atgsAS.save(atgs);
-				}
-				
+				aseAS.save(ase);
+				updateTransGrpStat(ase);
 			} else if (oper.equalsIgnoreCase("addTemplates")) {
 				if(transIdentifier == null){
 					transIdentifier = hh.getTransGrpIdMaxSeq(provNo, bpTo);
@@ -184,8 +161,9 @@ public class AlsSabhrsEntriesGridEditAction extends ActionSupport{
 					ase.setAseWhoLog(userInfo.getStateId().toString());
 					ase.setAseWhenLog(date);
 					//********************************************************************
-					aseAS.merge(ase);
-
+					aseAS.save(ase);
+					updateTransGrpStat(ase);
+					
 			    	aseIdPk.setAseDrCrCd("D");
 			    	aseIdPk.setAseSeqNo(aseAS.getNextSeqNo());
 			    	ase.setIdPk(aseIdPk);
@@ -195,19 +173,11 @@ public class AlsSabhrsEntriesGridEditAction extends ActionSupport{
 			    	ase.setAsacProjectGrant(anat.getAnatDrProjectGrant());
 			    	ase.setAseLineDescription(anat.getAnatDrLineDesc());
 
-					aseAS.merge(ase);
+					aseAS.save(ase);
+					updateTransGrpStat(ase);
 				}
-			}else if(oper.equalsIgnoreCase("edit")){	
-				/*UPDATE ALS_TRANSACTION_GRP_STATUS*/
-				if(!atgsLst.isEmpty()){
-					atgs = atgsLst.get(0);
-					if("C".equals(ase.getIdPk().getAseDrCrCd())){
-						atgs.setAtgsNetDrCr(atgs.getAtgsNetDrCr()+ase.getAseAmt()-aseAmt);
-					}else if("D".equals(ase.getIdPk().getAseDrCrCd())){
-						atgs.setAtgsNetDrCr(atgs.getAtgsNetDrCr()-ase.getAseAmt()+aseAmt);
-					}
-					atgsAS.save(atgs);
-				}
+			}else if(oper.equalsIgnoreCase("edit")&&validation()){	
+				updateTransGrpStat(ase);
 				
 				ase.setAamAccount(aamAccount);
 				ase.setAamFund(aamFund);
@@ -226,7 +196,6 @@ public class AlsSabhrsEntriesGridEditAction extends ActionSupport{
 					ase.setAsacReference(aseAS.getDescReference(jlr));
 				}
 				
-				
 				//TODO need to remove this logic when the triggers and correct audit columns are added to the db	
 				ase.setAseWhoLog(userInfo.getStateId().toString());
 				ase.setAseWhenLog(date);
@@ -234,16 +203,9 @@ public class AlsSabhrsEntriesGridEditAction extends ActionSupport{
 				aseAS.merge(ase);
 			}else if(oper.equalsIgnoreCase("del")){
 				aseAS.delete(ase);
-				/*UPDATE ALS_TRANSACTION_GRP_STATUS*/
-				if(!atgsLst.isEmpty()){
-					atgs = atgsLst.get(0);
-					if("C".equals(ase.getIdPk().getAseDrCrCd())){
-						atgs.setAtgsNetDrCr(atgs.getAtgsNetDrCr()+aseAmt);
-					}else if("D".equals(ase.getIdPk().getAseDrCrCd())){
-						atgs.setAtgsNetDrCr(atgs.getAtgsNetDrCr()-aseAmt);
-					}
-					atgsAS.save(atgs);
-				}
+				updateTransGrpStat(ase);
+			}else{
+				return "error_json";
 			}
 		}  catch(Exception ex) {
 			 if (ex.toString().contains("ORA-02292")){
@@ -267,6 +229,37 @@ public class AlsSabhrsEntriesGridEditAction extends ActionSupport{
 		long time = tmpDate.getTime();
 		Timestamp rtn = new Timestamp(time);
 		return rtn;
+	}
+	
+	public void updateTransGrpStat(AlsSabhrsEntries ase){
+		/*UPDATE ALS_TRANSACTION_GRP_STATUS*/
+		AlsTransactionGrpStatusAS atgsAS = new AlsTransactionGrpStatusAS();
+		String where = " WHERE idPk.atgsGroupIdentifier = '"+transIdentifier+"'";
+		List<AlsTransactionGrpStatus> atgsLst = atgsAS.findAllByWhere(where);
+		AlsTransactionGrpStatus atgs = null;
+		if(!atgsLst.isEmpty()){
+			atgs = atgsLst.get(0);
+			if("C".equals(ase.getIdPk().getAseDrCrCd())){
+				atgs.setAtgsNetDrCr(atgs.getAtgsNetDrCr()-ase.getAseAmt());
+			}else if("D".equals(ase.getIdPk().getAseDrCrCd())){
+				atgs.setAtgsNetDrCr(atgs.getAtgsNetDrCr()+ase.getAseAmt());
+			}
+			atgsAS.save(atgs);
+		}
+	}
+	
+	private boolean validation(){
+		if(aamAccount == "06" && ("".equals(asacSubclass)||asacSubclass == null)){
+			addActionError("Expense account requries subclass.");
+		}
+		if("0".equals(idPk.getAseDrCrCd())){
+			addActionError("Dr/Cr Code is required.");
+		}
+		if(getActionErrors().size() > 0){
+			return false;
+		}else{
+			return true;
+		}
 	}
 
 	public String getOper() {
