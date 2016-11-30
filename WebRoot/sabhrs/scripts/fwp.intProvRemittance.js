@@ -267,8 +267,20 @@ $.subscribe("depositsGridComplete", function(event, data) {
 });
 
 $.subscribe('alsSabhrsEntriesComplete', function(event, data) {	
-	var sum = $("#alsSabhrsEntriesGrid").jqGrid('getCol', 'aseAmt', false, 'sum');
-    $("#alsSabhrsEntriesGrid").jqGrid('footerData','set', {asacProjectGrant: 'Total:', aseAmt:sum});
+	var total = 0;
+	var grid = $("#alsSabhrsEntriesGrid");
+	var rows = grid.jqGrid("getDataIDs");
+	for (i = 0; i < rows.length; i++)
+    {
+    	var creditDebit = grid.jqGrid ('getCell', rows[i], 'idPk.aseDrCrCd');
+        var amount = grid.jqGrid ('getCell', rows[i], 'aseAmt');
+        if(creditDebit == 'D'){
+        	total = total + Number(amount);
+        }else{
+        	total = total - Number(amount);
+        }
+    }
+    $("#alsSabhrsEntriesGrid").jqGrid('footerData','set', {asacProjectGrant: 'Total:', aseAmt:total});
 	
     if ( $("#alsSabhrsEntriesGrid").length) {
    		$("#alsSabhrsEntriesGrid").jqGrid('setColProp','jlr', { editoptions: { value: rtrnJLRList()}});
