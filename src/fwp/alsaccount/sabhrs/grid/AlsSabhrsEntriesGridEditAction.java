@@ -157,6 +157,7 @@ public class AlsSabhrsEntriesGridEditAction extends ActionSupport{
 			    	ase.setAtgsGroupIdentifier(transIdentifier);
 			    	ase.setAtgTransactionCd(transGrp);
 			    	ase.setAseNonAlsFlag("Y");
+			    	ase.setAsacReference(anat.getAnatCrJournalLineRefr());
 			    	//TODO need to remove this logic when the triggers and correct audit columns are added to the db	
 					ase.setAseWhoLog(userInfo.getStateId().toString());
 					ase.setAseWhenLog(date);
@@ -172,7 +173,8 @@ public class AlsSabhrsEntriesGridEditAction extends ActionSupport{
 			    	ase.setAsacSubclass(anat.getAnatDrSubclass());
 			    	ase.setAsacProjectGrant(anat.getAnatDrProjectGrant());
 			    	ase.setAseLineDescription(anat.getAnatDrLineDesc());
-
+			    	ase.setAsacReference(anat.getAnatDrJournalLineRefr());
+			    	
 					aseAS.save(ase);
 					updateTransGrpStat(ase);
 				}

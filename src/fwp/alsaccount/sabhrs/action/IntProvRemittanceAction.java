@@ -45,7 +45,7 @@ public class IntProvRemittanceAction extends ActionSupport{
 		
 			setFundLst(FwpStringUtils.listCompListToString(lu.getFundList(null)));
 			setSubClassLst(FwpStringUtils.listCompListToString(lu.getSubclassList(null)));
-			setJlrLst(FwpStringUtils.listCompListToString(lu.getJLRBudgYearList(null)));
+			setJlrLst(FwpStringUtils.listCompListToString(lu.getJLRList()));
 			setProjectGrantLst(lu.getProjectGrantsListTxt(null, false));
 			setOrgLst(FwpStringUtils.listCompListToString(lu.getOrgList(null)));
 			setAccountLst(FwpStringUtils.listCompListToString(lu.getAccountList(null)));

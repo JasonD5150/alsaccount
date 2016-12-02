@@ -40,19 +40,15 @@ public class ProvAdjEntIAFAGridAction extends ActionSupport{
     private String 				appTypeCd;
     private Integer				amtTypeCd;
     private Integer				reasonCd;
-    private Boolean 			remittanceInd;
+
 
 	public String buildgrid(){ 		
     	AlsItemApplFeeAcctAS aiafaAS = new AlsItemApplFeeAcctAS();
     	SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+    	setModel(new ArrayList<ProvAdjEntAIAFAGridDTO>());
         try{
-        	setModel(new ArrayList<ProvAdjEntAIAFAGridDTO>());
-        	if(remittanceInd){
-        		groupId = Utils.createIntProvGroupIdentifier(provNo, sdf.format(bpTo), 000);
-        		setModel(aiafaAS.getRemittanceProviderAdjEntriesRecords(groupId.substring(0, groupId.length()-3)+'%', provNo, iafaSeqNo, bpFrom, bpTo));
-        	}else{
-        		setModel(aiafaAS.getProviderAdjEntriesRecords(provNo, bpFrom, bpTo, tribeCd, appTypeCd, amtTypeCd, reasonCd));
-        	}
+    		groupId = Utils.createIntProvGroupIdentifier(provNo, sdf.format(bpTo), 000);
+    		setModel(aiafaAS.getRemittanceProviderAdjEntriesRecords(groupId.substring(0, groupId.length()-3)+'%', provNo, iafaSeqNo, bpFrom, bpTo));
         }
         catch (HibernateException re) {
             log.debug("ProvAdjEntIAFAGridAction did not load " + re.getMessage());
@@ -163,12 +159,6 @@ public class ProvAdjEntIAFAGridAction extends ActionSupport{
 	}
 	public void setReasonCd(Integer reasonCd) {
 		this.reasonCd = reasonCd;
-	}
-	public Boolean getRemittanceInd() {
-		return remittanceInd;
-	}
-	public void setRemittanceInd(Boolean remittanceInd) {
-		this.remittanceInd = remittanceInd;
 	}
 	public Integer getIafaSeqNo() {
 		return iafaSeqNo;

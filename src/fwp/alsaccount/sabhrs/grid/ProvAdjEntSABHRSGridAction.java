@@ -1,9 +1,6 @@
 package fwp.alsaccount.sabhrs.grid;
 
 import java.sql.Date;
-import java.sql.Timestamp;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,19 +10,10 @@ import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionSupport;
 
-import fwp.als.appservice.inventory.AlsProviderRemittanceAS;
-import fwp.als.hibernate.inventory.dao.AlsInternalRemittanceIdPk;
-import fwp.als.hibernate.inventory.dao.AlsProviderRemittance;
-import fwp.als.hibernate.inventory.dao.AlsProviderRemittanceIdPk;
-import fwp.alsaccount.appservice.sabhrs.AlsInternalRemittanceAS;
 import fwp.alsaccount.appservice.sabhrs.AlsSabhrsEntriesAS;
-import fwp.alsaccount.appservice.sabhrs.AlsTransactionGrpStatusAS;
 import fwp.alsaccount.dao.sabhrs.AlsSabhrsEntries;
 import fwp.alsaccount.dao.sabhrs.AlsSabhrsEntriesIdPk;
-import fwp.alsaccount.dao.sabhrs.AlsTransactionGrpStatus;
-import fwp.alsaccount.dto.sabhrs.AlsInternalRemittanceDTO;
 import fwp.alsaccount.dto.sabhrs.AlsSabhrsEntriesDTO;
-import fwp.alsaccount.utils.HibHelpers;
 import fwp.alsaccount.utils.Utils;
 
 public class ProvAdjEntSABHRSGridAction extends ActionSupport{
@@ -47,7 +35,6 @@ public class ProvAdjEntSABHRSGridAction extends ActionSupport{
     private Date 				bpFrom;
     private Date 				bpTo;
     private Integer				iafaSeqNo;
-    private Boolean 			remittanceInd;
 
 	public String buildgrid(){ 
         try{
@@ -56,11 +43,7 @@ public class ProvAdjEntSABHRSGridAction extends ActionSupport{
         		AlsSabhrsEntriesAS aseAS = new AlsSabhrsEntriesAS();
     			List<AlsSabhrsEntries> aseLst = new ArrayList<AlsSabhrsEntries>();
     			
-    			if(remittanceInd){
-    				aseLst = aseAS.getManualProviderAdjEntriesRecords(provNo, iafaSeqNo, bpFrom, bpTo);
-            	}else{
-            		aseLst = aseAS.getProvAdjEntRecords(provNo, bpFrom, bpTo, iafaSeqNo);
-            	}
+    			aseLst = aseAS.getManualProviderAdjEntriesRecords(provNo, iafaSeqNo, bpFrom, bpTo);
         		
         		if(aseLst.size() > 10000){
         			setUserdata("Please narrow search. The search grid is limited to 10000 rows. There were " + aseLst.size() + " entries selected.");
@@ -233,15 +216,5 @@ public class ProvAdjEntSABHRSGridAction extends ActionSupport{
 	public void setIafaSeqNo(Integer iafaSeqNo) {
 		this.iafaSeqNo = iafaSeqNo;
 	}
-
-	public Boolean getRemittanceInd() {
-		return remittanceInd;
-	}
-
-	public void setRemittanceInd(Boolean remittanceInd) {
-		this.remittanceInd = remittanceInd;
-	}
-
-	
 	
 }

@@ -2,7 +2,6 @@ package fwp.alsaccount.sabhrs.grid;
 
 
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,9 +16,7 @@ import fwp.alsaccount.dao.sabhrs.AlsSabhrsEntries;
 import fwp.alsaccount.dao.sabhrs.AlsSabhrsEntriesDAO;
 import fwp.alsaccount.dao.sabhrs.AlsSabhrsEntriesIdPk;
 import fwp.alsaccount.hibernate.utils.DalUtils;
-import fwp.alsaccount.utils.HibHelpers;
 import fwp.alsaccount.utils.Utils;
-import fwp.gen.appservice.GenZipCodesAS;
 import fwp.security.user.UserDTO;
 
 
@@ -51,7 +48,6 @@ public class ProvAdjEntSABHRSGridEditAction extends ActionSupport{
     private String aseDrCrCd;
     private Integer aseSeqNo;
     private String aseLineDescription;
-    private Boolean remittanceInd;
 
 	
 	public String execute() throws Exception{
@@ -137,7 +133,12 @@ public class ProvAdjEntSABHRSGridEditAction extends ActionSupport{
 						
 						aseNew.setAseWhenLog(date);
 						aseIdPkNew.setAseSeqNo(dalUtils.getNextValueFromSequence("ALS_SABHRS_ENTRIES_SEQ", aseDAO.getSession()));
-						aseIdPkNew.setAseDrCrCd(tmp.getIdPk().getAseDrCrCd());
+						if("D".equals(tmp.getIdPk().getAseDrCrCd())){
+							aseIdPkNew.setAseDrCrCd("C");
+						}else{
+							aseIdPkNew.setAseDrCrCd("D");
+						}
+						
 						aseIdPkNew.setAseTxnCdSeqNo(tmp.getIdPk().getAseTxnCdSeqNo());
 						aseIdPkNew.setAseWhenEntryPosted(date);
 						aseNew.setIdPk(aseIdPkNew);
@@ -388,14 +389,4 @@ public class ProvAdjEntSABHRSGridEditAction extends ActionSupport{
 	public void setIdPk(AlsSabhrsEntriesIdPk idPk) {
 		this.idPk = idPk;
 	}
-
-	public Boolean getRemittanceInd() {
-		return remittanceInd;
-	}
-
-	public void setRemittanceInd(Boolean remittanceInd) {
-		this.remittanceInd = remittanceInd;
-	}
-	
-	
 }

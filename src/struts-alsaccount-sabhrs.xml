@@ -30,11 +30,6 @@
             <result name="error">sabhrs/uploadSabhrsToSummary.jsp</result>
             <result name="input">sabhrs/uploadSabhrsToSummary.jsp</result>         
       </action>    	
-      <action name="genNonAlsEntries_*" method="{1}" class="fwp.alsaccount.sabhrs.action.GenNonAlsEntriesAction">
-            <result>sabhrs/genAlsEntries.jsp</result>
-            <result name="error">sabhrs/genAlsEntries.jsp</result>
-            <result name="input">sabhrs/genAlsEntries.jsp</result>         
-      </action>
       <action name="accMasterDialog_*" method="{1}" class="fwp.alsaccount.action.GenericAction">
             <result>sabhrs/include/nonAlsMasterDialog.jsp</result>
             <result name="error">sabhrs/include/nonAlsMasterDialog.jsp</result>
@@ -45,8 +40,6 @@
             <result name="error">sabhrs/transactionGroupApproval.jsp</result>
             <result name="input">sabhrs/transactionGroupApproval.jsp</result>         
       </action>
-      
-        
 		<action name="sabhrsQuery_*" method="{1}" class="fwp.alsaccount.action.GenericAction">
 			<result>sabhrs/sabhrsQuery.jsp</result>
 			<result name="error">sabhrs/sabhrsQuery.jsp</result>
@@ -72,7 +65,6 @@
 			<result name="error">sabhrs/intProvBankCdDepLink.jsp</result>
 			<result name="input">sabhrs/intProvBankCdDepLink.jsp</result>        
 		</action>
-		
 		<action name="intProvRemittance_*" method="{1}" class="fwp.alsaccount.sabhrs.action.IntProvRemittanceAction">
 			<result>sabhrs/intProvRemittance.jsp</result>
 			<result name="error">sabhrs/intProvRemittance.jsp</result>
@@ -111,18 +103,12 @@
 			<result>sabhrs/include/distributionQueryDiv.jsp</result>
 			<result name="error">sabhrs/include/distributionQueryDiv.jsp</result>
 			<result name="input">sabhrs/include/distributionQueryDiv.jsp</result>        
-		</action>
-		<action name="provAdjEnt_*" method="{1}" class="fwp.alsaccount.sabhrs.action.ProvAdjEntPostingAction">
-			<result>sabhrs/provAdjEntPosting.jsp</result>
-			<result name="error">sabhrs/provAdjEntPosting.jsp</result>
-			<result name="input">sabhrs/provAdjEntPosting.jsp</result>        
-		</action>
-		<action name="provAdjEntQueryDiv_*" method="{1}" class="fwp.alsaccount.sabhrs.action.ProvAdjEntPostingQueryDivAction">
-			<result>sabhrs/include/provAdjEntPostingQueryDiv.jsp</result>
-			<result name="error">sabhrs/include/provAdjEntPostingQueryDiv.jsp</result>
-			<result name="input">sabhrs/include/provAdjEntPostingQueryDiv.jsp</result>        
-		</action>
-		
+		</action>	
+		<action name="genAlsSabhrsEntries_*" method="{1}" class="fwp.alsaccount.sabhrs.action.GenAlsSabhrsEntriesAction">
+            <result>sabhrs/genAlsSabhrsEntries.jsp</result>
+            <result name="error">sabhrs/genAlsSabhrsEntries.jsp</result>
+            <result name="input">sabhrs/genAlsSabhrsEntries.jsp</result>         
+      </action>
 	</package>
  
  	<package name="fwp.alsaccount.sabhrs.grid" namespace="/alsAccount" extends="json-default">     
@@ -136,26 +122,6 @@
                <param name="ignoreHierarchy">false</param>
             </result>
 		</action>
-		<action name="transGroupDtlsGrid_*" class="fwp.alsaccount.sabhrs.grid.AlsTransactionGrpStatusGridAction">
-            <result type="json" />
-        </action>       
-        <action name="transGroupDtlsGridEdit_*" class="fwp.alsaccount.sabhrs.grid.AlsTransactionGrpStatusGridEditAction">
-			<result type="json"></result>
-            <result type="json" name="input"></result>
-            <result name="error_json" type="json" >
-               <param name="ignoreHierarchy">false</param>
-            </result>
-		</action>
-		<action name="genAlsSabhrsEntriesGrid_*" class="fwp.alsaccount.sabhrs.grid.GenAlsSabhrsEntriesGridAction">
-            <result type="json" />
-        </action>
-         <action name="genAlsSabhrsEntriesGridEdit_*" class="fwp.alsaccount.sabhrs.grid.GenAlsSabhrsEntriesGridEditAction">
-			<result type="json"></result>
-            <result type="json" name="input"></result>
-            <result name="error_json" type="json" >
-               <param name="ignoreHierarchy">false</param>
-            </result>
-		</action> 
 		<action name="alsSabhrsEntriesGrid_*" class="fwp.alsaccount.sabhrs.grid.AlsSabhrsEntriesGridAction">
             <result type="json" />
         </action>
@@ -177,7 +143,6 @@
                <param name="ignoreHierarchy">false</param>
             </result>
 		</action>  
-		
 		<action name="alsSabhrsQueryGrid_*" class="fwp.alsaccount.sabhrs.grid.SabhrsQueryGridAction">
             <result type="json" />
             <result type="json" name="input"></result>
@@ -228,7 +193,20 @@
         <action name="distributionQueryGrid_*" class="fwp.alsaccount.sabhrs.grid.DistributionQueryGridAction">
             <result type="json" />
         </action>
-        <action name="provAdjEntIAFAGrid_*" class="fwp.alsaccount.sabhrs.grid.ProvAdjEntIAFAGridAction">
+		 <action name="transGroupDtlsGrid_*" class="fwp.alsaccount.sabhrs.grid.AlsTransactionGrpStatusGridAction">
+            <result type="json" />
+        </action> 
+		<action name="genAlsSabhrsEntriesGrid_*" class="fwp.alsaccount.sabhrs.grid.GenAlsSabhrsEntriesGridAction">
+            <result type="json" />
+        </action>
+         <action name="genAlsSabhrsEntriesGridEdit_*" class="fwp.alsaccount.sabhrs.grid.GenAlsSabhrsEntriesGridEditAction">
+			<result type="json"></result>
+            <result type="json" name="input"></result>
+            <result name="error_json" type="json" >
+               <param name="ignoreHierarchy">false</param>
+            </result>
+		</action>
+		<action name="provAdjEntIAFAGrid_*" class="fwp.alsaccount.sabhrs.grid.ProvAdjEntIAFAGridAction">
             <result type="json" />
         </action>
         <action name="provAdjEntSABHRSGrid_*" class="fwp.alsaccount.sabhrs.grid.ProvAdjEntSABHRSGridAction">
@@ -240,7 +218,7 @@
             <result name="error_json" type="json" >
                <param name="ignoreHierarchy">false</param>
             </result>
-		</action>
+		</action>  
    </package>
 
 	<package name="fwp.alsaccount.sabhrs.json" extends="json-default" >
@@ -278,12 +256,6 @@
             <result type="json"/>
         </action>
         <action name="distributionGridsToCsv" class="fwp.alsaccount.sabhrs.json.DistributionGridsToCsvAction">
-            <interceptor-ref name="json">
-                <param name="enableSMD">true</param>
-            </interceptor-ref>
-            <result type="json"/>
-        </action>
-        <action name="provAdjEntGridToCsv" class="fwp.alsaccount.sabhrs.json.ProvAdjEntGridsToCsvAction">
             <interceptor-ref name="json">
                 <param name="enableSMD">true</param>
             </interceptor-ref>

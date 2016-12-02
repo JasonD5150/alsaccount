@@ -71,11 +71,12 @@ public class AlsSabhrsEntriesGridAction extends ActionSupport{
 				tmp.setAsacSystemActivityTypeCd(aa.getAsacSystemActivityTypeCd());
 				tmp.setAsacTxnCd(aa.getAsacTxnCd());
 				tmp.setAseLineDescription(aa.getAseLineDescription());
-				if(aa.getAsacReference() == null){
+				tmp.setJlr(aseAS.getReferenceDesc(aa.getAsacReference()));
+				/*if(aa.getAsacReference() == null){
 					tmp.setJlr("0");
 				}else{
 					tmp.setJlr(aseAS.getReferenceDesc(aa.getAsacReference()));
-				}
+				}*/
 				
 				
 				model.add(tmp);

@@ -366,7 +366,7 @@ public class ListUtils {
 	public List<ListComp> getJLRList() {
 		List<ListComp> lst = new ArrayList<ListComp>();
 		
-		String queryString = "SELECT DISTINCT am_val_desc  itemVal, "
+		String queryString = "SELECT DISTINCT am_par_val  itemVal, "
 						   + "am_val_desc  itemLabel "
 						   + "FROM als.als_misc "
 						   + "WHERE am_key1 = 'JOURNAL_LINE_REFERENCE' "
