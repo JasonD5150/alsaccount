@@ -71,7 +71,7 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 				AlsInternalRemittanceAS tmpAS = new AlsInternalRemittanceAS();
 				AlsInternalRemittanceIdPk tmpIdPk = new AlsInternalRemittanceIdPk();
 				AlsInternalRemittance original = null;	
-				
+
 				Integer provNo = Integer.parseInt(id.split("_")[2]);
 				Timestamp bpFrom = new Timestamp(sdf.parse(id.split("_")[0]).getTime());
 				Timestamp bpTo = new Timestamp(sdf.parse(id.split("_")[1]).getTime());
@@ -79,6 +79,7 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 				tmpIdPk.setAirBillingFrom(bpFrom);
 				tmpIdPk.setAirBillingTo(bpTo);
 				original = tmpAS.findById(tmpIdPk);
+
 				if(original == null){
 					addActionError("Original record not found.");
 					 return "error_json";

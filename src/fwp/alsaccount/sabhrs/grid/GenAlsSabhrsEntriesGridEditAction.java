@@ -11,6 +11,8 @@ import org.apache.shiro.SecurityUtils;
 
 import com.opensymphony.xwork2.ActionSupport;
 
+
+
 import fwp.alsaccount.appservice.admin.AlsNonAlsTemplateAS;
 import fwp.alsaccount.appservice.sabhrs.AlsSabhrsEntriesAS;
 import fwp.alsaccount.appservice.sabhrs.AlsTransactionGrpStatusAS;
@@ -62,11 +64,6 @@ public class GenAlsSabhrsEntriesGridEditAction extends ActionSupport{
 		AlsSabhrsEntriesAS aseAS = new AlsSabhrsEntriesAS();
 		AlsSabhrsEntriesIdPk aseIdPk = new AlsSabhrsEntriesIdPk();
 		AlsSabhrsEntries ase = null;
-		
-		AlsTransactionGrpStatusAS atgsAS = new AlsTransactionGrpStatusAS();
-		String where = " WHERE idPk.atgsGroupIdentifier = '"+transIdentifier+"'";
-		List<AlsTransactionGrpStatus> atgsLst = atgsAS.findAllByWhere(where);
-		AlsTransactionGrpStatus atgs = null;
 		
 		HibHelpers hh = new HibHelpers();
 		UserDTO userInfo = (UserDTO)SecurityUtils.getSubject().getSession().getAttribute("userInfo");
@@ -127,18 +124,8 @@ public class GenAlsSabhrsEntriesGridEditAction extends ActionSupport{
 				ase.setAseWhoLog(userInfo.getStateId().toString());
 				ase.setAseWhenLog(date);
 				//********************************************************************
-				aseAS.merge(ase);
-				
-				/*UPDATE ALS_TRANSACTION_GRP_STATUS*/
-				if(!atgsLst.isEmpty()){
-					atgs = atgsLst.get(0);
-					if("C".equals(ase.getIdPk().getAseDrCrCd())){
-						atgs.setAtgsNetDrCr(atgs.getAtgsNetDrCr()-aseAmt);
-					}else if("D".equals(ase.getIdPk().getAseDrCrCd())){
-						atgs.setAtgsNetDrCr(atgs.getAtgsNetDrCr()+aseAmt);
-					}
-					atgsAS.save(atgs);
-				}
+				aseAS.save(ase);
+				updateTransGrpStat(ase);
 			} else if (oper.equalsIgnoreCase("addTemplates")) {
 				String[] templates = this.templates.split(",");
 				for(int i=0;i<templates.length;i++){
@@ -180,7 +167,8 @@ public class GenAlsSabhrsEntriesGridEditAction extends ActionSupport{
 					ase.setAseWhoLog(userInfo.getStateId().toString());
 					ase.setAseWhenLog(date);
 					//********************************************************************
-					aseAS.merge(ase);
+					aseAS.save(ase);
+					updateTransGrpStat(ase);
 
 			    	aseIdPk.setAseDrCrCd("D");
 			    	aseIdPk.setAseSeqNo(aseAS.getNextSeqNo());
@@ -191,19 +179,11 @@ public class GenAlsSabhrsEntriesGridEditAction extends ActionSupport{
 			    	ase.setAsacProjectGrant(anat.getAnatDrProjectGrant());
 			    	ase.setAseLineDescription(anat.getAnatDrLineDesc());
 
-					aseAS.merge(ase);
+					aseAS.save(ase);
+					updateTransGrpStat(ase);
 				}
 			}else if(oper.equalsIgnoreCase("edit")){
-				/*UPDATE ALS_TRANSACTION_GRP_STATUS*/
-				if(!atgsLst.isEmpty()){
-					atgs = atgsLst.get(0);
-					if("C".equals(ase.getIdPk().getAseDrCrCd())){
-						atgs.setAtgsNetDrCr(atgs.getAtgsNetDrCr()+ase.getAseAmt()-aseAmt);
-					}else if("D".equals(ase.getIdPk().getAseDrCrCd())){
-						atgs.setAtgsNetDrCr(atgs.getAtgsNetDrCr()-ase.getAseAmt()+aseAmt);
-					}
-					atgsAS.save(atgs);
-				}
+				updateTransGrpStat(ase);
 				
 				ase.setAamAccount(aamAccount);
 				ase.setAamFund(aamFund);
@@ -222,7 +202,6 @@ public class GenAlsSabhrsEntriesGridEditAction extends ActionSupport{
 					ase.setAsacReference(aseAS.getDescReference(jlr));
 				}
 				
-				
 				//TODO need to remove this logic when the triggers and correct audit columns are added to the db	
 				ase.setAseWhoLog(userInfo.getStateId().toString());
 				ase.setAseWhenLog(date);
@@ -232,16 +211,7 @@ public class GenAlsSabhrsEntriesGridEditAction extends ActionSupport{
 				
 			}else if(oper.equalsIgnoreCase("del")){
 				aseAS.delete(ase);
-				/*UPDATE ALS_TRANSACTION_GRP_STATUS*/
-				if(!atgsLst.isEmpty()){
-					atgs = atgsLst.get(0);
-					if("C".equals(ase.getIdPk().getAseDrCrCd())){
-						atgs.setAtgsNetDrCr(atgs.getAtgsNetDrCr()+ase.getAseAmt());
-					}else if("D".equals(ase.getIdPk().getAseDrCrCd())){
-						atgs.setAtgsNetDrCr(atgs.getAtgsNetDrCr()-ase.getAseAmt());
-					}
-					atgsAS.save(atgs);
-				}
+				updateTransGrpStat(ase);
 			}
 		}  catch(Exception ex) {
 			 if (ex.toString().contains("ORA-02292")){
@@ -265,6 +235,22 @@ public class GenAlsSabhrsEntriesGridEditAction extends ActionSupport{
 		long time = tmpDate.getTime();
 		Timestamp rtn = new Timestamp(time);
 		return rtn;
+	}
+	public void updateTransGrpStat(AlsSabhrsEntries ase){
+		/*UPDATE ALS_TRANSACTION_GRP_STATUS*/
+		AlsTransactionGrpStatusAS atgsAS = new AlsTransactionGrpStatusAS();
+		String where = " WHERE idPk.atgsGroupIdentifier = '"+transIdentifier+"'";
+		List<AlsTransactionGrpStatus> atgsLst = atgsAS.findAllByWhere(where);
+		AlsTransactionGrpStatus atgs = null;
+		if(!atgsLst.isEmpty()){
+			atgs = atgsLst.get(0);
+			if("C".equals(ase.getIdPk().getAseDrCrCd())){
+				atgs.setAtgsNetDrCr(atgs.getAtgsNetDrCr()-ase.getAseAmt());
+			}else if("D".equals(ase.getIdPk().getAseDrCrCd())){
+				atgs.setAtgsNetDrCr(atgs.getAtgsNetDrCr()+ase.getAseAmt());
+			}
+			atgsAS.save(atgs);
+		}
 	}
 
 	public String getOper() {

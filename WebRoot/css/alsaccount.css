@@ -12,3 +12,8 @@
 .label {
    	text-align: right;
 }
+
+a.fwp-show-hide-section {
+   cursor: pointer;
+   color: blue;
+}

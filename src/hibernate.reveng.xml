@@ -2,6 +2,23 @@
 <!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-reverse-engineering-3.0.dtd" >
 
 <hibernate-reverse-engineering>
+
+<table name="ALS_WARRANT_STATUS" schema="ALS" class="fwp.alsaccount.dao.refund.AlsWarrantStatus">
+	<primary-key>
+         <generator class="sequence"> 
+           <param name="sequence">ALS.ALS_APP_SEQ</param> 
+         </generator>  
+       <key-column name="AWS_ID" jdbc-type="NUMERIC" type="Integer" />
+     </primary-key> 
+     <column name="AWS_PAYMENT_DATE" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="AWS_RECON_DATE" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="AWS_STALEDATE_DATE" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="AWS_STALEDATE_ACT_DATE" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="AWS_PAID_AMOUNT" jdbc-type="NUMERIC" type="Double"></column>
+     <column name="AWS_PROCESS_DATE" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+     <column name="AWS_PAYMENT_GROSS_AMOUNT" jdbc-type="NUMERIC" type="Double"></column>
+     <column name="AWS_PROCESS_FROM_DATE" jdbc-type="DATE" type="java.sql.Timestamp"></column>
+   </table>
    <table name="ALS_PROVIDER_BANK_DEPOSIT_SLIP" schema="ALS" class="fwp.alsaccount.dao.sabhrs.AlsProviderBankDepositSlip"> 
      <primary-key> 
        <column name="APBDS_ID" jdbc-type="NUMERIC" type="Integer"></column>
