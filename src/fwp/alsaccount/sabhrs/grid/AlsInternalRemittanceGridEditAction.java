@@ -169,7 +169,7 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 		apbdLst = apbdAS.findAllByWhere(where);
 		for(AlsProviderBankDetails apbd : apbdLst){
 			String grpIdentifier1 = Utils.createIntProvGroupIdentifier(provNo, bpTo.toString().substring(0, 10).replace("-", "/"),seqNo);
-			
+			/* Save Bank Code of first record */
 			if(apbdLst.indexOf(apbd) == 0){
 				bankCd = apbd.getAbcBankCd();
             }
@@ -181,7 +181,7 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 			insertTransGrpStatus(original, transGrpCd, grpIdentifier1, apbd.getApbdDepositDate(), apbd.getApbdDepositId());
 			
 			/*POST E42 ENTRIES*/
-			if(hh.postE42Entries(apbd.getApbdAmountDeposit(), provNo, bpFrom, bpTo, 8, grpIdentifier1,"E42","BANK DEPOSIT",null,null,null,null)!= 1){
+			if(hh.callALSU0421(apbd.getApbdAmountDeposit(), "N", "Y", "E42", provNo, bpFrom, bpTo, transGrpCd, grpIdentifier1, "BANK DEPOSIT", null, null, null, null)!= 1){
 				addActionError("Error while posting SABHRS entry.");
 				return "error_json";
 			};
@@ -207,33 +207,39 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 		
 		String grpIdentifier2 = Utils.createIntProvGroupIdentifier(provNo, bpTo.toString().substring(0, 10).replace("-", "/"),seqNo);
 		if(totBankDep > 0){
+			/* Create Group Identifier for Total Bank Deposit Amount */	
 			insertTransGrpStatus(original, transGrpCd, grpIdentifier2, null, null);
-			if(hh.postE42Entries(totBankDep, provNo, bpFrom, bpTo, 8, grpIdentifier2,"E43","TOTAL BANK DEPOSIT",null,null,null,null)!= 1){
+			/* Post E43 entries for each deposit Amount */ 
+			if(hh.callALSU0421(totBankDep, "N", "Y", "E43", provNo, bpFrom, bpTo, transGrpCd, grpIdentifier2, "TOTAL BANK DEPOSIT", null, null, null, null)!= 1){
 				addActionError("Error while posting SABHRS entry.");
 				return "error_json";
 			};
 		}else{
+			/* Create Group Identifier for Total Bank Deposit Amount */	
 			insertTransGrpStatus(original, transGrpCd, grpIdentifier2, null, null);
 		}
-		
+		/* Post E40 Entry for Credit Card Sales */
 		if(original.getAirCreditSales() > 0){
-			if(hh.postE42Entries(totBankDep, provNo, bpFrom, bpTo, transGrpCd, grpIdentifier2,"E40","CREDIT CARD SALES",null,null,null,null)!= 1){
+			
+			if(hh.callALSU0421(original.getAirCreditSales(), "N", "Y", "E40", provNo, bpFrom, bpTo, transGrpCd, grpIdentifier2, "CREDIT CARD SALES", null, null, null, null)!= 1){
 				addActionError("Error while posting E40 SABHRS entry.");
 				return "error_json";
 			};
 		}
 		
 		String amtType = hh.getPval("IAFA_AMOUNT_TYPE","PAE",null);
-		String shortSalesReason = hh.getPval("PAE_REASON","PROV. OFFLINE PAYMENT OVERPAY",null);
+		String overSalesReason = hh.getPval("PAE_REASON","PROV. OFFLINE PAYMENT OVERPAY",null);
+		String shortSalesReason = hh.getPval("PAE_REASON","PROV. OFFLINE ISSUE UNDERPAY",null);
+		/* Post Over Sales(E19) entry */
 		if(original.getAirOverSales() > 0){
-			if(hh.postE42Entries(totBankDep, provNo, bpFrom, bpTo, transGrpCd, grpIdentifier2,"E19","OVER SALES",amtType,shortSalesReason,null,null)!= 1){
+			if(hh.callALSU0421(original.getAirOverSales(), "Y", "Y", "E19", provNo, bpFrom, bpTo, transGrpCd, grpIdentifier2, "OVER SALES", amtType, overSalesReason, null, null)!= 1){
 				addActionError("Error while posting E19 AIAFA and SABHRS entry.");
 				return "error_json";
 			};
 		}
-		
+		/* Post Short of Sales(E18) entry */
 		if(original.getAirShortSales() > 0){
-			if(hh.postE42Entries(totBankDep, provNo, bpFrom, bpTo, 8, grpIdentifier2,"E18","SHORT OF SALES", amtType,shortSalesReason,null,null)!= 1){
+			if(hh.callALSU0421(-1*original.getAirShortSales(), "Y", "Y", "E18", provNo, bpFrom, bpTo, transGrpCd, grpIdentifier, "SHORT OF SALES", amtType, shortSalesReason, null, null)!= 1){
 				addActionError("Error while posting E18 AIAFA and SABHRS entry.");
 				return "error_json";
 			};
@@ -264,7 +270,7 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 		}
 		
 		/*TO DELETE BANK DEPOSITS ENTRIES AND CONSOLIDATED BANK DEPOSIT,C7/8/9/10, Credit Entry.*/
-		where = "WHERE idPk.atgTransactionCd = "+transGrpCd+" AND idPk.atgsGroupIdentifier LIKE '"+grpIdentifier+"%' And To_Number(Substr(idPk.atgsGroupIdentifier,-3,3)) > 1";
+		where = "WHERE idPk.atgTransactionCd = "+transGrpCd+" AND substr(idPk.atgsGroupIdentifier,1,18) = '"+grpIdentifier+"' And To_Number(Substr(idPk.atgsGroupIdentifier,-3,3)) > 1";
 		atgsLst = atgsAS.findAllByWhere(where);
 		if(!atgsLst.isEmpty()){
 			for(AlsTransactionGrpStatus atgs : atgsLst){
@@ -372,6 +378,10 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 			addActionError("Error while deleting record from Als_Sabhrs_Entries_Summary table for Transaction Type 8 and Group Identifier "+grpIdentifier1+".");
 			return "error_json";
 		}
+		/* Update Net Debit Credit Amount in Als_Transaction_Grp_Status table for grpIdentifier1
+ 		with sequence no '001' */
+		updateNetAmount(transGrpCd,grpIdentifier1,null);
+		
 		where = "WHERE idPk.atgTransactionCd = "+transGrpCd+" AND idPk.atgsGroupIdentifier = '"+grpIdentifier1+"' ";
 		atgsLst = atgsAS.findAllByWhere(where);
 		if(!atgsLst.isEmpty()){
@@ -495,6 +505,7 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 		AlsAccountMasterAS aamAS = new AlsAccountMasterAS();
 		List<AlsAccountMaster> aamLst = new ArrayList<AlsAccountMaster>();
 		AlsAccountMaster aam = new AlsAccountMaster();
+		/* Select Control Account for Account Receivable */
 		String where = "WHERE idPk.asacBudgetYear = "+curBudgYear+" AND aamAccountDesc = 'ACCOUNT RECEIVABLE'";
 		aamLst = aamAS.findAllByWhere(where);
 		if(!aamLst.isEmpty()){
@@ -508,11 +519,13 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 			}else{
 				activeEntry = "C8";
 			}
-			if(hh.postE42Entries(ase.getAseAmt(), provNo, bpFrom, bpTo, transGrpCd, grpIdentifier2,activeEntry,"ACCOUNT RECEIVABLE", null,null,ase.getAamFund(),ase.getAtiTribeCd() )!= 1){
+			/* Post C9/C10 entries for Net of Account Receivable */  
+			if(hh.callALSU0421(ase.getAseAmt(), "N", "Y", activeEntry, provNo, bpFrom, bpTo, transGrpCd, grpIdentifier2, "ACCOUNT RECEIVABLE", null, null, ase.getAamFund(), ase.getAtiTribeCd())!= 1){
 				addActionError("Error while posting "+activeEntry+" AIAFA and SABHRS entry.");
 				return "error_json";
 			};
 		}
+		/* Select Control Account for Account Payable */
 		where = "WHERE idPk.asacBudgetYear = "+curBudgYear+" AND aamAccountDesc = 'ACCOUNT PAYABLE'";
 		aamLst = aamAS.findAllByWhere(where);
 		if(!aamLst.isEmpty()){
@@ -525,12 +538,12 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 			}else{
 				activeEntry = "C10";
 			}
-			if(hh.postE42Entries(ase.getAseAmt(), provNo, bpFrom, bpTo, transGrpCd, grpIdentifier2,activeEntry,"ACCOUNT PAYABLE", null,null,ase.getAamFund(),ase.getAtiTribeCd() )!= 1){
+			/* Post C9/C10 entries for Net of Account Payable */  
+			if(hh.callALSU0421(ase.getAseAmt(), "N", "Y", activeEntry, provNo, bpFrom, bpTo, transGrpCd, grpIdentifier2, "ACCOUNT PAYABLE", null, null, ase.getAamFund(), ase.getAtiTribeCd())!= 1){
 				addActionError("Error while posting "+activeEntry+" AIAFA and SABHRS entry.");
 				return "error_json";
 			};
 		}
-		
 		return SUCCESS;
 	}
 	

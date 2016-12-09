@@ -1766,18 +1766,21 @@ public class HibHelpers {
         return rtn;
 	}
 	
-	public Integer postE42Entries(Double amtDep, 
+	public Integer callALSU0421(Double amtDep, 
+								  String postAiafa,
+								  String postSabhrs,
+								  String cd, 
 								  Integer provNo, 
 								  Timestamp bpFrom, 
 								  Timestamp bpTo, 
 								  Integer transGrpCd, 
-								  String grpIdentifier, 
-								  String cd, 
+								  String grpIdentifier,
 								  String desc, 
 								  String amtType, 
 								  String shortSalesReason,
 								  String fund,
-								  String tribe) {		
+								  String tribe
+								  ) {		
 		Integer rtnCd = 0;
 		Integer curBudgYear = Integer.parseInt(getCurrentBudgetYear());
         Connection conn = ((SessionImpl)getSession()).connection();
@@ -1787,8 +1790,8 @@ public class HibHelpers {
 			
 			cs.registerOutParameter(1,OracleTypes.NUMBER);
 			cs.setDouble(2,amtDep);
-            cs.setString(3, "N");
-            cs.setString(4, "Y");
+            cs.setString(3, postAiafa);
+            cs.setString(4, postSabhrs);
             cs.setString(5, cd);
             cs.setInt(6, provNo);
             cs.setNull(7, OracleTypes.VARCHAR);
