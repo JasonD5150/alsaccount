@@ -20,6 +20,6 @@
     <include file="struts-alsaccount-interfaceFiles.xml" />
     <include file="struts-alsaccount-sabhrs.xml" />
     <include file="struts-alsaccount-sales.xml" />
-    
+    <include file="struts-alsaccount-refund.xml" />
     
 </struts>    

@@ -26,6 +26,7 @@ import org.hibernate.type.StringType;
 import org.hibernate.type.TimestampType;
 
 import fwp.als.hibernate.admin.dao.AlsMisc;
+import fwp.als.hibernate.admin.dao.AlsRefundInfo;
 import fwp.als.hibernate.provider.dao.AlsProviderInfo;
 import fwp.alsaccount.appservice.admin.AlsMiscAS;
 import fwp.alsaccount.dao.sabhrs.AlsSabhrsEntries;
@@ -2549,5 +2550,80 @@ public class HibHelpers {
 		finally {getSession().close();}
 		return lst;
 	}
+	
+	public String getNSFStatus(Integer type, List<String> procTypeCdLst, String procTypeSys, String appIdNo, String ahmType, Integer ahmCd, 
+							   Timestamp asSessionDt, Integer transCd, Integer transSeqNo) {	
+		String rtn = null;
+		
+		StringBuilder queryString = new StringBuilder("Select Nvl(AST_NSF_STATUS,'R') rtn "
+													+ "From ALS.Als_Session_Trans ");
+
+		if(type == 1){
+			queryString.append("WHERE AST_PROCESS_TYPE_CD IN (:procTypeCdLst) "
+							 + "AND (AICT_USAGE_PERIOD_FROM,AICT_USAGE_PERIOD_TO,AICT_ITEM_TYPE_CD, "
+								 	+ "Api_Dob,API_ALS_NO,AII_ITEM_TXN_IND,AII_SEQ_NO) = "
+								 + "(SELECT  AICT_USAGE_PERIOD_FROM,AICT_USAGE_PERIOD_TO,AICT_ITEM_TYPE_CD, "
+								 + "Api_Dob,API_ALS_NO,AII_ITEM_TXN_IND,AII_SEQ_NO "
+								 + "FROM ALS.Als_Session_Trans "
+								 + "WHERE AHM_TYPE = :ahmType "
+								 + "AND AHM_CD = :ahmCd "
+								 + "AND AS_SESSION_DT = :asSessionDt "
+								 + "AND AST_TRANSACTION_CD = :transCd "
+								 + "AND AST_TRANSACTION_SEQ_NO = :transSeqNo) ");
+		}else if(type == 2){
+			queryString.append("WHERE AST_PROCESS_TYPE_CD = :procTypeSys "
+							 + "AND AHM_TYPE = :ahmType "
+							 + "AND AHM_CD = :ahmCd "
+							 + "AND AS_SESSION_DT = :asSessionDt "
+							 + "AND AST_TRANSACTION_CD = :transCd "
+							 + "AND AST_TRANSACTION_SEQ_NO = :transSeqNo) ");
+		}else if(type == 3){
+			queryString.append("Where AST_PROCESS_TYPE_CD IN (:procTypeCdLst) "
+							 + "And (AICT_USAGE_PERIOD_FROM,AICT_USAGE_PERIOD_TO,AICT_ITEM_TYPE_CD, "
+							 	  + "Api_Dob,API_ALS_NO) = "
+							 	 + "(SELECT  AICT_USAGE_PERIOD_FROM,AICT_USAGE_PERIOD_TO,AICT_ITEM_TYPE_CD, "
+							 	 + "Api_Dob,API_ALS_NO "
+							 	 + "FROM ALS.Als_Session_Trans "
+							 	+ "WHERE AHM_TYPE = :ahmType "
+								+ "AND AHM_CD = :ahmCd "
+								+ "AND AS_SESSION_DT = :asSessionDt "
+								+ "AND AST_TRANSACTION_CD = :transCd "
+								+ "AND AST_TRANSACTION_SEQ_NO = :transSeqNo) ");
+		}else if(type == 4){
+			queryString.append("WHERE AST_PROCESS_TYPE_CD = IN (:procTypeCdLst) "
+					 + "And Aai_App_Identification_No = :appIdNo ");
+		}
+		
+			try {
+			Query query = getSession().createSQLQuery(queryString.toString()).addScalar("rtn");
+			
+			if(type == 1){
+				query.setParameterList("procTypeCdLst", procTypeCdLst);
+			}else if(type == 2){
+				query.setString("procTypeSys", procTypeSys);
+			}else if(type == 3){
+				query.setParameterList("procTypeCdLst", procTypeCdLst);
+			}else if(type == 4){
+				query.setParameterList("procTypeCdLst", procTypeCdLst);
+			}
+			if(type > 0 && type < 4){
+				query.setString("ahmType", ahmType)
+				 	 .setInteger("ahmCd", ahmCd)
+				 	 .setTimestamp("asSessionDt", asSessionDt)
+				 	 .setInteger("transCd", transCd)
+				 	 .setInteger("transSeqNo", transSeqNo);
+			}else{
+				query.setString("appIdNo", appIdNo);
+			}
+			query.setParameterList("procTypeCdLst", procTypeCdLst);
+			
+			rtn =  (String) query.uniqueResult();
+			} catch (RuntimeException re) {
+				System.out.println(re.toString());
+			} finally {
+			getSession().close();
+		}
+        return rtn;
+	}	
 }
 

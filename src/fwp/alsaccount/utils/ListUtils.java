@@ -862,7 +862,32 @@ public class ListUtils {
 		return lst;
 	}
 	
-	
+	@SuppressWarnings("unchecked")
+	public List<ListComp> getAppTypeCd(){
+		List<ListComp> lst = new ArrayList<ListComp>();
+
+		StringBuilder queryString = new StringBuilder("Select MAX(APT_APP_TYPE_CD) itemVal, "
+														   + "SUBSTR(APT_APP_TYPE_DESC,INSTR(APT_APP_TYPE_DESC,' ')+1) itemLabel "
+													+ "From ALS.ALS_PREAPP_TYPE "
+													+ "Where APT_DATA_ENTRY = 2 "
+													+ "And Rtrim(SUBSTR(APT_APP_TYPE_DESC,1,INSTR(APT_APP_TYPE_DESC,' '))) IN ('RESIDENT','NONRESIDENT') "
+													+ "GROUP BY SUBSTR(APT_APP_TYPE_DESC,INSTR(APT_APP_TYPE_DESC,' ')+1) "
+													+ "UNION "
+													+ "SELECT APT_APP_TYPE_CD itemVal, "
+														   + "APT_APP_TYPE_DESC  itemLabel "
+													+ "FROM ALS.ALS_PREAPP_TYPE "
+													+ "WHERE APT_DATA_ENTRY = 2 "
+													+ "AND Rtrim(SUBSTR(APT_APP_TYPE_DESC,1,INSTR(APT_APP_TYPE_DESC,' '))) NOT IN ('RESIDENT','NONRESIDENT')");
+
+
+		Query query = getSession().createSQLQuery(queryString.toString())
+								  .addScalar("itemVal", StringType.INSTANCE)
+								  .addScalar("itemLabel")
+								  .setResultTransformer(Transformers.aliasToBean(ListComp.class));
+		lst = query.list();
+		getSession().close();
+		return lst;
+	}
 	
 	
 }
