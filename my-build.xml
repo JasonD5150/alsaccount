@@ -1,0 +1,160 @@
+<project default="build" name="alsaccount">
+
+    <property name="wildfly.server.root" value="C:/wildfly10"/>
+    <property name="wildfly.modules.dir" value="${wildfly.server.root}/modules"/>
+    <property name="src.dir" value="src"/>
+
+    <path id="project.class.path">
+        <fileset dir="${wildfly.modules.dir}/fwp/custom">
+            <include name="**/Core/main/FwpCore.jar"/>
+            <include name="**/fwpMethods/main/fwpMethods.jar"/>
+        </fileset>
+        <fileset dir="${wildfly.modules.dir}/fwp/common/hibernate/main">
+            <include name="*.jar"/>
+        </fileset>
+        <fileset dir="${wildfly.modules.dir}/system/layers/base/javax/persistence/api/main">
+            <include name="hibernate-jpa-2.1-api-1.0.0.Final.jar"/>
+        </fileset>
+        <fileset dir="${wildfly.modules.dir}/system/layers/base/org/slf4j/main">
+            <include name="slf4j-api-1.7.7.jbossorg-1.jar"/>
+        </fileset>
+        <fileset dir="${wildfly.modules.dir}/fwp/oracle/jdbc/main">
+            <include name="ojdbc6.jar"/>
+        </fileset>
+        <fileset dir="${wildfly.modules.dir}/system/layers/base/org/apache/commons/lang/main">
+            <include name="commons-lang-2.6.jar"/>
+        </fileset>
+
+        <fileset dir="${wildfly.modules.dir}/fwp/common/struts2/xwork/main">
+            <include name="xwork-core-2.3.29.jar"/>
+        </fileset>
+        <fileset dir="${wildfly.modules.dir}/fwp/common/struts2/jquery/main">
+            <include name="struts2-jquery-plugin-3.7.0.jar"/>
+            <include name="struts2-jquery-grid-plugin-3.7.0.jar"/>
+        </fileset>
+        <fileset dir="${wildfly.modules.dir}/fwp/common/struts2/core/main">
+            <include name="struts2-core-2.3.29.jar"/>
+        </fileset>
+        <fileset dir="${wildfly.modules.dir}/system/layers/base/org/slf4j/main">
+            <include name="slf4j-api-1.7.7.jbossorg-1.jar"/>
+        </fileset>
+        <fileset dir="${wildfly.modules.dir}/fwp/security/shiro/main">
+            <include name="shiro-web-1.2.3.jar"/>
+            <include name="shiro-ehcache-1.2.3.jar"/>
+            <include name="shiro-core-1.2.3.jar"/>
+            <include name="javax-crypto.jar"/>
+        </fileset>
+        <fileset dir="${wildfly.modules.dir}/system/layers/base/javax/servlet/api/main">
+            <include name="jboss-servlet-api_3.1_spec-1.0.0.Final.jar"/>
+        </fileset>
+        <fileset dir="${wildfly.modules.dir}/system/layers/base/javax/persistence/api/main">
+            <include name="hibernate-jpa-2.1-api-1.0.0.Final.jar"/>
+        </fileset>
+        <fileset dir="${wildfly.modules.dir}/system/layers/base/javax/servlet/jstl/api/main">
+            <include name="jboss-jstl-api_1.2_spec-1.1.2.Final.jar"/>
+        </fileset>
+        <fileset dir="${wildfly.modules.dir}/fwp/common/jsonOrg/main">
+            <include name="json.org.jar"/>
+        </fileset>
+        <fileset dir="${wildfly.modules.dir}/fwp/oracle/jdbc/main">
+            <include name="ojdbc6.jar"/>
+        </fileset>
+        <fileset dir="${wildfly.modules.dir}/fwp/common/hibernate/main">
+            <include name="hibernate-entitymanager-4.1.4.Final.jar"/>
+            <include name="hibernate-core-4.1.4.Final.jar"/>
+            <include name="hibernate-commons-annotations-4.0.1.Final.jar"/>
+        </fileset>
+        <fileset dir="${wildfly.modules.dir}/fwp/security/fwpSecurity/main">
+            <include name="fwpSecurity.jar"/>
+        </fileset>
+        <fileset dir="${wildfly.modules.dir}/fwp/custom/JsonRpc/main">
+            <include name="FwpJsonRpc.jar"/>
+        </fileset>
+        <fileset dir="${wildfly.modules.dir}/fwp/common/lang3/main">
+            <include name="commons-lang3-3.1.jar"/>
+        </fileset>
+        <fileset dir="${wildfly.modules.dir}/fwp/custom/Core/main">
+            <include name="FwpCore.jar"/>
+        </fileset>
+        <fileset dir="${wildfly.modules.dir}/fwp/common/logging/main">
+            <include name="commons-logging-api-1.1.jar"/>
+            <include name="commons-logging-1.1.3.jar"/>
+        </fileset>
+        <fileset dir="${wildfly.modules.dir}/system/layers/base/org/apache/commons/lang/main">
+            <include name="commons-lang-2.6.jar"/>
+        </fileset>
+        <fileset dir="${wildfly.modules.dir}/system/layers/base/org/apache/commons/codec/main">
+            <include name="commons-codec-1.10.jar"/>
+        </fileset>
+        <fileset dir="${wildfly.modules.dir}/fwp/common/struts2/json/main">
+            <include name="struts2-json-plugin-2.3.24.1.jar"/>
+        </fileset>
+
+        <fileset dir="${wildfly.modules.dir}/fwp/common/itextPdf/main">
+            <include name="xmlworker-5.5.6.jar"/>
+            <include name="itextpdf-5.5.6.jar"/>
+        </fileset>
+
+        <!-- ALS Account Tracking and GEN DAL -->
+        <fileset dir="${wildfly.modules.dir}/fwp/dal">
+            <include name="**/${ant.project.name}/main/${ant.project.name}_dal.jar"/>
+            <include name="**/gen/main/gen_dal.jar"/>
+            <include name="**/alsadmin/main/alsadmin_dal.jar"/>
+            <include name="**/decrypt_als/main/decrypt_als_dal.jar"/>
+            <include name="**/ssr/main/ssr_dal.jar"/>
+        </fileset>
+    </path>
+
+    <target name="clean">
+        <delete dir="build"/>
+    </target>
+
+    <target name="compile">
+        <echo message="building classes..."/>
+        <mkdir dir="build/classes/"/>
+
+        <javac debug="true" srcdir="${src.dir}" destdir="build/classes" classpathref="project.class.path"/>
+
+        <copy verbose="true" preservelastmodified="yes" todir="build/classes">
+            <fileset dir="${src.dir}">
+                <include name="**/*.xml"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="build" depends="compile">
+        <echo message="warring classes..."/>
+        <mkdir dir="build/war"/>
+        <war destfile="build/war/${ant.project.name}.war" webxml="WebRoot/WEB-INF/web.xml">
+            <classes dir="build/classes">
+                <include name="**/*.class"/>
+                <include name="**/*.xml"/>
+            </classes>
+            <zipfileset dir="WebRoot/WEB-INF" prefix="WEB-INF">
+                <include name="**/*.tag"/>
+                <include name="*.tld"/>
+                <exclude name="web.xml"/>
+            </zipfileset>
+            <zipfileset dir="WebRoot">
+                <include name="**/*.css"/>
+                <include name="**/*.gif"/>
+                <include name="**/*.js"/>
+                <include name="**/*.jsp"/>
+                <include name="**/*.jsp"/>
+                <include name="**/*.png"/>
+                <include name="**/*.xml"/>
+            </zipfileset>
+        </war>
+    </target>
+
+    <target name="deploy" depends="clean,build">
+        <fail unless="wildfly.server.root" message="Wildfly Server Root not set.  Set wildfly.server.root property before running."/>
+        <copy verbose="true" preservelastmodified="yes" todir="${wildfly.server.root}/standalone/deployments">
+            <fileset dir="build/war">
+                <include name="*.war"/>
+            </fileset>
+        </copy>
+    </target>
+
+</project>
+

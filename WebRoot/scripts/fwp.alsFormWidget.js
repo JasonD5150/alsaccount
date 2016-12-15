@@ -21,6 +21,9 @@
 		_wireForm: function () {
 			var self = this;
 			this._form = this.element.find("form").first();
+
+			this._form.addClass("fwp-als-form-widget");
+
 			/* Add dirty plugin to the form */
 			if (this.options.dirtyCheck === "true") {
 				this._form.areYouSure();
@@ -137,17 +140,24 @@
 						}
 					});
 				});
-				$(item).prepend(_a);
+				/* Already has a show/hide added by another widget */
+				if($(item).find("a.fwp-show-hide-section").length===0) {
+					$(item).prepend(_a);
+				}
 			});
 		},
-		_handleSave: function (url,includeFWPDisabledElements) {
-			var self = this, dfd = $.Deferred();
+		_handleSave: function (url,includeFWPDisabledElements,data) {
+			var self = this,
+				_contentType = data?"application/json; charset=utf-8":"application/x-www-form-urlencoded; charset=UTF-8",
+				dfd = $.Deferred();
 			this._clearFieldErrors();
 			$.ajax({
 				type: "POST",
-				data: this._serializeForm(includeFWPDisabledElements),
+				data: data||this._serializeForm(includeFWPDisabledElements),
 				dataType: "json",
+				contentType: _contentType,
 				cache: false,
+				context: this,
 				url: url,
 				success: function (data) {
 					if (data.rtrn && (data.rtrn.procStatus === "ERROR" || data.rtrn.procStatus === "WARNING")) {
@@ -280,8 +290,12 @@
 				return _field.siblings("label[for='"+_id+"']");
 			}
 			else if (_field.hasClass("hasDatepicker")) {
-				/* Date picker - find the button */
-				return _field.siblings("button").last();
+				/* Date picker - find the button or img */
+				if(_field.siblings("button").last().length!=0) {
+					return _field.siblings("button").last();
+				} else {
+					return _field.siblings("img").last();
+				}
 			}
 			return _field;
 		},
@@ -299,6 +313,21 @@
 			}
 			return _return;
 		},
+		_createPageErrorWarningDiv: function (procStatus, procMsg, fieldName) {
+			var _return;
+			if (procStatus === 'ERROR') {
+				_return = $("<div>").addClass("fwp-field-error fieldMessageErrorStyle").text(procMsg);
+			} else if (procStatus === 'WARNING') {
+				_return = $("<div>").addClass("fwp-field-error fieldMessageWarningStyle").text(procMsg);
+			} else {
+				_return = $("<div>").addClass("fwp-field-error fieldMessageInfoStyle").text(procMsg);
+			}
+			if (fieldName) {
+				_return.attr("data-fwp-error-field-name", fieldName);
+			}
+			return _return;
+		},
+
 		_createHighlightStyle: function (procStatus) {
 			if (procStatus === 'ERROR') {
 				return "fieldErrorStyle";
@@ -394,6 +423,15 @@
 				}
 			});
 		},
+		_setCheckbox: function(name, value) {
+			var _rb$ = this.element.find("[name='"+name+"']");
+			_rb$.each(function(index, item){
+				$(item).removeProp("checked");
+				if($(item).val()===value) {
+					$(item).prop("checked", true);
+				}
+			});
+		},
 		_getFieldValue: function ($field) {
 			/* Relies on the areyousure.js plugin */
 			if ($field.is(':disabled')) {
@@ -433,7 +471,7 @@
 		 PUBLIC Functions
 		 */
 		disableForm: function (context,excludeFieldSelectors) {
-			var _each, _securableItem, _selector = ':input:not(.fwp-always-enabled),.s2j-combobox',
+			var _each, _securableItem, _selector = ':input:not(.fwp-always-enabled):not([type=hidden]),.s2j-combobox',
 				_isExcluded = false;
 			if (context) {
 				_each = context.find(_selector);
@@ -455,11 +493,17 @@
 						if (_securableItem.hasClass("s2j-combobox")) {
 							_securableItem.find("a").hide();
 						} else {
-							_securableItem.prop('disabled', 'disabled')
-								.addClass("fwp-disabled");
+							if(!_securableItem.attr("name") || !_securableItem.attr("name").startsWith("__checkbox_")) {
+								_securableItem.prop('disabled', 'disabled').addClass("fwp-disabled");
+							}
+
 							if (_securableItem.is("select") && (_securableItem.val() == null ||
 								_securableItem.val() === "")) {
-								_securableItem.text("");
+								//_securableItem.text("");
+							}
+							if(_securableItem.hasClass("hasDatepicker")) {
+								/* check if there's an image button */
+								_securableItem.siblings("img.ui-datepicker-trigger").unbind("click");
 							}
 						}
 					}
@@ -470,8 +514,14 @@
 					if (_securableItem.hasClass("s2j-combobox")) {
 						_securableItem.find("a").hide();
 					} else {
-						_securableItem.prop('readonly', true).addClass('disabled').attr('disabled', 'disabled');
+						_securableItem.prop('readonly', true).addClass('disabled')
+							.attr('disabled', 'disabled');
 					}
+					if(_securableItem.hasClass("hasDatepicker")) {
+						/* check if there's an image button */
+						_securableItem.siblings("img.ui-datepicker-trigger").unbind("click");
+					}
+
 				});
 			}
 		},
@@ -523,6 +573,16 @@
 		}
 			});
 			return _changedFields;
+		},
+		clearAndReset: function() {
+			this.resetForm();
+			this.element.find("input[type=text], input[type=password], textarea, input[type=file]").val('');
+			this.element.find("input[type=checkbox]").each(function(){
+				$(this).removeProp("checked");
+			});
+		},
+		save: function(url) {
+			return this._handleSave(url);
 		}
 
 	});
