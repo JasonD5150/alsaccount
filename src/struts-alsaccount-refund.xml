@@ -9,7 +9,15 @@
 			<result name="error">refund/personRefundApp.jsp</result>
 			<result name="input">refund/personRefundApp.jsp</result>        
 		</action>
-	</package>
+
+        <action name="massRefundApproval" method="input" class="fwp.alsaccount.refund.action.MassRefundApproval">
+            <result>refund/massRefundApproval.jsp</result>
+            <result name="error">info/massRefundApproval.jsp</result>
+            <result name="input">info/massRefundApproval.jsp</result>
+            <result name="accessdenied">accessDenied.jsp</result>
+        </action>
+
+    </package>
  
  	<package name="fwp.alsaccount.refund.grid" namespace="/alsAccount" extends="json-default"> 
    		<action name="personRefundAppGrid_*" class="fwp.alsaccount.refund.grid.PersonRefundAppGridAction">
@@ -26,8 +34,13 @@
         <action name="warrantStatusGrid_*" class="fwp.alsaccount.refund.grid.WarrantStatusGridAction">
             <result type="json" />
             <result name="input" type="json"></result>
-        </action>           
-   	</package>
+        </action>
+
+        <action name="buildMassRefundApprovalGrid" method="buildGrid" class="fwp.alsaccount.refund.grid.MassRefundApprovalGridAction">
+            <result name="success" type="json"/>
+            <result name="error" type="json"/>
+        </action>
+    </package>
    
 	<package name="fwp.alsaccount.refund.json" extends="json-default" >
 		<action name="personRefundGridToCsv" class="fwp.alsaccount.refund.json.PersonRefundGridToCsvAction">
