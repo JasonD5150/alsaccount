@@ -12,6 +12,8 @@ import org.apache.shiro.SecurityUtils;
 import com.opensymphony.xwork2.ActionSupport;
 
 import fwp.als.hibernate.admin.dao.AlsRefundInfo;
+import fwp.als.hibernate.admin.dao.AlsRefundInfoIdPk;
+import fwp.als.hibernate.admin.dao.AlsSessionTrans;
 import fwp.alsaccount.appservice.refund.AlsRefundInfoAS;
 import fwp.alsaccount.dto.refund.AlsRefundInfoDTO;
 import fwp.alsaccount.utils.HibHelpers;
@@ -28,49 +30,97 @@ public class PersonRefundAppGridEditAction extends ActionSupport{
 	private String ariPreferenceFeeApproved;
 	private String ariRemarks;
 	
-	private String 		originalAppIdNo;
-	private Date   		originalUpFrom;
-	private Date   		originalUpTo;
-	private Integer 	originalItemIndCd;
+	private Double totRefund = 0.0;
 	
-	Double totRefund = 0.0;
-	
-	UserDTO userInfo = (UserDTO)SecurityUtils.getSubject().getSession().getAttribute("userInfo");
-	Timestamp date = new Timestamp(System.currentTimeMillis());
-	HibHelpers hh = new HibHelpers();
-	String appMispays = hh.getPval("REFUND REASON", "APPLICATION MISPAY", null);
-	String appReject = hh.getPval("REFUND REASON", "APPLICATION REJECT", null);
-	String insPointMispay = hh.getPval("REFUND REASON", "INSURANCE POINTS MISPAY", null);
+	private UserDTO userInfo;
+	private Timestamp date;
+	private String rrAppMispays;
+	private String rrAppReject;
+	private String rrInsPointMispay;
+	private String rrWithdraw;
+	private Double minRefundAmt;
+	private List<String> procTypeLst = new ArrayList<String>();
+	private String procTypeSys;
 	
 
 	public String execute() throws Exception{
-		String errMsg="";
-		SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyyHHmmss");
-		
+		HibHelpers hh = new HibHelpers();
+
 		AlsRefundInfoAS ariAS = new AlsRefundInfoAS();
 		AlsRefundInfoDTO original = new AlsRefundInfoDTO();
 		AlsRefundInfo ari = new AlsRefundInfo();
+		AlsRefundInfoIdPk ariIdPk = new AlsRefundInfoIdPk();
 		
+		SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyyHHmmss");
+		
+		userInfo = (UserDTO)SecurityUtils.getSubject().getSession().getAttribute("userInfo");
+		date = new Timestamp(System.currentTimeMillis());
+		rrAppMispays = hh.getPval("REFUND REASON", "APPLICATION MISPAY", null);
+		rrAppReject = hh.getPval("REFUND REASON", "APPLICATION REJECT", null);
+		rrInsPointMispay = hh.getPval("REFUND REASON", "INSURANCE POINTS MISPAY", null);
+		rrWithdraw = hh.getPval("REFUND REASON", "INSURANCE POINTS MISPAY", null);
+		minRefundAmt = Double.parseDouble(hh.getPval("REFUND", "MINIMUM REFUND", null));
+		procTypeLst.add(hh.getPval("PROCESS TYPE", "ISSUE", null));
+		procTypeLst.add(hh.getPval("PROCESS TYPE", "OFFLINE ISSUE", null));
+		procTypeSys = hh.getPval("PROCESS TYPE", "SYSTEM", null);
+		
+		String errMsg="";
 		String dispCd = null;
-		
+		String lAhmType = null;
+		Integer lAhmCd = null;
+		Timestamp lSessionDt = null;
 		try{
 			Date d = sdf.parse(id.split("_")[0]);
 			original = ariAS.getPersonRefundRecord(new Timestamp(d.getTime()), Integer.parseInt(id.split("_")[1]));
-			
+			ariIdPk.setAriRefundRequestDt(new Timestamp(d.getTime()));
+			ariIdPk.setAriRefundSeqNo(Integer.parseInt(id.split("_")[1]));
+			ari = ariAS.findById(ariIdPk);
 			if(validation(original)){
-				ari = original;
-				/*PERSO_PROC*/
-				if(!appMispays.equals(original.getAriRefundReasonCd())){
+				/*PRE-UPDATE*/
+				if(totRefund >= minRefundAmt&&"D".equals(original.getAriMinimumOverride())){
+					ari.setAriMinimumOverride("N");
+				}
+				if(rrWithdraw.equals(original.getAriRefundReasonCd())){
+					AlsSessionTrans ast = ariAS.getWithdrawSessionTrans(original.getAppIdNo(), procTypeLst);
+					if(ast != null){
+						lAhmType = ast.getIdPk().getAhmType();
+						lAhmCd = ast.getIdPk().getAhmCd();
+						lSessionDt = ast.getIdPk().getAsSessionDt();
+					}
+				}else{
+					lAhmType = original.getAhmType();
+					lAhmCd = original.getAhmCd();
+					lSessionDt = original.getAsSessionDt();
+				}
+				if(!"Y".equals(original.getAriPreferenceFeeApproved())&& "Y".equals(ariPreferenceFeeApproved)){
+					ariAS.updatePrefFeeInfo(true,original.getAriPreferenceFee(), lAhmType, lAhmCd, lSessionDt, original.getDesignatedRefundeeDob(), original.getAriDesignatedRefundeeAlsNo());
+				}else if("Y".equals(original.getAriPreferenceFeeApproved())&&
+							(!"Y".equals(ariPreferenceFeeApproved)||
+								("Y".equals(original.getAriRefundApproved())&& !"Y".equals(ariRefundApproved)))){
+					ariAS.updatePrefFeeInfo(false,original.getAriPreferenceFee(), lAhmType, lAhmCd, lSessionDt, original.getDesignatedRefundeeDob(), original.getAriDesignatedRefundeeAlsNo());
+				}
+				/*PERSON_PROC*/
+				if(!rrAppMispays.equals(original.getAriRefundReasonCd())){
 					if(!"Y".equals(original.getAriRefundApproved())&& "Y".equals(ariRefundApproved)){
 						ari.setAriApprovedDt(date);
 						ari.setAriApprovedBy(userInfo.getStateId());
 						ari.setAriWhenLog(date);
 						ari.setAriWhoLog(userInfo.getStateId());
-						if(!appMispays.equals(original.getAriRefundReasonCd())&&
-						   !appReject.equals(original.getAriRefundReasonCd())&&
-						   !insPointMispay.equals(original.getAriRefundReasonCd())&&
+						if(!rrAppMispays.equals(original.getAriRefundReasonCd())&&
+						   !rrAppReject.equals(original.getAriRefundReasonCd())&&
+						   !rrInsPointMispay.equals(original.getAriRefundReasonCd())&&
 						   original.getAppIdNo() == null){
-							ariAS.updateItemInfo(ariAS.getSessionTrans(original),userInfo.getStateId());
+							ariAS.processItemInfoUpdate(original.getUsagePeriodFrom(),
+												  original.getUsagePeriodTo(),
+												  original.getItemTypeCd(),
+												  original.getDesignatedRefundeeDob(),
+												  original.getAriDesignatedRefundeeAlsNo(),
+												  original.getAiiItemTxnInd(),
+												  original.getAiiSeqNo(),
+												  original.getItemIndCd(),
+												  userInfo.getStateId(),
+												  date,
+												  ariAS.getSessionTrans(original));
 						}
 						if(original.getAppIdNo() != null){
 							dispCd = hh.getPval("APPLICATION DISPOSITION", "REFUND ISSUED", null);
@@ -80,8 +130,8 @@ public class PersonRefundAppGridEditAction extends ActionSupport{
 					if(!"N".equals(original.getAriRefundApproved())&& "N".equals(ariRefundApproved)){
 						ari.setAriWhenLog(date);
 						ari.setAriWhoLog(userInfo.getStateId());
-						if(!appMispays.equals(original.getAriRefundReasonCd())&&
-						   !insPointMispay.equals(original.getAriRefundReasonCd())&&
+						if(!rrAppMispays.equals(original.getAriRefundReasonCd())&&
+						   !rrInsPointMispay.equals(original.getAriRefundReasonCd())&&
 						   original.getAppIdNo() == null){
 							ariAS.procNo(original, userInfo.getStateId());
 						}
@@ -91,7 +141,11 @@ public class PersonRefundAppGridEditAction extends ActionSupport{
 						}
 					}
 				}
-				//ariAS.save(ari);
+				ari.setAriRefundApproved(ariRefundApproved);
+				ari.setAriDrawingFeeApproved(ariDrawingFeeApproved);
+				ari.setAriPreferenceFeeApproved(ariPreferenceFeeApproved);
+				ari.setAriRemarks(ariRemarks);
+				ariAS.save(ari);
 			}
 			if (this.hasActionErrors()) {
 				return "error_json";
@@ -113,12 +167,10 @@ public class PersonRefundAppGridEditAction extends ActionSupport{
 	}
 
 	private Boolean validation(AlsRefundInfoDTO original){
+		HibHelpers hh = new HibHelpers();
+
 		Boolean rtn = true;
 		String nsfStatus= null;
-		List<String> procTypeLst = new ArrayList<String>();
-		procTypeLst.add(hh.getPval("PROCESS TYPE", "ISSUE", null));
-		procTypeLst.add(hh.getPval("PROCESS TYPE", "OFFLINE ISSUE", null));
-		String procTypeSys = hh.getPval("PROCESS TYPE", "SYSTEM", null);
 		
 		if(original == null){
 			addActionError("Original refund record not found.");
@@ -133,10 +185,10 @@ public class PersonRefundAppGridEditAction extends ActionSupport{
 			}else if("Y".equals(original.getAriPreferenceFeeApproved())&&"N".equals(ariPreferenceFeeApproved)&&(ariRemarks == null || "".equals(ariRemarks))){
 				addActionError("Remark is required when Preference Fee Refund is changes from Yes to No.");
 				rtn = false;
-			}else if(!appMispays.equals(original.getAriRefundReasonCd())&&
-					   !appReject.equals(original.getAriRefundReasonCd())&&
-					   !insPointMispay.equals(original.getAriRefundReasonCd())&&
-					   originalAppIdNo == null){
+			}else if(!rrAppMispays.equals(original.getAriRefundReasonCd())&&
+					   !rrAppReject.equals(original.getAriRefundReasonCd())&&
+					   !rrInsPointMispay.equals(original.getAriRefundReasonCd())&&
+					   original.getAppIdNo() == null){
 				if(original.getUsagePeriodFrom() == null&&
 				  (ariRefundApproved != null || ariDrawingFeeApproved != null || ariPreferenceFeeApproved != null)){
 					addActionError("Usage Period not available for the record so cannot be Approved or Disapproved.");
@@ -158,17 +210,17 @@ public class PersonRefundAppGridEditAction extends ActionSupport{
 				addActionError("Preference Fee Refund cannot be approved or disapproved, if Preference Fee is null.");
 				rtn = false;
 			}else if("Y".equals(ariRefundApproved)||"Y".equals(ariDrawingFeeApproved)||"Y".equals(ariPreferenceFeeApproved)){
-				if(!appMispays.equals(original.getAriRefundReasonCd())&&
-						   !appReject.equals(original.getAriRefundReasonCd())&&
-						   !insPointMispay.equals(original.getAriRefundReasonCd())&&
-						   originalAppIdNo == null){
+				if(!rrAppMispays.equals(original.getAriRefundReasonCd())&&
+				   !rrAppReject.equals(original.getAriRefundReasonCd())&&
+				   !rrInsPointMispay.equals(original.getAriRefundReasonCd())&&
+				   original.getAppIdNo() == null){
 					nsfStatus = hh.getNSFStatus(1, null, procTypeSys, null, original.getAhmType(), original.getAhmCd(), original.getAsSessionDt(), original.getAstTransactionCd(), original.getAstTransactionSeqNo());
-				}else if(appMispays.equals(original.getAriRefundReasonCd())||insPointMispay.equals(original.getAriRefundReasonCd())){
+				}else if(rrAppMispays.equals(original.getAriRefundReasonCd())||rrInsPointMispay.equals(original.getAriRefundReasonCd())){
 					nsfStatus = hh.getNSFStatus(2, procTypeLst, null, null, original.getAhmType(), original.getAhmCd(), original.getAsSessionDt(), original.getAstTransactionCd(), original.getAstTransactionSeqNo());
-				}else if(appReject.equals(original.getAriRefundReasonCd())&&originalAppIdNo == null){
+				}else if(rrAppReject.equals(original.getAriRefundReasonCd())&&original.getAppIdNo() == null){
 					nsfStatus = hh.getNSFStatus(3, procTypeLst, null, null, original.getAhmType(), original.getAhmCd(), original.getAsSessionDt(), original.getAstTransactionCd(), original.getAstTransactionSeqNo());
-				}else if(originalAppIdNo != null){
-					nsfStatus = hh.getNSFStatus(4, procTypeLst, null, originalAppIdNo, null, null, null, null, null);
+				}else if(original.getAppIdNo() != null){
+					nsfStatus = hh.getNSFStatus(4, procTypeLst, null, original.getAppIdNo(), null, null, null, null, null);
 				}
 				if(!"R".equals(nsfStatus)&&("Y".equals(ariRefundApproved)||
 											"Y".equals(ariDrawingFeeApproved)||
@@ -244,36 +296,5 @@ public class PersonRefundAppGridEditAction extends ActionSupport{
 		this.ariRemarks = ariRemarks;
 	}
 
-	public String getOriginalAppIdNo() {
-		return originalAppIdNo;
-	}
-
-	public void setOriginalAppIdNo(String originalAppIdNo) {
-		this.originalAppIdNo = originalAppIdNo;
-	}
-
-	public Date getOriginalUpFrom() {
-		return originalUpFrom;
-	}
-
-	public void setOriginalUpFrom(Date originalUpFrom) {
-		this.originalUpFrom = originalUpFrom;
-	}
-
-	public Date getOriginalUpTo() {
-		return originalUpTo;
-	}
-
-	public void setOriginalUpTo(Date originalUpTo) {
-		this.originalUpTo = originalUpTo;
-	}
-
-	public Integer getOriginalItemIndCd() {
-		return originalItemIndCd;
-	}
-
-	public void setOriginalItemIndCd(Integer originalItemIndCd) {
-		this.originalItemIndCd = originalItemIndCd;
-	}
 	
 }

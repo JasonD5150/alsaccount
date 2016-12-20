@@ -7,17 +7,17 @@
 
 <fwp:template loadJquery="false" useFwpJqueryUI="true">
     <fwp:head>
-        <sj:head locale="en" jqueryui="true" jquerytheme="smoothness" customBasepath="/css/jquery" compressed="true"/>
+        <sj:head locale="en" jqueryui="true" jquerytheme="smoothness" customBasepath="/css/jquery"/>
 	   	<style type="text/css">
 			@import url("/alsaccount/css/alsaccount.css");
         </style>
     </fwp:head>
     
-	<script src="scripts/jquery.are-you-sure.js" type="text/javascript"></script>
+	<script src='scripts/fieldEdits.js' type='text/javascript'></script>
+    <script src='scripts/exportGrid.js' type='text/javascript'></script>
+    <script src="scripts/jquery.are-you-sure.js" type="text/javascript"></script>
     <script src="scripts/jquery.inputmask.bundle.min.js" type="text/javascript"></script>
-
-	<script src="scripts/fwp.alsFormWidget.js"></script>
-	<script src="scripts/exportGrid.js"></script>
+    <script src="scripts/fwp.alsFormWidget.js"></script>
 	<script src="/alsaccount/refund/scripts/fwp.personRefundApp.js"></script>
 	
 	<s:hidden id="paymentStatusLst" name="paymentStatusLst"/>
@@ -55,12 +55,14 @@
 		pager="true"
 		navigator="true"
 		navigatorEdit="true"
-		navigatorView="false"
+		navigatorView="true"
 		navigatorAdd="false"
 		navigatorDelete="false"
 		navigatorSearch="false"
-		navigatorEditOptions="{width:500,reloadAfterSubmit:false,
-		    	                       editCaption:'Edit Credit Info',
+		navigatorRefresh="false"
+		navigatorViewOptions="{width:750}"
+		navigatorEditOptions="{width:500,reloadAfterSubmit:true,
+		    	                       editCaption:'Edit Refund Info',
 		    	                       beforeShowForm:function(){
 			    	                        var grid = $('#personRefundGrid');
 			    	                        var sel_id = grid.jqGrid('getGridParam','selrow');
@@ -74,16 +76,12 @@
 			    	                        	$('#ariPreferenceFeeApproved').prop('disabled', false );
 			    	                        }
 			    	                        return[true, ''];
-		    	                       },
-		    	                       beforeSubmit:function(postData){
+		    	                       },	
+		    	                       beforeSubmit:function(){
 		    	                       		var grid = $('#personRefundGrid');
-		    	                       		var sel_id = grid.jqGrid('getGridParam','selrow'); 
-			    	                       	postData.originalAppIdNo = grid.jqGrid('getCell', sel_id, 'appType');
-			    	                       	postData.originalUpFrom = grid.jqGrid('getCell', sel_id, 'usagePeriodFrom');
-			    	                       	postData.originalUpTo = grid.jqGrid('getCell', sel_id, 'usagePeriodTo');
-			    	                       	postData.originalItemIndCd = grid.jqGrid('getCell', sel_id, 'itemIndCd');
-		    	                      	return[true, ''];
-		    	                      	},		    
+		    	                       		grid.jqGrid('setGridParam',{datatype:'json'});
+		    	                       		return[true, ''];
+		    	                       },    
 		    	                       closeAfterEdit:true,
 		    	                       afterSubmit:errorHandler,
 		    	                       processData:'Updating to Database'}"  
@@ -153,8 +151,7 @@
 		navigatorAdd="false"
 		navigatorDelete="false"
 		navigatorSearch="false"
-		navigatorSearchOptions="{sopt:['cn','bw','eq','ne','lt','gt','ew'],multipleSearch:true}"
-	    navigatorViewOptions="{width:500,reloadAfterSubmit:false}"    	
+		navigatorRefresh="false"
 	    gridModel="model"
 		rownumbers="true"
 		viewrecords="true"
@@ -196,6 +193,4 @@
 		    $("div#personRefundApp").personRefundApp();
 		});
 	</script>
-	
-
 </fwp:template>

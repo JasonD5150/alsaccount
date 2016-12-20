@@ -1,12 +1,23 @@
 function exportGrid(gridName,dataLabel,queryForm,selectedRow){
 	var _jqGrid=$("#"+gridName);
-	_jqGrid.jqGrid("setGridParam", {rowNum: 999999999, autowidth: true, shrinkToFit: false}).trigger("reloadGrid");
+	var sortColumnName = _jqGrid.jqGrid('getGridParam','sortname');
+	var sortOrder = _jqGrid.jqGrid('getGridParam','sortorder');
+	_jqGrid.jqGrid("setGridParam", {sortname:sortColumnName, sortorder:sortOrder, rowNum: 999999999, autowidth: true, shrinkToFit: false}).trigger("reloadGrid");
 	var _rowNum = _jqGrid.jqGrid("getGridParam", "rowNum"),
 	_columnModel = _jqGrid.jqGrid("getGridParam", "colModel"),
 	_columnNames = _jqGrid.jqGrid("getGridParam", "colNames"),
 	_columns = [],
 	_data = {};	
-	_data[dataLabel] = _jqGrid.jqGrid("getGridParam", "data");
+	/*This will sort the data based on client side sorting*/
+	if(sortColumnName == ""){
+		_data[dataLabel] = _jqGrid.jqGrid("getGridParam", "data");
+	}else{
+		var data = _jqGrid.jqGrid("getGridParam", "data");
+		var query = $.jgrid.from(data);
+		query.orderBy(sortColumnName,sortOrder.substr(0,1),"text","",null);
+		_data[dataLabel] = query.select();
+	}
+	
 	$.each(_columnModel, function (index) {
 		if (!_columnModel[index].hidden) {
 			_columns.push({

@@ -115,7 +115,7 @@
 		dataType="json"
 		pager="true"
 		navigator="true"
-		navigatorEdit="false"
+		navigatorEdit="true"
 		navigatorView="true"
 		navigatorAdd="false"
 		navigatorDelete="false"

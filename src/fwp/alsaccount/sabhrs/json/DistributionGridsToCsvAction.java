@@ -3,7 +3,6 @@ package fwp.alsaccount.sabhrs.json;
 import java.io.File;
 import java.io.FileWriter;
 import java.net.URLDecoder;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,11 +16,7 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 import com.opensymphony.xwork2.ActionSupport;
 
 import fwp.ListComp;
-import fwp.als.hibernate.inventory.dao.AlsInternalRemittanceIdPk;
-import fwp.alsaccount.dao.sabhrs.AlsSabhrsEntriesIdPk;
-import fwp.alsaccount.dto.sabhrs.AlsInternalRemittanceDTO;
 import fwp.alsaccount.dto.sabhrs.DistributionQueryDTO;
-import fwp.alsaccount.utils.Utils;
 
 /**
  * Action handler for the SABHRS Query search page to CSV export file.

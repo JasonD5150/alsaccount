@@ -91,6 +91,7 @@
 		},
 		_wireRadioBehavior: function() {
 			var self = this;
+			alert(this.options.allowRadiosOff);
 			if(this.options.allowRadiosOff) {
 				this.element.find("input[type='radio']").each(function(index,item){
 					$(this).on("click",function(){
