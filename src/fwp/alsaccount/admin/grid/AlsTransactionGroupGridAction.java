@@ -1,6 +1,5 @@
 package fwp.alsaccount.admin.grid;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.HibernateException;
@@ -9,15 +8,15 @@ import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionSupport;
 
-import fwp.als.hibernate.admin.dao.AlsMisc;
-import fwp.alsaccount.appservice.admin.AlsMiscAS;
+import fwp.alsaccount.appservice.sabhrs.AlsTransactionGroupAS;
+import fwp.alsaccount.dao.sabhrs.AlsTransactionGroup;
 import fwp.alsaccount.utils.Utils;
 
-public class AlsJLRMiscMaintGridAction extends ActionSupport{
+public class AlsTransactionGroupGridAction extends ActionSupport{
     private static final long   serialVersionUID = 5078264277068533593L;
-    private static final Logger    log              = LoggerFactory.getLogger(AlsJLRMiscMaintGridAction.class);
+    private static final Logger    log              = LoggerFactory.getLogger(AlsTransactionGroupGridAction.class);
 
-    private List<AlsMisc>    model;
+    private List<AlsTransactionGroup>    model;
     private Integer             rows             = 0;
     private Integer             page             = 0;
     private Integer             total            = 0;
@@ -28,10 +27,10 @@ public class AlsJLRMiscMaintGridAction extends ActionSupport{
     private boolean             loadonce         = false;
     private Integer budgYear;
 
+	@SuppressWarnings("unchecked")
 	public String buildgrid(){    	
-    	String srchStr = " where amKey1 = 'JOURNAL_LINE_REFERENCE'"
-    				   + " and amKey2 like 'NON ALS%'";
-    	String orderStr = " order by amKey1, amKey2, amKey3, amKey4, amKey5";
+    	String srchStr = " where 1=1";
+    	String orderStr = " order by atgTransactionCd";
     	
     	if(filters != null && !"".equals(filters)){
     		//srchStr = buildStr(srchStr);
@@ -41,13 +40,14 @@ public class AlsJLRMiscMaintGridAction extends ActionSupport{
     		}
     	}
     	
-    	AlsMiscAS amAS = new AlsMiscAS();
+    	AlsTransactionGroupAS atgAS = new AlsTransactionGroupAS();
+    	
         try{
-        	model = amAS.findAllByWhere(srchStr+orderStr);
+        	model = atgAS.findAllByWhere(srchStr+orderStr);
         }
         catch (HibernateException re) {
         	//System.out.println(re.toString());
-            log.debug("AlsMisc did not load " + re.getMessage());
+            log.debug("AlsTransactionGroup did not load " + re.getMessage());
         }
         setRows(model.size());
         setRecords(model.size());
@@ -57,7 +57,7 @@ public class AlsJLRMiscMaintGridAction extends ActionSupport{
 	    return SUCCESS;
     }
 
-
+	
 	public String getJSON()
 	{
 		return buildgrid();
@@ -161,12 +161,12 @@ public class AlsJLRMiscMaintGridAction extends ActionSupport{
         this.loadonce = loadonce;
     }
 
-	public List<AlsMisc> getModel() {
+	public List<AlsTransactionGroup> getModel() {
 		return model;
 	}
 
-	public void setModel(ArrayList<AlsMisc> arrayList) {
-		this.model = arrayList;
+	public void setModel(List<AlsTransactionGroup> model) {
+		this.model = model;
 	}
     
 

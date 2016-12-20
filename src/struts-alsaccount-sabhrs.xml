@@ -20,11 +20,6 @@
             </result>
             <result name="error">sabhrs/transactionGroupApproval.jsp</result>
       </action>
-      <action name="transGroupMaint_*" method="{1}" class="fwp.alsaccount.action.GenericAction">
-            <result>sabhrs/transactionGroupMaint.jsp</result>
-            <result name="error">sabhrs/transactionGroupMaint.jsp</result>
-            <result name="input">sabhrs/transactionGroupMaint.jsp</result>         
-      </action>
       <action name="uploadSabhrsToSum_*" method="{1}" class="fwp.alsaccount.action.GenericAction">
             <result>sabhrs/uploadSabhrsToSummary.jsp</result>
             <result name="error">sabhrs/uploadSabhrsToSummary.jsp</result>
@@ -109,19 +104,14 @@
             <result name="error">sabhrs/genAlsSabhrsEntries.jsp</result>
             <result name="input">sabhrs/genAlsSabhrsEntries.jsp</result>         
       </action>
+      <action name="jlrMiscMaint_*" method="{1}" class="fwp.alsaccount.action.GenericAction">
+            <result>sabhrs/jlrMiscMaint.jsp</result>
+            <result name="error">sabhrs/jlrMiscMaint.jsp</result>
+            <result name="input">sabhrs/jlrMiscMaint.jsp</result>            
+      </action>
 	</package>
  
  	<package name="fwp.alsaccount.sabhrs.grid" namespace="/alsAccount" extends="json-default">     
-		<action name="transGroupMaintGrid_*" class="fwp.alsaccount.sabhrs.grid.AlsTransactionGroupGridAction">
-            <result type="json" />
-        </action>       
-        <action name="transGroupMaintGridEdit_*" class="fwp.alsaccount.sabhrs.grid.AlsTransactionGroupGridEditAction">
-			<result type="json"></result>
-            <result type="json" name="input"></result>
-            <result name="error_json" type="json" >
-               <param name="ignoreHierarchy">false</param>
-            </result>
-		</action>
 		<action name="alsSabhrsEntriesGrid_*" class="fwp.alsaccount.sabhrs.grid.AlsSabhrsEntriesGridAction">
             <result type="json" />
         </action>
@@ -213,6 +203,16 @@
             <result type="json" />
         </action>
         <action name="provAdjEntSABHRSGridEdit_*" class="fwp.alsaccount.sabhrs.grid.ProvAdjEntSABHRSGridEditAction">
+			<result type="json"></result>
+            <result type="json" name="input"></result>
+            <result name="error_json" type="json" >
+               <param name="ignoreHierarchy">false</param>
+            </result>
+		</action>
+		<action name="jlrMiscMaintGrid_*" class="fwp.alsaccount.sabhrs.grid.AlsJLRMiscMaintGridAction">
+            <result type="json" />
+        </action>       
+        <action name="jlrMiscMaintGridEdit_*" class="fwp.alsaccount.sabhrs.grid.AlsJLRMiscMaintGridEditAction">
 			<result type="json"></result>
             <result type="json" name="input"></result>
             <result name="error_json" type="json" >
