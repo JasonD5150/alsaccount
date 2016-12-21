@@ -15,24 +15,15 @@ public class MassRefundApprovalGridAction extends ActionSupport {
 
 	private static final Logger log = LoggerFactory.getLogger(MassRefundApprovalGridAction.class);
 
-	private Integer aptAppTypeCd;
 	private List<AlsPersonItemTemplLinkDTO> model;
 	private Integer applicationTypeCode;
 	private String dispositionCode;
 	private String refundReasonCode;
 
 
-	public String buildgrid() throws Exception {
-		model = new AlsRefundInfoAS().findMassRefundPersonItemList(aptAppTypeCd);
+	public String buildGrid() throws Exception {
+		model = new AlsRefundInfoAS().findMassRefundPersonItemList(applicationTypeCode);
 		return SUCCESS;
-	}
-
-	public Integer getAptAppTypeCd() {
-		return aptAppTypeCd;
-	}
-
-	public void setAptAppTypeCd(Integer aptAppTypeCd) {
-		this.aptAppTypeCd = aptAppTypeCd;
 	}
 
 	public List<AlsPersonItemTemplLinkDTO> getModel() {

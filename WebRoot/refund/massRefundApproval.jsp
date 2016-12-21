@@ -20,37 +20,39 @@
     <script src="scripts/exportGrid.js"></script>
     <script src="/alsaccount/refund/scripts/fwp.massRefundApproval.js"></script>
 
-    <sf:url id="massApprovalActionUrl" action="alsAccount/personRefundAppGrid_buildgrid"/>
-    <sf:url id="remoteurl" action="buildMassRefundApprovalGrid"/>
+    <sf:url id="massApprovalActionUrl" action="alsAccount/buildMassRefundApprovalGrid"/>
 
     <div id="massRefundApproval">
         <h2 class="title">Mass Refund Approval</h2>
 
         <sf:form action="massRefundApproval" id="massRefundApprovalForm">
             <label for="applicationTypeCode">Application Type:</label>
-            <sj:select id="applicationTypeCode"
+            <sf:select id="applicationTypeCode"
                        name="applicationTypeCode"
                        list="preappTypeList"
                        listKey="itemVal"
-                       listValue="itemLabel"/>
+                       listValue="itemLabel"
+                        emptyOption="true"/>
             <label for="dispositionCode">Disposition:</label>
-            <sj:select id="dispositionCode"
+            <sf:select id="dispositionCode"
                        name="dispositionCode"
                        list="dispositionList"
                        listKey="itemVal"
-                       listValue="itemLabel"/>
+                       listValue="itemLabel"
+                        emptyOption="true"/>
             <label for="dispositionCode">Refund Reason:</label>
-            <sj:select id="refundReasonCode"
+            <sf:select id="refundReasonCode"
                        name="refundReasonCode"
                        list="refundReasonList"
                        listKey="itemVal"
-                       listValue="itemLabel"/>
+                       listValue="itemLabel" emptyOption="true"/>
         </sf:form>
         <fieldset style="border: black 1px solid; display: inline-block;">
             <legend style="font-weight: bold;" class="fwp-exclude-from-show-hide">Actions</legend>
             <button type="button" id="searchButton">Search</button>
             <button type="button" id="resetButton">Reset</button>
             <button type="button" id="exportButton">Export CSV</button>
+            <button type="button" id="saveButton">Approve</button>
         </fieldset>
 
         <h2>Application Items</h2>
@@ -58,20 +60,8 @@
                 id="applicationItemGrid"
                 caption="Application Items"
                 dataType="json"
-                href="%{remoteurl}"
+                href="%{massApprovalActionUrl}"
                 pager="true"
-                navigator="true"
-                navigatorEdit="false"
-                navigatorView="false"
-                navigatorAdd="false"
-                navigatorDelete="false"
-                navigatorExtraButtons="{
-                                editpage: { title : 'Edit Selected Row', icon: 'ui-icon-pencil', topic: 'applicationInformationEditRow'},
-                                seperator: { title : 'seperator' },
-                                columnsbutton : { title : 'Add/Remove Columns', icon: ' ui-icon-extlink', topic: 'applicationInformationAddRemoveColumns'}
-                            }"
-                navigatorSearch="true"
-                navigatorSearchOptions="{multipleSearch:true}"
                 gridModel="model"
                 rownumbers="true"
                 editinline="false"
