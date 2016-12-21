@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.HibernateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,22 +54,28 @@ public class PersonRefundAppGridAction extends ActionSupport{
 	public String buildgrid(){ 
 		AlsRefundInfoAS ariAS = new AlsRefundInfoAS();
     	setModel(new ArrayList<AlsRefundInfoDTO>());
-    	if(validateFields()){
-    		List<AlsRefundInfoDTO> tmpLst = ariAS.getPersonRefundRecords(dob, alsNo, upFrom, upTo, itemTypeCd, reasonCd, 
-    																		itemIndCd, appTypeCd, warCreateDt, itemFeeRefApp, appFeeRefApp, 
-    																		prefFeeRefApp, srchAll, noWarrant, minRefund, hasComments);
-    		if(tmpLst.size() > maxSearchSize){
-    			userdata = "Search result exceeds result size limit " + maxSearchSize + ".  Please enter additional criteria.";
-    		}else{
-    			for(AlsRefundInfoDTO tmp : tmpLst){
-            		if(tmp.getItemTypeCd() != null){
-            			tmp.setAppType(ariAS.getAppType(tmp.getItemTypeCd()));
-            		}
-            		model.add(tmp);
-            	}
-    		}
-        	
-    	}
+    	try{
+    		if(validateFields()){
+        		List<AlsRefundInfoDTO> tmpLst = ariAS.getPersonRefundRecords(dob, alsNo, upFrom, upTo, itemTypeCd, reasonCd, 
+        																		itemIndCd, appTypeCd, warCreateDt, itemFeeRefApp, appFeeRefApp, 
+        																		prefFeeRefApp, srchAll, noWarrant, minRefund, hasComments);
+        		if(tmpLst.size() > maxSearchSize){
+        			userdata = "Search result exceeds result size limit " + maxSearchSize + ".  Please enter additional criteria.";
+        		}else{
+        			for(AlsRefundInfoDTO tmp : tmpLst){
+                		if(tmp.getItemTypeCd() != null){
+                			tmp.setAppType(ariAS.getAppType(tmp.getItemTypeCd()));
+                		}
+                		model.add(tmp);
+                	}
+        		}
+            	
+        	}
+    	}	
+        catch (HibernateException re) {
+            log.debug("PersonRefundApp did not load " + re.getMessage());
+        }
+    	
         setRows(model.size());
         setRecords(model.size());
         setTotal(1);

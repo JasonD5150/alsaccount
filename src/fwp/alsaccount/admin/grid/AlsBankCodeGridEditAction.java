@@ -4,15 +4,12 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
 import com.opensymphony.xwork2.ActionSupport;
 
 import fwp.alsaccount.appservice.admin.AlsBankCodeAS;
 import fwp.alsaccount.dao.admin.AlsBankCode;
 import fwp.gen.appservice.GenZipCodesAS;
 import fwp.gen.hibernate.dao.GenZipCodes;
-
 import fwp.security.utils.FwpUserUtils;
 
 public class AlsBankCodeGridEditAction extends ActionSupport {

@@ -85,11 +85,11 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 					 return "error_json";
 				}
 				
-				Boolean approveSummary = false;
+				Boolean approveInterface = false;
 				if((original.getAirNonAlsSales() == null ||  original.getAirNonAlsSales() == 0.0) && 
 				   (original.getAirShortSales() == null ||  original.getAirShortSales() == 0.0) &&
 				   (original.getAirOverSales() == null ||  original.getAirOverSales() == 0.0)){
-					approveSummary = true;
+					approveInterface = true;
 				}
 				/*Credit Card Sales Changed*/
 				if(original.getAirCreditSales() != null){
@@ -122,7 +122,7 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 				}
 				/*Remittance Approved*/
 				if(!"Y".equals(original.getAirOfflnPaymentApproved())&&"true".equals(remApp)){
-					updateTransactionGroup(provNo, sdf.parse(id.split("_")[1]), true, approveSummary);
+					updateTransactionGroup(provNo, sdf.parse(id.split("_")[1]), true, approveInterface);
 					original.setAirOfflnPaymentApproved("Y");
 					original.setAirOfflnPaymentAppBy(userInfo.getStateId());
 					original.setAirOfflnPaymentAppDt(date);
@@ -130,7 +130,7 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 				}
 				/*Remittance Disapproved*/
 				if("Y".equals(original.getAirOfflnPaymentApproved())&&"false".equals(remApp)){
-					updateTransactionGroup(provNo, sdf.parse(id.split("_")[1]), false, approveSummary);
+					updateTransactionGroup(provNo, sdf.parse(id.split("_")[1]), false, approveInterface);
 					original.setAirOfflnPaymentApproved("N");
 					original.setAirOfflnPaymentAppBy(null);
 					original.setAirOfflnPaymentAppDt(null);
@@ -578,7 +578,7 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 		return SUCCESS;
 	}
 	
-	public String updateTransactionGroup(Integer provNo, Date bpToDt, Boolean approve, Boolean approveSummary){
+	public String updateTransactionGroup(Integer provNo, Date bpToDt, Boolean approve, Boolean approveInterface){
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 		AlsTransactionGrpStatusAS atgsAS = new AlsTransactionGrpStatusAS();
 		List<AlsTransactionGrpStatus> atgsLst = new ArrayList<AlsTransactionGrpStatus>();
@@ -596,7 +596,7 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 					tmp.setAtgsSummaryStatus(approve?"A":null);
 					tmp.setAtgsSummaryApprovedBy(approve?"auto_"+userInfo.getStateId().toString():null);
 					tmp.setAtgsSummaryDt(approve?curDate:null);
-					if(approveSummary){
+					if(approveInterface){
 						tmp.setAtgsInterfaceStatus(approve?"A":null);
 						tmp.setAtgsInterfaceApprovedBy(approve?"auto_"+userInfo.getStateId().toString():null);
 						tmp.setAtgsInterfaceDt(approve?curDate:null);
@@ -606,7 +606,7 @@ public class AlsInternalRemittanceGridEditAction extends ActionSupport{
 					atgsAS.save(tmp);
 				}
 			}else{
-				this.addActionError("Error while updating Interface Status in ALS.ALSTRANSACTION_GRP_STATUS for Provider "+provNo+", for BPE "+bpToDt.toString()+".");
+				this.addActionError("Error while updating Summary/Interface Status in ALS.ALSTRANSACTION_GRP_STATUS for Provider "+provNo+", for BPE "+bpToDt.toString()+".");
 				return "error_json";
 			}		
 		}  catch(Exception ex) {

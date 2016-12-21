@@ -13,16 +13,12 @@ import org.hibernate.type.StringType;
 
 import fwp.ListComp;
 import fwp.als.appservice.admin.AlsMiscAS;
-import fwp.als.appservice.generic.AlsWebGenCodesAS;
 import fwp.als.hibernate.admin.dao.AlsMisc;
 import fwp.als.hibernate.admin.dao.AlsSysActivityControl;
 import fwp.als.hibernate.admin.dao.AlsTribeInfo;
 import fwp.als.hibernate.generic.dao.AlsWebGenCodes;
 import fwp.als.hibernate.item.dao.AlsItemCategory;
-import fwp.alsaccount.appservice.admin.AlsAccCdControlAS;
-import fwp.alsaccount.appservice.admin.AlsAccountMasterAS;
 import fwp.alsaccount.appservice.admin.AlsItemCategoryAS;
-import fwp.alsaccount.appservice.admin.AlsSysActivityControlAS;
 import fwp.alsaccount.appservice.admin.AlsTribeInfoAS;
 import fwp.alsaccount.dao.admin.AlsAccCdControl;
 import fwp.alsaccount.dao.admin.AlsAccountMaster;

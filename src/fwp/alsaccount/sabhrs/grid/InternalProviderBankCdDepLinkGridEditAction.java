@@ -57,8 +57,9 @@ public class InternalProviderBankCdDepLinkGridEditAction extends ActionSupport{
 				tmp = appSer.findById(tmpIdPk);
 			}
 			if (oper.equalsIgnoreCase("add")&&validation()) {
+				/*Removed because SABHRS interface requires a alphanumeric deposit id
 				StringBuilder trimmedProvNo = new StringBuilder(provNo.toString());
-				trimmedProvNo.deleteCharAt(2);
+				trimmedProvNo.deleteCharAt(2);*/
 				AlsProviderBankDetailsIdPk tmpIdPk = new AlsProviderBankDetailsIdPk(provNo,new Timestamp(apbdBillingTo.getTime()),hh.getProvBankDetailsNextSeqNo(provNo, BillingFrom, apbdBillingTo));
 				tmp = new AlsProviderBankDetails();
 				tmp.setIdPk(tmpIdPk);
@@ -66,7 +67,7 @@ public class InternalProviderBankCdDepLinkGridEditAction extends ActionSupport{
 				tmp.setAbcBankCd(abcBankCd);
 				tmp.setApbdAmountDeposit(apbdAmountDeposit);
 				tmp.setApbdDepositDate(new Timestamp(depositDate.getTime()));
-				tmp.setApbdDepositId(curBudgYear.substring(2, 4)+trimmedProvNo+String.format("%3s",hh.getAlsDepIdSeq(curBudgYear, "IP")).replace(" ", "0"));
+				tmp.setApbdDepositId(curBudgYear.substring(2, 4)+"IP"+String.format("%5s",hh.getAlsDepIdSeq(curBudgYear, "IP")).replace(" ", "0"));
 				tmp.setApbdCashInd(apbdCashInd);
 				
 				tmp.setCreatePersonid(userInfo.getUserId());

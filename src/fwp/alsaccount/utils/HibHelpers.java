@@ -26,7 +26,6 @@ import org.hibernate.type.StringType;
 import org.hibernate.type.TimestampType;
 
 import fwp.als.hibernate.admin.dao.AlsMisc;
-import fwp.als.hibernate.admin.dao.AlsRefundInfo;
 import fwp.als.hibernate.provider.dao.AlsProviderInfo;
 import fwp.alsaccount.appservice.admin.AlsMiscAS;
 import fwp.alsaccount.dao.sabhrs.AlsSabhrsEntries;

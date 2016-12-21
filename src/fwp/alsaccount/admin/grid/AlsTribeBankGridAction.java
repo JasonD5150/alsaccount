@@ -9,8 +9,6 @@ import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionSupport;
 
-
-
 import fwp.als.hibernate.admin.dao.AlsTribeInfo;
 import fwp.alsaccount.appservice.admin.AlsTribeInfoAS;
 

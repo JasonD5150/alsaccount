@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionSupport;
 
-import fwp.als.hibernate.item.dao.AlsItemApplFeeAcctIdPk;
 import fwp.alsaccount.appservice.sales.AlsItemApplFeeAcctAS;
 import fwp.alsaccount.dto.sabhrs.ProvAdjEntAIAFAGridDTO;
 import fwp.alsaccount.utils.Utils;

@@ -12,7 +12,7 @@ function errorHandler(response, postdata) {
 }
 /**
  *
- * jQuery UI widget to provide behavior for the Person Information search page.
+ * jQuery UI widget to provide behavior for the Person Refund Approval / Disapproval search page.
  *
  * @author cfa027
  */
@@ -57,6 +57,7 @@ function errorHandler(response, postdata) {
 		_wireEventHandlers: function () {
 			var self = this;
 			$.subscribe("personRefundAddRemoveColumns", function (event, data) {
+				self._jqGrid = $(data);
 				self._jqGrid.jqGrid("columnChooser",{
 					width: 500
 				});
@@ -88,11 +89,9 @@ function errorHandler(response, postdata) {
 	    		if($('#downloadDt').val().length > 1 &&
 	    		   $('#apiDob').val().length > 1 &&
 	    		   $('#apiAlsNo').val().length > 0){
-	    			//$('#edit_personRefundGrid').hide();
 	    			$('#warrantStatusGrid').jqGrid('setGridParam',{datatype:'json'});
 		    		$.publish('reloadWarrantStatusGrid');
 	    		}else{
-	    			//$('#edit_personRefundGrid').show();
 	    			$('#warrantStatusGrid').jqGrid('clearGridData');
 	    		}
 			});
@@ -144,14 +143,12 @@ function errorHandler(response, postdata) {
 		                 }
 		             }
 				});
-				//this.addPageMessage("ERROR", "At Least One Field Must be Queried.", _messageStyle);
 			} else {
 				$('#itemTypeCd').val($('#itemTypeCd_widget').val());
 				$('#reasonCd').val($('#reasonCd_widget').val());
 				$('#itemIndCd').val($('#itemIndCd_widget').val());
-				//$('#personRefundGrid').jqGrid('setGridParam',{datatype:'json'});
-				//$.publish("reloadPersonRefundGrid");
-				jQuery("#personRefundGrid").jqGrid('setGridParam',{datatype:'json'}).trigger('reloadPersonRefundGrid');
+
+				$("#personRefundGrid").jqGrid('setGridParam',{datatype:'json'}).trigger('reloadPersonRefundGrid');
 			}
 		},
 		_hasEnteredSearchCriteria: function() {

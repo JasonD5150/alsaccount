@@ -1,4 +1,4 @@
-package fwp.alsaccount.admin.grid;
+package fwp.alsaccount.sabhrs.grid;
 
 import java.sql.Timestamp;
 

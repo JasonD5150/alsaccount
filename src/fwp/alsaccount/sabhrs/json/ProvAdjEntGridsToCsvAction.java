@@ -5,23 +5,17 @@ import java.io.FileWriter;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
 
 import com.opensymphony.xwork2.ActionSupport;
 
 import fwp.ListComp;
-import fwp.als.hibernate.inventory.dao.AlsInternalRemittanceIdPk;
 import fwp.als.hibernate.item.dao.AlsItemApplFeeAcctIdPk;
 import fwp.alsaccount.appservice.sabhrs.AlsSabhrsEntriesAS;
 import fwp.alsaccount.dao.sabhrs.AlsSabhrsEntries;
-import fwp.alsaccount.dao.sabhrs.AlsSabhrsEntriesIdPk;
-import fwp.alsaccount.dto.sabhrs.AlsInternalRemittanceDTO;
 import fwp.alsaccount.dto.sabhrs.ProvAdjEntAIAFAGridDTO;
 import fwp.alsaccount.utils.Utils;
 
