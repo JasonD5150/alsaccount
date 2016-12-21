@@ -239,18 +239,14 @@ function intStatSelected(){
 }
 
 function transGrpTypeChanged(selected){
-	var reload = false
+	$('#provNo').val("");
 	if(selected.value == " "){
 		$('#txGrpType').val("");
-		if($('#provNo').val() != null){reload = true;}
 	}else{
 		$('#txGrpType').val(selected.value);
-		reload = true;
 	}
-	if(reload){
-		$.publish('reloadTransGrpIdLst');
-		$.publish('reloadProvLst');
-	}	
+	$.publish('reloadTransGrpIdLst');
+	$.publish('reloadProvLst');
 }
 
 function provNoChanged(selected){
